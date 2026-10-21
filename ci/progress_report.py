@@ -72,6 +72,15 @@ def load(version: str) -> tuple[list[dict], set[int], int]:
     return functions, matched, data_total
 
 
+def display_names(version: str) -> dict[int, str]:
+    """Function names from config/<version>/names.json (validated by tools/names.py at build time)."""
+    path = ROOT / "config" / version / "names.json"
+    if not path.is_file():
+        return {}
+    symbols = json.loads(path.read_text(encoding="utf-8"))["symbols"]
+    return {int(s["address"], 16): s["name"] for s in symbols if s["kind"] in ("function", "label")}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--version", default="rev02", help="catalogue version (artifact name is <version>_report)")
@@ -79,6 +88,7 @@ def main() -> int:
     parser.add_argument("--summary", type=Path, help="also append a Markdown summary (e.g. $GITHUB_STEP_SUMMARY)")
     args = parser.parse_args()
     functions, matched, data_total = load(args.version)
+    display = display_names(args.version)
 
     blocks: dict[int, list[dict]] = {}
     for f in functions:
@@ -94,7 +104,7 @@ def main() -> int:
             "sections": [{"name": ".text", "size": m["total_code"], "fuzzy_match_percent": m["fuzzy_match_percent"]}],
             "functions": [
                 {
-                    "name": f"func_{f['address']:06x}",
+                    "name": display.get(f["address"], f"func_{f['address']:06x}"),
                     "size": str(f["size"]),
                     "fuzzy_match_percent": 100.0 if f["address"] in matched else 0.0,
                     "metadata": {"virtual_address": str(f["address"])},

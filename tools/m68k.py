@@ -157,7 +157,8 @@ def render(insn: Insn, symbol) -> str | None:
 
     def absolute(match: re.Match) -> str:
         value = int(match.group(1), 16)
-        name = symbol(value & 0xFFFFFF, False) if match.group(2) == "l" and 0 <= value < ROM_END else None
+        named = match.group(2) == "l" and (0 <= value < ROM_END or 0xFF0000 <= value <= 0xFFFFFF)
+        name = symbol(value, False) if named else None
         return f"({name or match.group(0)[1:-3]}).{match.group(2)}"
 
     text = re.sub(r"\(0x([0-9a-f]+),%pc(,%[ad][0-7]\.[wl])?\)", pcrel, text)

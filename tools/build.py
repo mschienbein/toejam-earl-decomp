@@ -40,6 +40,7 @@ from elftools.elf.relocation import RelocationSection
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import m68k  # noqa: E402
 import rom as romtool  # noqa: E402
+import names as namestool  # noqa: E402
 import toolchain  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -117,17 +118,22 @@ def load_units(rom: bytes, catalogue: dict) -> list[Unit]:
 
 
 class Symbols:
-    """Names for every referenced address: inline labels at instruction starts, absolute otherwise."""
+    """Names for every referenced address: inline labels at instruction starts, absolute otherwise.
 
-    def __init__(self, units: list[Unit], catalogue: dict):
+    Imported names (config/<version>/names.json) replace the generated func_/loc_/dat_ names; RAM
+    names are used for absolute long operands and defined in the linker script.
+    """
+
+    def __init__(self, units: list[Unit], catalogue: dict, names: dict | None = None):
+        self.names = names or {}
         self.starts = {i.address for u in units for i in u.insns if not isinstance(i, Table)}
         self.labels: dict[int, str] = {}
         self.alias: dict[int, str] = {}           # in-unit expressions for unlabelled addresses
         for u in units:
             if u.kind == "function":
-                self.labels[u.address] = u.name
+                self.labels[u.address] = self.code_name(u.address, u.name)
             elif u.kind == "fragment":
-                self.labels[u.address] = f"loc_{u.address:06x}"
+                self.labels[u.address] = self.code_name(u.address, f"loc_{u.address:06x}")
             for item in u.insns:
                 if isinstance(item, Table):
                     name = f"jtbl_{item.address:06x}"
@@ -135,8 +141,12 @@ class Symbols:
                     if item.index_base != item.address:  # 1-based switch: the load indexes from T-2k
                         self.alias[item.index_base] = f"{name}-{item.address - item.index_base}"
         for address in catalogue.get("labels", []):
-            self.labels.setdefault(address, f"loc_{address:06x}")
-        self.absolute: dict[int, str] = {}
+            self.labels.setdefault(address, self.code_name(address, f"loc_{address:06x}"))
+        self.absolute: dict[int, str] = {}       # linker-script definitions (ROM data, RAM)
+
+    def code_name(self, address: int, generated: str) -> str:
+        known = self.names.get(address)
+        return known.name if known is not None and known.kind in ("function", "label") else generated
 
     def __call__(self, address: int, required: bool) -> str | None:
         if address in self.labels:
@@ -144,8 +154,11 @@ class Symbols:
         if address in self.alias:
             return self.alias[address]
         if address in self.starts:
-            self.labels[address] = f"loc_{address:06x}"
+            self.labels[address] = self.code_name(address, f"loc_{address:06x}")
             return self.labels[address]
+        known = self.names.get(address)
+        if known is not None and (required or known.kind in ("ram", "rom_data")):
+            return self.absolute.setdefault(address, known.name)
         if not required:
             return None
         return self.absolute.setdefault(address, f"dat_{address:06x}")
@@ -235,7 +248,7 @@ def linker_script(units: list[Unit], symbols: Symbols) -> str:
 
 def tool_hashes() -> dict:
     here = Path(__file__).resolve().parent
-    return {name: sha256((here / name).read_bytes()) for name in ("build.py", "m68k.py", "rom.py", "toolchain.py")}
+    return {name: sha256((here / name).read_bytes()) for name in ("build.py", "m68k.py", "names.py", "rom.py", "toolchain.py")}
 
 
 def build(version: str, jobs: int) -> dict:
@@ -247,14 +260,16 @@ def build(version: str, jobs: int) -> dict:
     if catalogue["rom_sha256"] != sha256(rom):
         raise BuildError(f"{catalogue_file.relative_to(ROOT)} was made for a different ROM")
     out = ROOT / "build" / version
-    result = build_image(rom, baserom, catalogue, out, jobs)
+    result = build_image(rom, baserom, catalogue, out, jobs, namestool.load(version))
     result["inputs"]["catalogue_sha256"] = sha256(catalogue_file.read_bytes())
+    names_file = namestool.path(version)
+    result["inputs"]["names_sha256"] = sha256(names_file.read_bytes()) if names_file.is_file() else None
     receipt = {"schema_version": 1, "result": result.pop("result"), "version": version, **result}
     (out / "receipt.json").write_text(json.dumps(receipt, indent=1) + "\n")
     return receipt
 
 
-def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int) -> dict:
+def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int, names: dict | None = None) -> dict:
     """Generate, assemble and link every unit into out/; the result is PASS only when byte-identical."""
     started = time.time()
     for sub in ("asm", "obj"):  # units change whenever the catalogue does: never link stale objects
@@ -262,7 +277,7 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
         (out / sub).mkdir(parents=True)
     units = load_units(rom, catalogue)
     code_units = [u for u in units if u.insns]
-    symbols = Symbols(units, catalogue)
+    symbols = Symbols(units, catalogue, names)
     raw: set[int] = set()
     for u in code_units:  # first pass names every reference, so labels are fixed before any file is written
         for item in u.insns:
@@ -371,7 +386,7 @@ def main() -> int:
     args = parser.parse_args()
     try:
         receipt = build(args.version, args.jobs)
-    except (BuildError, romtool.RomError, toolchain.ToolchainError, subprocess.CalledProcessError) as error:
+    except (BuildError, romtool.RomError, namestool.NamesError, toolchain.ToolchainError, subprocess.CalledProcessError) as error:
         detail = getattr(error, "stderr", "") or ""
         print(f"error: {error} {detail}".strip(), file=sys.stderr)
         return 1

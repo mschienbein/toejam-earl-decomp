@@ -24,6 +24,9 @@ jobs:
         run: |
           for f in config/*.json config/*/*.json toolchain.lock.json; do
             python3 -m json.tool "$f" > /dev/null
+
+      - name: Verify the recorded denominator (catalogues, classification, data units)
+        run: python3 tools/denominator.py verify
           done
 
       # No ROM and no binutils in CI: synthetic analyzer/ROM tests run, toolchain and real-ROM

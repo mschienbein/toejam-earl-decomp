@@ -4,10 +4,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from elftools.elf.elffile import ELFFile
 from support import ROOT, synthetic_rom
 
 import analyze
 import build
+import names as namestool
 import rom as romtool
 import toolchain
 
@@ -52,13 +54,26 @@ def tricky_rom() -> bytes:
 
 @unittest.skipUnless(have_toolchain(), "pinned binutils not installed (python tools/setup.py)")
 class SyntheticBuildTest(unittest.TestCase):
-    def build(self, rom: bytes) -> tuple[dict, Path]:
+    def build(self, rom: bytes, names: dict | None = None) -> tuple[dict, Path]:
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         base = Path(tmp.name) / "baserom.bin"
         base.write_bytes(rom)
         catalogue = analyze.build_catalogue(rom, "synthetic", {})
-        return build.build_image(rom, base, catalogue, Path(tmp.name) / "out", jobs=2), Path(tmp.name) / "out"
+        return build.build_image(rom, base, catalogue, Path(tmp.name) / "out", jobs=2, names=names), Path(tmp.name) / "out"
+
+    def test_imported_names_resolve_to_their_addresses(self):
+        names = namestool.parse({"schema_version": 1, "version": "synthetic", "symbols": [
+            {"name": "Callee", "address": "0x000740", "kind": "function"},
+            {"name": "TableData", "address": "0x000734", "kind": "rom_data"},
+            {"name": "RamBase", "address": "0xff0000", "kind": "ram"},
+        ]})
+        receipt, out = self.build(tricky_rom(), names)
+        self.assertEqual(receipt["result"], "PASS")
+        self.assertEqual(receipt["instructions"]["raw_words"], 0)
+        with (out / "toejam.elf").open("rb") as stream:
+            table = {s.name: s["st_value"] for s in ELFFile(stream).get_section_by_name(".symtab").iter_symbols()}
+        self.assertEqual((table["Callee"], table["TableData"], table["RamBase"]), (0x740, 0x734, 0xFF0000))
 
     def test_switch_function_rebuilds_byte_identically_as_assembly(self):
         receipt, _ = self.build(synthetic_rom())

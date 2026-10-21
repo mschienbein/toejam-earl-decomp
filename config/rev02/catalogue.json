@@ -2,7 +2,7 @@
  "schema_version": 1,
  "version": "rev02",
  "rom_sha256": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
- "analyzer_sha256": "501168d8254c596a141d1ea8b709333cc23a196794db8ab6c0873e5108705bed",
+ "analyzer_sha256": "97ad469bf108dbc71bc78e5cc9e617e63ef3e6f01abe6c38b55eede67d78424e",
  "header": {"address": 0, "size": 512},
  "functions": [
   {"address": 512, "kind": "function", "reached_by": "vector", "size": 2, "vectors": ["bus_error", "address_error", "illegal_instruction", "zero_divide", "chk", "trapv", "privilege_violation", "trace", "line_a", "line_f", "vector12", "vector13", "vector14", "vector15", "vector16", "vector17", "vector18", "vector19", "vector20", "vector21", "vector22", "vector23", "spurious_irq", "irq1", "irq2_ext", "irq3", "irq5", "irq7", "trap0", "trap1", "trap2", "trap3", "trap4", "trap5", "trap6", "trap7", "trap8", "trap9", "trap10", "trap11", "trap12", "trap13", "trap14", "trap15", "vector48", "vector49", "vector50", "vector51", "vector52", "vector53", "vector54", "vector55", "vector56", "vector57", "vector58", "vector59", "vector60", "vector61", "vector62", "vector63"]},

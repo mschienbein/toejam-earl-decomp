@@ -42,8 +42,8 @@ recorded qualification. Preserved original bugs carry an `ORIGINAL BUG:` comment
 Never commit ROM bytes, extracted assets, generated assembly (`build/`), disassembly listings or
 packets. `scratch/`, `build/`, `orig/` and `.cache/` are git-ignored; keep it that way. Commit
 addresses, sizes, hashes and tools only. The existing disassemblies (bstreiff/tje-disasm,
-RyanFaeScotland's) carry no licence: use them for facts (addresses, formats), cite them, do not copy
-their source or names into this repository without a recorded ruling.
+RyanFaeScotland's) carry no licence. Ruling R003: import their names, RAM layout, structure layouts
+and data formats, restated in this repository with per-entry provenance; never copy their source.
 
 ## Evidence
 

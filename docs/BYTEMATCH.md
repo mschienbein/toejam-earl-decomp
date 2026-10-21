@@ -21,38 +21,39 @@ is up.
   named `<version>_report`.
 - The ByteMatch GitHub App (`bytematchdev`) is optional: instant ingestion and PR comments. The
   existing installation is limited to selected repositories; this one has to be added to it.
-- **No Genesis platform id yet.** ByteMatch's platform table
+- **No Genesis platform id upstream.** ByteMatch's platform table
   ([`src/lib/platforms.ts`](https://github.com/Veradictus/ByteMatch/blob/main/src/lib/platforms.ts),
   commit `33c2976`, 2026-10-21) lists `3ds dc gba gbc gb gc n64 nds pc ps ps1 ps2 ps3 psp saturn
-  snes switch wii wiiu xbox x360`; the Add-project form only offers those. Register with platform
-  *Not set* and ask upstream to add Mega Drive / Genesis (then set it on the manage page).
+  snes switch wii wiiu xbox x360`, and the form only offers those. The server stores any id, so
+  the project uses `md` (shown as "md" until upstream names it); adding
+  `md: "Mega Drive / Genesis"` upstream needs the user's approval (pushing to another repository).
 
-## Settings to enter
+## Registration record (2026-10-21)
 
-| Field | Value |
-|---|---|
-| repository | `mschienbein/toejam-earl-decomp` |
-| name | ToeJam & Earl |
-| shortName | tje |
-| platform | Not set (no Genesis id yet, see above) |
-| defaultVersion | rev02 |
-| defaultBranch | main |
-| game | ToeJam & Earl |
-| franchise | ToeJam & Earl |
-| releaseYear | 1991 |
-| workflow (advanced) | progress.yml |
+Live: https://bytematch.dev/mschienbein/toejam-earl-decomp.
 
-## Going live
+- Signed in through a separate Edge window with a temporary profile (CDP port 9333); the owner
+  completed GitHub sign-in and two-factor authentication there. The window was closed and its
+  profile deleted afterwards.
+- Manage → Submit → "Your repositories" → Add (`/manage/mschienbein/toejam-earl-decomp?added=1`).
+- Saved settings, verified through `/api/v1/projects?q=toejam`:
 
-1. ~~Audit the full history~~ — done 2026-10-21: 33 blobs, all text; no hex run of 12+ bytes
-   and no printable 16-byte window from either ROM except the header fields in `config/title.json`
-   (`(C)SEGA 1991.OCT`/`.JUL`) and the console string `SEGA GENESIS` in the synthetic test ROM.
-2. ~~Make the repository public~~ — done 2026-10-21 (ruling R002).
-3. Register on bytematch.dev with the settings above; add the repository to the App installation.
-4. **Poll now** (or push to `main`), then check
-   `https://bytematch.dev/mschienbein/toejam-earl-decomp.json`.
-5. Uncomment the badges in `README.md`.
+  | Field | Value |
+  |---|---|
+  | name / short name | ToeJam & Earl / tje |
+  | platform | `md` (see above) |
+  | game | ToeJam & Earl, linked to IGDB id 8389 (1991; Genesis/MegaDrive) |
+  | franchise / year | ToeJam & Earl / 1991 |
+  | description | Matching C decompilation of ToeJam & Earl (Sega Genesis / Mega Drive, 1991, REV 02 "Rev A"). Both retail revisions rebuild byte-identically. |
+  | default branch / version | main / rev02 (auto, from the `rev02_report` artifact) |
+  | workflow / artifact pattern | `progress.yml` / default `^(?<version>.+)_report$` |
+  | PR comments, enabled | on, on |
 
-## Registration record
-
-(pending: needs the owner's signed-in browser session)
+- Art (hotlinked; SteamGridDB game 34242, both return 200 without a Referer):
+  - icon: `https://cdn2.steamgriddb.com/icon/a84b069f0a61431cddd4784ff42737f3.png` (official, 1024×1024);
+  - cover: `https://cdn2.steamgriddb.com/hero/78ccad7da4c2fc2646d1848e965794c5.jpg` (in-game scene, 1920×620).
+- GitHub App: repository id 1429009537 added to the existing installation 171769441 (Only select
+  repositories: toejam-earl-decomp, shiren2-decomp, kanken-training-2-decomp). The manage page
+  reports "The GitHub App is installed: new runs arrive instantly and pull requests get progress
+  comments".
+- First ingested commit: `4debbc9` (0 / 651 functions, 0 / 180,702 code bytes).

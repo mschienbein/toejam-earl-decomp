@@ -1,9 +1,7 @@
 # ToeJam & Earl decompilation
 
-<!-- Badges go live once ByteMatch has ingested a run (docs/BYTEMATCH.md):
 [![Code progress](https://bytematch.dev/mschienbein/toejam-earl-decomp.svg?label=Code&measure=matched_code_percent)](https://bytematch.dev/mschienbein/toejam-earl-decomp)
 [![Functions](https://bytematch.dev/mschienbein/toejam-earl-decomp.svg?label=Functions&measure=matched_functions)](https://bytematch.dev/mschienbein/toejam-earl-decomp)
--->
 [![progress](https://github.com/mschienbein/toejam-earl-decomp/actions/workflows/progress.yml/badge.svg)](https://github.com/mschienbein/toejam-earl-decomp/actions/workflows/progress.yml)
 
 A work-in-progress **matching decompilation** of *ToeJam & Earl* (Sega Genesis / Mega Drive, 1991,
@@ -69,6 +67,19 @@ flowchart LR
 | `ci/progress_report.py` | objdiff-format report for [ByteMatch](https://bytematch.dev), no ROM needed |
 | `docs/` | [STATUS](docs/STATUS.md), [RESUME](docs/RESUME.md), [ACCEPTANCE](docs/ACCEPTANCE.md), [COMPILER](docs/COMPILER.md), [TOOLCHAIN](docs/TOOLCHAIN.md), [BYTEMATCH](docs/BYTEMATCH.md), `rulings/` |
 | `tests/` | synthetic ROM tests (CI) + end-to-end real-ROM builds (skipped without `orig/`) |
+
+## Credits and prior work
+
+This project builds on two disassemblies of the game (ruling [R003](docs/rulings/R003-existing-work.md)):
+
+- [bstreiff/tje-disasm](https://github.com/bstreiff/tje-disasm) (REV 02, GNU as): code map, labels,
+  RAM variables, structure layouts, resource formats and the compiler-hunting notes;
+- [RyanFaeScotland's ToeJam & Earl disassembly](https://bitbucket.org/RyanFaeScotland/toejamandearldisassembly)
+  (REV 00, vasm; [project page](https://www.mybrillgamesite.com/projects/toejam-and-earl-disassembly)):
+  commented menus, cutscenes, player controls, level seeds and presents.
+
+Names, addresses, layouts and formats taken from them are restated here with per-entry provenance;
+none of their source files are copied.
 
 ## Legal
 

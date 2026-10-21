@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "title": "ToeJam & Earl",
+  "platform": "Sega Genesis / Mega Drive",
+  "developer": "Johnson Voorsanger Productions",
+  "publisher": "Sega",
+  "product_code": "GM MK-1020",
+  "default_version": "rev02",
+  "versions": {
+    "rev02": {
+      "description": "REV 02 (No-Intro: ToeJam & Earl (World) (Rev A)); primary matching target",
+      "orig": "orig/rev02/baserom.bin",
+      "size": 1048576,
+      "sha256": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+      "sha1": "85e8d0a4fac591b25b77c35680ac4175976f251b",
+      "crc32": "7a588f4b",
+      "serial": "GM MK-1020 -02",
+      "copyright": "(C)SEGA 1991.OCT",
+      "header_checksum": "41c8"
+    },
+    "rev00": {
+      "description": "REV 00 (No-Intro: ToeJam & Earl (World)); first cartridge release, diff reference",
+      "orig": "orig/rev00/baserom.bin",
+      "size": 1048576,
+      "sha256": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+      "sha1": "7f82d8b57fff88bdca5d8aff85b01e231dc1239a",
+      "crc32": "d1b36786",
+      "serial": "GM MK-1020 -00",
+      "copyright": "(C)SEGA 1991.JUL",
+      "header_checksum": "e88b"
+    }
+  }
+}

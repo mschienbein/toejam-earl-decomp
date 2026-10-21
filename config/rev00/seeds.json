@@ -1,0 +1,341 @@
+{
+ "schema_version": 1,
+ "note": "REV 02 seeds carried over to REV 00 by byte signature (genesis-experiments tools/tje_seeds.py). Addresses only.",
+ "seeds": [
+  {
+   "address": "0x000be2",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x000be2"
+  },
+  {
+   "address": "0x0011ca",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x0011ca"
+  },
+  {
+   "address": "0x0044e2",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x0044e2"
+  },
+  {
+   "address": "0x005afa",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x005afa"
+  },
+  {
+   "address": "0x0098d6",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x0098f6"
+  },
+  {
+   "address": "0x00dd62",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x00dd82"
+  },
+  {
+   "address": "0x00e3e0",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x00e400"
+  },
+  {
+   "address": "0x00e3f0",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x00e410"
+  },
+  {
+   "address": "0x0131de",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01320e"
+  },
+  {
+   "address": "0x013420",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x013450"
+  },
+  {
+   "address": "0x0134de",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01350e"
+  },
+  {
+   "address": "0x0180bc",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x0180fe"
+  },
+  {
+   "address": "0x018f98",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x018fda"
+  },
+  {
+   "address": "0x01912a",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01916c"
+  },
+  {
+   "address": "0x019190",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x0191d2"
+  },
+  {
+   "address": "0x019448",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01948a"
+  },
+  {
+   "address": "0x01971a",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01975c"
+  },
+  {
+   "address": "0x019832",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x019874"
+  },
+  {
+   "address": "0x019c44",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x019c86"
+  },
+  {
+   "address": "0x019c4c",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x019c8e"
+  },
+  {
+   "address": "0x019c54",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x019c96"
+  },
+  {
+   "address": "0x019cfc",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x019d3e"
+  },
+  {
+   "address": "0x019ecc",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x019f0e"
+  },
+  {
+   "address": "0x01a242",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01a284"
+  },
+  {
+   "address": "0x01a24a",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01a28c"
+  },
+  {
+   "address": "0x01a362",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01a3a4"
+  },
+  {
+   "address": "0x01a6e0",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01a722"
+  },
+  {
+   "address": "0x01a7ae",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01a7f0"
+  },
+  {
+   "address": "0x01a85e",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01a8a0"
+  },
+  {
+   "address": "0x01b2d6",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01b318"
+  },
+  {
+   "address": "0x01b3a0",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01b3e2"
+  },
+  {
+   "address": "0x01b5ea",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01b62c"
+  },
+  {
+   "address": "0x01b704",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01b746"
+  },
+  {
+   "address": "0x01b7b8",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01b7fa"
+  },
+  {
+   "address": "0x01bbc4",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01bc06"
+  },
+  {
+   "address": "0x01bce0",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01bd22"
+  },
+  {
+   "address": "0x01c260",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01c2a2"
+  },
+  {
+   "address": "0x01c928",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01c96a"
+  },
+  {
+   "address": "0x01d246",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01d288"
+  },
+  {
+   "address": "0x01d28a",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01d2cc"
+  },
+  {
+   "address": "0x01da5a",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01da9c"
+  },
+  {
+   "address": "0x01e9c4",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x01ea06"
+  },
+  {
+   "address": "0x020c16",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x020c8e"
+  },
+  {
+   "address": "0x020db2",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x020e2a"
+  },
+  {
+   "address": "0x02112c",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x0211a4"
+  },
+  {
+   "address": "0x0213ba",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x021432"
+  },
+  {
+   "address": "0x021686",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x0216fe"
+  },
+  {
+   "address": "0x021880",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x0218f8"
+  },
+  {
+   "address": "0x021f30",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x021fa8"
+  },
+  {
+   "address": "0x02210a",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x022182"
+  },
+  {
+   "address": "0x022410",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x022488"
+  },
+  {
+   "address": "0x022508",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x022580"
+  },
+  {
+   "address": "0x022818",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x022890"
+  },
+  {
+   "address": "0x0233b0",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x023428"
+  },
+  {
+   "address": "0x023c7c",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x023cf4"
+  },
+  {
+   "address": "0x023d92",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x023e0a"
+  },
+  {
+   "address": "0x025c2c",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x025ca4"
+  },
+  {
+   "address": "0x025d08",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x025d80"
+  },
+  {
+   "address": "0x025eca",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x025f42"
+  },
+  {
+   "address": "0x026f20",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x026f98"
+  },
+  {
+   "address": "0x026f60",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x026fd8"
+  },
+  {
+   "address": "0x0271d0",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x027248"
+  },
+  {
+   "address": "0x03a3d0",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x03a43e"
+  },
+  {
+   "address": "0x03abac",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x03ac1c"
+  },
+  {
+   "address": "0x03ae52",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x03aec2"
+  },
+  {
+   "address": "0x03b918",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x03b988"
+  },
+  {
+   "address": "0x03e43a",
+   "kind": "seed",
+   "source": "tje-disasm via rev02 0x03e4aa"
+  }
+ ]
+}

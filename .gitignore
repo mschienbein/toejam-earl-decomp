@@ -1,0 +1,18 @@
+# Private inputs and anything derived from them: never committed (the repository must stay publishable).
+/orig/
+/baserom*
+*.bin
+*.gen
+*.smd
+*.sgd
+*.zip
+
+# Generated build state, provisioned toolchains, private work
+/build/
+/.cache/
+/scratch/
+/asm/
+
+.venv/
+__pycache__/
+*.pyc

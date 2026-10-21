@@ -1,0 +1,43 @@
+name: progress
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install locked Python tooling
+        run: uv sync --locked
+
+      - name: Validate configuration JSON
+        run: |
+          for f in config/*.json config/*/*.json toolchain.lock.json; do
+            python3 -m json.tool "$f" > /dev/null
+          done
+
+      # No ROM and no binutils in CI: synthetic analyzer/ROM tests run, toolchain and real-ROM
+      # tests skip themselves.
+      - name: Tests
+        run: uv run python -m unittest discover -s tests -v
+
+      - name: Generate objdiff progress report
+        run: python3 ci/progress_report.py --version rev02 --output report.json --summary "$GITHUB_STEP_SUMMARY"
+
+      # ByteMatch reads the <version>_report artifact: default-branch push runs feed its history,
+      # pull request runs feed its PR comments (docs/BYTEMATCH.md).
+      - name: Upload progress report
+        uses: actions/upload-artifact@v4
+        with:
+          name: rev02_report
+          path: report.json

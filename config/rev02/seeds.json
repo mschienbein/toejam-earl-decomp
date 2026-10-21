@@ -1,0 +1,341 @@
+{
+ "schema_version": 1,
+ "note": "Extra code entry points: starts of instruction runs that bstreiff/tje-disasm spells as code but recursive descent from the vectors does not reach (mostly functions called through pointers). Addresses only. Derived by genesis-experiments tools/tje_seeds.py from tje-disasm cd85d2e, rebuilt byte-identically with our binutils.",
+ "seeds": [
+  {
+   "address": "0x000be2",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x0011ca",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x0044e2",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x005afa",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x0098f6",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x00dd82",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x00e400",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x00e410",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01320e",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x013450",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01350e",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x0180fe",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x018fda",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01916c",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x0191d2",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01948a",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01975c",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x019874",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x019c86",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x019c8e",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x019c96",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x019d3e",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x019f0e",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01a284",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01a28c",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01a3a4",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01a722",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01a7f0",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01a8a0",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01b318",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01b3e2",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01b62c",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01b746",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01b7fa",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01bc06",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01bd22",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01c2a2",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01c96a",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01d288",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01d2cc",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01da9c",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x01ea06",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x020c8e",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x020e2a",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x0211a4",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x021432",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x0216fe",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x0218f8",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x021fa8",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x022182",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x022488",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x022580",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x022890",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x023428",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x023cf4",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x023e0a",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x025ca4",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x025d80",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x025f42",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x026f98",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x026fd8",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x027248",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x03a43e",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x03ac1c",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x03aec2",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x03b988",
+   "kind": "seed",
+   "source": "tje-disasm"
+  },
+  {
+   "address": "0x03e4aa",
+   "kind": "seed",
+   "source": "tje-disasm"
+  }
+ ]
+}

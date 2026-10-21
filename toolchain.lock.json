@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "install_directory": ".cache/toolchain",
+  "binutils": {
+    "description": "GNU binutils (as, ld, objcopy, objdump, nm), built from the pinned GNU release tarball for each target. Free software (GPL); built privately, never committed.",
+    "version": "2.47",
+    "url": "https://ftp.gnu.org/gnu/binutils/binutils-2.47.tar.xz",
+    "size": 29034716,
+    "sha256": "154ab23b60070e8f27013c22977f1129425d67d1e8acd6e13010e617811e4cff",
+    "signature": "binutils-2.47.tar.xz.sig verified 2026-10-21: Good signature from Nick Clifton (Chief Binutils Maintainer), RSA key 3A24BC1E8FB409FA9F14371813FCEF89DD9E3C4F",
+    "targets": {
+      "m68k-elf": "68000 game code: assemble, link with config/rom.ld, objcopy to the ROM image",
+      "z80-elf": "Z80 sound-driver code (later; the baseline treats it as data)"
+    },
+    "configure": ["--disable-nls", "--disable-werror", "--disable-gdb", "--disable-gdbserver", "--disable-sim", "--disable-gprofng", "--disable-plugins", "--without-zstd", "--enable-deterministic-archives"],
+    "make_variables": {"MAKEINFO": "true"}
+  }
+}

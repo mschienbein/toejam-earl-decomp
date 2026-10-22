@@ -1,5 +1,28 @@
 # Status (current entry first)
 
+## 2026-10-21 (night) — compiler identified: Microtec MCC68K 3.3K; matching pipeline built
+
+**Result.**
+- **Compiler:** Microtec MCC68K 3.3K (DOS; archive.org copy acquired under ruling R006), default
+  options. 12 REV 02 functions of varied shapes (switches, helper calls, function pointers, framed
+  functions with locals) reproduced byte for byte from independent C; the five 32-bit helpers are
+  the stock 3.3K runtime modules (`abs`, `lmodt`/`ldivt`, `lmult`, `ulmodt`/`uldivt`), byte for
+  byte. Assembler behaviour (ASM68K 6.6A) measured and reproduced: forward branches word,
+  backward shortest; same-file calls PC-relative (forward + NOP); confirmed on all 521 PC-relative
+  calls in the ROM. Language level: K&R (no prototypes, `signed`, `volatile`). `docs/COMPILER.md`.
+- **Pipeline:** `tools/setup.py` provisions emu2 (pinned commit) and MCC68K/ASM68K from the
+  pinned archive; `tools/mcc.py` compiles and adapts; `tools/match.py` checks one C file strictly;
+  C units (`config/sources.json`) replace their catalogued runs in the full build; `tools/accept.py`
+  checkpoints (two fresh builds of both revisions + suite, review, finalize into
+  `config/matches.json`). `tools/tus.py` recovers 50 original translation-unit spans from
+  PC-relative references so partial C files call the rest of their unit the original way.
+- **Knowledge:** reviewed names (1,462 symbols per revision; Microtec runtime names primary) and
+  classification (530 compiled_c, 19 hand-written assembly, 6 runtime, 2 Sega library, 94 unknown)
+  integrated; generated assembly reads with names; denominator r2: 640 C functions, 180,304 bytes.
+- **Lanes:** CompilerHunter packaging the matched functions for the first checkpoint; reviews in
+  flight: Toolsmith r2 (audit/packet/diff), matching infrastructure, data closure (DataSmith: 4,164
+  typed units round-trip, zero anonymous bytes).
+
 ## 2026-10-21 (evening) — goal run started: ByteMatch live, four lanes, names and denominator plumbing
 
 **Result.**

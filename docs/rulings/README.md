@@ -11,3 +11,4 @@ User decisions, one file each, never edited after the fact (a later ruling super
 | [R005](R005-subagent-cap-4.md) | 2026-10-21 | Sub-agent cap raised to four at once (supersedes R004's two) |
 | [R006](R006-compiler-acquisition.md) | 2026-10-21 | Acquire the archive.org Microtec MCC68K 3.3A set and, standing, other proprietary/abandonware 68k compilers from public archives when evidence points at them; private cache only, recorded with hashes |
 | [R007](R007-assembly-sources.md) | 2026-10-22 | Hand-written 68000 routines and the Z80 driver are committed as readable assembly source (`src/asm/`, Z80 source), assembled in place of generated/extracted units |
+| [R008](R008-subagent-cap-8.md) | 2026-10-22 | Sub-agent cap raised to eight at once (supersedes R005's four) |

@@ -60,24 +60,24 @@ struct movement_destination {
 
 /* Form a proposed 24.8 position, reject crossings, then apply terrain.
  *
- * MATCHING QUALIFICATION: The step-plus-existing-position association and
- * scoped signed32 cell stages retain MCC68K's original register allocation.
- * The Y fractional output is also captured by a signed int at its real store;
- * all such values are 0..255. A direct byte store changes allocation. This
- * scalar capture has no extra instruction in the matching build.
- * The unused long[1] retains the observed untouched four-byte frame slot;
- * its historical purpose is unknown [INFERENCE]. */
+ * MATCHING QUALIFICATION: the cell index goes through a signed 32-bit
+ * stage (shifted_cell) and the Y fraction is also captured through an int at
+ * its store (all such values are 0..255); a direct byte store or a short
+ * stage changes MCC68K's register allocation. The unused long[1] keeps the
+ * observed untouched four-byte frame slot; its historical purpose is
+ * unknown [INFERENCE]. */
 void PlayerProcessTerrainMotion(player, direction)
 short player;
 char *direction;
 {
-    register short velocity_delta;
+    short velocity_delta;
     int fraction_output;
     long unused_motion[1];
     struct object_state *entity;
     unsigned int fraction;
     long fixed_position;
     short coordinate;
+    int shifted_cell;
     struct movement_destination destination;
 
     if (gPlayerLives[player] < 0 || gPlayerInventoryOpen[player])
@@ -92,17 +92,13 @@ char *direction;
         return;
     if (entity->animation_motion_axes & ANIMATION_MOTION_X) {
         velocity_delta = (short)(entity->velocity_x * direction[1]);
-        fixed_position = velocity_delta + ((entity->x << 8) + entity->fraction_x);
+        fixed_position = (entity->x << 8) + entity->fraction_x + velocity_delta;
         coordinate = (short)(fixed_position >> 8);
         destination.x = coordinate;
         fraction = fixed_position & 255;
         destination.fraction_x = fraction;
-        {
-            register int shifted_x_cell;
-
-            shifted_x_cell = (long)destination.x >> 3;
-            coordinate = (short)shifted_x_cell;
-        }
+        shifted_cell = (long)destination.x >> 3;
+        coordinate = (short)shifted_cell;
         destination.tile_x = coordinate - (long)(entity->x >> 3) + 2;
     } else {
         destination.x = entity->x;
@@ -111,17 +107,13 @@ char *direction;
     }
     if (entity->animation_motion_axes & ANIMATION_MOTION_Y) {
         velocity_delta = (short)(entity->velocity_y * direction[2]);
-        fixed_position = velocity_delta + ((entity->y << 8) + entity->fraction_y);
+        fixed_position = (entity->y << 8) + entity->fraction_y + velocity_delta;
         fraction = fixed_position & 255;
         destination.fraction_y = (fraction_output = fraction);
         coordinate = (short)(fixed_position >> 8);
         destination.y = coordinate;
-        {
-            register int shifted_y_cell;
-
-            shifted_y_cell = (long)destination.y >> 3;
-            coordinate = (short)shifted_y_cell;
-        }
+        shifted_cell = (long)destination.y >> 3;
+        coordinate = (short)shifted_cell;
         destination.tile_y = coordinate - (long)(entity->y >> 3) + 2;
     } else {
         destination.y = entity->y;
@@ -196,10 +188,9 @@ char *direction;
  * least 0x80 also adjust edge cells and select collision-facing sprites.
  *
  * MATCHING QUALIFICATION: swimming and innertube movement are tested through
- * signed-long views of animation_group_mask and its mask. Reading the shared
- * unsigned-long field directly changes the generated code; the scalar casts
- * retain the observed mask/allocation. The common record stays unsigned;
- * historical spelling is unknown [INFERENCE]. */
+ * a signed-long view of animation_group_mask; reading the shared unsigned-long
+ * field directly changes the generated code. The common record stays
+ * unsigned; historical spelling is unknown [INFERENCE]. */
 void PlayerApplyTerrainDestination(player, entity, destination)
 short player;
 struct object_state *entity;
@@ -231,7 +222,7 @@ struct movement_destination *destination;
         entity->y = saved_y;
     }
     property = terrain[destination->tile_y * 5 + destination->tile_x] & TERRAIN_CLASS_MASK;
-    if ((long)entity->animation_group_mask & (long)(PLAYER_GROUP_SWIM | PLAYER_GROUP_INNERTUBE_MOVE)) {
+    if ((long)entity->animation_group_mask & (PLAYER_GROUP_SWIM | PLAYER_GROUP_INNERTUBE_MOVE)) {
         if (entity->level == 1 || entity->level == LEVEL_FINAL) {
             if (destination->x <= 28 || destination->x >= 2652) {
                 destination->x = entity->x;

@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c003-wave-1a",
+ "prepare_sha256": "954a1be0bb68a7428a7e1bb4bcdb3091f71ed25ccef0b65ac3d24e7988729199",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T01:40:16Z",
+ "review_file": "review.json",
+ "review_sha256": "7c33a0348e5930a14883d7502b647c336ee3e901d57fce86e0c1eff4577cf6f4",
+ "reviewer": "C003Review",
+ "verdict": "PASS_WITH_QUALIFICATIONS"
+}

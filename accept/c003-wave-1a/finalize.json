@@ -1,0 +1,456 @@
+{
+ "added": [
+  {
+   "address": "0x00158e",
+   "checkpoint": "c003-wave-1a",
+   "name": "ToggleLOC_00FF8196",
+   "size": 26,
+   "source": "src/core/toggle_camera_flag.c",
+   "source_sha256": "00aac6d1b7d34b1f77806365c2856eb571999c297ae110d1a05888d57a0e078f",
+   "version": "rev02"
+  },
+  {
+   "address": "0x002e6a",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_002e6a",
+   "size": 416,
+   "source": "src/graphics/split_screen_wipe.c",
+   "source_sha256": "7df2629826fcd72dec42f220b5e754eb68e964599a0b78be548d770c8aaca2fa",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00d9dc",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00d9dc",
+   "size": 250,
+   "source": "src/map/terrain_at_position.c",
+   "source_sha256": "b16120d207554e13ad5973c0276026f895865272439cfe1194c238bfbeb09cc3",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00300a",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00300a",
+   "size": 832,
+   "source": "src/player/center_for_split.c",
+   "source_sha256": "6e81942be63d52cc6674bd2bac70ebbbc0b5e74bcf15939fdabebf4a96aaa6b2",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00e422",
+   "checkpoint": "c003-wave-1a",
+   "name": "ProcessMovement",
+   "size": 812,
+   "source": "src/player/process_movement.c",
+   "source_sha256": "201f752d481890528bee455f71389c82a4689769a2387e9771e56ce49a1c3e79",
+   "version": "rev02"
+  },
+  {
+   "address": "0x002608",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_002608",
+   "size": 114,
+   "source": "src/player/set_camera_position.c",
+   "source_sha256": "b28b009534e042875aad25650fcd13c364254da7157633d52c8e11d2b82a17a1",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00d1f6",
+   "checkpoint": "c003-wave-1a",
+   "name": "SetupPlayer",
+   "size": 528,
+   "source": "src/player/setup_player.c",
+   "source_sha256": "58c22d9d57c3d0db0738438274e03faab01d231e9ffc10e533047e293d478a21",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00bffc",
+   "checkpoint": "c003-wave-1a",
+   "name": "Process2FEntityBit0",
+   "size": 308,
+   "source": "src/sprites/entity_depth.c",
+   "source_sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00c130",
+   "checkpoint": "c003-wave-1a",
+   "name": "Process2FEntityFlag",
+   "size": 64,
+   "source": "src/sprites/entity_depth.c",
+   "source_sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00bdd8",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00bdd8",
+   "size": 218,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00beb2",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00beb2",
+   "size": 276,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00bfc6",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00bfc6",
+   "size": 54,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00d152",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00d152",
+   "size": 114,
+   "source": "src/sprites/hide_player_sprites.c",
+   "source_sha256": "bd1ef46f7a3aaca9a5ab1d27c35f413e3a61af36aec13f539efdfbc4e9768d3a",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00d07a",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00d07a",
+   "size": 216,
+   "source": "src/sprites/link_player_sprites.c",
+   "source_sha256": "282d0d72c6c1765cee6a12c069da8c9243e8369dfd30351f4209da863f415a1e",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00cef0",
+   "checkpoint": "c003-wave-1a",
+   "name": "SpriteLoadingStuff",
+   "size": 202,
+   "source": "src/sprites/load_sprites.c",
+   "source_sha256": "c05ad026aa123736ba55d4eeaa03d7d475cff7821838bf5125721e59ca53d1f5",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00cfba",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00cfba",
+   "size": 64,
+   "source": "src/sprites/select_first_link.c",
+   "source_sha256": "b3e3a7ddef1b1d6b905d63826e4981048e4ccf276a1b092a8b4b51028398f844",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00ce82",
+   "checkpoint": "c003-wave-1a",
+   "name": "SetSprite",
+   "size": 110,
+   "source": "src/sprites/set_sprite.c",
+   "source_sha256": "1bf175b4ae9f2d0de4a9a1fe44ffdf302ae54953591a91a07ea7ad9184c8a59e",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00158e",
+   "checkpoint": "c003-wave-1a",
+   "name": "ToggleLOC_00FF8196",
+   "size": 26,
+   "source": "src/core/toggle_camera_flag.c",
+   "source_sha256": "00aac6d1b7d34b1f77806365c2856eb571999c297ae110d1a05888d57a0e078f",
+   "version": "rev00"
+  },
+  {
+   "address": "0x002e6a",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_002e6a",
+   "size": 416,
+   "source": "src/graphics/split_screen_wipe.c",
+   "source_sha256": "7df2629826fcd72dec42f220b5e754eb68e964599a0b78be548d770c8aaca2fa",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00d9bc",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00d9dc",
+   "size": 250,
+   "source": "src/map/terrain_at_position.c",
+   "source_sha256": "b16120d207554e13ad5973c0276026f895865272439cfe1194c238bfbeb09cc3",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00300a",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00300a",
+   "size": 832,
+   "source": "src/player/center_for_split.c",
+   "source_sha256": "6e81942be63d52cc6674bd2bac70ebbbc0b5e74bcf15939fdabebf4a96aaa6b2",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00e402",
+   "checkpoint": "c003-wave-1a",
+   "name": "ProcessMovement",
+   "size": 812,
+   "source": "src/player/process_movement.c",
+   "source_sha256": "201f752d481890528bee455f71389c82a4689769a2387e9771e56ce49a1c3e79",
+   "version": "rev00"
+  },
+  {
+   "address": "0x002608",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_002608",
+   "size": 114,
+   "source": "src/player/set_camera_position.c",
+   "source_sha256": "b28b009534e042875aad25650fcd13c364254da7157633d52c8e11d2b82a17a1",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00d1d6",
+   "checkpoint": "c003-wave-1a",
+   "name": "SetupPlayer",
+   "size": 528,
+   "source": "src/player/setup_player.c",
+   "source_sha256": "58c22d9d57c3d0db0738438274e03faab01d231e9ffc10e533047e293d478a21",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00bfdc",
+   "checkpoint": "c003-wave-1a",
+   "name": "Process2FEntityBit0",
+   "size": 308,
+   "source": "src/sprites/entity_depth.c",
+   "source_sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00c110",
+   "checkpoint": "c003-wave-1a",
+   "name": "Process2FEntityFlag",
+   "size": 64,
+   "source": "src/sprites/entity_depth.c",
+   "source_sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00bdb8",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00bdd8",
+   "size": 218,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00be92",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00beb2",
+   "size": 276,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00bfa6",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00bfc6",
+   "size": 54,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00d132",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00d152",
+   "size": 114,
+   "source": "src/sprites/hide_player_sprites.c",
+   "source_sha256": "bd1ef46f7a3aaca9a5ab1d27c35f413e3a61af36aec13f539efdfbc4e9768d3a",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00d05a",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00d07a",
+   "size": 216,
+   "source": "src/sprites/link_player_sprites.c",
+   "source_sha256": "282d0d72c6c1765cee6a12c069da8c9243e8369dfd30351f4209da863f415a1e",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00ced0",
+   "checkpoint": "c003-wave-1a",
+   "name": "SpriteLoadingStuff",
+   "size": 202,
+   "source": "src/sprites/load_sprites.c",
+   "source_sha256": "c05ad026aa123736ba55d4eeaa03d7d475cff7821838bf5125721e59ca53d1f5",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00cf9a",
+   "checkpoint": "c003-wave-1a",
+   "name": "func_00cfba",
+   "size": 64,
+   "source": "src/sprites/select_first_link.c",
+   "source_sha256": "b3e3a7ddef1b1d6b905d63826e4981048e4ccf276a1b092a8b4b51028398f844",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00ce62",
+   "checkpoint": "c003-wave-1a",
+   "name": "SetSprite",
+   "size": 110,
+   "source": "src/sprites/set_sprite.c",
+   "source_sha256": "1bf175b4ae9f2d0de4a9a1fe44ffdf302ae54953591a91a07ea7ad9184c8a59e",
+   "version": "rev00"
+  }
+ ],
+ "checkpoint": "c003-wave-1a",
+ "final_images": {
+  "rev00": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+  "rev02": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163"
+ },
+ "finalized_utc": "2026-10-22T01:40:29Z",
+ "moved": [
+  {
+   "from": {
+    "address": "0x006b22",
+    "checkpoint": "c002-first-matches",
+    "name": "func_006b22",
+    "size": 82,
+    "source": "src/data/list_membership.c",
+    "source_sha256": "2b87d0c763899cee37a4f6b889d0279f4d4008c538f07780b6e16d28a9bd9d5b",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x006b22",
+    "checkpoint": "c003-wave-1a",
+    "name": "func_006b22",
+    "size": 82,
+    "source": "src/data/list_membership.c",
+    "source_sha256": "bf94fb5019d821b100d77b0aa528cdeb0d3b3f917dd8f93e3bb944479bba2ab0",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e3e2",
+    "checkpoint": "c002-first-matches",
+    "name": "StopPlayer",
+    "size": 30,
+    "source": "src/player/stop_player.c",
+    "source_sha256": "3779abdad6ae08a82e3a1fa67afc2c8b9b5befa56ffa41f75b54c771b410a76b",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00e3e2",
+    "checkpoint": "c003-wave-1a",
+    "name": "StopPlayer",
+    "size": 30,
+    "source": "src/player/stop_player.c",
+    "source_sha256": "70c2335f16c0c893249d95bf5f7154e78e638d5e055f0ef98a48c4de46cf293c",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00d586",
+    "checkpoint": "c002-first-matches",
+    "name": "func_00d586",
+    "size": 58,
+    "source": "src/presents/query_byte.c",
+    "source_sha256": "054ba8b85ad586316baac8450f5bce129feb250983cd089d8b79201e4a387e81",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00d586",
+    "checkpoint": "c003-wave-1a",
+    "name": "func_00d586",
+    "size": 58,
+    "source": "src/presents/query_byte.c",
+    "source_sha256": "3ba9575825d9a0e2f0ccf595319cf447d78b0138a908399898a0712c8d5c9001",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x006b22",
+    "checkpoint": "c002-first-matches",
+    "name": "func_006b22",
+    "size": 82,
+    "source": "src/data/list_membership.c",
+    "source_sha256": "2b87d0c763899cee37a4f6b889d0279f4d4008c538f07780b6e16d28a9bd9d5b",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x006b22",
+    "checkpoint": "c003-wave-1a",
+    "name": "func_006b22",
+    "size": 82,
+    "source": "src/data/list_membership.c",
+    "source_sha256": "bf94fb5019d821b100d77b0aa528cdeb0d3b3f917dd8f93e3bb944479bba2ab0",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e3c2",
+    "checkpoint": "c002-first-matches",
+    "name": "StopPlayer",
+    "size": 30,
+    "source": "src/player/stop_player.c",
+    "source_sha256": "3779abdad6ae08a82e3a1fa67afc2c8b9b5befa56ffa41f75b54c771b410a76b",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00e3c2",
+    "checkpoint": "c003-wave-1a",
+    "name": "StopPlayer",
+    "size": 30,
+    "source": "src/player/stop_player.c",
+    "source_sha256": "70c2335f16c0c893249d95bf5f7154e78e638d5e055f0ef98a48c4de46cf293c",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00d566",
+    "checkpoint": "c002-first-matches",
+    "name": "func_00d586",
+    "size": 58,
+    "source": "src/presents/query_byte.c",
+    "source_sha256": "054ba8b85ad586316baac8450f5bce129feb250983cd089d8b79201e4a387e81",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00d566",
+    "checkpoint": "c003-wave-1a",
+    "name": "func_00d586",
+    "size": 58,
+    "source": "src/presents/query_byte.c",
+    "source_sha256": "3ba9575825d9a0e2f0ccf595319cf447d78b0138a908399898a0712c8d5c9001",
+    "version": "rev00"
+   }
+  }
+ ],
+ "note": "Main confirmation: MatchWave1A's 17 functions (C003Review PASS_WITH_QUALIFICATIONS: three low comment/name notes and an unnecessary register hint, addressed in the next checkpoint); also re-binds the three c002 sources edited since (comment and canonical-name changes).",
+ "prepare_sha256": "954a1be0bb68a7428a7e1bb4bcdb3091f71ed25ccef0b65ac3d24e7988729199",
+ "progress": {
+  "bytes": 5522,
+  "checkpoint": "c003-wave-1a",
+  "functions": 30,
+  "utc": "2026-10-22T01:40:29Z"
+ },
+ "reviews": [
+  {
+   "reviewer": "C003Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  },
+  {
+   "reviewer": "C003Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  }
+ ]
+}

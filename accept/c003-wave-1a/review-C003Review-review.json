@@ -1,0 +1,83 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C003Review",
+  "checkpoint": "c003-wave-1a",
+  "checks": [
+    {
+      "id": "scope-and-input-binding",
+      "result": "PASS",
+      "what": "Reviewed exactly the 14 source files, 17 functions, and 4,604 REV 02 bytes in the author's manifest. This set equals the new src files in prepared commit b6bcd682f33ebc93ab8da7d01fa493252d83a2f0. Every prepared input hash equals the independently archived commit, and the working candidate inputs also equalled those hashes when captured. HEAD at first inspection was the later documentation-only commit b1210a7.",
+      "evidence": ["input-comparison.json", "evidence.json"]
+    },
+    {
+      "id": "strict-single-file-matching",
+      "result": "PASS",
+      "what": "Executed default-option tools/match.py for all 14 new files in both revisions: all 28 invocations returned 0, with all 17 functions MATCH in each revision. No --define or --option arguments were used.",
+      "evidence": ["reproduction.json", "logs/match-*.json", "matches/"]
+    },
+    {
+      "id": "fresh-full-rom-builds",
+      "result": "PASS",
+      "what": "Independently rebuilt the exact prepared tree twice per revision, moving each build out before the next run. All four builds PASSed with zero raw words; images equal the pinned originals and both prepare-record image hashes. Each receipt's complete c_units list equals the prepared list, including sources, source hashes, options, function names, addresses, and sizes.",
+      "evidence": ["reproduction.json", "evidence.json", "builds/rev02-1/receipt.json", "builds/rev02-2/receipt.json", "builds/rev00-1/receipt.json", "builds/rev00-2/receipt.json"]
+    },
+    {
+      "id": "suite",
+      "result": "PASS",
+      "what": "Independently executed the prepared tree's full unittest discovery: 115 tests, OK, return code 0. Private-ROM and pinned-toolchain paths were available.",
+      "evidence": ["logs/suite.json"]
+    },
+    {
+      "id": "source-rules-and-canonical-names",
+      "result": "PASS",
+      "what": "Read all 14 sources. K&R definitions, no inline assembly, initialized byte/word blobs, pragmas, source includes, or option overrides. The only preprocessor directives and integer-to-pointer constants are VDP MMIO access macros for 0xc00000 and 0xc00004; neither address has a canonical name in names.load(rev02). No local macro conceals a named game symbol. Canonical data names are used; remaining interior ROM references are address-spelled. All full-build C-unit options are empty.",
+      "evidence": ["evidence.json", "matches/"]
+    },
+    {
+      "id": "natural-c-plausibility",
+      "result": "PASS",
+      "what": "[INFERENCE] The adopted spellings are plausible ordinary period C, not instruction-emitting scaffolds. Independently tested 11 alternative ordinary spellings in both revisions. Removing only register from fraction_z ALSO MATCHes both revisions; so do queue bound 41 and an L suffix on the long mask literal. Other tested alternatives differ in bytes or fail contiguous placement. The author's descriptor-pointer, byte-temporary, initializer-order, and signedness observations were reproduced. The unnecessary register hint is optional simplification, not evidence of a fake match.",
+      "evidence": ["natural-spellings.json", "natural-experiments/"]
+    },
+    {
+      "id": "behaviour-and-readability",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "what": "Checked independently generated original-ROM packets for all 17 functions, direct-caller relationships, and selected caller/callee instruction sequences. Sprite/entity offsets, record walks, tile-run transfer, camera scaling, position restoration, terrain-mask extraction, and movement/collision flow agree with the code. [INFERENCE] Folder placement is plausible. Three nonblocking source-honesty/readability qualifications are recorded below; none changes the observed bytes.",
+      "evidence": ["packets/", "packet-summary.json", "report.md"]
+    },
+    {
+      "id": "mutation-sanity",
+      "result": "PASS",
+      "what": "In two private copied trees, changed toggle_camera_flag.c's 0x8000 to 0x4000 and terrain_at_position.c's map_x > 19 to map_x >= 19. For each mutation and each revision, match.py returned DIFF/1 and the full build returned FAIL/1 with zero raw words. Full-build first differences: constant 0x001598 in both revisions; comparison 0x00da46 REV 02 and 0x00da26 REV 00. No raw-code fallback hid either source mutation.",
+      "evidence": ["mutations.json", "mutation-trees/"]
+    },
+    {
+      "id": "independence-and-write-boundary",
+      "result": "PASS",
+      "what": "No other review was read before sealing. All reviewer outputs, temporary files, isolated git test fixtures, generated packets, and build/mutation products are under scratch/agents/C003Review. The original worktree, tracked files, and git state were not modified; tools/accept.py review/finalize were not invoked. Toolchain and ROM symlinks in private trees were read-only inputs. No gameplay/emulator run is claimed."
+    }
+  ],
+  "findings": [
+    {
+      "id": "C003-01",
+      "severity": "low",
+      "file": "src/sprites/load_sprites.c:3",
+      "what": "The public source declares ram_ffd8dc[40] without marking that capacity as unproved. The author explicitly acknowledges in the private manifest that 40 is only a sufficient matching bound. Independently changing it to 41 still MATCHes both revisions. Observed paired queue accesses and the counter at 0xffd92e do not uniquely establish an original declaration of exactly 40 words.",
+      "suggested_fix": "Add an inline [INFERENCE] comment distinguishing the observed word-element layout from the unproved capacity. Retain a bounded declaration unless additional evidence supports a different extent; do not present matching alone as proof of 40."
+    },
+    {
+      "id": "C003-02",
+      "severity": "low",
+      "file": "src/player/center_for_split.c:17,53-58",
+      "what": "The name frame_count misdescribes the temporary holding (distance >> 7) + 192: that value divides the maximum fixed-point distance, and the resulting distance is subsequently the common divisor used to normalize the four coordinate deltas. [INFERENCE] nominal_step is a closer semantic name; the temporary itself is ordinary and removing it yields a two-byte-shorter nonmatch in both revisions.",
+      "suggested_fix": "Rename frame_count to a neutral arithmetic name such as distance_divisor, or to nominal_step with an appropriately qualified explanation. Update the author's public idiom wording if it describes this value as a proved frame count. Do not remove the temporary merely to shorten the source."
+    },
+    {
+      "id": "C003-03",
+      "severity": "low",
+      "file": "src/map/terrain_at_position.c:8-9,31",
+      "what": "The header comment says terrain 0x80/0x90 is returned outside the map, but the original bounds tests reject zero map coordinates and coordinates above the upper bounds, not negative map coordinates. The packet has signed BGT/BLE tests at 0x00da46/0x00da50; a negative nonzero map coordinate follows the lookup path. [INFERENCE] Normal callers may rely on a nonnegative-coordinate precondition; that precondition was not proved by this review, and no reachable gameplay defect is claimed.",
+      "suggested_fix": "Describe the exact observed zero/upper-bound tests, or explicitly qualify the comment with the nonnegative-world-coordinate assumption. Preserve the original condition; if negative-coordinate handling is later established as an original bug, annotate it ORIGINAL BUG rather than silently correcting it."
+    }
+  ]
+}

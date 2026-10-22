@@ -31,6 +31,42 @@
   },
   {
    "version": "rev00",
+   "address": "0x00158e",
+   "name": "ToggleLOC_00FF8196",
+   "size": 26,
+   "source": "src/core/toggle_camera_flag.c",
+   "source_sha256": "00aac6d1b7d34b1f77806365c2856eb571999c297ae110d1a05888d57a0e078f",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x002608",
+   "name": "func_002608",
+   "size": 114,
+   "source": "src/player/set_camera_position.c",
+   "source_sha256": "b28b009534e042875aad25650fcd13c364254da7157633d52c8e11d2b82a17a1",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x002e6a",
+   "name": "func_002e6a",
+   "size": 416,
+   "source": "src/graphics/split_screen_wipe.c",
+   "source_sha256": "7df2629826fcd72dec42f220b5e754eb68e964599a0b78be548d770c8aaca2fa",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00300a",
+   "name": "func_00300a",
+   "size": 832,
+   "source": "src/player/center_for_split.c",
+   "source_sha256": "6e81942be63d52cc6674bd2bac70ebbbc0b5e74bcf15939fdabebf4a96aaa6b2",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
    "address": "0x004e7e",
    "name": "GetRandomNumber",
    "size": 106,
@@ -44,8 +80,8 @@
    "name": "func_006b22",
    "size": 82,
    "source": "src/data/list_membership.c",
-   "source_sha256": "2b87d0c763899cee37a4f6b889d0279f4d4008c538f07780b6e16d28a9bd9d5b",
-   "checkpoint": "c002-first-matches"
+   "source_sha256": "bf94fb5019d821b100d77b0aa528cdeb0d3b3f917dd8f93e3bb944479bba2ab0",
+   "checkpoint": "c003-wave-1a"
   },
   {
    "version": "rev00",
@@ -58,12 +94,111 @@
   },
   {
    "version": "rev00",
+   "address": "0x00bdb8",
+   "name": "func_00bdd8",
+   "size": 218,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00be92",
+   "name": "func_00beb2",
+   "size": 276,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00bfa6",
+   "name": "func_00bfc6",
+   "size": 54,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00bfdc",
+   "name": "Process2FEntityBit0",
+   "size": 308,
+   "source": "src/sprites/entity_depth.c",
+   "source_sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00c110",
+   "name": "Process2FEntityFlag",
+   "size": 64,
+   "source": "src/sprites/entity_depth.c",
+   "source_sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00ce62",
+   "name": "SetSprite",
+   "size": 110,
+   "source": "src/sprites/set_sprite.c",
+   "source_sha256": "1bf175b4ae9f2d0de4a9a1fe44ffdf302ae54953591a91a07ea7ad9184c8a59e",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00ced0",
+   "name": "SpriteLoadingStuff",
+   "size": 202,
+   "source": "src/sprites/load_sprites.c",
+   "source_sha256": "c05ad026aa123736ba55d4eeaa03d7d475cff7821838bf5125721e59ca53d1f5",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00cf9a",
+   "name": "func_00cfba",
+   "size": 64,
+   "source": "src/sprites/select_first_link.c",
+   "source_sha256": "b3e3a7ddef1b1d6b905d63826e4981048e4ccf276a1b092a8b4b51028398f844",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00d05a",
+   "name": "func_00d07a",
+   "size": 216,
+   "source": "src/sprites/link_player_sprites.c",
+   "source_sha256": "282d0d72c6c1765cee6a12c069da8c9243e8369dfd30351f4209da863f415a1e",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00d132",
+   "name": "func_00d152",
+   "size": 114,
+   "source": "src/sprites/hide_player_sprites.c",
+   "source_sha256": "bd1ef46f7a3aaca9a5ab1d27c35f413e3a61af36aec13f539efdfbc4e9768d3a",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00d1d6",
+   "name": "SetupPlayer",
+   "size": 528,
+   "source": "src/player/setup_player.c",
+   "source_sha256": "58c22d9d57c3d0db0738438274e03faab01d231e9ffc10e533047e293d478a21",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
    "address": "0x00d566",
    "name": "func_00d586",
    "size": 58,
    "source": "src/presents/query_byte.c",
-   "source_sha256": "054ba8b85ad586316baac8450f5bce129feb250983cd089d8b79201e4a387e81",
-   "checkpoint": "c002-first-matches"
+   "source_sha256": "3ba9575825d9a0e2f0ccf595319cf447d78b0138a908399898a0712c8d5c9001",
+   "checkpoint": "c003-wave-1a"
   },
   {
    "version": "rev00",
@@ -94,12 +229,30 @@
   },
   {
    "version": "rev00",
+   "address": "0x00d9bc",
+   "name": "func_00d9dc",
+   "size": 250,
+   "source": "src/map/terrain_at_position.c",
+   "source_sha256": "b16120d207554e13ad5973c0276026f895865272439cfe1194c238bfbeb09cc3",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
    "address": "0x00e3c2",
    "name": "StopPlayer",
    "size": 30,
    "source": "src/player/stop_player.c",
-   "source_sha256": "3779abdad6ae08a82e3a1fa67afc2c8b9b5befa56ffa41f75b54c771b410a76b",
-   "checkpoint": "c002-first-matches"
+   "source_sha256": "70c2335f16c0c893249d95bf5f7154e78e638d5e055f0ef98a48c4de46cf293c",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00e402",
+   "name": "ProcessMovement",
+   "size": 812,
+   "source": "src/player/process_movement.c",
+   "source_sha256": "201f752d481890528bee455f71389c82a4689769a2387e9771e56ce49a1c3e79",
+   "checkpoint": "c003-wave-1a"
   },
   {
    "version": "rev00",
@@ -148,6 +301,42 @@
   },
   {
    "version": "rev02",
+   "address": "0x00158e",
+   "name": "ToggleLOC_00FF8196",
+   "size": 26,
+   "source": "src/core/toggle_camera_flag.c",
+   "source_sha256": "00aac6d1b7d34b1f77806365c2856eb571999c297ae110d1a05888d57a0e078f",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x002608",
+   "name": "func_002608",
+   "size": 114,
+   "source": "src/player/set_camera_position.c",
+   "source_sha256": "b28b009534e042875aad25650fcd13c364254da7157633d52c8e11d2b82a17a1",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x002e6a",
+   "name": "func_002e6a",
+   "size": 416,
+   "source": "src/graphics/split_screen_wipe.c",
+   "source_sha256": "7df2629826fcd72dec42f220b5e754eb68e964599a0b78be548d770c8aaca2fa",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00300a",
+   "name": "func_00300a",
+   "size": 832,
+   "source": "src/player/center_for_split.c",
+   "source_sha256": "6e81942be63d52cc6674bd2bac70ebbbc0b5e74bcf15939fdabebf4a96aaa6b2",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
    "address": "0x004e7e",
    "name": "GetRandomNumber",
    "size": 106,
@@ -161,8 +350,8 @@
    "name": "func_006b22",
    "size": 82,
    "source": "src/data/list_membership.c",
-   "source_sha256": "2b87d0c763899cee37a4f6b889d0279f4d4008c538f07780b6e16d28a9bd9d5b",
-   "checkpoint": "c002-first-matches"
+   "source_sha256": "bf94fb5019d821b100d77b0aa528cdeb0d3b3f917dd8f93e3bb944479bba2ab0",
+   "checkpoint": "c003-wave-1a"
   },
   {
    "version": "rev02",
@@ -175,12 +364,111 @@
   },
   {
    "version": "rev02",
+   "address": "0x00bdd8",
+   "name": "func_00bdd8",
+   "size": 218,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00beb2",
+   "name": "func_00beb2",
+   "size": 276,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00bfc6",
+   "name": "func_00bfc6",
+   "size": 54,
+   "source": "src/sprites/entity_visibility.c",
+   "source_sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00bffc",
+   "name": "Process2FEntityBit0",
+   "size": 308,
+   "source": "src/sprites/entity_depth.c",
+   "source_sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00c130",
+   "name": "Process2FEntityFlag",
+   "size": 64,
+   "source": "src/sprites/entity_depth.c",
+   "source_sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00ce82",
+   "name": "SetSprite",
+   "size": 110,
+   "source": "src/sprites/set_sprite.c",
+   "source_sha256": "1bf175b4ae9f2d0de4a9a1fe44ffdf302ae54953591a91a07ea7ad9184c8a59e",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00cef0",
+   "name": "SpriteLoadingStuff",
+   "size": 202,
+   "source": "src/sprites/load_sprites.c",
+   "source_sha256": "c05ad026aa123736ba55d4eeaa03d7d475cff7821838bf5125721e59ca53d1f5",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00cfba",
+   "name": "func_00cfba",
+   "size": 64,
+   "source": "src/sprites/select_first_link.c",
+   "source_sha256": "b3e3a7ddef1b1d6b905d63826e4981048e4ccf276a1b092a8b4b51028398f844",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00d07a",
+   "name": "func_00d07a",
+   "size": 216,
+   "source": "src/sprites/link_player_sprites.c",
+   "source_sha256": "282d0d72c6c1765cee6a12c069da8c9243e8369dfd30351f4209da863f415a1e",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00d152",
+   "name": "func_00d152",
+   "size": 114,
+   "source": "src/sprites/hide_player_sprites.c",
+   "source_sha256": "bd1ef46f7a3aaca9a5ab1d27c35f413e3a61af36aec13f539efdfbc4e9768d3a",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00d1f6",
+   "name": "SetupPlayer",
+   "size": 528,
+   "source": "src/player/setup_player.c",
+   "source_sha256": "58c22d9d57c3d0db0738438274e03faab01d231e9ffc10e533047e293d478a21",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
    "address": "0x00d586",
    "name": "func_00d586",
    "size": 58,
    "source": "src/presents/query_byte.c",
-   "source_sha256": "054ba8b85ad586316baac8450f5bce129feb250983cd089d8b79201e4a387e81",
-   "checkpoint": "c002-first-matches"
+   "source_sha256": "3ba9575825d9a0e2f0ccf595319cf447d78b0138a908399898a0712c8d5c9001",
+   "checkpoint": "c003-wave-1a"
   },
   {
    "version": "rev02",
@@ -211,12 +499,30 @@
   },
   {
    "version": "rev02",
+   "address": "0x00d9dc",
+   "name": "func_00d9dc",
+   "size": 250,
+   "source": "src/map/terrain_at_position.c",
+   "source_sha256": "b16120d207554e13ad5973c0276026f895865272439cfe1194c238bfbeb09cc3",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
    "address": "0x00e3e2",
    "name": "StopPlayer",
    "size": 30,
    "source": "src/player/stop_player.c",
-   "source_sha256": "3779abdad6ae08a82e3a1fa67afc2c8b9b5befa56ffa41f75b54c771b410a76b",
-   "checkpoint": "c002-first-matches"
+   "source_sha256": "70c2335f16c0c893249d95bf5f7154e78e638d5e055f0ef98a48c4de46cf293c",
+   "checkpoint": "c003-wave-1a"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00e422",
+   "name": "ProcessMovement",
+   "size": 812,
+   "source": "src/player/process_movement.c",
+   "source_sha256": "201f752d481890528bee455f71389c82a4689769a2387e9771e56ce49a1c3e79",
+   "checkpoint": "c003-wave-1a"
   },
   {
    "version": "rev02",

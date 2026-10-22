@@ -1,0 +1,104 @@
+{
+  "verdict": "PASS",
+  "reviewer": "C023Review",
+  "checkpoint": "c023-names-hardcases-data-r4",
+  "reviewed_commit": "96a33d4e8dab41a020abacfe2a47344bd21264d6",
+  "comparison_base": "b327c6c",
+  "checks": [
+    {
+      "id": "C023-C01",
+      "name": "Audit delta against c020",
+      "status": "PASS",
+      "what": "The audit at b327c6c is byte-identical to the audit at 2fc5393. The complete current diff contains only the narrowed Genesis predicate, the seven exact blob/path exceptions and reason filter, and its Git-object/worktree call sites. Original expression handling is restored unchanged.",
+      "evidence": [
+        "scratch/agents/C023Review/audit-diff.patch",
+        "scratch/agents/C023Review/static-results.json",
+        "scratch/agents/C023Review/commits.txt"
+      ]
+    },
+    {
+      "id": "C023-C02",
+      "name": "Genesis detection and encoded ROM payloads",
+      "status": "PASS",
+      "what": "Both private revisions were checked at ten lengths from 272 through 1024 bytes, in header/code/body regions and 31 raw or encoded representations. All 1860 private-ROM cases and 620 ROM-free header cases were reported. Direct header prefixes 260 through 320 retain the exact 272-byte boundary; larger prefixes and complete images are recognized. Actual and synthetic printable source with SEGA at offset 256 is not reported.",
+      "evidence": [
+        "scratch/agents/C023Review/signature-results.json",
+        "scratch/agents/C023Review/audit_probes.py"
+      ]
+    },
+    {
+      "id": "C023-C03",
+      "name": "Historical exception contents",
+      "status": "PASS",
+      "what": "Retrieved and recomputed all seven Git blob ids, enumerated their opacity-qualified spans, and inspected the flagged content. They contain the described ordinary Z80 arithmetic, C call/member expressions, withdrawn-rule source fixtures, and immutable review quotations. Four C blobs equal c020 exactly; the Z80 blob differs only in whitespace. With both ROMs, no additional non-exempt content reason appears.",
+      "evidence": [
+        "scratch/agents/C023Review/exception-inventory.json",
+        "scratch/agents/C023Review/exception-tests-diff.patch",
+        "scratch/agents/C023Review/exception-results.json"
+      ]
+    },
+    {
+      "id": "C023-C04",
+      "name": "Exact exception boundaries",
+      "status": "PASS",
+      "what": "Every entry suppresses only its listed reason prefixes at the exact blob id and path. Changed bytes, changed ids, and relocated identical content remain findings. A private Git fixture exercised index, HEAD/history, identical and changed worktrees, and relocation. Distinct content reasons and all path reasons remain visible across every origin; a changed worktree does not inherit the index exception.",
+      "evidence": [
+        "scratch/agents/C023Review/exception-results.json",
+        "scratch/agents/C023Review/audit_probes.py"
+      ]
+    },
+    {
+      "id": "C023-C05",
+      "name": "Whitespace and rename source cutover",
+      "status": "PASS",
+      "what": "All seven changed source/header files equal c020 after only whitespace normalization and the specified sprite-slot identifier substitution. The names registry changes only the primary name and requested alias. All active callers and the shared declaration use IsSpriteSlotLocked.",
+      "evidence": [
+        "scratch/agents/C023Review/source-test-diff.patch",
+        "scratch/agents/C023Review/static-results.json"
+      ]
+    },
+    {
+      "id": "C023-C06",
+      "name": "Changed-file matching and both full builds",
+      "status": "PASS",
+      "what": "The real match.py CLI matches all six changed C files on both revisions: 12 successful invocations and 80 function comparisons. Both full builds pass through the real-ROM suite tests, with 138 C/68000-assembly units, two Z80 sources and zero raw-word fallbacks per revision. Only output paths were redirected into reviewer scratch; build logic and canonical inputs were unchanged. Independent unit lists equal the prepared ones.",
+      "image_sha256": {
+        "rev02": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+        "rev00": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228"
+      },
+      "evidence": [
+        "scratch/agents/C023Review/matches-results.json",
+        "scratch/agents/C023Review/suite-build/rev02/receipt.json",
+        "scratch/agents/C023Review/suite-build/rev00/receipt.json",
+        "scratch/agents/C023Review/suite-results.json"
+      ]
+    },
+    {
+      "id": "C023-C07",
+      "name": "Private-ROM public-history gate and full suite",
+      "status": "PASS",
+      "what": "audit_public.py --history passes with both pinned ROMs: 1101 Git blobs, 109 trees, 354 tracked worktree files, zero findings. Full unittest discovery passes all 191 tests with zero failures, errors or skips. Test/build output was confined to reviewer scratch.",
+      "evidence": [
+        "scratch/agents/C023Review/history-audit.log",
+        "scratch/agents/C023Review/history-audit-results.json",
+        "scratch/agents/C023Review/suite.log",
+        "scratch/agents/C023Review/suite-results.json"
+      ]
+    },
+    {
+      "id": "C023-C08",
+      "name": "Prepared checkpoint consistency",
+      "status": "PASS",
+      "what": "The PASS prepare record binds all 253 current input hashes and both 140-entry source manifests exactly. All four prepared receipt digests, source hashes, unit lists and images were independently checked. The prepared inputs remain unchanged at sealing, and independent full-build sources and unit lists equal the prepared ones. The record explicitly lists the modified sprite header relative to its prepared HEAD; no clean-Git-tree claim is made for that prepare.",
+      "evidence": [
+        "accept/c023-names-hardcases-data-r4/prepare.json",
+        "scratch/agents/C023Review/static-results.json",
+        "scratch/agents/C023Review/seal-evidence.json"
+      ]
+    }
+  ],
+  "findings": [],
+  "qualifications": [],
+  "scope": "Independent re-derivation of the five requested c023 checks. Unrelated inherited c020 naming, classification and data-typing judgments were not re-certified. The required immutable exception record was inspected for quoted source evidence, without using its previous verdict.",
+  "report": "scratch/agents/C023Review/report.md"
+}

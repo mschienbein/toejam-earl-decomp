@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c023-names-hardcases-data-r4",
+ "prepare_sha256": "50364a2880649508ff6bf4f7cf3abf745c17d2cd3ddc07941e219712735c7ef4",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T14:14:00Z",
+ "review_file": "review.json",
+ "review_sha256": "3b395f97430014bc6a9c5aa89097c6014b666dee9d668928a56cac259ebb53e7",
+ "reviewer": "C023Review",
+ "verdict": "PASS"
+}

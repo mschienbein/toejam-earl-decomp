@@ -11,3 +11,4 @@
 {"bytes": 89650, "checkpoint": "c013-waves-15-16", "functions": 298, "utc": "2026-10-22T05:02:22Z"}
 {"bytes": 125136, "checkpoint": "c016-headers-waves-17-23", "functions": 419, "utc": "2026-10-22T09:07:33Z"}
 {"bytes": 162450, "checkpoint": "c019-waves-24-29-asm-z80-r2", "functions": 573, "utc": "2026-10-22T12:23:13Z"}
+{"bytes": 163638, "checkpoint": "c023-names-hardcases-data-r4", "functions": 577, "utc": "2026-10-22T14:14:28Z"}

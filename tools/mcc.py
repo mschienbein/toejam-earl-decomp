@@ -37,9 +37,6 @@ import toolchain  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 AS_FLAGS = ["-m68000"]   # registers are spelled %d0 by adapt(); bare words are always symbols
-# Entry points of the MCC68K 3.3K runtime that the compiler itself calls (docs/COMPILER.md); C never
-# spells them, so their alias names (two entries share a body) are not an author's choice.
-RUNTIME_ENTRIES = frozenset({"abs", "lmodt", "ldivt", "lmult", "ulmult", "ulmodt", "uldivt"})
 # The game's profile: compiler defaults plus STRINTEXT (string literals follow their function in the code
 # section, as they do in the ROM; Sega's 1991 bulletin shows the option in Microtec's examples).
 PROFILE = ("/STRINTEXT",)
@@ -145,6 +142,19 @@ def dc_bytes(operands: str) -> str:
         elif item.strip():
             values.append(gas_operands(item.strip()))
     return "\t.byte\t" + ",".join(values)
+
+
+def c_identifiers(listing: str) -> frozenset:
+    """Names the C source itself spells: MCC68K writes them with a leading dot; the runtime
+    helpers it calls on its own (`JSR ulmult`) carry none."""
+    names = set()
+    for _, statement in parse(listing):
+        previous = ""
+        for token in TOKEN.findall(statement.operands):
+            if token.startswith(".") and len(token) > 1 and not (previous and (previous[-1].isalnum() or previous[-1] in "_)")):
+                names.add(token[1:])
+            previous = token
+    return frozenset(names)
 
 
 def code_labels(listing: str) -> set[str]:
@@ -264,6 +274,7 @@ class Compiled:
     source: Path          # the C file compiled
     listing: str          # the compiler's assembly output (Microtec syntax)
     gas: str              # adapted GNU as text
+    c_names: frozenset = frozenset()   # identifiers written in the C source (dotted by MCC68K)
 
 
 def dos_name(stem: str) -> str:
@@ -347,7 +358,7 @@ def compile_to_gas(source: Path, unit: str, include_dirs: list[Path] = (), optio
                    address_of=None, spans: list[tuple[int, int]] = (), version: str = "rev02") -> Compiled:
     listing = compile_c(source, include_dirs, options, version=version)
     near = near_targets(listing, address_of, list(spans)) if address_of else {}
-    return Compiled(source, listing, adapt(listing, unit, near))
+    return Compiled(source, listing, adapt(listing, unit, near), c_identifiers(listing))
 
 
 def main() -> int:

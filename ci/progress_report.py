@@ -72,7 +72,7 @@ def typed_data(version: str, catalogue: dict) -> int:
     ranges = [(d["address"], d["address"] + d["size"]) for d in catalogue["data"]]
     typed = 0
     for unit in config["units"]:
-        start = int(unit["address"], 16)
+        start = unit["address"] if isinstance(unit["address"], int) else int(unit["address"], 0)
         if unit["kind"] != "raw" and any(lo <= start < hi for lo, hi in ranges):
             typed += unit["size"]
     return typed

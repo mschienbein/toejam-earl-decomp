@@ -156,9 +156,8 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
         obj = work / f"{unit}.o"
         mcc.assemble(compiled.gas, source, obj, unit)
         functions = defined_functions(obj, unit)
-        spelled = [n for n, _, _ in functions] + undefined_symbols(obj)
-        for name in spelled:
-            if name in alias_of and name not in mcc.RUNTIME_ENTRIES:
+        for name in sorted(compiled.c_names | {n for n, _, _ in functions}):   # what the C source spells
+            if name in alias_of:
                 raise MatchError(f"{name} is an alias: write {alias_of[name]}")
         homes = {}
         for name, _, _ in functions:

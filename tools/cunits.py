@@ -42,6 +42,7 @@ class CUnit:
     source_sha256: str = ""
     options: list[str] = field(default_factory=list)
     address: int | None = None
+    c_names: frozenset = frozenset()            # identifiers the C source spells
 
 
 def load_sources(version: str, path: Path = SOURCES) -> list[dict]:
@@ -95,4 +96,4 @@ def compile_unit(entry: dict, out: Path, root: Path = ROOT, address_of=None, spa
         raise CUnitError(f"{entry['source']}: code must start with a global function")
     functions = [(n, off, (starts[k + 1][0] if k + 1 < len(starts) else size) - off) for k, (off, n) in enumerate(starts)]
     return CUnit(name, source, obj, size, functions, {n for _, n in starts}, undefined,
-                 hashlib.sha256(source.read_bytes()).hexdigest(), options)
+                 hashlib.sha256(source.read_bytes()).hexdigest(), options, c_names=compiled.c_names)

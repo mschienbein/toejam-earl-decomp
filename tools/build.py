@@ -367,8 +367,8 @@ def c_unit_definitions(c_units: list, symbols: Symbols, names: dict | None,
     known = {spelling: name.address for name in (names or {}).values() for spelling in (name.name, *name.aliases)}
     alias_of = {alias: name.name for name in (names or {}).values() for alias in name.aliases}
     for cu in c_units:
-        for name in sorted(cu.undefined | cu.defined):
-            if name in alias_of and name not in mcc.RUNTIME_ENTRIES:
+        for name in sorted(cu.c_names | cu.defined):   # what the C source spells; runtime calls carry no dot
+            if name in alias_of:
                 raise BuildError(f"{cu.source.name}: {name} is an alias: write {alias_of[name]}")
     named = {n.address: n.name for n in (names or {}).values() if not re.fullmatch(r"(func|loc|dat|rom|ram)_[0-9a-f]{6}", n.name)}
     for cu in c_units:

@@ -116,6 +116,11 @@ Keep a private pre-push audit as well; `--no-rom` is explicitly weaker. A local 
 `exec .venv/bin/python tools/audit_public.py --history` from the repository root. No hook is installed
 automatically.
 
+Known gaps (independent review AuditReview6, 2026-10-22; being closed): encoded runs inside
+JavaScript single-quoted or template strings and Go raw strings, and numeric data written as
+tuples, call or return arguments, compound literals, list initialisation or INI values, can pass.
+Until the next revision lands, check such files by hand before pushing.
+
 ## Private function packets
 
 ```sh

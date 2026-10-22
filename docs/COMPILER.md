@@ -25,6 +25,9 @@ the evidence; each claim is observed in the ROM or cited, else marked [INFERENCE
   byte for byte: `abs` (`0x02714A`), `lmodt` (`0x027154`), `ldivt` (`0x0271B2`), `ulmult`/`lmult`
   (`0x027214`), and `ulmodt`/`uldivt` (`0x027240`/`0x027248`, one body). Found by the Archaeologist
   lane; the disks were manufactured 1990-03-05, the release notes are dated 1989-07-28.
+- **String literals.** The ROM keeps each function's strings right after it in the code section
+  (e.g. REV 02 `0x009D1A`), which is MCC68K's `/STRINTEXT` (Sega's 1991 bulletin shows it in
+  Microtec's examples). `tools/mcc.py` always passes it; it does not change functions without strings.
 - **Compiler profile.** Default options reproduce all 13 functions of the first checkpoint
   (switches with two tables, helper calls, function pointers, framed functions with locals, the
   Park-Miller random generator). Observed by the CompilerHunter: `/optimize=time` or `=all` inlines
@@ -46,7 +49,7 @@ instruction:
 - An unsized `Bcc`/`BRA`/`BSR` to a label not yet defined (forward) reserves a word displacement
   even when a byte would fit; to a label already defined (backward) it takes a byte when it fits
   (−128 included), else a word. Explicit `.S`/`.W` are kept.
-- A bare `JSR`/`JMP` to a label in the same section of the same file becomes PC-relative: 4 bytes
+- A bare `JSR`/`JMP`/`PEA`/`LEA` of a label in the same section of the same file becomes PC-relative: 4 bytes
   backward; forward, the 6 bytes reserved for an absolute call stay used as PC-relative + `NOP`.
   Targets in other files, RAM or the runtime stay absolute long. All 521 PC-relative `JSR`s in REV 02
   follow this: the 94 forward ones are each followed by a `NOP`, no backward one is. ASM68K's

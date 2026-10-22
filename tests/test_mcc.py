@@ -92,6 +92,17 @@ class AdaptTest(unittest.TestCase):
             with self.assertRaises(mcc.AdaptError):
                 mcc.adapt(f"\tSECTION\t9,,C\n.f:\n{statement}\n\tRTS\n", "u")
 
+    def test_address_loads_of_local_labels_follow_the_call_rule(self):
+        listing = ("\tSECTION\t9,,C\n.f:\n\tPEA\t_L2\n\tLEA\t_L2,A0\n\tPEA\t.ext\n\tRTS\n"
+                   "_L2:\tDC.B\t'Hi'\n\tDC.B\t0\n\tDCB.B\t1,0\n")
+        lines = mcc.adapt(listing, "u").splitlines()
+        pea = lines.index("\tPEA\t(_L2,%pc)")
+        self.assertEqual(lines[pea + 1], "\tnop")              # forward: 6 bytes, as ASM68K reserved
+        lea = lines.index("\tLEA\t(_L2,%pc),%a0")
+        self.assertEqual(lines[lea + 1], "\tnop")
+        self.assertIn("\tPEA\t(ext).l", lines)                  # another file: absolute
+        self.assertIn("\t.fill\t1,1,0", lines)                  # DCB.B count,value
+
     def test_microtec_dot_prefix_and_hex_are_respelled(self):
         self.assertIn("loop:", self.lines)
         self.assertIn("\t.globl loop", self.lines)

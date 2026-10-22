@@ -40,12 +40,15 @@ AS_FLAGS = ["-m68000"]   # registers are spelled %d0 by adapt(); bare words are 
 # Entry points of the MCC68K 3.3K runtime that the compiler itself calls (docs/COMPILER.md); C never
 # spells them, so their alias names (two entries share a body) are not an author's choice.
 RUNTIME_ENTRIES = frozenset({"abs", "lmodt", "ldivt", "lmult", "ulmult", "ulmodt", "uldivt"})
+# The game's profile: compiler defaults plus STRINTEXT (string literals follow their function in the code
+# section, as they do in the ROM; Sega's 1991 bulletin shows the option in Microtec's examples).
+PROFILE = ("/STRINTEXT",)
 CODE_SECTION = 9         # MCC68K's code section number
 PC16_REACH = 32767
 REGISTER = re.compile(r"^(?:[DA][0-7]|SP|PC|SR|CCR|USP)$", re.I)
 BRANCH = re.compile(r"^B(?:RA|SR|HI|LS|CC|HS|CS|LO|NE|EQ|VC|VS|PL|MI|GE|LT|GT|LE)$", re.I)
 DBCC = re.compile(r"^DB(?:RA|T|F|HI|LS|CC|HS|CS|LO|NE|EQ|VC|VS|PL|MI|GE|LT|GT|LE)$", re.I)
-CALL = re.compile(r"^(?:JSR|JMP)$", re.I)
+CALL = re.compile(r"^(?:JSR|JMP|PEA|LEA(?:\.L)?|PEA\.L)$", re.I)   # instructions taking a control address
 TOKEN = re.compile(r"'(?:[^']|'')*'|\$[0-9A-Fa-f]+|\.?[A-Za-z_][A-Za-z0-9_]*|\s+|.", re.S)
 LABEL = re.compile(r"^(\.?[A-Za-z_]\w*):(.*)$")
 
@@ -149,12 +152,22 @@ def code_labels(listing: str) -> set[str]:
     return {st.label for section, st in parse(listing) if st.label and section == CODE_SECTION}
 
 
+def address_operand(statement: Statement) -> tuple[str, str] | None:
+    """(symbol, rest) when JSR/JMP/PEA name a bare symbol, or LEA loads one into an address register."""
+    if not CALL.match(statement.mnemonic):
+        return None
+    symbol, _, rest = statement.operands.partition(",")
+    if not re.fullmatch(r"\.?[A-Za-z_]\w*", symbol) or REGISTER.match(symbol):
+        return None
+    if statement.mnemonic.upper().startswith("LEA") != bool(rest):
+        return None
+    return symbol.lstrip("."), rest
+
+
 def call_target(statement: Statement) -> str | None:
-    """The bare symbol a JSR/JMP names (None for any other addressing mode)."""
-    if CALL.match(statement.mnemonic) and re.fullmatch(r"\.?[A-Za-z_]\w*", statement.operands) \
-            and not REGISTER.match(statement.operands):
-        return statement.operands.lstrip(".")
-    return None
+    """The bare symbol a JSR/JMP/PEA/LEA names (None for any other addressing mode)."""
+    operand = address_operand(statement)
+    return operand[0] if operand else None
 
 
 def external_calls(listing: str) -> list[str]:
@@ -203,6 +216,15 @@ def adapt(listing: str, unit: str, near: dict[str, str] | None = None) -> str:
         if word == "DC.B" and "'" in statement.operands:
             lines.append(dc_bytes(statement.operands))
             continue
+        block = re.fullmatch(r"(DCB|DS)\.([BWL])", word)
+        if block:   # DCB.s count,value (a filled block) and DS.s count (reserved space)
+            width = {"B": 1, "W": 2, "L": 4}[block.group(2)]
+            fields = [gas_operands(f.strip()) for f in statement.operands.split(",")]
+            if block.group(1) == "DCB":
+                lines.append(f"\t.fill\t{fields[0]},{width},{fields[1] if len(fields) > 1 else 0}")
+            else:
+                lines.append(f"\t.space\t({fields[0]})*{width}")
+            continue
         operands = statement.operands
         if BRANCH.match(word):
             target = operands.lstrip(".")
@@ -215,17 +237,19 @@ def adapt(listing: str, unit: str, near: dict[str, str] | None = None) -> str:
             continue
         if DBCC.match(word) and operands.split(",")[-1].lstrip(".") not in local:
             raise AdaptError(f"{statement.mnemonic} {operands}: DBcc outside this file's code")
-        target = call_target(statement)
-        if target:
+        operand = address_operand(statement)
+        if operand:
+            target, rest = operand
+            rest = f",{gas_operands(rest)}" if rest else ""
             if target in local and target in defined:
-                lines.append(f"\t{statement.mnemonic}\t({target},%pc)")
+                lines.append(f"\t{statement.mnemonic}\t({target},%pc){rest}")
             elif target in local or near.get(target) == "forward":
-                lines.append(f"\t{statement.mnemonic}\t({target},%pc)")
+                lines.append(f"\t{statement.mnemonic}\t({target},%pc){rest}")
                 lines.append("\tnop")   # forward: PC-relative inside the 6 bytes reserved for absolute long
             elif near.get(target) == "backward":
-                lines.append(f"\t{statement.mnemonic}\t({target},%pc)")
+                lines.append(f"\t{statement.mnemonic}\t({target},%pc){rest}")
             else:
-                lines.append(f"\t{statement.mnemonic}\t({target}).l")
+                lines.append(f"\t{statement.mnemonic}\t({target}).l{rest}")
             continue
         lines.append(f"\t{statement.mnemonic}\t{gas_operands(operands)}" if operands else f"\t{statement.mnemonic}")
     return "\n".join(lines) + "\n"
@@ -279,7 +303,7 @@ def compile_c(source: Path, include_dirs: list[Path] = (), options: list[str] = 
         shutil.copy2(source, work / f"{name}.C")
         env = {**os.environ, "EMU2_DRIVE_C": str(drive), "EMU2_CWD": "C:\\WORK",
                "EMU2_DEFAULT_DRIVE": "C", "EMU2_PROGNAME": "C:\\MCC68K\\MCC68K.EXE"}
-        command = [str(emu2), str(compiler), " ".join([name, *options]) + ";"]
+        command = [str(emu2), str(compiler), " ".join([name, *PROFILE, *options]) + ";"]
         result = subprocess.run(command, cwd=work, env=env, capture_output=True, text=True, timeout=timeout)
         outputs = [p for p in work.iterdir() if p.name.upper() == f"{name}.SRC"]
         errors = re.search(r"(\d+) Errors? detected", result.stdout)

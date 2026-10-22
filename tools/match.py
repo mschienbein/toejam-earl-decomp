@@ -183,15 +183,25 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
             raise MatchError(f"link failed:\n{result.stderr}")
         with elf.open("rb") as stream:
             text = ELFFile(stream).get_section_by_name(".text").data()
+    data_ranges = [(d["address"], d["address"] + d["size"]) for d in catalogue["data"]]
+
+    def in_data(lo: int, hi: int) -> bool:
+        return any(a <= lo and hi <= b for a, b in data_ranges)
+
     reports = []
     for name, offset, size in functions:
         address = base + offset
         expected_size = extents.get(address)
         actual = text[offset:offset + size]
-        expected = rom[address:address + (expected_size or size)]
-        ok = expected_size == size and actual == expected
+        # String literals (/STRINTEXT) follow their function in the code section; in the ROM they are the
+        # data range right after it, so the function's catalogued code plus those literal bytes must match.
+        literals = expected_size is not None and size > expected_size and in_data(address + expected_size, address + size)
+        expected = rom[address:address + (size if literals else (expected_size or size))]
+        ok = (expected_size == size or literals) and actual == expected
         report = {"function": name, "address": f"0x{address:06x}", "size": size, "expected_size": expected_size,
                   "status": "MATCH" if ok else "DIFF"}
+        if literals:
+            report["literal_bytes"] = size - expected_size
         if not ok:
             report["diff"] = side_by_side(expected, actual, address)
         reports.append(report)

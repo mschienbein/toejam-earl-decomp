@@ -100,9 +100,13 @@ def build_both(checkpoint: str, run: str, jobs: int) -> dict:
         out = ROOT / "build" / "accept" / checkpoint / run / version
         shutil.rmtree(out, ignore_errors=True)
         out.mkdir(parents=True)
+        data = build.prepare_data(version, rom, catalogue, out)
+        sources = cunits.load_sources(version)
+        z80 = build.z80_sources(version, data, out, sources)
         receipt = build.build_image(rom, baserom, catalogue, out, jobs, namestool.load(version),
-                                    cunits.load_sources(version), build.tus.load(version),
-                                    build.revmap.translator(version), build.prepare_data(version, rom, catalogue, out))
+                                    [e for e in sources if e.get("kind") != "z80"], build.tus.load(version),
+                                    build.revmap.translator(version), data)
+        receipt["z80_sources"] = z80
         (out / "receipt.json").write_text(json.dumps(receipt, indent=1) + "\n")
         receipts[version] = receipt
     return receipts
@@ -173,6 +177,8 @@ def credited_functions(c_units: list[dict], version: str, checkpoint: str) -> li
     extent = {f["address"]: f["size"] for f in catalogue["functions"] if f["kind"] == "function"}
     records = []
     for unit in c_units:
+        if unit.get("kind", "c") != "c":
+            continue   # hand-written assembly is source, never C credit
         for f in unit["functions"]:
             address = int(f["address"], 16)
             if address not in extent:
@@ -185,9 +191,10 @@ def credited_functions(c_units: list[dict], version: str, checkpoint: str) -> li
 
 
 def orphan_sources() -> list[str]:
-    """C files under src/ that config/sources.json does not list (they would never be built or checked)."""
+    """Sources under src/ (.c, .s) that config/sources.json does not list (they would never be built or checked)."""
     listed = {entry["source"] for version in VERSIONS for entry in cunits.load_sources(version)}
-    return sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "src").rglob("*.c") if p.relative_to(ROOT).as_posix() not in listed)
+    files = [p for pattern in ("*.c", "*.s") for p in (ROOT / "src").rglob(pattern)]
+    return sorted(p.relative_to(ROOT).as_posix() for p in files if p.relative_to(ROOT).as_posix() not in listed)
 
 
 def finalize(checkpoint: str, note: str, jobs: int = os.cpu_count() or 4) -> dict:

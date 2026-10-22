@@ -1,12 +1,14 @@
-"""C translation units in the build: config/sources.json, compiled with MCC68K, placed at their original address.
+"""Source units in the build: config/sources.json, placed at their original address.
 
     {"schema_version": 1,
-     "units": [{"source": "src/game/timer.c", "versions": ["rev02"], "options": []}]}
+     "units": [{"source": "src/game/timer.c", "versions": ["rev02"], "options": []},
+               {"source": "src/asm/vdp.s", "versions": ["rev02", "rev00"]}]}
 
-Each unit is one C file. Its functions must carry the canonical name of their address (an imported
-name, else func_XXXXXX) and appear in ROM order, so the unit replaces one contiguous run of
-catalogued units (functions, and any literal data between them) exactly. Code only: a unit that
-emits initialised data is refused until data placement is designed.
+A `.c` unit is compiled with MCC68K; a `.s` unit is hand-written 68000 assembly (ruling R007) in GNU
+`as` syntax, assembled with the build's flags; its `.text` section must start with a `.globl`
+routine. Either kind must name its routines with the canonical names of their addresses and list
+them in ROM order, so the unit replaces one contiguous run of catalogued units exactly. Code only.
+Assembly units are never credited as C.
 """
 from __future__ import annotations
 
@@ -43,6 +45,7 @@ class CUnit:
     options: list[str] = field(default_factory=list)
     address: int | None = None
     c_names: frozenset = frozenset()            # identifiers the C source spells
+    kind: str = "c"                             # c | asm (hand-written 68000 assembly, ruling R007)
 
 
 def load_sources(version: str, path: Path = SOURCES) -> list[dict]:
@@ -55,7 +58,46 @@ def load_sources(version: str, path: Path = SOURCES) -> list[dict]:
 
 
 def unit_name(source: Path) -> str:
-    return "c_" + re.sub(r"[^A-Za-z0-9_]", "_", source.stem).lower()
+    prefix = "asm_" if source.suffix == ".s" else "c_"
+    return prefix + re.sub(r"[^A-Za-z0-9_]", "_", source.stem).lower()
+
+
+ASM_FLAGS = ["-m68000", "--pcrel"]   # hand-written assembly: `|` starts a comment, branches stay PC-relative
+
+
+def assemble_unit(entry: dict, out: Path, root: Path = ROOT) -> CUnit:
+    """Assemble one hand-written 68000 source (GNU as syntax); out/obj receives the object."""
+    import subprocess
+    import toolchain
+    source = root / entry["source"]
+    if not source.is_file():
+        raise CUnitError(f"{entry['source']} does not exist")
+    name = unit_name(source)
+    obj = out / "obj" / f"{name}.o"
+    result = subprocess.run([str(toolchain.tool("m68k-elf", "as")), *ASM_FLAGS, "-I", str(root / "include"),
+                             "-o", str(obj), str(source)], capture_output=True, text=True)
+    if result.returncode:
+        raise CUnitError(f"{entry['source']}: the assembler rejected it:\n{result.stderr}")
+    with obj.open("rb") as stream:
+        elf = ELFFile(stream)
+        section = elf.get_section_by_name(".text")
+        if section is None or not section["sh_size"]:
+            raise CUnitError(f"{entry['source']}: no code")
+        for other in elf.iter_sections():
+            if other.name in (".data", ".bss") and other["sh_size"]:
+                raise CUnitError(f"{entry['source']}: {other.name} is not allowed; everything lives in .text")
+        index = elf.get_section_index(".text")
+        symbols = list(elf.get_section_by_name(".symtab").iter_symbols())
+        starts = sorted((s["st_value"], s.name) for s in symbols
+                        if s["st_shndx"] == index and s["st_info"]["bind"] == "STB_GLOBAL")
+        size = section["sh_size"]
+        undefined = {s.name for s in symbols if s.name and s["st_shndx"] == "SHN_UNDEF"}
+    if not starts or starts[0][0] != 0:
+        raise CUnitError(f"{entry['source']}: .text must start with a .globl routine")
+    functions = [(n, off, (starts[k + 1][0] if k + 1 < len(starts) else size) - off) for k, (off, n) in enumerate(starts)]
+    spelled = frozenset({n for _, n in starts} | undefined)
+    return CUnit(name, source, obj, size, functions, {n for _, n in starts}, undefined,
+                 hashlib.sha256(source.read_bytes()).hexdigest(), [], c_names=spelled, kind="asm")
 
 
 def compile_unit(entry: dict, out: Path, root: Path = ROOT, address_of=None, spans: list[tuple[int, int]] = (),
@@ -66,6 +108,8 @@ def compile_unit(entry: dict, out: Path, root: Path = ROOT, address_of=None, spa
     original unit be assembled PC-relative, as the original assembler did (tools/mcc.py `near`).
     """
     source = root / entry["source"]
+    if source.suffix == ".s":
+        return assemble_unit(entry, out, root)
     if not source.is_file():
         raise CUnitError(f"{entry['source']} does not exist")
     name = unit_name(source)

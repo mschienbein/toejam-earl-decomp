@@ -26,6 +26,7 @@ from elftools.elf.elffile import ELFFile
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import m68k  # noqa: E402
+import cunits  # noqa: E402
 import mcc  # noqa: E402
 import names as namestool  # noqa: E402
 import rom as romtool  # noqa: E402
@@ -58,14 +59,15 @@ def aliases(version: str) -> dict[str, str]:
     return {alias: name.name for name in namestool.load(version).values() for alias in name.aliases}
 
 
-def defined_functions(obj: Path, unit: str) -> list[tuple[str, int, int]]:
+def defined_functions(obj: Path, unit: str, section: str | None = None) -> list[tuple[str, int, int]]:
     """(name, offset, size-until-next) for each global function in the unit's code section."""
+    name = section or f".text.{unit}"
     with obj.open("rb") as stream:
         elf = ELFFile(stream)
-        section = elf.get_section_by_name(f".text.{unit}")
+        section = elf.get_section_by_name(name)
         if section is None:
             raise MatchError("the file defines no code")
-        index = elf.get_section_index(f".text.{unit}")
+        index = elf.get_section_index(name)
         size = section["sh_size"]
         starts = sorted((s["st_value"], s.name) for s in elf.get_section_by_name(".symtab").iter_symbols()
                         if s["st_shndx"] == index and s["st_info"]["bind"] == "STB_GLOBAL")
@@ -151,15 +153,26 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
         except MatchError:
             return None
 
-    compiled = mcc.compile_to_gas(source, unit, [*includes, ROOT / "include"], options, address_of, tus.load(version), version)
+    assembly = source.suffix == ".s"   # hand-written 68000 assembly (ruling R007)
+    if not assembly:
+        compiled = mcc.compile_to_gas(source, unit, [*includes, ROOT / "include"], options, address_of, tus.load(version), version)
     with tempfile.TemporaryDirectory(prefix="match-") as tmp:
         work = keep or Path(tmp)
         work.mkdir(parents=True, exist_ok=True)
-        (work / f"{unit}.SRC").write_text(compiled.listing, encoding="latin-1")
         obj = work / f"{unit}.o"
-        mcc.assemble(compiled.gas, source, obj, unit)
-        functions = defined_functions(obj, unit)
-        for name in sorted(compiled.c_names | {n for n, _, _ in functions}):   # what the C source spells
+        if assembly:
+            result = subprocess.run([str(toolchain.tool("m68k-elf", "as")), *cunits.ASM_FLAGS, "-I", str(ROOT / "include"),
+                                     "-o", str(obj), str(source)], capture_output=True, text=True)
+            if result.returncode:
+                raise MatchError(f"the assembler rejected it:\n{result.stderr}")
+            functions = defined_functions(obj, unit, section=".text")
+            spelled = {n for n, _, _ in functions} | set(undefined_symbols(obj))
+        else:
+            (work / f"{unit}.SRC").write_text(compiled.listing, encoding="latin-1")
+            mcc.assemble(compiled.gas, source, obj, unit)
+            functions = defined_functions(obj, unit)
+            spelled = compiled.c_names | {n for n, _, _ in functions}
+        for name in sorted(spelled):   # what the source spells
             if name in alias_of:
                 raise MatchError(f"{name} is an alias: write {alias_of[name]}")
         homes = {}
@@ -175,7 +188,7 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
             if homes[name] != base + offset:
                 raise MatchError(f"{name}: in the file it would be at 0x{base + offset:06x}, but the original is at "
                                  f"0x{homes[name]:06x} (functions must be a contiguous run in ROM order)")
-        script = ["SECTIONS {", f"  .text 0x{base:x} : {{ *(.text.{unit}) }}", "  .data : { *(.data) }", "}"]
+        script = ["SECTIONS {", f"  .text 0x{base:x} : {{ *({'.text' if assembly else '.text.' + unit}) }}", "  .data : { *(.data) }", "}"]
         script += [f"{n} = 0x{resolve(n, table, translate):x};" for n in undefined_symbols(obj)]
         (work / "match.ld").write_text("\n".join(script) + "\n")
         elf = work / f"{unit}.elf"

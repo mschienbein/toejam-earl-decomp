@@ -262,7 +262,8 @@ def check_object(unit: Unit, obj: Path) -> tuple[set[int], set[int]]:
 
 def linker_script(units: list[Unit], symbols: Symbols, extra: dict[str, int] | None = None) -> str:
     lines = ['OUTPUT_FORMAT("elf32-m68k")', "OUTPUT_ARCH(m68k)", "SECTIONS", "{", "  .rom 0x0 : AT(0x0)", "  {"]
-    lines += [f"    . = 0x{u.address:06x}; KEEP(obj/{u.name}.o(.text.{u.name}))" for u in units]
+    lines += [f"    . = 0x{u.address:06x}; KEEP(obj/{u.name}.o({'.text' if u.kind == 'asm' else '.text.' + u.name}))"
+              for u in units]
     lines += ["  }", "  /DISCARD/ : { *(.comment) *(.note*) }", "}"]
     definitions = {name: address for address, name in symbols.absolute.items()}
     definitions.update(extra or {})
@@ -297,6 +298,43 @@ def prepare_data(version: str, rom: bytes, catalogue: dict, out: Path) -> dict |
                                          "packed_equal_to_extracted": report["all_exact"], "by_kind": kinds}}
 
 
+def z80_sources(version: str, data: dict | None, out: Path, entries: list[dict]) -> list[dict]:
+    """Assemble Z80 sources (ruling R007) and use them in place of their extracted data units.
+
+    An entry {"source": "src/z80/x.s", "kind": "z80", "unit": "SoundDriver", "versions": [...]} is
+    assembled with the pinned z80-elf binutils at origin 0; its image must have the unit's size, and
+    the full-image check proves its bytes. Returns receipt records.
+    """
+    records = []
+    z80 = [e for e in entries if e.get("kind") == "z80"]
+    if not z80:
+        return records
+    if data is None:
+        raise BuildError("Z80 sources need the version's data units")
+    (out / "z80").mkdir(parents=True, exist_ok=True)
+    by_name = {name: k for k, (_, _, name, _) in enumerate(data["units"])}
+    for entry in z80:
+        source = ROOT / entry["source"]
+        stem = source.stem
+        obj, elf, image = out / "z80" / f"{stem}.o", out / "z80" / f"{stem}.elf", out / "z80" / f"{stem}.bin"
+        for command in ([str(toolchain.tool("z80-elf", "as")), "-o", str(obj), str(source)],
+                        [str(toolchain.tool("z80-elf", "ld")), "-Ttext=0", "-o", str(elf), str(obj)],
+                        [str(toolchain.tool("z80-elf", "objcopy")), "-O", "binary", str(elf), str(image)]):
+            result = subprocess.run(command, capture_output=True, text=True)
+            if result.returncode:
+                raise BuildError(f"{entry['source']}: {Path(command[0]).name} failed:\n{result.stderr}")
+        if entry["unit"] not in by_name:
+            raise BuildError(f"{entry['source']}: no data unit named {entry['unit']}")
+        k = by_name[entry["unit"]]
+        address, size, name, _ = data["units"][k]
+        if image.stat().st_size != size:
+            raise BuildError(f"{entry['source']}: assembles to {image.stat().st_size} bytes, {name} has {size}")
+        data["units"][k] = (address, size, name, image)
+        records.append({"source": entry["source"], "kind": "z80", "unit": name, "address": f"0x{address:06x}",
+                        "size": size, "sha256": sha256(source.read_bytes())})
+    return records
+
+
 def tool_hashes() -> dict:
     here = Path(__file__).resolve().parent
     return {name: sha256((here / name).read_bytes()) for name in ("assets.py", "build.py", "cunits.py", "m68k.py", "mcc.py", "names.py", "revmap.py", "rom.py", "toolchain.py", "tus.py")}
@@ -312,8 +350,11 @@ def build(version: str, jobs: int) -> dict:
         raise BuildError(f"{catalogue_file.relative_to(ROOT)} was made for a different ROM")
     out = ROOT / "build" / version
     data = prepare_data(version, rom, catalogue, out)
-    result = build_image(rom, baserom, catalogue, out, jobs, namestool.load(version), cunits.load_sources(version),
-                         tus.load(version), revmap.translator(version), data)
+    sources = cunits.load_sources(version)
+    z80 = z80_sources(version, data, out, sources)
+    result = build_image(rom, baserom, catalogue, out, jobs, namestool.load(version),
+                         [e for e in sources if e.get("kind") != "z80"], tus.load(version), revmap.translator(version), data)
+    result["z80_sources"] = z80
     result["inputs"]["catalogue_sha256"] = sha256(catalogue_file.read_bytes())
     names_file = namestool.path(version)
     result["inputs"]["names_sha256"] = sha256(names_file.read_bytes()) if names_file.is_file() else None
@@ -350,7 +391,7 @@ def place_c_units(c_units: list, units: list[Unit], symbols: Symbols) -> list[Un
             raise BuildError(f"{cu.source.name}: overlaps the header or another C unit")
         cu.address = base
         replaced.update(u.name for u in covered)
-        placed.append(Unit(cu.name, base, cu.size, "c"))
+        placed.append(Unit(cu.name, base, cu.size, cu.kind))
     return sorted([u for u in units if u.name not in replaced] + placed, key=lambda u: u.address)
 
 
@@ -450,7 +491,7 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
             raw.update(addresses)  # spelled as raw words from now on
         raise BuildError(f"{source.name}: still rejected after {MAX_ROUNDS} rounds")
 
-    list(pool.map(emit, [u for u in units if u.kind != "c"]))
+    list(pool.map(emit, [u for u in units if u.kind not in ("c", "asm")]))
     rounds = 0
     pending = code_units
     # Object-level fixpoint: sizes first (a mis-sized instruction shifts in-unit displacements), then bytes.
@@ -508,10 +549,10 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
             "compiler": {**toolchain.verified_compiler(), "version": toolchain.LOCK["mcc68k"]["version"],
                          "emu2_commit": toolchain.LOCK["emu2"]["commit"], "as_flags": mcc.AS_FLAGS} if c_units else None,
         },
-        "units": {kind: sum(1 for u in units if u.kind == kind) for kind in ("header", "function", "fragment", "data", "c")},
+        "units": {kind: sum(1 for u in units if u.kind == kind) for kind in ("header", "function", "fragment", "data", "c", "asm")},
         "data": {"source": "assets", **data["summary"]} if data else {"source": "original slices"},
         "c_units": [{"source": str(cu.source.relative_to(ROOT)) if cu.source.is_relative_to(ROOT) else str(cu.source),
-                     "sha256": cu.source_sha256, "options": cu.options, "address": f"0x{cu.address:06x}", "size": cu.size,
+                     "kind": cu.kind, "sha256": cu.source_sha256, "options": cu.options, "address": f"0x{cu.address:06x}", "size": cu.size,
                      "functions": [{"name": name, "address": f"0x{cu.address + offset:06x}", "size": size}
                                    for name, offset, size in cu.functions]} for cu in c_units],
         "instructions": {

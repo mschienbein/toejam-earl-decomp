@@ -22,7 +22,8 @@ extern unsigned short GetRandomNumber();
 extern long StackBasedRandom();
 /* ORIGINAL BUG: func_00d9dc returns unsigned char in terrain_at_position.c,
  * but this caller treats it as int ([INFERENCE] an implicit declaration). */
-extern int abs(), TerrainValidation(), func_01771a(), func_00d9dc();
+extern long abs();
+extern int TerrainValidation(), func_01771a(), func_00d9dc();
 extern void PlaceStuffInLevel(), func_00d970(), func_023c6e();
 
 /* Reserve the two fixed identities, then assign the other present sprites

@@ -24,9 +24,9 @@ extern struct object_state gPlayerInfo[40];
 
 extern char gPlayer1Powerup[], TOEJAM_JUMP_COUNTER[], TOEJAM_FALL_STATE[], ELEVATOR_FLAG[], ram_ffda24[], ram_ffda30[], ram_ffda2c[], TOEJAMS_HEALTH[], Sfx_Splash[], Sfx_Springing[], ram_ffde56[], gPlayerLives[], gHighestLevel, ram_ffda6c, SPLIT_SCREEN, P1_MENU_OPEN[], ram_ffda1e[], gPlayerRank[];
 extern unsigned char P1_PROCESSED_INPUT[], LAND_NEAR_TOEJAM[5][5], LAND_NEAR_EARL[5][5], gMode2RegSoftcopy, func_00d9dc();
-extern void StopPlayer(), SetSprite(), PlaySoundEffect(), OpenRocketSkates(), SetToejamFalling(), func_015b66(), func_00beb2(), WaitForNextVBlank(), func_00cc82(), func_0174b6(), func_0143e6(), func_004dfe(), func_017ac8(), PlaceStuffInLevel(), func_012762(), SetPositionOnNewLevel(), func_008c5c(), ClearSkipVHBlankFlags(), func_00aa5a(), func_00105a(), SetSkipVHBlankFlags(), UpdateLandAroundPlayer(), PlaySound(), func_00acca(), func_00ad8a(), func_00cffa(), func_023554(), func_00cfba(), OpeningPresents7(), func_00b95c(), DrawHUD();
+extern void StopPlayer(), SetSprite(), PlaySoundEffect(), OpenRocketSkates(), SetToejamFalling(), func_00beb2(), WaitForNextVBlank(), func_00cc82(), func_0174b6(), func_0143e6(), func_004dfe(), func_017ac8(), PlaceStuffInLevel(), func_012762(), SetPositionOnNewLevel(), func_008c5c(), ClearSkipVHBlankFlags(), func_00aa5a(), func_00105a(), SetSkipVHBlankFlags(), UpdateLandAroundPlayer(), PlaySound(), func_00acca(), func_00ad8a(), func_00cffa(), func_023554(), func_00cfba(), OpeningPresents7(), func_00b95c(), DrawHUD();
 extern char SetupElevator();
-extern int GetActivePresentSprite(), func_015d52();
+extern int GetActivePresentSprite(), func_015d52(), func_015b66();
 extern unsigned short GetRandomNumber();
 #define VDP_CONTROL_WORD (*(unsigned short *)0xc00004L)
 

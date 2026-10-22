@@ -6,11 +6,11 @@ struct map_sprite {
     unsigned short tile;
     short x;
 };
-struct elevator_state {
+struct elevator_record {
     short x, y;
-    char level, state, reserved[10];
+    char level, state, entity, timer;
 };
-extern struct elevator_state ELEVATOR_LOCATION[];
+extern struct elevator_record ELEVATOR_LOCATION[][2];
 extern unsigned short ElevatorMapIcon[16];
 extern void MoveDataToVRAM();
 
@@ -21,10 +21,10 @@ short level;
 struct map_sprite *sprite;
 {
     short elevator_number, world_x, world_y, tile;
-    struct elevator_state *elevator;
+    struct elevator_record *elevator;
 
     for (elevator_number = 0; elevator_number <= 1; ++elevator_number) {
-        elevator = &ELEVATOR_LOCATION[elevator_number];
+        elevator = &ELEVATOR_LOCATION[elevator_number][0];
         if (elevator->level != level || elevator->state == 13)
             continue;
         world_x = elevator->x;

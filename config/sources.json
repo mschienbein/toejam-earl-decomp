@@ -23,7 +23,63 @@
    ]
   },
   {
+   "source": "src/earthlings/abilities_and_sleep.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/animation_behaviours.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/earthlings/bank_expiry.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/behaviour_tu28.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/damage_and_processing.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/generic_enemy_tu27.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/movement_decision.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/spawning_and_loading.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/state_dispatch_tu26.c",
    "versions": [
     "rev02",
     "rev00"
@@ -346,6 +402,13 @@
   },
   {
    "source": "src/player/steering.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/target_motion_helpers.c",
    "versions": [
     "rev02",
     "rev00"

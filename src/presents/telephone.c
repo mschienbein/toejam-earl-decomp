@@ -41,9 +41,9 @@ extern char gLevel912C, gLevel912E, SPLIT_SCREEN, gPlayerLives[];
 extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
 extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY, TOEJAM_SPEECH_COUNTER;
 extern short ram_ff935a;
-extern int func_01e736();
+extern int func_01e736(), func_015b66();
 extern int abs();
-extern void PlaySoundEffect(), func_00d970(), func_015b66(), DrawGameMap();
+extern void PlaySoundEffect(), func_00d970(), DrawGameMap();
 
 /* Allocate the telephone's displayed object and copy its position and level. */
 void func_022bf6(telephone)

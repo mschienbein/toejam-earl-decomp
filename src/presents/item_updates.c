@@ -62,7 +62,8 @@ extern char PresentAuxiliarySignedLookup[16], Sfx_Money[], Sfx_ChowDown[];
 extern int func_00d904();
 extern void func_00d970(), LoadLevel2AndUp();
 extern short GenerateSpeech();
-extern int abs(), func_00ae90(), func_01e312(), func_01e38e();
+extern long abs();
+extern int func_00ae90(), func_01e312(), func_01e38e();
 extern int GetActivePresentSprite(), Player_Youch();
 extern void PlaySound(), PlaySoundEffect(), func_019086();
 extern void StopPlayer(), SetSprite(), func_00acca(), func_00ad8a();
@@ -202,6 +203,8 @@ char record_pickup;
     state = &gPlayerInfo[player];
     if (gPlayerLives[player] < 0 || state->height >= 4 ||
         state->sprite_state == 3 || state->sprite_state == 7 ||
+        /* (long) view of flags_52: the signed test reproduces the ROM's mask exchange; storage stays
+         * unsigned ([INFERENCE] the original spelling is unknown). */
         state->sprite_state == 77 || ((long)state->flags_52 & 0x41800L))
         return;
     for (index = 0; index < count; index++) {
@@ -330,7 +333,8 @@ short player;
 }
 
 /* Decrement each eligible player's active-present timer and blink the HUD
- * icon at the observed twelve- and two-tick bit intervals near expiration. */
+ * icon near expiration by testing the timer against masks 12 and 2. The
+ * (&gPlayerInfo[player])->field spelling reproduces the ROM's schedule. */
 void ReducePresentTimer()
 {
     short player, show;

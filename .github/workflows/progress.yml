@@ -17,6 +17,9 @@ jobs:
         with:
           fetch-depth: 0   # the denominator check compares with the base commit's history
 
+      - name: Audit public repository and reachable history (ROM-free)
+        run: python3 tools/audit_public.py --history --no-rom
+
       - uses: astral-sh/setup-uv@v6
 
       - name: Install locked Python tooling

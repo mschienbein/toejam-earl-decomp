@@ -31,9 +31,12 @@ def synthetic_rom() -> bytes:
     image = bytearray(0x1000)
     struct.pack_into(">II", image, 0, 0xFF8000, 0x200)
     image[0x200:0x20C] = bytes.fromhex("4eb900000300" "610000f8" "60fe")
-    image[0x300:0x326] = bytes.fromhex(
-        "0c400002" "6e1c" "d040" "303b0006" "4efb0002"
-        "0006000a000e" "70014e75" "70024e75" "70ff4e75" "70004e75")
+    switch_words = (
+        0x0C40, 0x0002, 0x6E1C, 0xD040, 0x303B, 0x0006, 0x4EFB,
+        0x0002, 0x0006, 0x000A, 0x000E, 0x7001, 0x4E75, 0x7002,
+        0x4E75, 0x70FF, 0x4E75, 0x7000, 0x4E75,
+    )
+    image[0x300:0x326] = b"".join(word.to_bytes(2, "big") for word in switch_words)   # synthetic switch
     image[0x400:0x410] = b"SYNTHETIC-DATA!!"
     return bytes(image)
 

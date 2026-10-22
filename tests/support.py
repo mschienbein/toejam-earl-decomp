@@ -26,10 +26,12 @@ def synthetic_rom() -> bytes:
     rom[0x100:0x110] = b"SEGA GENESIS    "
     rom[0x180:0x18E] = b"GM 00000000-00"
     rom[0x200:0x20C] = bytes.fromhex("4eb900000300" "610000f8" "60fe")
-    rom[0x300:0x326] = bytes.fromhex(
-        "0c400002" "6e1c" "d040" "303b0006" "4efb0002"
-        "0006000a000e"
-        "70014e75" "70024e75" "70ff4e75" "70004e75")
+    switch_words = (
+        0x0C40, 0x0002, 0x6E1C, 0xD040, 0x303B, 0x0006, 0x4EFB,
+        0x0002, 0x0006, 0x000A, 0x000E, 0x7001, 0x4E75, 0x7002,
+        0x4E75, 0x70FF, 0x4E75, 0x7000, 0x4E75,
+    )
+    rom[0x300:0x326] = b"".join(word.to_bytes(2, "big") for word in switch_words)   # synthetic switch
     rom[0x326:0x336] = b"DATA" * 4
     body = rom[0x200:]
     struct.pack_into(">H", rom, 0x18E, sum(struct.unpack(f">{len(body) // 2}H", body)) & 0xFFFF)

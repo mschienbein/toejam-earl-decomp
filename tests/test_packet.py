@@ -64,7 +64,11 @@ class PacketTest(unittest.TestCase):
         self.assertEqual(data["rom_data_references"][0]["name"], "header_000000+0x100")
 
     def test_frame_and_saved_registers_normalize_entry_stack_offsets(self):
-        code = bytes.fromhex("4e56fff8" "48e73000" "302e0008" "222f0018" "4cdf000c" "4e5e" "4e75")
+        frame_words = (
+            0x4E56, 0xFFF8, 0x48E7, 0x3000, 0x302E, 0x0008,
+            0x222F, 0x0018, 0x4CDF, 0x000C, 0x4E5E, 0x4E75,
+        )
+        code = b"".join(word.to_bytes(2, "big") for word in frame_words)
         program = program_for(code)
         data = packet.make_packet(program, program.select("func_000200"), "synthetic")
         accesses = data["stack_usage"]["accesses"]

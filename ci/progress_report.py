@@ -58,6 +58,7 @@ def load(version: str) -> tuple[list[dict], set[int], int]:
     catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text(encoding="utf-8"))
     functions = sorted((f for f in catalogue["functions"] if f["kind"] == "function"), key=lambda f: f["address"])
     known = {f["address"] for f in functions}
+    by_name = {name: address for address, name in display_names(version).items()}
     matched: set[int] = set()
     ledger = json.loads((ROOT / "config/matches.json").read_text(encoding="utf-8"))
     for unit in ledger["units"]:
@@ -65,9 +66,10 @@ def load(version: str) -> tuple[list[dict], set[int], int]:
             continue
         for name in unit["functions"]:
             m = AUTO.match(name)
-            if not m or int(m.group(1), 16) not in known:
+            address = int(m.group(1), 16) if m else by_name.get(name)
+            if address not in known:
                 raise SystemExit(f"matches.json credits {name}, which is not a catalogued {version} function")
-            matched.add(int(m.group(1), 16))
+            matched.add(address)
     data_total = sum(d["size"] for d in catalogue["data"])
     return functions, matched, data_total
 

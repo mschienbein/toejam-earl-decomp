@@ -38,6 +38,7 @@ from elftools.elf.elffile import ELFFile
 from elftools.elf.relocation import RelocationSection
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import cunits  # noqa: E402
 import m68k  # noqa: E402
 import rom as romtool  # noqa: E402
 import names as namestool  # noqa: E402
@@ -238,17 +239,19 @@ def check_object(unit: Unit, obj: Path) -> tuple[set[int], set[int]]:
     return sized, encoded
 
 
-def linker_script(units: list[Unit], symbols: Symbols) -> str:
+def linker_script(units: list[Unit], symbols: Symbols, extra: dict[str, int] | None = None) -> str:
     lines = ['OUTPUT_FORMAT("elf32-m68k")', "OUTPUT_ARCH(m68k)", "SECTIONS", "{", "  .rom 0x0 : AT(0x0)", "  {"]
     lines += [f"    . = 0x{u.address:06x}; KEEP(obj/{u.name}.o(.text.{u.name}))" for u in units]
     lines += ["  }", "  /DISCARD/ : { *(.comment) *(.note*) }", "}"]
-    lines += [f"{name} = 0x{address:06x};" for address, name in sorted(symbols.absolute.items())]
+    definitions = {name: address for address, name in symbols.absolute.items()}
+    definitions.update(extra or {})
+    lines += [f"{name} = 0x{address:06x};" for name, address in sorted(definitions.items(), key=lambda kv: (kv[1], kv[0]))]
     return "\n".join(lines) + "\n"
 
 
 def tool_hashes() -> dict:
     here = Path(__file__).resolve().parent
-    return {name: sha256((here / name).read_bytes()) for name in ("build.py", "m68k.py", "names.py", "rom.py", "toolchain.py")}
+    return {name: sha256((here / name).read_bytes()) for name in ("build.py", "cunits.py", "m68k.py", "mcc.py", "names.py", "rom.py", "toolchain.py")}
 
 
 def build(version: str, jobs: int) -> dict:
@@ -260,7 +263,7 @@ def build(version: str, jobs: int) -> dict:
     if catalogue["rom_sha256"] != sha256(rom):
         raise BuildError(f"{catalogue_file.relative_to(ROOT)} was made for a different ROM")
     out = ROOT / "build" / version
-    result = build_image(rom, baserom, catalogue, out, jobs, namestool.load(version))
+    result = build_image(rom, baserom, catalogue, out, jobs, namestool.load(version), cunits.load_sources(version))
     result["inputs"]["catalogue_sha256"] = sha256(catalogue_file.read_bytes())
     names_file = namestool.path(version)
     result["inputs"]["names_sha256"] = sha256(names_file.read_bytes()) if names_file.is_file() else None
@@ -269,15 +272,65 @@ def build(version: str, jobs: int) -> dict:
     return receipt
 
 
-def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int, names: dict | None = None) -> dict:
+def place_c_units(c_units: list, units: list[Unit], symbols: Symbols, names: dict | None) -> tuple[list[Unit], dict[str, int]]:
+    """Put each C unit in place of the catalogued units it reproduces; the definitions it needs."""
+    label_address = {label: address for address, label in symbols.labels.items()}
+    replaced: set[str] = set()
+    placed: list[Unit] = []
+    c_defined: set[str] = set()
+    for cu in c_units:
+        first = cu.functions[0][0]
+        if first not in label_address:
+            raise BuildError(f"{cu.source.name}: {first} is not the name of a catalogued address")
+        base = label_address[first]
+        for name, offset, _ in cu.functions:
+            if label_address.get(name) != base + offset:
+                raise BuildError(f"{cu.source.name}: {name} would land at 0x{base + offset:06x}; functions must use their "
+                                 f"canonical names and be one contiguous run in ROM order")
+        covered = [u for u in units if base <= u.address < base + cu.size]
+        if not covered or covered[0].address != base or covered[-1].end != base + cu.size:
+            raise BuildError(f"{cu.source.name}: its {cu.size} bytes do not end on a unit boundary at 0x{base + cu.size:06x}")
+        if any(u.kind == "header" or u.name in replaced for u in covered):
+            raise BuildError(f"{cu.source.name}: overlaps the header or another C unit")
+        cu.address = base
+        replaced.update(u.name for u in covered)
+        c_defined |= cu.defined
+        placed.append(Unit(cu.name, base, cu.size, "c"))
+    remaining = sorted([u for u in units if u.name not in replaced] + placed, key=lambda u: u.address)
+    covered_ranges = [(cu.address, cu.address + cu.size) for cu in c_units]
+    extra: dict[str, int] = {}
+    for address, label in symbols.labels.items():   # labels inside C code that other units still reference
+        if label not in c_defined and any(lo <= address < hi for lo, hi in covered_ranges):
+            extra[label] = address
+    provided = set(symbols.labels.values()) | set(symbols.absolute.values()) | c_defined | set(extra)
+    known = {}
+    for name in (names or {}).values():
+        for spelling in (name.name, *name.aliases):
+            known[spelling] = name.address
+    for cu in c_units:
+        for name in sorted(cu.undefined - provided):
+            if name in known:
+                extra[name] = known[name]
+            elif m := re.fullmatch(r"(func|loc|dat|rom|ram)_([0-9a-f]{6})", name):
+                extra[name] = int(m.group(2), 16)
+            else:
+                raise BuildError(f"{cu.source.name}: references {name}, which has no known address")
+    return remaining, extra
+
+
+def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int, names: dict | None = None,
+                sources: list[dict] | None = None) -> dict:
     """Generate, assemble and link every unit into out/; the result is PASS only when byte-identical."""
     started = time.time()
     for sub in ("asm", "obj"):  # units change whenever the catalogue does: never link stale objects
         shutil.rmtree(out / sub, ignore_errors=True)
         (out / sub).mkdir(parents=True)
     units = load_units(rom, catalogue)
-    code_units = [u for u in units if u.insns]
     symbols = Symbols(units, catalogue, names)
+    pool = ThreadPoolExecutor(max_workers=jobs)
+    c_units = list(pool.map(lambda entry: cunits.compile_unit(entry, out), sources or []))
+    units, extra = place_c_units(c_units, units, symbols, names)
+    code_units = [u for u in units if u.insns]
     raw: set[int] = set()
     for u in code_units:  # first pass names every reference, so labels are fixed before any file is written
         for item in u.insns:
@@ -305,8 +358,7 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
             raw.update(addresses)  # spelled as raw words from now on
         raise BuildError(f"{source.name}: still rejected after {MAX_ROUNDS} rounds")
 
-    pool = ThreadPoolExecutor(max_workers=jobs)
-    list(pool.map(emit, units))
+    list(pool.map(emit, [u for u in units if u.kind != "c"]))
     rounds = 0
     pending = code_units
     # Object-level fixpoint: sizes first (a mis-sized instruction shifts in-unit displacements), then bytes.
@@ -325,7 +377,7 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
     link_rounds = 0
     while True:
         link_rounds += 1
-        (out / "rom.ld").write_text(linker_script(units, symbols))
+        (out / "rom.ld").write_text(linker_script(units, symbols, extra))
         elf, binary = out / "toejam.elf", out / "toejam.bin"
         subprocess.run([str(toolchain.tool(TARGET, "ld")), "-T", "rom.ld", "-Map", "toejam.map", "-o", elf.name],
                        cwd=out, check=True, capture_output=True, text=True)
@@ -360,8 +412,13 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
             "toolchain": {name: identity[name]["sha256"] for name in ("as", "ld", "objcopy")},
             "toolchain_banner": identity["as"]["banner"],
             "as_flags": AS_FLAGS,
+            "compiler": {"mcc68k": toolchain.identity().get("mcc68k"), "emu2": (toolchain.identity().get("emu2") or {}).get("sha256"),
+                         "as_flags": cunits.AS_FLAGS} if c_units else None,
         },
-        "units": {kind: sum(1 for u in units if u.kind == kind) for kind in ("header", "function", "fragment", "data")},
+        "units": {kind: sum(1 for u in units if u.kind == kind) for kind in ("header", "function", "fragment", "data", "c")},
+        "c_units": [{"source": str(cu.source.relative_to(ROOT)) if cu.source.is_relative_to(ROOT) else str(cu.source),
+                     "sha256": cu.source_sha256, "options": cu.options, "address": f"0x{cu.address:06x}", "size": cu.size,
+                     "functions": [name for name, _, _ in cu.functions]} for cu in c_units],
         "instructions": {
             "total": len(starts) - tables,
             "rendered": rendered,

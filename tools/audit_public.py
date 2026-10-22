@@ -1128,10 +1128,16 @@ def content_reasons(path: str, data: bytes, index: RomIndex | None) -> list[str]
     return reasons
 
 
+def reviewed_assembly_source(p: PurePosixPath) -> bool:
+    """Ruling R007: hand-written 68000 sources are committed as src/asm/<name>.s (exactly that
+    directory, no deeper); every content rule still applies to them."""
+    return p.parts[:2] == ("src", "asm") and len(p.parts) == 3 and p.suffix == ".s"
+
+
 def path_reasons(path: str, size: int, mode: str) -> list[str]:
     p = PurePosixPath(path)
     reasons = []
-    if any(part.lower() in PRIVATE_DIRS for part in p.parts[:-1]):
+    if any(part.lower() in PRIVATE_DIRS for part in p.parts[:-1]) and not reviewed_assembly_source(p):
         reasons.append("file under a private/generated directory")
     if p.suffix.lower() in ASSET_SUFFIXES or p.name.lower().startswith("baserom"):
         reasons.append("ROM/binary/archive/asset filename")

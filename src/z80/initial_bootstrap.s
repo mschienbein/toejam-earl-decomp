@@ -10,7 +10,7 @@
 .globl InitialiseTheMegadrive_Z80SetupValues
 InitialiseTheMegadrive_Z80SetupValues:
     xor a
-    ld bc,Z80_RAM_END-(BootstrapEnd-InitialiseTheMegadrive_Z80SetupValues+1)
+    ld bc,Z80_RAM_END - (BootstrapEnd - InitialiseTheMegadrive_Z80SetupValues + 1)
     ld de,BootstrapEnd+1
     ld hl,BootstrapEnd
     ld sp,hl

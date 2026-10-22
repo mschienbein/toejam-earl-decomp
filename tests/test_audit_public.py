@@ -136,6 +136,19 @@ class AuditTest(unittest.TestCase):
         for text in ("instruction marker", "includes a private baserom", "disassembly listing", "private/generated directory"):
             self.assertIn(text, reasons)
 
+    def test_only_reviewed_assembly_sources_leave_the_private_asm_rule(self):
+        source = b"| clear a word\n\t.text\n\t.globl Clear\nClear:\n\tclr.w %d0\n\trts\n"
+        self.stage("src/asm/clear.s", source)                     # ruling R007: allowed
+        self.stage("src/asm/deeper/clear.s", source)              # only directly under src/asm
+        self.stage("src/asm/notes.txt", b"ordinary text\n")       # only .s files
+        self.stage("tools/asm/clear.s", source)                   # only src/asm
+        self.stage("src/asm/marker.s", b".L" + b"i_001234:\tmove.w d0,d1\n")   # content rules still apply
+        reasons, _ = self.reasons(no_rom=True)
+        self.assertNotIn("src/asm/clear.s:", reasons)
+        for path in ("src/asm/deeper/clear.s", "src/asm/notes.txt", "tools/asm/clear.s"):
+            self.assertIn(f"{path}: file under a private/generated directory", reasons)
+        self.assertIn("src/asm/marker.s", reasons)
+
     def test_binary_assets_extensions_markdown_and_size(self):
         cases = {"binary.txt": bytes([0, 255, 1]), "dump.GEN": b"looks like text", "photo.png": b"not really a PNG",
                  "dump.md": b"this is not markdown", "large.txt": b"x" * (audit_public.MAX_BYTES + 1),

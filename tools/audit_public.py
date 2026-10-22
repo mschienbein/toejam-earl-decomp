@@ -57,13 +57,29 @@ ASSET_SUFFIXES = {
 PADDING = b" " * 16
 HEADER_TEXT = (b"(C)SEGA 1991.OCT", b"(C)SEGA 1991.JUL", b"GM MK-1020 -02", b"GM MK-1020 -00")
 ALLOWED_TEXT = {"tests/support.py": (b"SEGA GENESIS" + b" " * 4,)}
-# Committed history blobs whose finding an independent review judged a false positive: exact git
-# blob id and path -> the start of the one reason it suppresses. Any other blob, path or reason is
-# audited normally, so a changed file never inherits the exception.
+# Committed blobs whose findings an independent review judged false positives: exact git blob id
+# and path -> the starts of the reasons it suppresses. Any other blob, path or reason is audited
+# normally, so a changed file never inherits an exception.
 REVIEWED_FALSE_POSITIVES = {
     # An unspaced Z80 length expression in the boot stub (C020 review); written with spaces since 2fc5393.
-    ("76fd193d0b318c6266751e9eee359c569c3df8a4", "src/z80/initial_bootstrap.s"): "opaque URL-safe Base64 run",
+    ("76fd193d0b318c6266751e9eee359c569c3df8a4", "src/z80/initial_bootstrap.s"): ("opaque URL-safe Base64 run",),
+    # Long C call/index expressions after the names pass (964aba3), reformatted in 4f8a21a.
+    ("7419bb845cff0c33098eacb36bafdf4348a4209f", "src/graphics/camera_redraw_and_motion.c"): ("opaque Z85 run",),
+    ("16d4cfe1f65a180b6cd9b5c44106fd500088fd28", "src/graphics/camera_row_transfer.c"): ("opaque Z85 run",),
+    ("cb0b0808307fa40241da39d17333c2c10ef7b13d", "src/presents/level_item_setup.c"): ("opaque Z85 run",),
+    ("e8f09c3d1cd07bc068e7357af119e5b0852a2b40", "src/sprites/entity_slots_tu14.c"): ("opaque Base85 run",),
+    # The same expressions as test fixtures of a withdrawn audit rule (8244974).
+    ("bfe33b94d9bb63ec3c7c41c7fd530c59cd4847aa", "tests/test_audit_public.py"): ("opaque Base85 run", "opaque Z85 run"),
+    # The immutable c020 review record quotes those source lines as its evidence.
+    ("f3acb1e2d208ed94285d6dc83d4240d5a5e05ae2", "accept/c020-names-hardcases-data/review-C020Review-review.json"):
+        ("opaque Base85 run",),
 }
+
+
+def reviewed_reasons(oid: str, path: str, reasons: list[str]) -> list[str]:
+    """Drop the reasons an exact reviewed (blob, path) exception names; keep everything else."""
+    allowed = REVIEWED_FALSE_POSITIVES.get((oid, path), ())
+    return [r for r in reasons if not r.startswith(allowed)] if allowed else reasons
 MARKER = re.compile(
     rb"(?m)^\s*(?:[0-9a-fA-F]+\s+<)?"
     rb"\.Li_[0-9a-fA-F]{6,8}>?\s*:")
@@ -1264,8 +1280,7 @@ def audit(repo: Path, history: bool = False, no_rom: bool = False) -> tuple[list
             if mode != "160000" and size <= blob_limit(path):
                 if key not in cache:
                     cache[key] = content_reasons(path, reader.read(oid), index)
-                reviewed = REVIEWED_FALSE_POSITIVES.get(key)
-                reasons += [r for r in cache[key] if reviewed is None or not r.startswith(reviewed)]
+                reasons += reviewed_reasons(oid, path, cache[key])
             findings.extend(Finding(source, path, reason) for reason in reasons)
     finally:
         reader.close()
@@ -1289,7 +1304,7 @@ def audit(repo: Path, history: bool = False, no_rom: bool = False) -> tuple[list
         key = (hasher.hexdigest(), path)
         if key not in cache:
             cache[key] = content_reasons(path, data, index)
-        reasons = path_reasons(path, len(data), "") + cache[key]
+        reasons = path_reasons(path, len(data), "") + reviewed_reasons(*key, cache[key])
         findings.extend(Finding("worktree", path, reason) for reason in reasons)
     summary = {"blobs": len(oids), "trees": len(trees), "tracked_worktree_files": work_count,
                "roms": len(images), "rom_check": index is not None, "history": history,

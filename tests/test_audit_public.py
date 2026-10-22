@@ -826,6 +826,19 @@ class AuditTest(unittest.TestCase):
         self.assertIsNone(audit_public.opaque_reason("uv.lock", package))
         self.assertIsNone(audit_public.opaque_reason("facts.txt", b"https://example.invalid/" + digest + b"/file"))
 
+    def test_a_reviewed_exception_covers_one_exact_blob(self):
+        run = b"x = " + base64.b85encode(hashlib.sha256(b"reviewed").digest() * 2)[:56] + b"\n"
+        self.stage("src/flagged.c", run)
+        self.assertIn("opaque", self.reasons(no_rom=True)[0])
+        oid = self.git("rev-parse", ":src/flagged.c").decode().strip()
+        exception = {(oid, "src/flagged.c"): ("opaque",)}
+        with mock.patch.object(audit_public, "REVIEWED_FALSE_POSITIVES", exception):
+            self.assertNotIn("src/flagged.c", self.reasons(no_rom=True)[0])
+            self.stage("src/other.c", run)                       # same blob, other path: still reported
+            self.assertIn("src/other.c", self.reasons(no_rom=True)[0])
+            self.stage("src/flagged.c", run + b"y = 1;\n")      # changed blob: still reported
+            self.assertIn("src/flagged.c", self.reasons(no_rom=True)[0])
+
     def test_genesis_header_needs_more_than_sega_at_offset_256(self):
         text = b"/* " + b"x" * 237 + b" */\nextern void SEGAAndIntroVideoRoutine();\n"
         self.assertEqual(text[256:260], b"SEGA")

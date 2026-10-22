@@ -18,3 +18,6 @@ User: chose "Assembly source" when asked how to finish them.
   readable 68000 assembly source under `src/asm/`, built like the hand-written routines of
   [R007](R007-assembly-sources.md).
 - The classification records the evidence; it is revisited if the compiler release turns up.
+
+Erratum (2026-10-22, AsmSmith): the five functions span REV 02 0x025BCE up to 0x025FFA (exclusive);
+the last instruction ends at 0x025FF9 and the data that follows starts at 0x025FFA.

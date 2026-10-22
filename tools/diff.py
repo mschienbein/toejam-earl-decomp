@@ -66,8 +66,9 @@ def read_candidate(path: Path, wanted: str) -> Candidate:
         data = section.data()
         if not size:
             # GNU assembly symbols often have no .size; internal labels must not truncate them.
+            # MCC68K output (tools/mcc.py) marks functions only as global labels, not STT_FUNC.
             next_functions = [s["value"] for s in symbols if s["section"] == symbol["section"]
-                              and s["type"] == "STT_FUNC" and s["value"] > start]
+                              and (s["type"] == "STT_FUNC" or s.get("bind") == "STB_GLOBAL") and s["value"] > start]
             size = min(next_functions, default=len(data)) - start
         if start < 0 or size <= 0 or start + size > len(data):
             raise DiffError(f"{wanted}: invalid symbol extent")

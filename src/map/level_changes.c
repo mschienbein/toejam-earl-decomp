@@ -16,9 +16,6 @@ short player;
 {
     unsigned short row, column, saved_cell;
     unsigned short *map, *saved_map = gMapDataC[0];
-    /* QUALIFICATION: the original stores the active-mask pointer on its
-     * stack frame and never reads that slot. Preserve the unused initializer. */
-    unsigned char (*active_masks)[19] = gMapDataD;
     unsigned char mask;
 
     if (!player) {

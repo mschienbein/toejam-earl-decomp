@@ -1,0 +1,333 @@
+extern unsigned short gMapDataA[26][19];
+extern unsigned short GetRandomNumber(), func_004f50();
+extern void func_005776();
+extern char ELEVATOR_POS_TABLE[3][2];
+/* The byte lookup unit has observed subtable starts at offsets 16 and 36. */
+struct MapGenerationLookups {
+    unsigned char initial[16];
+    unsigned char corner_tiles[20];
+    unsigned char upper_corner_tiles[20];
+    unsigned char remaining[140];
+};
+extern struct MapGenerationLookups MapGenerationLookupTables;
+
+/* Fill a rectangle. Replacing a different labelled 0x1000 cell replaces
+ * every occurrence of that old label throughout the complete map. */
+void func_005afa(start_row, start_column, height, width, replacement)
+short start_row, start_column, height, width, replacement;
+{
+    short map_row, map_column, tile, column, row;
+
+    for (row = start_row; row < start_row + height; ++row)
+        for (column = start_column; column < start_column + width; ++column) {
+            tile = gMapDataA[row][column];
+            if ((tile & 0x3000) == 0x1000 && tile != replacement) {
+                for (map_row = 0; map_row < 26; ++map_row)
+                    for (map_column = 0; map_column < 19; ++map_column)
+                        if (gMapDataA[map_row][map_column] == tile)
+                            gMapDataA[map_row][map_column] = replacement;
+            } else
+                gMapDataA[row][column] = replacement;
+        }
+}
+
+/* Expand adjacent 0x1000 terrain into two-by-three rectangles, merging
+ * differing region values through func_005afa. Return whether any changed. */
+short func_005bfe(row, column)
+short row, column;
+{
+    short changed = 0;
+    short terrain;
+
+    if ((gMapDataA[row][column] & 1) &&
+        ((terrain = gMapDataA[row - 1][column]) & 0x3000) == 0x1000 &&
+        (gMapDataA[row - 1][column - 1] != terrain ||
+         gMapDataA[row - 1][column + 1] != terrain ||
+         gMapDataA[row - 2][column - 1] != terrain ||
+         gMapDataA[row - 2][column + 1] != terrain)) {
+        func_005afa(row - 2, column - 1, 2, 3, terrain);
+        changed = 1;
+    }
+    if ((gMapDataA[row][column] & 4) &&
+        ((terrain = gMapDataA[row + 1][column]) & 0x3000) == 0x1000 &&
+        (gMapDataA[row + 1][column - 1] != terrain ||
+         gMapDataA[row + 1][column + 1] != terrain ||
+         gMapDataA[row + 2][column - 1] != terrain ||
+         gMapDataA[row + 2][column + 1] != terrain)) {
+        func_005afa(row + 1, column - 1, 2, 3, terrain);
+        changed = 1;
+    }
+    if ((gMapDataA[row][column] & 8) &&
+        ((terrain = gMapDataA[row][column - 1]) & 0x3000) == 0x1000 &&
+        (gMapDataA[row - 1][column - 1] != terrain ||
+         gMapDataA[row + 1][column - 1] != terrain ||
+         gMapDataA[row - 1][column - 2] != terrain ||
+         gMapDataA[row + 1][column - 2] != terrain)) {
+        func_005afa(row - 1, column - 2, 3, 2, terrain);
+        changed = 1;
+    }
+    if ((gMapDataA[row][column] & 2) &&
+        ((terrain = gMapDataA[row][column + 1]) & 0x3000) == 0x1000 &&
+        (gMapDataA[row - 1][column + 1] != terrain ||
+         gMapDataA[row + 1][column + 1] != terrain ||
+         gMapDataA[row - 1][column + 2] != terrain ||
+         gMapDataA[row + 1][column + 2] != terrain)) {
+        func_005afa(row - 1, column + 1, 3, 2, terrain);
+        changed = 1;
+    }
+    return changed;
+}
+
+/* Scan horizontal runs of 0x1000 terrain along both vertical boundaries.
+ * Runs of four extend two cells into the neighboring row; edge runs of
+ * five have the middle cell cleared. */
+void func_0060ae()
+{
+    short run_length, row, column;
+    unsigned short terrain, previous_terrain;
+
+    for (row = 0; row < 25; row++) {
+        run_length = 0;
+        previous_terrain = 0xffff;
+        for (column = 0; column < 19; column++) {
+            terrain = gMapDataA[row][column];
+            if ((terrain & 0x3000) == 0x1000 &&
+                (row == 0 || (gMapDataA[row - 1][column] & 0x3000) != 0x1000)) {
+                if (terrain == previous_terrain)
+                    run_length++;
+                else {
+                    previous_terrain = terrain;
+                    run_length = 1;
+                }
+            } else
+                run_length = 1;
+            if (run_length >= 4) {
+                if (row > 0) {
+                    gMapDataA[row - 1][column - 2] = terrain;
+                    gMapDataA[row - 1][column - 1] = terrain;
+                    run_length = 1;
+                } else if (run_length >= 5) {
+                    gMapDataA[row][column - 2] = 0;
+                    run_length = 2;
+                }
+            }
+        }
+    }
+    for (row = 1; row < 26; row++) {
+        run_length = 0;
+        previous_terrain = 0xffff;
+        for (column = 0; column < 19; column++) {
+            terrain = gMapDataA[row][column];
+            if ((terrain & 0x3000) == 0x1000 &&
+                (row == 25 || (gMapDataA[row + 1][column] & 0x3000) != 0x1000)) {
+                if (terrain == previous_terrain)
+                    run_length++;
+                else {
+                    previous_terrain = terrain;
+                    run_length = 1;
+                }
+            } else
+                run_length = 1;
+            if (run_length >= 4) {
+                if (row < 25) {
+                    gMapDataA[row + 1][column - 2] = terrain;
+                    gMapDataA[row + 1][column - 1] = terrain;
+                    run_length = 1;
+                } else if (run_length >= 5) {
+                    gMapDataA[row][column - 2] = 0;
+                    run_length = 2;
+                }
+            }
+        }
+    }
+}
+
+/* Scan vertical runs along both horizontal boundaries, using the same
+ * run thresholds as func_0060ae. */
+void func_0062ca()
+{
+    short run_length, column, row;
+    unsigned short terrain, previous_terrain;
+
+    for (column = 0; column < 18; column++) {
+        run_length = 0;
+        previous_terrain = 0xffff;
+        for (row = 0; row < 26; row++) {
+            terrain = gMapDataA[row][column];
+            if ((terrain & 0x3000) == 0x1000 &&
+                (column == 0 || (gMapDataA[row][column - 1] & 0x3000) != 0x1000)) {
+                if (terrain == previous_terrain)
+                    run_length++;
+                else {
+                    previous_terrain = terrain;
+                    run_length = 1;
+                }
+            } else
+                run_length = 1;
+            if (run_length >= 4) {
+                if (column > 0) {
+                    gMapDataA[row - 2][column - 1] = terrain;
+                    gMapDataA[row - 1][column - 1] = terrain;
+                    run_length = 1;
+                } else if (run_length >= 5) {
+                    gMapDataA[row - 2][column] = 0;
+                    run_length = 2;
+                }
+            }
+        }
+    }
+    for (column = 1; column < 19; column++) {
+        run_length = 0;
+        previous_terrain = 0xffff;
+        for (row = 0; row < 26; row++) {
+            terrain = gMapDataA[row][column];
+            if ((terrain & 0x3000) == 0x1000 &&
+                (column == 18 || (gMapDataA[row][column + 1] & 0x3000) != 0x1000)) {
+                if (terrain == previous_terrain)
+                    run_length++;
+                else {
+                    previous_terrain = terrain;
+                    run_length = 1;
+                }
+            } else
+                run_length = 1;
+            if (run_length >= 4) {
+                if (column < 18) {
+                    gMapDataA[row - 2][column + 1] = terrain;
+                    gMapDataA[row - 1][column + 1] = terrain;
+                    run_length = 1;
+                } else if (run_length >= 5) {
+                    gMapDataA[row - 2][column] = 0;
+                    run_length = 2;
+                }
+            }
+        }
+    }
+}
+
+/* Run the prepasses, then visit 0x2000 cells until no helper reports a change. */
+void func_0064ea()
+{
+    short row, column, changed = 1;
+
+    func_0060ae();
+    func_0062ca();
+    while (changed) {
+        changed = 0;
+        for (row = 0; row < 26; ++row) {
+            for (column = 0; column < 19; ++column) {
+                if ((gMapDataA[row][column] & 0x3000) == 0x2000) {
+                    if (func_005bfe(row, column))
+                        changed = 1;
+                }
+            }
+        }
+    }
+}
+
+/* Clear temporary 0x0800 marks, then check uniform 4-by-4 regions without
+ * elevator cells before requesting 0x3000 placement at the inner offset. */
+void func_00655a()
+{
+    short row, column, scan_row, scan_column;
+    short eligible, cell, replacement;
+    unsigned short probability;
+
+    for (row = 0; row < 26; ++row) {
+        for (column = 0; column < 19; ++column)
+            gMapDataA[row][column] &= 0xf7ff;
+    }
+    probability = func_004f50(4);
+    for (row = 0; row < 23; ++row) {
+        for (column = 0; column < 16; ++column) {
+            cell = gMapDataA[row][column];
+            if ((cell & 0x3000) == 0x1000) {
+                eligible = 1;
+                replacement = (cell & 0x700) | 0x3000;
+                for (scan_row = row; scan_row < row + 4; ++scan_row) {
+                    for (scan_column = column; scan_column < column + 4;
+                         ++scan_column) {
+                        if ((gMapDataA[scan_row][scan_column] != cell &&
+                             gMapDataA[scan_row][scan_column] != replacement) ||
+                            (ELEVATOR_POS_TABLE[0][1] == scan_row &&
+                             ELEVATOR_POS_TABLE[0][0] == scan_column) ||
+                            (ELEVATOR_POS_TABLE[1][1] == scan_row &&
+                             ELEVATOR_POS_TABLE[1][0] == scan_column) ||
+                            (ELEVATOR_POS_TABLE[2][1] == scan_row &&
+                             ELEVATOR_POS_TABLE[2][0] == scan_column)) {
+                            eligible = 0;
+                            scan_row = row + 4;
+                            scan_column = column + 4;
+                        }
+                    }
+                }
+                if (eligible && probability > GetRandomNumber() % 100)
+                    func_005776(0x3000, (cell >> 8) & 7, 0,
+                                row + 1, column + 1);
+            }
+        }
+    }
+}
+
+/* Mark one region at a time, then OR in a lookup byte indexed by the
+ * four complete 2-by-2 neighborhoods surrounding each 0x1000 cell. */
+void func_00671c(region_count)
+short region_count;
+{
+    unsigned short cell;
+    short upper_table, region, row, column, corner_mask;
+
+    for (region = 0; region < region_count; ++region) {
+        upper_table = func_004f50(5);
+        upper_table = upper_table > GetRandomNumber() % 100;
+        for (row = 0; row < 26; ++row) {
+            for (column = 0; column < 19; ++column) {
+                cell = gMapDataA[row][column];
+                if (((cell & 0x3000) == 0x1000 ||
+                     (cell & 0x3000) == 0x3000) &&
+                    region == ((cell >> 8) & 7)) {
+                    gMapDataA[row][column] |= 0x800;
+                    if (upper_table)
+                        gMapDataA[row][column] |= 0x8000;
+                } else
+                    gMapDataA[row][column] &= 0xf7ff;
+            }
+        }
+        for (row = 0; row < 26; ++row) {
+            for (column = 0; column < 19; ++column) {
+                cell = gMapDataA[row][column];
+                if (cell & 0x800) {
+                    corner_mask = 0;
+                    if (row > 0 && column > 0 &&
+                        (gMapDataA[row][column - 1] & 0x800) &&
+                        (gMapDataA[row - 1][column - 1] & 0x800) &&
+                        (gMapDataA[row - 1][column] & 0x800))
+                        corner_mask |= 1;
+                    if (row > 0 && column < 18 &&
+                        (gMapDataA[row - 1][column] & 0x800) &&
+                        (gMapDataA[row - 1][column + 1] & 0x800) &&
+                        (gMapDataA[row][column + 1] & 0x800))
+                        corner_mask |= 2;
+                    if (row < 25 && column < 18 &&
+                        (gMapDataA[row][column + 1] & 0x800) &&
+                        (gMapDataA[row + 1][column + 1] & 0x800) &&
+                        (gMapDataA[row + 1][column] & 0x800))
+                        corner_mask |= 4;
+                    if (row < 25 && column > 0 &&
+                        (gMapDataA[row + 1][column] & 0x800) &&
+                        (gMapDataA[row + 1][column - 1] & 0x800) &&
+                        (gMapDataA[row][column - 1] & 0x800))
+                        corner_mask |= 8;
+                    if ((cell & 0x3000) == 0x1000) {
+                        if (upper_table)
+                            gMapDataA[row][column] |=
+                                MapGenerationLookupTables.upper_corner_tiles[corner_mask];
+                        else
+                            gMapDataA[row][column] |=
+                                MapGenerationLookupTables.corner_tiles[corner_mask];
+                    }
+                }
+            }
+        }
+    }
+}

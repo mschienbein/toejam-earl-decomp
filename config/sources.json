@@ -128,6 +128,20 @@
    ]
   },
   {
+   "source": "src/map/region_cleanup.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/map/region_walk.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/map/terrain_at_position.c",
    "versions": [
     "rev02",
@@ -135,7 +149,7 @@
    ]
   },
   {
-   "source": "src/math/random.c",
+   "source": "src/math/random_cache.c",
    "versions": [
     "rev02",
     "rev00"

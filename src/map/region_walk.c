@@ -1,0 +1,200 @@
+extern unsigned short GetRandomNumber();
+extern char gLevel912A;
+extern unsigned short gMapDataA[26][19];
+/* This routine uses the leading 26-by-19 byte view of this work area. */
+extern unsigned char gMapDataD[26][19];
+extern char ELEVATOR_POS_TABLE[3][2];
+extern unsigned char dat_08bfc2[];
+
+/* Walk between two map cells, adding reciprocal direction bits and 0x2000
+ * to the word map. A level-dependent draw also copies direction bits to the
+ * byte map; turns are selected from the observed lookup table. */
+void func_004fee(start_row, start_column, target_row, target_column,
+                 random_steps, turn_chance)
+short start_row, start_column, target_row, target_column;
+short random_steps, turn_chance;
+{
+    short direction_steps = 0;
+    /* The absent-direction sentinels are signed words. */
+    short opposite_direction = (short)-1;
+    short row, column;
+    short previous_direction = (short)-1;
+    short repeated_steps = 0;
+    short steps = 0;
+    short direction, next_direction;
+    char copy_directions;
+
+    row = start_row;
+    column = start_column;
+    copy_directions = GetRandomNumber() % 100 < 10 + 3 * gLevel912A;
+    direction = 1 << (GetRandomNumber() & 3);
+    while (row != target_row || column != target_column) {
+        if (direction_steps <= 0 || !turn_chance) {
+            direction_steps = GetRandomNumber() % 3 + 2;
+            if (turn_chance > GetRandomNumber() % 100)
+                next_direction = dat_08bfc2[GetRandomNumber() % 3 + 1 + direction];
+            else if (GetRandomNumber() % 100 < 50) {
+                if (target_row - row > 0)
+                    next_direction = 4;
+                else if (target_row != row)
+                    next_direction = 1;
+                else if (GetRandomNumber() % 100 < 50)
+                    next_direction = 1;
+                else
+                    next_direction = 4;
+            } else {
+                if (target_column - column > 0)
+                    next_direction = 2;
+                else if (column != target_column)
+                    next_direction = 8;
+                else if (GetRandomNumber() % 100 < 50)
+                    next_direction = 8;
+                else
+                    next_direction = 2;
+            }
+        }
+        if (!turn_chance || GetRandomNumber() % 100 < 80)
+            direction = next_direction;
+        else
+            direction = dat_08bfc2[GetRandomNumber() % 3 + 1 + next_direction];
+        if (previous_direction == direction) {
+            if (repeated_steps >= direction_steps)
+                direction = dat_08bfc2[GetRandomNumber() % 3 + 1 + direction];
+            else
+                ++repeated_steps;
+        } else
+            repeated_steps = 0;
+        if (direction != opposite_direction &&
+            ((direction == 1 && row > 2) ||
+             (direction == 4 && row < 24) ||
+             (direction == 8 && column > 2) ||
+             (direction == 2 && column < 17))) {
+            gMapDataA[row][column] |= direction | 0x2000;
+            if (copy_directions)
+                gMapDataD[row][column] |= direction;
+            if (direction == 1) {
+                --row;
+                opposite_direction = 4;
+            } else if (direction == 4) {
+                ++row;
+                opposite_direction = 1;
+            } else if (direction == 8) {
+                --column;
+                opposite_direction = 2;
+            } else if (direction == 2) {
+                ++column;
+                opposite_direction = 8;
+            }
+            gMapDataA[row][column] |= opposite_direction | 0x2000;
+            if (copy_directions)
+                gMapDataD[row][column] |= opposite_direction;
+            previous_direction = direction;
+            --direction_steps;
+            ++steps;
+            if (gLevel912A > GetRandomNumber() % 100)
+                copy_directions = 1;
+        } else
+            direction_steps = 0;
+        if (steps >= random_steps)
+            turn_chance = 0;
+    }
+}
+
+/* Advance a 2x2 region origin. Different 0x1000 regions may stop the scan
+ * after two overlapping cells, according to the supplied percentage. */
+short func_0053c2(row_position, column_position, direction, region, join_chance)
+short *row_position, *column_position;
+short direction, region, join_chance;
+{
+    short row, column, overlaps, row_offset, column_offset, tile;
+
+    row = *row_position;
+    column = *column_position;
+    while (1) {
+        if (direction == 1)
+            --row;
+        if (direction == 4)
+            ++row;
+        if (direction == 8)
+            --column;
+        if (direction == 2)
+            ++column;
+        if (row < 0 || column < 0 || row >= 25 || column >= 18)
+            break;
+        if ((row == 0 || row == 24) && (direction & 10))
+            return 0;
+        if ((column == 0 || column == 17) && (direction & 5))
+            return 0;
+        overlaps = 0;
+        for (row_offset = 0; row_offset < 2; ++row_offset)
+            for (column_offset = 0; column_offset < 2; ++column_offset) {
+                tile = gMapDataA[row + row_offset][column + column_offset];
+                if ((tile & 0x3000) == 0x1000 && tile != region) {
+                    ++overlaps;
+                    if (overlaps >= 2 && join_chance > GetRandomNumber() % 100) {
+                        *row_position = row;
+                        *column_position = column;
+                        return 1;
+                    }
+                }
+            }
+        if (overlaps)
+            return 0;
+        for (row_offset = 0; row_offset < 2; ++row_offset)
+            for (column_offset = 0; column_offset < 2; ++column_offset)
+                if (gMapDataA[row + row_offset][column + column_offset] != region) {
+                    *row_position = row;
+                    *column_position = column;
+                    return 1;
+                }
+    }
+    return 0;
+}
+
+/* Advance a 2x2 region while its surrounding 4x4 neighbourhood contains
+ * only this region or the corresponding 0x1000 base. Avoid all three
+ * coordinate pairs in the elevator-position table. */
+short func_00557a(row_position, column_position, direction, region)
+short *row_position, *column_position;
+short direction, region;
+{
+    short row, column, row_offset, column_offset, tile;
+
+    row = *row_position;
+    column = *column_position;
+    while (1) {
+        if (direction == 1)
+            --row;
+        if (direction == 4)
+            ++row;
+        if (direction == 8)
+            --column;
+        if (direction == 2)
+            ++column;
+        if (row < 1 || column < 1 || row >= 24 || column >= 17)
+            break;
+        if (ELEVATOR_POS_TABLE[0][0] <= column + 1 && ELEVATOR_POS_TABLE[0][0] >= column &&
+            ELEVATOR_POS_TABLE[0][1] <= row + 1 && ELEVATOR_POS_TABLE[0][1] >= row)
+            break;
+        if (ELEVATOR_POS_TABLE[1][0] <= column + 1 && ELEVATOR_POS_TABLE[1][0] >= column &&
+            ELEVATOR_POS_TABLE[1][1] <= row + 1 && ELEVATOR_POS_TABLE[1][1] >= row)
+            break;
+        if (ELEVATOR_POS_TABLE[2][0] <= column + 1 && ELEVATOR_POS_TABLE[2][0] >= column &&
+            ELEVATOR_POS_TABLE[2][1] <= row + 1 && ELEVATOR_POS_TABLE[2][1] >= row)
+            break;
+        for (row_offset = -1; row_offset < 3; ++row_offset)
+            for (column_offset = -1; column_offset < 3; ++column_offset) {
+                tile = gMapDataA[row + row_offset][column + column_offset];
+                if (tile != region && tile != ((region & 0x700) | 0x1000))
+                    return 0;
+            }
+        for (row_offset = 0; row_offset < 2; ++row_offset)
+            for (column_offset = 0; column_offset < 2; ++column_offset)
+                if (gMapDataA[row + row_offset][column + column_offset] != region) {
+                    *row_position = row;
+                    *column_position = column;
+                    return 1;
+                }
+    }
+    return 0;
+}

@@ -533,7 +533,8 @@ short selection;
 
 extern void MoveDataToVRAM(), VDPWritesRoutine1(), RAMWritesRoutine1();
 extern void InitialiseTheZ80(), LoadSoundDriverToZ80(), EnableAllInterrupts(), WaitForNextVBlank();
-extern void StackBasedRandom(), PreGenerateRandoms(), ClearColourRAM(), ClearSRAM(), ClearVideoRAM();
+extern long StackBasedRandom();
+extern void PreGenerateRandoms(), ClearColourRAM(), ClearSRAM(), ClearVideoRAM();
 extern void func_008b98(), SetRAMIndexes(), SEGAAndIntroVideoRoutine(), NewGameMainMenu();
 extern void func_00046a(), LoadLevel1Tiles(), SetupPlayer(), SetupTheMainGame();
 extern void SetPositionOnNewLevel(), ToggleLOC_00FF8196(), func_00105a();

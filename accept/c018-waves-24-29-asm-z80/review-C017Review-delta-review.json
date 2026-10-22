@@ -1,0 +1,193 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "C017Review",
+  "checkpoint": "c018-waves-24-29-asm-z80",
+  "checks": [
+    {
+      "name": "prepared-profile",
+      "status": "PASS",
+      "commit": "fd53741dd81abe7ea3cd8e6f0be2729e5e4d268a",
+      "input_hashes_exact": 251,
+      "original_prepare_receipts_verified": 4,
+      "original_prepare_images_and_unit_lists_exact": true,
+      "evidence": [
+        "delta18/prepared-inputs.json",
+        "delta18/prepared-receipts.json"
+      ]
+    },
+    {
+      "name": "c017-F1-F2-disclosures",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "resolved_sites": [
+        "func_0281e4 discarded frame pointer",
+        "func_0284a8 discarded frame pointer",
+        "func_010294 assignment-only timer"
+      ],
+      "source_deltas_comment_only": true,
+      "historical_spelling_not_claimed": true,
+      "all_functions_in_both_files_match_both_revisions": true,
+      "evidence": [
+        "delta18/delta-scope.json",
+        "delta18/matches.json"
+      ]
+    },
+    {
+      "name": "natural-ErrorTrap-C",
+      "status": "PASS",
+      "source": "src/core/error_trap.c",
+      "address": "0x000200",
+      "code_size": 2,
+      "body": "Natural infinite loop, matching original self-branch",
+      "matches": [
+        "rev02",
+        "rev00"
+      ],
+      "new_C_function_relative_to_c017": true,
+      "evidence": "delta18/packets/func_000200.md"
+    },
+    {
+      "name": "reviewed-source-identity",
+      "status": "PASS",
+      "compared_files": 18,
+      "byte_identical_to_author_offers": 17,
+      "68000_sources_exact": 14,
+      "assembly_includes_exact": 2,
+      "Z80_bootstrap_exact": true,
+      "sole_difference": "src/z80/sound_driver.s mailbox comment changed as requested; no program-text change",
+      "author_manifest_source_hashes_exact": true,
+      "component_review_status_source": "Main attestation; no other checkpoint review read before sealing",
+      "evidence": "delta18/source-identity.json"
+    },
+    {
+      "name": "registration-and-credit",
+      "status": "PASS",
+      "assembly_sources_registered_once_for_both_versions": 16,
+      "68000_ASM_units": 14,
+      "68000_global_entries": 42,
+      "ASM_catalogue_functions": 39,
+      "ASM_catalogue_fragments": 3,
+      "Z80_replacements": [
+        {
+          "unit": "InitialZ80Bootstrap",
+          "size": 38
+        },
+        {
+          "unit": "SoundDriver",
+          "size": 1294
+        }
+      ],
+      "eligible_C_functions_per_revision": 573,
+      "assembly_C_credit": 0,
+      "Z80_C_credit": 0,
+      "literal_bytes_counted_as_code": false,
+      "registry_kind_c_on_s_source_still_compiles_as_asm_and_receives_no_C_credit": true,
+      "credit_ledger_modified": false,
+      "evidence": [
+        "delta18/builds/rev02/would-credit.json",
+        "delta18/builds/rev00/would-credit.json",
+        "delta18/tooling/kind-spoof.json"
+      ]
+    },
+    {
+      "name": "fresh-delta-matches-and-full-builds",
+      "status": "PASS",
+      "strict_match_commands": 34,
+      "files_per_revision": 17,
+      "MATCH_global_entries_per_revision": 70,
+      "C_units": 123,
+      "ASM_units": 14,
+      "Z80_units": 2,
+      "rev02_full_image": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+      "rev00_full_image": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+      "prepared_C_ASM_unit_lists_equal": true,
+      "raw_instruction_words": 0,
+      "method": "Ordinary build.py pipeline with sandbox output directories only",
+      "evidence": [
+        "delta18/matches.json",
+        "delta18/builds/rev02/receipt.json",
+        "delta18/builds/rev00/receipt.json"
+      ]
+    },
+    {
+      "name": "targeted-existing-regressions",
+      "status": "PASS",
+      "tests": 12,
+      "skipped": 0,
+      "suites": [
+        "NamesTest",
+        "SyntheticBuildTest",
+        "PinnedObjdumpAuditTest"
+      ],
+      "changed_audit_test_assertions_preserved": true,
+      "full_repository_suite_independently_rerun": false,
+      "evidence": "delta18/tooling/results.json"
+    },
+    {
+      "name": "other-admission-boundaries",
+      "status": "PASS",
+      "private_ASM_include_positive_and_missing_include_negative": "Both revisions exercised",
+      "same_size_wrong_ASM": "DIFF both revisions",
+      "orphan_s_detection": "Both 68000 and Z80 paths detected",
+      "REV00_fragment_identity": "loc_ label; missing-kind function retains func_ identity",
+      "partial_literal_data_tail": "Preserved; overlapping source rejected",
+      "SUBALIGN2": "Startup at 0x202 and full images match",
+      "unknown_Z80_unit": "Rejected",
+      "wrong_Z80_size": "39 versus 38 rejected",
+      "single_correctly_sized_wrong_Z80_program": "Full image FAIL at 0x0002c6",
+      "evidence": "delta18/tooling/results.json"
+    },
+    {
+      "name": "Z80-executable-pinning",
+      "status": "FAIL",
+      "finding": "C018-D1",
+      "explicit_existing_pin_check_on_substituted_tool": "Rejects with ToolchainError",
+      "ordinary_Z80_helper_and_full_image_with_same_substituted_tool": "PASS while recording wrong input-source hash",
+      "executed_Z80_hashes_in_receipt": false,
+      "installed_binaries_modified": false,
+      "experiment": "Private tool-selector substitution simulates a replaced executable; no installed executable or record was changed",
+      "evidence": [
+        "delta18/tooling/results.json",
+        "delta18/tooling/substituted-z80-assembler/receipt.json"
+      ]
+    },
+    {
+      "name": "duplicate-Z80-unit-identity",
+      "status": "FAIL",
+      "finding": "C018-D2",
+      "wrong_source_then_correct_source_same_target": "Full image PASS with both sources recorded",
+      "wrong_source_binary_equals_original": false,
+      "normal_tools_used": true,
+      "negative_control_wrong_source_alone": "Full image FAIL",
+      "evidence": [
+        "delta18/tooling/duplicate-registry.json",
+        "delta18/tooling/shadowed-wrong-z80/receipt.json",
+        "delta18/tooling/single-wrong-z80/receipt.json"
+      ]
+    },
+    {
+      "name": "review-scope-and-state",
+      "status": "PASS",
+      "accept_review_or_finalize_invoked": false,
+      "tracked_files_or_G_git_state_modified": false,
+      "installed_tool_binaries_modified": false,
+      "review_artifacts": "scratch/agents/C017Review/",
+      "other_checkpoint_reviews_read_before_sealing": false
+    }
+  ],
+  "findings": [
+    {
+      "id": "C018-D1",
+      "severity": "high",
+      "file": "tools/build.py:303-337 (z80_sources), receipt inputs at 542-552",
+      "what": "Z80 assembly uses toolchain.tool(), which checks only executable existence, without verified_binutils(\"z80-elf\"); the full receipt verifies/records only m68k binutils. A private substituted assembler, explicitly rejected by the real pin checker, was nevertheless accepted by z80_sources and the full-image pipeline: it compiled the canonical bootstrap instead of a wrong registered source, yielding PASS and a receipt bound to the wrong source hash. No installed binary was modified. This reproduces a source-provenance failure under an unpinned/replaced Z80 tool.",
+      "suggested_fix": "Verify all executed Z80 binutils with the existing verified_binutils convention before use, bind those verified executable hashes into full-build receipts, and add a mismatched-Z80-executable negative regression."
+    },
+    {
+      "id": "C018-D2",
+      "severity": "high",
+      "file": "tools/build.py:317-336 (z80_sources)",
+      "what": "Duplicate Z80 target-unit registrations silently overwrite data[\"units\"][k]. With real pinned tools, a 38-byte wrong NOP bootstrap registered before the correct bootstrap for InitialZ80Bootstrap is hidden by the later entry: the full-ROM build PASSes and records both source hashes, although the wrong assembled image demonstrably differs. The otherwise same build with only that wrong bootstrap FAILs at 0x0002c6. A wrong registered source can therefore pass by never contributing to the final image.",
+      "suggested_fix": "Reject duplicate Z80 target-unit registrations before assembly and require each accepted registration to remain a unique replacement in the final image. Add the wrong-then-correct duplicate-registration case as a regression."
+    }
+  ]
+}

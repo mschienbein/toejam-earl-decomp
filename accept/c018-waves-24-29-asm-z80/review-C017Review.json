@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c018-waves-24-29-asm-z80",
+ "prepare_sha256": "42fd130be8dee88390f7dc52f7ae90a7d3753a9ece79001630411c45e3ac6660",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T12:10:23Z",
+ "review_file": "delta-review.json",
+ "review_sha256": "f8c9b3adc8321ba19c9069bbf617b2bf9a1902c8a69d3975d64f7db538f33cb3",
+ "reviewer": "C017Review",
+ "verdict": "FAIL"
+}

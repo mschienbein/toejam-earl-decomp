@@ -1,0 +1,79 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C030Review",
+  "checkpoint": "c030-readability-sweep",
+  "reviewed_commit": "95250615f112cc6544fc2893defd92689714357f",
+  "baseline_commit": "f48a088d33de43629d60abc810d015c4e8e6c553",
+  "prepare_sha256": "d0c4d62044350332d119786e8977d532425bd4df66c8e1854551f2966fd02176",
+  "sealed_utc": "2026-10-22T19:10:31Z",
+  "sealed_before_other_reviews": true,
+  "checks": [
+    {
+      "id": "prepared-inputs",
+      "status": "PASS",
+      "what": "The prepared HEAD is the reviewed commit. All 248 input hashes, both source lists, four normalized receipt hashes, four image hashes, original-image hashes, and prepared unit lists agree. Inputs remained unchanged through the independent run.",
+      "evidence": "evidence/prepare.json"
+    },
+    {
+      "id": "both-revision-matches",
+      "status": "PASS",
+      "what": "Ran match.py on all 109 registered C units in each revision, covering all 65 changed C files and all header consumers. Each revision: 597 functions MATCH; 527 functions are in the 65 changed units; no failures.",
+      "evidence": "evidence/matches.json"
+    },
+    {
+      "id": "full-rom-builds",
+      "status": "PASS",
+      "what": "Independent full production build pipeline PASS for REV 02 and REV 00. The suite rebuilt both again, with identical pinned image hashes, zero raw instruction words, and C-unit lists equal to prepare. Output routing alone was redirected to the reviewer scratch root because build.py has no output-directory CLI option.",
+      "evidence": "evidence/coverage.json"
+    },
+    {
+      "id": "suite",
+      "status": "PASS",
+      "what": "All 191 tests passed with zero failures, errors, or skips. Every test and assertion was retained; only build.build output routing was redirected to private reviewer directories.",
+      "evidence": "evidence/suite.json"
+    },
+    {
+      "id": "public-audit",
+      "status": "PASS",
+      "what": "The normal tools/audit_public.py command passed: two ROMs indexed, 395 unique Git blobs, one tree, 395 tracked worktree files, zero findings. No --no-rom or audit-policy exception was added.",
+      "evidence": "evidence/audit.json"
+    },
+    {
+      "id": "meaning-sample",
+      "status": "PASS",
+      "what": "Reviewed the complete 85-file diff and recorded 77 distinct changed-source locations spanning every changed C file. The sample includes all 16 bounded payload-expression replacements and both new ORIGINAL BUG markers. No misleading new names, constants, field selections, widths, or bug descriptions were found. No local identifiers were renamed by this commit.",
+      "evidence": "evidence/sample.json"
+    },
+    {
+      "id": "target-layout-and-extents",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "what": "MCC68K measures the frame prefix as 4 bytes, piece stride as 10 bytes, and payload start as 4 in both views. All 1,287 metasprite units per revision satisfy prefix-plus-count sizing and have at most 12 pieces. Transition, uncover, drift, title, driving, intro, and ship frame bounds agree with their consumers. View sizes are not ROM allocation sizes.",
+      "evidence": "evidence/layout.json"
+    },
+    {
+      "id": "compiler-coaxing-disclosures",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "what": "All 35 existing MATCHING QUALIFICATION comments remain byte-for-byte present. The two additional markers centralize the inherited bounded-index constraint and explicitly label an unchanged unused-handle read. No new undisclosed compiler coaxing was found; the protected ShowShipPieces body is byte-for-byte unchanged as text.",
+      "evidence": "evidence/disclosures.json"
+    },
+    {
+      "id": "review-publication-safety",
+      "status": "PASS",
+      "what": "The exact review/report contents and their public evidence files passed the same auditor path/content checks against both private ROMs before sealing. No ROM bytes, disassembly listing, or long encoded payload is included.",
+      "evidence": "evidence/publication.json"
+    }
+  ],
+  "findings": [
+    {
+      "id": "C030-Q1",
+      "severity": "info",
+      "file": "include/sprite_frame_views.h:6-20",
+      "what": "Accepted matching qualification, not a defect: the 12-piece and 4-piece members are bounded access views retained for MCC68K word indexing. Their complete C sizes do not describe every variable-length ROM frame. The header states this explicitly, and both-revision extent checks support every changed consumer.",
+      "suggested_fix": "No change required for c030. Retain the MATCHING QUALIFICATION and never use these view sizes as ROM allocation sizes or frame-array strides."
+    }
+  ],
+  "limitations": [
+    "The negative-coordinate ORIGINAL BUG marker describes an observed missing lower-bound guard. Reachability from an original caller remains unestablished, exactly as its comment discloses; no observed retail crash is claimed.",
+    "[INFERENCE] The historical source spelling is not established by byte equality. The review accepts the disclosed compiler qualifications, not a claim that these C views or steering idioms were in the 1991 source."
+  ]
+}

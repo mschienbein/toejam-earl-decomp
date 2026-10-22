@@ -2,8 +2,9 @@ extern unsigned short GetRandomNumber();
 extern char gLevel912A;
 extern unsigned short gMapDataA[26][19];
 /* This routine uses the leading 26-by-19 byte view of this work area. */
-extern unsigned char gMapDataD[26][19];
-extern char ELEVATOR_POS_TABLE[3][2];
+extern unsigned char gMapDataD[52][19];
+struct elevator_position { char x, y; };
+extern struct elevator_position ELEVATOR_POS_TABLE[8];
 extern unsigned char dat_08bfc2[];
 
 /* Walk between two map cells, adding reciprocal direction bits and 0x2000
@@ -16,9 +17,9 @@ short random_steps, turn_chance;
 {
     short direction_steps = 0;
     /* The absent-direction sentinels are signed words. */
-    short opposite_direction = (short)-1;
+    short opposite_direction = -1;
     short row, column;
-    short previous_direction = (short)-1;
+    short previous_direction = -1;
     short repeated_steps = 0;
     short steps = 0;
     short direction, next_direction;
@@ -173,14 +174,14 @@ short direction, region;
             ++column;
         if (row < 1 || column < 1 || row >= 24 || column >= 17)
             break;
-        if (ELEVATOR_POS_TABLE[0][0] <= column + 1 && ELEVATOR_POS_TABLE[0][0] >= column &&
-            ELEVATOR_POS_TABLE[0][1] <= row + 1 && ELEVATOR_POS_TABLE[0][1] >= row)
+        if (ELEVATOR_POS_TABLE[0].x <= column + 1 && ELEVATOR_POS_TABLE[0].x >= column &&
+            ELEVATOR_POS_TABLE[0].y <= row + 1 && ELEVATOR_POS_TABLE[0].y >= row)
             break;
-        if (ELEVATOR_POS_TABLE[1][0] <= column + 1 && ELEVATOR_POS_TABLE[1][0] >= column &&
-            ELEVATOR_POS_TABLE[1][1] <= row + 1 && ELEVATOR_POS_TABLE[1][1] >= row)
+        if (ELEVATOR_POS_TABLE[1].x <= column + 1 && ELEVATOR_POS_TABLE[1].x >= column &&
+            ELEVATOR_POS_TABLE[1].y <= row + 1 && ELEVATOR_POS_TABLE[1].y >= row)
             break;
-        if (ELEVATOR_POS_TABLE[2][0] <= column + 1 && ELEVATOR_POS_TABLE[2][0] >= column &&
-            ELEVATOR_POS_TABLE[2][1] <= row + 1 && ELEVATOR_POS_TABLE[2][1] >= row)
+        if (ELEVATOR_POS_TABLE[2].x <= column + 1 && ELEVATOR_POS_TABLE[2].x >= column &&
+            ELEVATOR_POS_TABLE[2].y <= row + 1 && ELEVATOR_POS_TABLE[2].y >= row)
             break;
         for (row_offset = -1; row_offset < 3; ++row_offset)
             for (column_offset = -1; column_offset < 3; ++column_offset) {

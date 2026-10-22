@@ -23,13 +23,6 @@
    ]
   },
   {
-   "source": "src/data/list_membership.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/engine/random_counter.c",
    "versions": [
     "rev02",
@@ -86,13 +79,6 @@
    ]
   },
   {
-   "source": "src/graphics/glyph_map.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/graphics/metatile_words.c",
    "versions": [
     "rev02",
@@ -128,6 +114,27 @@
    ]
   },
   {
+   "source": "src/map/map_drawing.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/map/map_drawing_controller.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/map/map_population.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/map/region_cleanup.c",
    "versions": [
     "rev02",
@@ -143,6 +150,13 @@
   },
   {
    "source": "src/map/terrain_at_position.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/map/transition_paths.c",
    "versions": [
     "rev02",
     "rev00"
@@ -283,6 +297,13 @@
   },
   {
    "source": "src/sprites/set_sprite.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/ui/inventory.c",
    "versions": [
     "rev02",
     "rev00"

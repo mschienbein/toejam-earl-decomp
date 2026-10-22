@@ -1,6 +1,6 @@
 extern long gRNGState;
 extern unsigned short PREGEN_RANDOMS[59];
-extern short ram_ff91e0;
+extern unsigned short ram_ff91e0;
 
 /* Park-Miller generator, using Schrage's split to avoid overflowing 31 bits.
  * The original public result is the low unsigned 16 bits of the new seed. */

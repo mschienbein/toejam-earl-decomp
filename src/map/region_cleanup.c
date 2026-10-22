@@ -1,15 +1,17 @@
 extern unsigned short gMapDataA[26][19];
-extern unsigned short GetRandomNumber(), func_004f50();
+extern unsigned short GetRandomNumber();
+extern unsigned long func_004f50();
 extern void func_005776();
-extern char ELEVATOR_POS_TABLE[3][2];
+struct elevator_position { char x, y; };
+extern struct elevator_position ELEVATOR_POS_TABLE[8];
 /* The byte lookup unit has observed subtable starts at offsets 16 and 36. */
-struct MapGenerationLookups {
-    unsigned char initial[16];
-    unsigned char corner_tiles[20];
-    unsigned char upper_corner_tiles[20];
-    unsigned char remaining[140];
+struct map_generation_tables {
+    unsigned char tiles[16];
+    unsigned char edge_plain[20], edge_alternate[20];
+    unsigned char filled_plain[32], filled_alternate[32];
+    unsigned char remaining[76];
 };
-extern struct MapGenerationLookups MapGenerationLookupTables;
+extern struct map_generation_tables MapGenerationLookupTables;
 
 /* Fill a rectangle. Replacing a different labelled 0x1000 cell replaces
  * every occurrence of that old label throughout the complete map. */
@@ -249,12 +251,12 @@ void func_00655a()
                          ++scan_column) {
                         if ((gMapDataA[scan_row][scan_column] != cell &&
                              gMapDataA[scan_row][scan_column] != replacement) ||
-                            (ELEVATOR_POS_TABLE[0][1] == scan_row &&
-                             ELEVATOR_POS_TABLE[0][0] == scan_column) ||
-                            (ELEVATOR_POS_TABLE[1][1] == scan_row &&
-                             ELEVATOR_POS_TABLE[1][0] == scan_column) ||
-                            (ELEVATOR_POS_TABLE[2][1] == scan_row &&
-                             ELEVATOR_POS_TABLE[2][0] == scan_column)) {
+                            (ELEVATOR_POS_TABLE[0].y == scan_row &&
+                             ELEVATOR_POS_TABLE[0].x == scan_column) ||
+                            (ELEVATOR_POS_TABLE[1].y == scan_row &&
+                             ELEVATOR_POS_TABLE[1].x == scan_column) ||
+                            (ELEVATOR_POS_TABLE[2].y == scan_row &&
+                             ELEVATOR_POS_TABLE[2].x == scan_column)) {
                             eligible = 0;
                             scan_row = row + 4;
                             scan_column = column + 4;
@@ -321,10 +323,10 @@ short region_count;
                     if ((cell & 0x3000) == 0x1000) {
                         if (upper_table)
                             gMapDataA[row][column] |=
-                                MapGenerationLookupTables.upper_corner_tiles[corner_mask];
+                                MapGenerationLookupTables.edge_alternate[corner_mask];
                         else
                             gMapDataA[row][column] |=
-                                MapGenerationLookupTables.corner_tiles[corner_mask];
+                                MapGenerationLookupTables.edge_plain[corner_mask];
                     }
                 }
             }

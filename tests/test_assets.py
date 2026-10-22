@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import copy
 import json
 import os
 from pathlib import Path
@@ -223,6 +224,189 @@ class AssetCodecTests(unittest.TestCase):
         self.roundtrip("padding", b"\xff" * 31)
         self.roundtrip("z80_binary", b"\x01\x02\x03")
         self.roundtrip("raw", b"\x01\x02\x03")
+
+    def unreferenced_fixture(self, version: str = "rev02") -> tuple[dict, dict, bytes]:
+        address = 0x03C34A if version == "rev02" else 0x03C2DA
+        unit = {"name": "FMPatchAuxiliary", "address": address, "size": 6, "kind": "unreferenced",
+                "asset": "Unknown.json", "provenance": ["synthetic"], "params": {
+                    "referenced": False, "evidence": {
+                        "scope": "catalogued-instructions-typed-pointers-rom-longwords",
+                        "code_references": 0, "typed_pointer_references": 0, "rom_longword_references": 0,
+                        "previous_unit": "FMPatches", "next_unit": "InstrumentSelectionMaps",
+                        "consumer_analysis": "synthetic boundary analysis",
+                        "limitation": "No observed root; computed use is not excluded."},
+                    "observed_pattern": {"count": 6, "minimum": 0, "maximum": 4, "distinct": 5}}}
+        previous = {"name": "FMPatches", "address": address - 1862, "size": 1862, "kind": "records",
+                    "asset": "Previous.json", "provenance": ["synthetic"],
+                    "params": {"fields": [{"name": f"field_{i}", "width": 1} for i in range(38)]}}
+        following = {"name": "InstrumentSelectionMaps", "address": address + 6, "size": 224, "kind": "values",
+                     "asset": "Following.json", "provenance": ["synthetic"], "params": {
+                         "width": 1, "byte_order": "big", "shape": [14, 16]}}
+        config = {"schema_version": 1, "version": version, "rom_size": address + 230,
+                  "units": [previous, unit, following]}
+        return config, unit, bytes([0, 1, 2, 3, 4, 4])
+
+    def trailing_fixture(self, version: str = "rev02") -> tuple[dict, dict, bytes]:
+        address = 0x026446 if version == "rev02" else 0x0263CE
+        unit = {"name": "LevelEarthlingChoices", "address": address, "size": 521, "kind": "values",
+                "asset": "Choices.json", "provenance": ["synthetic"], "params": {
+                    "width": 1, "byte_order": "big", "shape": [26, 20], "trailing_elements": 1,
+                    "trailing_evidence": {"basis": "same-element-format", "consumer": "func_017ac8",
+                                          "source": "synthetic reader bounds",
+                                          "qualification": "[INFERENCE] One unindexed element."}}}
+        config = {"schema_version": 1, "version": version, "rom_size": address + 521, "units": [unit]}
+        return config, unit, bytes(i % 25 for i in range(520)) + b"\x10"
+
+    def test_values_separate_only_the_reviewed_whole_trailing_element(self) -> None:
+        for version in ("rev02", "rev00"):
+            config, unit, data = self.trailing_fixture(version)
+            assets.validate_config(config)
+            asset = assets.extract_unit(unit, data, config)
+            decoded = json.loads(asset)
+            self.assertEqual(decoded, {"values": list(data[:-1]), "trailing_values": [16]})
+            self.assertEqual(assets.pack_unit(unit, asset, config), data)
+            for main, trailing in ((list(data[:-2]), [0, 16]), (list(data), [])):
+                with self.subTest(version=version, main=len(main)), self.assertRaises(assets.AssetError):
+                    assets.pack_unit(unit, assets.json_bytes({"values": main, "trailing_values": trailing}), config)
+            for value in (-1, 256, True, "16", [16]):
+                decoded["trailing_values"] = [value]
+                with self.subTest(value=value), self.assertRaises(assets.AssetError):
+                    assets.pack_unit(unit, assets.json_bytes(decoded), config)
+
+    def test_trailing_elements_cannot_hide_large_or_unreviewed_payloads(self) -> None:
+        config, unit, _ = self.trailing_fixture()
+        payload = bytes((i * 73 + 19) % 256 for i in range(4096))
+        unit["size"], config["rom_size"] = len(payload), unit["address"] + len(payload)
+        unit["params"].update(shape=[1], trailing_elements=4095)
+        for operation in (lambda: assets.validate_config(config),
+                          lambda: assets.extract_unit(unit, payload, config),
+                          lambda: assets.pack_unit(unit, assets.json_bytes({
+                              "values": [payload[0]], "trailing_values": list(payload[1:])}), config)):
+            with self.assertRaises(assets.AssetError):
+                operation()
+        config, unit, data = self.trailing_fixture()
+        unit["name"] = "UnreviewedTable"
+        with self.assertRaises(assets.AssetError):
+            assets.validate_config(config)
+        config, unit, data = self.trailing_fixture()
+        unit["params"]["width"] = 2
+        unit["size"] *= 2
+        config["rom_size"] = unit["address"] + unit["size"]
+        with self.assertRaises(assets.AssetError):
+            assets.validate_config(config)
+        with self.assertRaises(assets.AssetError):
+            self.roundtrip("values", b"\x00\x01\xff", {"width": 2})
+
+    def test_trailing_elements_require_structured_ownership_evidence(self) -> None:
+        for evidence in (True, "unverified", {}, {"basis": "bytes"}, {
+                "basis": "same-element-format", "consumer": "func_017ac8", "source": True, "qualification": "x"}):
+            config, unit, _ = self.trailing_fixture()
+            unit["params"]["trailing_evidence"] = evidence
+            with self.subTest(evidence=evidence), self.assertRaises(assets.AssetError):
+                assets.validate_config(config)
+        config, unit, data = self.trailing_fixture()
+        asset = assets.extract_unit(unit, data, config)
+        del unit["params"]["trailing_elements"]
+        with self.assertRaises(assets.AssetError):
+            assets.pack_unit(unit, asset, config)
+
+    def test_unreferenced_bytes_preserve_unknown_semantics_with_reviewed_bounds(self) -> None:
+        for version in ("rev02", "rev00"):
+            config, unit, data = self.unreferenced_fixture(version)
+            assets.validate_config(config)
+            asset = assets.extract_unit(unit, data, config)
+            self.assertEqual(json.loads(asset), {"format": "unreferenced-bytes-v1", "bytes": list(data)})
+            self.assertEqual(assets.pack_unit(unit, asset, config), data)
+            for bad in ({"format": "invented-fields", "bytes": list(data)},
+                        {"format": "unreferenced-bytes-v1", "bytes": [0] * 6},
+                        {"format": "unreferenced-bytes-v1", "bytes": list(data) + [0]}):
+                with self.subTest(bad=bad), self.assertRaises(assets.AssetError):
+                    assets.pack_unit(unit, assets.json_bytes(bad), config)
+
+    def test_unreferenced_rejects_large_payloads_at_load_extract_and_pack(self) -> None:
+        for size in (9, 4096):
+            config, unit, _ = self.unreferenced_fixture()
+            unit["size"] = size
+            config["rom_size"] = unit["address"] + size + 224
+            payload = bytes((i * 73 + 19) % 256 for i in range(size))
+            encoded = assets.json_bytes({"format": "unreferenced-bytes-v1", "bytes": list(payload)})
+            for operation in (lambda: assets.validate_config(config),
+                              lambda: assets.extract_unit(unit, payload, config),
+                              lambda: assets.pack_unit(unit, encoded, config)):
+                with self.subTest(size=size), self.assertRaises(assets.AssetError):
+                    operation()
+        config, unit, data = self.unreferenced_fixture()
+        unit["name"] = "ArbitrarySmallPayload"
+        with self.assertRaises(assets.AssetError):
+            assets.validate_config(config)
+        config, unit, data = self.unreferenced_fixture()
+        unit["address"] += 1
+        with self.assertRaises(assets.AssetError):
+            assets.validate_config(config)
+
+    def test_unreferenced_requires_structured_typed_evidence_and_pattern(self) -> None:
+        for key in ("referenced", "evidence", "observed_pattern"):
+            config, unit, _ = self.unreferenced_fixture()
+            del unit["params"][key]
+            with self.subTest(missing=key), self.assertRaises(assets.AssetError):
+                assets.validate_config(config)
+        for evidence in (True, "not checked", [], {}):
+            config, unit, _ = self.unreferenced_fixture()
+            unit["params"]["evidence"] = evidence
+            with self.subTest(evidence=evidence), self.assertRaises(assets.AssetError):
+                assets.validate_config(config)
+        for key, value in (("code_references", True), ("typed_pointer_references", 1),
+                           ("rom_longword_references", -1), ("consumer_analysis", True), ("limitation", "")):
+            config, unit, _ = self.unreferenced_fixture()
+            unit["params"]["evidence"][key] = value
+            with self.subTest(key=key), self.assertRaises(assets.AssetError):
+                assets.validate_config(config)
+        for pattern in (True, [1], {}, {"count": True, "minimum": 0, "maximum": 4, "distinct": 5}):
+            config, unit, _ = self.unreferenced_fixture()
+            unit["params"]["observed_pattern"] = pattern
+            with self.subTest(pattern=pattern), self.assertRaises(assets.AssetError):
+                assets.validate_config(config)
+
+    def test_unreferenced_requires_two_contiguous_reviewed_typed_neighbours(self) -> None:
+        original, _, _ = self.unreferenced_fixture()
+        for index in (0, 2):
+            config = copy.deepcopy(original)
+            del config["units"][index]
+            with self.subTest(missing=index), self.assertRaises(assets.AssetError):
+                assets.validate_config(config)
+            config = copy.deepcopy(original)
+            config["units"][index].update(kind="raw", raw_reason="synthetic negative control")
+            with self.subTest(raw=index), self.assertRaises(assets.AssetError):
+                assets.validate_config(config)
+            config = copy.deepcopy(original)
+            config["units"][index]["name"] = "DifferentTypedNeighbour"
+            with self.subTest(renamed=index), self.assertRaises(assets.AssetError):
+                assets.validate_config(config)
+        config = copy.deepcopy(original)
+        config["units"][0]["size"] -= 1
+        with self.assertRaises(assets.AssetError):
+            assets.validate_config(config)
+
+    def test_padding_fill_is_a_checked_layout_parameter(self) -> None:
+        unit = {"name": "Alignment", "kind": "padding", "size": 1, "params": {"alignment": 2, "fill": 255}}
+        self.roundtrip("padding", b"\xff", unit["params"])
+        with self.assertRaises(assets.AssetError):
+            assets.extract_unit(unit, b"\x00", self.config)
+        with self.assertRaises(assets.AssetError):
+            assets.pack_unit(unit, assets.json_bytes({"fill": 0, "count": 1}), self.config)
+
+    def test_progress_excludes_unreferenced_bytes_from_typed_credit(self) -> None:
+        spec = importlib.util.spec_from_file_location("progress_assets_test", TOOL.parent.parent / "ci/progress_report.py")
+        progress = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(progress)
+        for version in ("rev02", "rev00"):
+            catalogue = json.loads((assets.CONFIG_ROOT / version / "catalogue.json").read_text())
+            counts = progress.data_counts(version, catalogue)
+            total = sum(span["size"] for span in catalogue["data"])
+            self.assertEqual(counts, {"typed": total - 6, "unreferenced": 6, "raw": 0})
+            measures = progress.measures([], set(), total, counts["typed"])
+            self.assertEqual(int(measures["matched_data"]), total - 6)
+            self.assertLess(measures["matched_data_percent"], 100)
 
     def test_record_pointer_fields(self) -> None:
         self.roundtrip("records", b"\x00\x00\x30\x00\xff",

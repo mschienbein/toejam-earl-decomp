@@ -16,6 +16,7 @@ import struct
 import time
 import zlib
 from collections import Counter
+from math import prod
 from pathlib import Path
 
 HERE = Path(__file__).resolve()
@@ -23,7 +24,20 @@ ROOT = next((p for p in HERE.parents if (p / "config/title.json").is_file()), HE
 CONFIG_ROOT = HERE.parents[1] / "config"
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 KINDS = {"vectors", "cartridge_header", "palette", "tiles", "metasprite", "sprite_header",
-         "pointer_table", "pcm", "z80_binary", "text", "values", "padding", "raw", "records", "animation", "music"}
+         "pointer_table", "pcm", "z80_binary", "text", "values", "padding", "raw", "unreferenced",
+         "records", "animation", "music"}
+MAX_UNREFERENCED_BYTES = 8
+MAX_TRAILING_ELEMENTS = 2
+# Reviewed exceptions contain layout only, never ROM payload. Extending either
+# allowance requires reviewing its consumer/ownership evidence and adding tests.
+REVIEWED_UNREFERENCED = {
+    ("rev02", "FMPatchAuxiliary"): (0x03C34A, 6, "FMPatches", "InstrumentSelectionMaps"),
+    ("rev00", "FMPatchAuxiliary"): (0x03C2DA, 6, "FMPatches", "InstrumentSelectionMaps"),
+}
+REVIEWED_VALUE_TAILS = {
+    ("rev02", "LevelEarthlingChoices"): (0x026446, 521),
+    ("rev00", "LevelEarthlingChoices"): (0x0263CE, 521),
+}
 HEADER_FIELDS = (
     ("console", 16, "text"), ("copyright", 16, "text"),
     ("domestic_title", 48, "text"), ("overseas_title", 48, "text"),
@@ -58,6 +72,74 @@ def asset_path(root: Path, relative: str) -> Path:
     return path
 
 
+def validate_unreferenced(unit: dict, config: dict) -> None:
+    """Permit only the small, reviewed unknown extent between typed neighbours."""
+    name, size, params = unit["name"], unit["size"], unit.get("params", {})
+    if not isinstance(params, dict):
+        raise AssetError(f"unreferenced parameters must be an object: {name}")
+    if type(size) is not int or not 0 < size <= MAX_UNREFERENCED_BYTES:
+        raise AssetError(f"unreferenced extent exceeds the small-byte limit: {name}")
+    layout = REVIEWED_UNREFERENCED.get((config.get("version"), name))
+    if layout is None or (integer(unit["address"]), size) != layout[:2]:
+        raise AssetError(f"unreviewed unreferenced layout: {name}")
+    evidence, pattern = params.get("evidence"), params.get("observed_pattern")
+    if params.get("referenced") is not False or not isinstance(evidence, dict):
+        raise AssetError(f"unreferenced unit lacks structured reference evidence: {name}")
+    if (evidence.get("scope") != "catalogued-instructions-typed-pointers-rom-longwords"
+            or any(type(evidence.get(key)) is not int or evidence[key] != 0
+                   for key in ("code_references", "typed_pointer_references", "rom_longword_references"))
+            or any(not isinstance(evidence.get(key), str) or not evidence[key].strip()
+                   for key in ("consumer_analysis", "limitation"))
+            or (evidence.get("previous_unit"), evidence.get("next_unit")) != layout[2:]):
+        raise AssetError(f"invalid unreferenced reference evidence: {name}")
+    if (not isinstance(pattern, dict) or set(pattern) != {"count", "minimum", "maximum", "distinct"}
+            or any(type(v) is not int for v in pattern.values())
+            or pattern["count"] != size or not 0 <= pattern["minimum"] <= pattern["maximum"] <= 255
+            or not 1 <= pattern["distinct"] <= min(size, pattern["maximum"] - pattern["minimum"] + 1)):
+        raise AssetError(f"invalid unreferenced observed pattern: {name}")
+    units = config.get("units", [])
+    positions = [i for i, candidate in enumerate(units) if candidate.get("name") == name]
+    if len(positions) != 1 or units[positions[0]] != unit or not 0 < positions[0] < len(units) - 1:
+        raise AssetError(f"unreferenced unit needs two manifest neighbours: {name}")
+    previous, following = units[positions[0] - 1], units[positions[0] + 1]
+    typed = KINDS - {"raw", "unreferenced"}
+    if ((previous["name"], following["name"]) != layout[2:]
+            or previous["kind"] not in typed or following["kind"] not in typed
+            or integer(previous["address"]) + previous["size"] != integer(unit["address"])
+            or integer(unit["address"]) + size != integer(following["address"])):
+        raise AssetError(f"unreferenced unit is not between its reviewed typed neighbours: {name}")
+
+
+def unreferenced_pattern(data: bytes) -> dict:
+    return {"count": len(data), "minimum": min(data), "maximum": max(data), "distinct": len(set(data))}
+
+
+def trailing_element_count(unit: dict, config: dict) -> int:
+    """Only reviewed, whole elements using the owning values codec may trail."""
+    params = unit.get("params", {})
+    if "trailing_elements" not in params:
+        return 0
+    tail, shape, width = params["trailing_elements"], params.get("shape"), params.get("width")
+    if (type(tail) is not int or not 0 < tail <= MAX_TRAILING_ELEMENTS
+            or not isinstance(shape, list) or not shape
+            or any(type(n) is not int or n <= 0 for n in shape)
+            or type(width) is not int or width not in (1, 2, 4)
+            or (prod(shape) + tail) * width != unit["size"]):
+        raise AssetError(f"invalid trailing value layout: {unit['name']}")
+    layout = REVIEWED_VALUE_TAILS.get((config.get("version"), unit["name"]))
+    if (layout is None or (integer(unit["address"]), unit["size"]) != layout
+            or shape != [26, 20] or width != 1 or tail != 1
+            or params.get("signed", False) is not False or params.get("byte_order") != "big"):
+        raise AssetError(f"unreviewed trailing value layout: {unit['name']}")
+    evidence = params.get("trailing_evidence")
+    if (not isinstance(evidence, dict) or evidence.get("basis") != "same-element-format"
+            or evidence.get("consumer") != "func_017ac8"
+            or any(not isinstance(evidence.get(key), str) or not evidence[key].strip()
+                   for key in ("source", "qualification"))):
+        raise AssetError(f"trailing values lack structured ownership evidence: {unit['name']}")
+    return tail
+
+
 def validate_config(config: dict, catalogue: dict | None = None) -> None:
     if config.get("schema_version") != 1:
         raise AssetError("unsupported data-unit schema")
@@ -78,6 +160,15 @@ def validate_config(config: dict, catalogue: dict | None = None) -> None:
             raise AssetError(f"duplicate asset or missing provenance: {name}")
         if unit["kind"] == "raw" and not unit.get("raw_reason"):
             raise AssetError(f"raw unit lacks a reason: {name}")
+        params = unit.get("params", {})
+        if unit["kind"] == "unreferenced":
+            validate_unreferenced(unit, config)
+        if unit["kind"] == "values":
+            trailing_element_count(unit, config)
+        if unit["kind"] == "padding" and "alignment" in params:
+            alignment = params["alignment"]
+            if not isinstance(alignment, int) or alignment <= 0 or (start + size) % alignment:
+                raise AssetError(f"padding does not reach its alignment: {name}")
         names.add(name)
         paths.add(unit["asset"])
         previous_end = start + size
@@ -667,13 +758,26 @@ def extract_unit(unit: dict, data: bytes, config: dict, palette: dict | None = N
         asset = {"commands": decode_music(data, integer(unit["address"]), symbols)}
     elif kind == "values":
         width = params["width"]
+        tail = trailing_element_count(unit, config)
+        if len(data) % width or (tail and len(data) != unit["size"]):
+            raise AssetError("partial or missing value element")
         asset = {"values": [int.from_bytes(data[i:i + width], "big", signed=params.get("signed", False)) for i in range(0, len(data), width)]}
+        if tail:
+            asset["trailing_values"] = asset["values"][-tail:]
+            asset["values"] = asset["values"][:-tail]
     elif kind == "records":
         asset = {"records": decode_records(data, params["fields"], symbols)}
     elif kind == "padding":
         if len(set(data)) != 1:
             raise AssetError("nonconstant padding")
+        if params.get("fill", data[0]) != data[0]:
+            raise AssetError("padding fill differs from config")
         asset = {"fill": data[0], "count": len(data)}
+    elif kind == "unreferenced":
+        validate_unreferenced(unit, config)
+        if len(data) != unit["size"] or unreferenced_pattern(data) != params["observed_pattern"]:
+            raise AssetError("unreferenced bytes differ from the reviewed observed pattern")
+        asset = {"format": "unreferenced-bytes-v1", "bytes": list(data)}
     else:
         raise AssetError(f"unknown asset kind: {kind}")
     return json_bytes(asset)
@@ -740,11 +844,37 @@ def pack_unit(unit: dict, asset: bytes, config: dict) -> bytes:
         elif kind == "music":
             result = encode_music(obj["commands"], integer(unit["address"]), symbols)
         elif kind == "values":
-            result = b"".join(v.to_bytes(params["width"], "big", signed=params.get("signed", False)) for v in obj["values"])
+            values = obj["values"]
+            tail = trailing_element_count(unit, config)
+            if tail:
+                trailing = obj["trailing_values"]
+                if not isinstance(trailing, list) or len(values) != prod(params["shape"]) or len(trailing) != tail:
+                    raise AssetError("value sections differ from declared layout")
+                width, signed = params["width"], params.get("signed", False)
+                limit = 1 << (8 * width)
+                lower, upper = (-limit // 2, limit // 2) if signed else (0, limit)
+                if any(type(v) is not int or not lower <= v < upper for v in trailing):
+                    raise AssetError("trailing element is outside the owning values format")
+                values = values + trailing
+            elif obj.get("trailing_values"):
+                raise AssetError("undeclared trailing values")
+            result = b"".join(v.to_bytes(params["width"], "big", signed=params.get("signed", False)) for v in values)
         elif kind == "records":
             result = encode_records(obj["records"], params["fields"], symbols)
         elif kind == "padding":
+            if params.get("fill", obj["fill"]) != obj["fill"]:
+                raise AssetError("padding fill differs from config")
             result = bytes([obj["fill"]]) * obj["count"]
+        elif kind == "unreferenced":
+            validate_unreferenced(unit, config)
+            values = obj["bytes"]
+            if (obj["format"] != "unreferenced-bytes-v1" or not isinstance(values, list)
+                    or len(values) != unit["size"]
+                    or any(type(v) is not int or not 0 <= v <= 255 for v in values)):
+                raise AssetError("invalid bounded unreferenced-byte asset")
+            result = bytes(values)
+            if unreferenced_pattern(result) != params["observed_pattern"]:
+                raise AssetError("unreferenced bytes differ from the reviewed observed pattern")
         else:
             raise AssetError(f"unknown asset kind: {kind}")
     if len(result) != unit["size"]:

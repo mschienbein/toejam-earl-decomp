@@ -56,26 +56,24 @@ def measures(fns: list[dict], matched: set[int], data_total: int = 0, data_done:
     }
 
 
-def typed_data(version: str, catalogue: dict) -> int:
-    """Bytes of the catalogue's data ranges owned by typed data units (config/<version>/data_units.json).
-
-    A unit counts when its kind is not `raw`: its bytes are rebuilt from an extracted, typed asset.
-    The units must tile the catalogue's header and data ranges exactly (tools/assets.py).
-    """
+def data_counts(version: str, catalogue: dict) -> dict[str, int]:
+    """Count typed, explicitly unreferenced and raw data separately; omit the header."""
+    counts = {"typed": 0, "unreferenced": 0, "raw": 0}
     path = ROOT / "config" / version / "data_units.json"
     if not path.is_file():
-        return 0
+        counts["raw"] = sum(d["size"] for d in catalogue["data"])
+        return counts
     sys.path.insert(0, str(ROOT / "tools"))
     import assets   # noqa: E402  (standard library only)
     config = json.loads(path.read_text(encoding="utf-8"))
     assets.validate_config(config, catalogue)
     ranges = [(d["address"], d["address"] + d["size"]) for d in catalogue["data"]]
-    typed = 0
     for unit in config["units"]:
-        start = unit["address"] if isinstance(unit["address"], int) else int(unit["address"], 0)
-        if unit["kind"] != "raw" and any(lo <= start < hi for lo, hi in ranges):
-            typed += unit["size"]
-    return typed
+        start = assets.integer(unit["address"])
+        if any(lo <= start < hi for lo, hi in ranges):
+            kind = unit["kind"] if unit["kind"] in ("raw", "unreferenced") else "typed"
+            counts[kind] += unit["size"]
+    return counts
 
 
 NON_C = ("handwritten_asm", "runtime_helper", "sega_library")
@@ -99,7 +97,7 @@ def excluded(version: str) -> set[int]:
     return {int(pair[version], 16) for pair in pairs["functions"] if int(pair[pairs["primary"]], 16) in primary}
 
 
-def load(version: str) -> tuple[list[dict], set[int], int, int]:
+def load(version: str) -> tuple[list[dict], set[int], int, dict[str, int]]:
     catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text(encoding="utf-8"))
     not_c = excluded(version)
     functions = sorted((f for f in catalogue["functions"] if f["kind"] == "function" and f["address"] not in not_c),
@@ -122,7 +120,7 @@ def load(version: str) -> tuple[list[dict], set[int], int, int]:
                              f"{version} C function")
         matched.add(address)
     data_total = sum(d["size"] for d in catalogue["data"])
-    return functions, matched, data_total, typed_data(version, catalogue)
+    return functions, matched, data_total, data_counts(version, catalogue)
 
 
 def display_names(version: str) -> dict[int, str]:
@@ -140,7 +138,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=Path("report.json"))
     parser.add_argument("--summary", type=Path, help="also append a Markdown summary (e.g. $GITHUB_STEP_SUMMARY)")
     args = parser.parse_args()
-    functions, matched, data_total, data_done = load(args.version)
+    functions, matched, data_total, classified_data = load(args.version)
     display = display_names(args.version)
 
     blocks: dict[int, list[dict]] = {}
@@ -166,7 +164,7 @@ def main() -> int:
             ],
             "metadata": {"complete": False, "module_name": "rom", "progress_categories": ["game"], "auto_generated": True},
         })
-    total = measures(functions, matched, data_total, data_done)
+    total = measures(functions, matched, data_total, classified_data["typed"])
     total["total_units"] = len(units)
     total["complete_units"] = sum(u["measures"]["complete_units"] for u in units)
     report = {
@@ -178,7 +176,8 @@ def main() -> int:
     args.output.write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8", newline="\n")
     line = (f"{args.version}: {total['matched_functions']}/{total['total_functions']} functions, "
             f"{total['matched_code']}/{total['total_code']} code bytes ({total['matched_code_percent']:.3f}%); "
-            f"data {total['matched_data']}/{total['total_data']} bytes typed ({total['matched_data_percent']:.3f}%)")
+            f"data {total['matched_data']}/{total['total_data']} bytes typed ({total['matched_data_percent']:.3f}%); "
+            f"{classified_data['unreferenced']} bytes unreferenced, {classified_data['raw']} bytes raw")
     print(line)
     if args.summary:
         with args.summary.open("a") as f:

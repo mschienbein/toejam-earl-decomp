@@ -294,9 +294,11 @@ def prepare_data(version: str, rom: bytes, catalogue: dict, out: Path) -> dict |
     units = sorted((int(u["address"], 16), u["size"], u["name"], out / "data" / u["path"]) for u in report["units"])
     kinds = {kind: {"units": c["units"], "bytes": c["bytes"]} for kind, c in sorted(report["counts"].items())}
     raw_bytes = sum(r["size"] for r in report["raw_only"])
+    unreferenced_bytes = report["counts"].get("unreferenced", {}).get("bytes", 0)
     return {"units": units, "summary": {"config_sha256": sha256(path.read_bytes()), "units": len(units),
                                          "bytes": sum(u[1] for u in units), "raw_bytes": raw_bytes,
-                                         "typed_bytes": sum(u[1] for u in units) - raw_bytes,
+                                         "unreferenced_bytes": unreferenced_bytes,
+                                         "typed_bytes": sum(u[1] for u in units) - raw_bytes - unreferenced_bytes,
                                          "packed_equal_to_extracted": report["all_exact"], "by_kind": kinds}}
 
 

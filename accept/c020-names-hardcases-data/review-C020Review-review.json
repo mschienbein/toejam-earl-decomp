@@ -1,0 +1,106 @@
+{
+ "verdict": "FAIL",
+ "reviewer": "C020Review",
+ "checkpoint": "c020-names-hardcases-data",
+ "reviewed_commit": "b327c6ce02a35d0526c0da26dbc7cfe3c28aa63f",
+ "sealed_before_reading_other_checkpoint_reviews": true,
+ "qualifications": [
+  "The C, naming, classification, data and prepared-build portions are acceptable with the qualifications below. FAIL is for the reproducible public-audit gate defects, not a ROM mismatch or evidence of leaked ROM material.",
+  "PlayerCheckTerrainEdgeHop retains its disclosed register hint. Seventeen natural no-register/declaration/arithmetic/type alternatives differ in both revisions. This finite search does not prove the historical spelling or exclude every possible natural equivalent.",
+  "HudPositionLivesSprite retains its disclosed default-only switch. Six natural direct/if/coordinate-order alternatives differ in both revisions. The switch is compiler coaxing, not recovered historical control structure.",
+  "HudLoadLivesSpriteTiles retains its disclosed assignment-only icon_base local. Ten direct/indexed/separate-pointer/assignment/register alternatives differ in both revisions. The historical spelling remains unknown.",
+  "The three new handwritten-assembly classifications are [INFERENCE] bounded to the pinned MCC68K 3.3K/profile and the natural-C contract. Observed copy-counter and shared-entry structure, bound backend instruction records and independent compiler probes support the classifications; this is not a universal C-output impossibility proof.",
+  "Zero raw-kind bytes is not complete semantic recovery: six bytes per revision remain explicitly unreferenced and excluded from typed credit; the 521st choice element's ownership and two unreachable animation-compatible tails remain disclosed [INFERENCE]. Direct-reference/root scans do not disprove runtime-computed use.",
+  "The existing matches ledger remains at c019 pending finalization: 573 functions per revision and stale pre-rename source hashes, including the moved release source. This is expected pre-finalize state, not evidence of new credit. The prepared/re-derived C inventory contains 577 functions per revision."
+ ],
+ "checks": [
+  {
+   "id": "C020-C01",
+   "status": "PASS",
+   "what": "Reviewed git log bcf4096..HEAD and computed exact 964aba3 pre/post identifier-map equivalence for all 173 changed source/header paths. The 745-entry map is exactly derived from the 749-entry plan. 167 paths are byte-for-byte mechanical after replacement. Remaining six paths contain only the four requested new C functions, their includes and IconTilesA/B declarations, plus an unchanged release-body migration.",
+   "evidence": "scratch/agents/C020Review/rename-equivalence.json"
+  },
+  {
+   "id": "C020-C02",
+   "status": "PASS",
+   "what": "Independently reconstructed both names documents from their pre-rename versions using the plan and pre-rename translation anchors: exact planned deltas, no lost existing aliases, no validation errors. Checked all 648 function/fragment correspondence identities and all 444 proposed function identities in REV 00.",
+   "evidence": "scratch/agents/C020Review/names-consistency.json"
+  },
+  {
+   "id": "C020-C03",
+   "status": "PASS",
+   "what": "Deterministic semantic sample of 40 plan entries: 24 functions, ten RAM names and six ROM-data names. Inspected implementations/readers and original instructions/ROM structures as appropriate. No sampled name was misleading.",
+   "evidence": "scratch/agents/C020Review/name-sample-review.json"
+  },
+  {
+   "id": "C020-C04",
+   "status": "PASS_WITH_QUALIFICATIONS",
+   "what": "All four new C functions match both revisions: PlayerCheckTerrainEdgeHop 238 bytes, IntroCreateCollisionSceneEntities 336 bytes, HudPositionLivesSprite 186 bytes and HudLoadLivesSpriteTiles 428 bytes. Inspected original packets; preserved collision-parent allocation bug is disclosed. All 33 natural-alternative probes differ in both revisions; no tested replacement removes a disclosed qualification while matching.",
+   "evidence": "scratch/agents/C020Review/all-matches.json; scratch/agents/C020Review/natural-alternatives-final.json; scratch/agents/C020Review/packets/"
+  },
+  {
+   "id": "C020-C05",
+   "status": "PASS_WITH_QUALIFICATIONS",
+   "what": "denominator.verify with c019 history as an append-only base passes through r11. Exactly three new high-confidence non-C exclusions (0x03e3f4, 0x03e46a, 0x03e47e), 90 bytes: 603 C functions and 175412/175300 bytes for REV 02/REV 00. Existing credited functions are compiled_c/high and classification names agree. Both recorded backend constructors bind to the pinned compiler bytes; independent probes confirm differing fixed-copy/manual-loop and wrapper-call forms.",
+   "evidence": "scratch/agents/C020Review/denominator-check.json; scratch/agents/C020Review/backend-evidence-binding.json; scratch/agents/C020Review/driver-probe-instructions.json"
+  },
+  {
+   "id": "C020-C06",
+   "status": "PASS_WITH_QUALIFICATIONS",
+   "what": "All retyped tails round-trip in both revisions. Four singleton FF pads reach even boundaries; the table exposes 520 main and one trailing element; both animation-compatible tails decode frame zero/restart. No direct instruction operands/immediates or every-offset ROM-longword roots target the six-byte suffix or two animation tails. Full-build receipts independently show zero raw bytes and six separately unreferenced bytes per revision.",
+   "evidence": "scratch/agents/C020Review/data-boundary-probes.json; scratch/agents/C020Review/full-builds.json"
+  },
+  {
+   "id": "C020-C07",
+   "status": "PASS",
+   "what": "Reviewed progress_report, assets/build accounting, exact-directory R007 exemption and test deltas. Synthetic correspondence negative control excludes high-confidence non-C only, preserves medium/unknown/C entries and maps exclusion addresses to REV 00. Typed progress excludes header and six unreferenced bytes. Exemption does not bypass content checks or admit nested/non-.s paths. No new wrong-source/denominator acceptance bypass found in the prepared inputs; classification truth remains an evidence/review trust boundary.",
+   "evidence": "scratch/agents/C020Review/progress-negative-check.json; scratch/agents/C020Review/denominator-check.json"
+  },
+  {
+   "id": "C020-C08",
+   "status": "PASS",
+   "what": "Executed affected test modules test_mcc, test_audit_public, test_sources, test_assets and test_denominator: 120 tests, zero failures/errors/skips. test_sources has no delta since bcf4096 but was inspected and exercised. Passing synthetic audit tests do not cover the real-source false positives in the findings.",
+   "evidence": "scratch/agents/C020Review/delta-tests.json; scratch/agents/C020Review/delta-tests.log"
+  },
+  {
+   "id": "C020-C09",
+   "status": "PASS",
+   "what": "Re-ran match.match_file over every 68000 src .c/.s in both revisions: 138 units and 622 function/fragment reports per revision, all MATCH, every source registered. Both Z80 sources (match.py is 68000-only) were assembled and exact-checked by the full-build Z80 path. All 140 source paths are covered.",
+   "evidence": "scratch/agents/C020Review/all-matches.json"
+  },
+  {
+   "id": "C020-C10",
+   "status": "PASS",
+   "what": "Independent fresh full builds via unmodified build.build with ROOT redirected only to a scratch output/input-symlink mirror PASS both pinned 1 MiB images: rev02 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; rev00 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228. Source-unit records equal prepared records after normalizing output-mirror path spelling. 123 C units/577 functions and 15 assembly units/45 entries per revision; no raw instruction words.",
+   "evidence": "scratch/agents/C020Review/full-builds.json; scratch/agents/C020Review/build-root/build/"
+  },
+  {
+   "id": "C020-C11",
+   "status": "PASS",
+   "what": "Prepare PASS binds the reviewed clean commit and all 253 current manifest files with zero hash differences. All four retained a/b receipts rehash correctly, image files equal pinned hashes, source inventories agree and raw words/raw bytes are zero. Prepared suite record is returncode 0/OK; independently exercised the affected modules rather than claiming a second full-suite run.",
+   "evidence": "scratch/agents/C020Review/prepare-verification.json"
+  },
+  {
+   "id": "C020-C12",
+   "status": "FAIL",
+   "what": "Executed the tools/audit_public.py history gate via audit_public.audit(G, history=True, no_rom=False), indexing both ROMs: 1080 blobs, 103 trees, 348 tracked worktree files, 64 occurrences/six unique findings. Four findings are current legitimate renamed C expressions; two are historical public-source false positives. This is the same audit implementation selected by CLI --history; no second unchanged run was performed.",
+   "evidence": "scratch/agents/C020Review/public-history-audit.json; scratch/agents/C020Review/audit-false-positives.json; scratch/agents/C020Review/historic-audit-context.json"
+  }
+ ],
+ "findings": [
+  {
+   "id": "C020-F001",
+   "severity": "medium",
+   "file": "tools/audit_public.py:190-244 (new triggers in src/graphics/camera_row_transfer.c:31, src/graphics/camera_redraw_and_motion.c:36, src/presents/level_item_setup.c:382, src/sprites/entity_slots_tu14.c:150)",
+   "what": "The naming commit makes the public audit reject valid current C expressions as opaque Base85/Z85. Examples are MoveDataToVRAM(&gCameraRowUploadWords[camera][first_count], ...), InitializeLevelZeroFixedItems(&gObjectTable[bank][28]) and !IsSpriteSlotNonReclaimable(entity->primary_shadow). The bounded expression exemption does not recognize these unary/address/member-expression shapes; the entropy scan then treats their long renamed identifiers plus punctuation as encoded payload. The real public/history gate fails despite the synthetic suite passing. These are directly inspected source expressions, not private payloads.",
+   "suggested_fix": "Extend only the bounded, atom-checked source-expression recognizer to cover the demonstrated valid expression shapes (preserving all ROM/numeric/media and opaque-atom checks), add regression fixtures for each and their encoded-payload negative controls, and run the public-history gate on the corrected prepared inputs. Merely adding whitespace to HEAD is insufficient because the rejected naming commit remains in history."
+  },
+  {
+   "id": "C020-F002",
+   "severity": "medium",
+   "file": "tools/audit_public.py:218-244,783-784 (historical include/title_calls.h and src/z80/initial_bootstrap.s)",
+   "what": "The requested history audit also fails on legitimate historical public source. In tree 004896a4e025, include/title_calls.h is a 793-byte K&R declaration header whose bytes at offset 256 begin SEGAAndIntroVideoRoutine, so the four-byte raw[256:260] == b'SEGA' heuristic declares it an embedded Genesis ROM. A historical arithmetic/comment expression in src/z80/initial_bootstrap.s also crosses the opaque Base64 threshold. These inherited false positives prevent a clean all-history result even after the four current C-expression cases are corrected.",
+   "suggested_fix": "Strengthen Genesis payload recognition with actual bounded cartridge/header structure rather than a four-character coincidence inside printable source; add the historical header as a source-safe regression alongside synthetic real-ROM negative fixtures. Identify and recognize the historical ordinary Z80 expression through a narrow grammar/structured shape, not a path/file/history blanket exemption. Preserve adversarial opaque-string coverage and rerun the full-history gate after the fix."
+  }
+ ]
+}

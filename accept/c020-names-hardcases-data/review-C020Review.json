@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c020-names-hardcases-data",
+ "prepare_sha256": "cd3fa0e61ec304aa69139b90f8197849c2a551603a084f0b426aaed0f300d3cd",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T13:13:40Z",
+ "review_file": "review.json",
+ "review_sha256": "99ef12bb4775025ff3b16a0fc0469a3f05f08c95f8ca21e1662465b4109b8429",
+ "reviewer": "C020Review",
+ "verdict": "FAIL"
+}

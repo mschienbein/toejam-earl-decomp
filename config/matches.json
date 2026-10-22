@@ -62,8 +62,8 @@
    "name": "func_00300a",
    "size": 832,
    "source": "src/player/center_for_split.c",
-   "source_sha256": "6e81942be63d52cc6674bd2bac70ebbbc0b5e74bcf15939fdabebf4a96aaa6b2",
-   "checkpoint": "c003-wave-1a"
+   "source_sha256": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
+   "checkpoint": "c004-wave-1b"
   },
   {
    "version": "rev00",
@@ -152,8 +152,8 @@
    "name": "SpriteLoadingStuff",
    "size": 202,
    "source": "src/sprites/load_sprites.c",
-   "source_sha256": "c05ad026aa123736ba55d4eeaa03d7d475cff7821838bf5125721e59ca53d1f5",
-   "checkpoint": "c003-wave-1a"
+   "source_sha256": "deaa56a1dde7ada7a5a1a9e4414d18f18467393c10416c43c3e628a7f4d46027",
+   "checkpoint": "c004-wave-1b"
   },
   {
    "version": "rev00",
@@ -233,8 +233,8 @@
    "name": "func_00d9dc",
    "size": 250,
    "source": "src/map/terrain_at_position.c",
-   "source_sha256": "b16120d207554e13ad5973c0276026f895865272439cfe1194c238bfbeb09cc3",
-   "checkpoint": "c003-wave-1a"
+   "source_sha256": "750a167566afd5dde8f7e73112915b1bd3fcdc54489f0da585539315742a6b2a",
+   "checkpoint": "c004-wave-1b"
   },
   {
    "version": "rev00",
@@ -251,8 +251,53 @@
    "name": "ProcessMovement",
    "size": 812,
    "source": "src/player/process_movement.c",
-   "source_sha256": "201f752d481890528bee455f71389c82a4689769a2387e9771e56ce49a1c3e79",
-   "checkpoint": "c003-wave-1a"
+   "source_sha256": "44d2a1d2ff66a6181967140688707f4298b2c0818e5d11016568dcda8203801a",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01a9de",
+   "name": "func_01aa20",
+   "size": 1138,
+   "source": "src/player/targeting.c",
+   "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01ae50",
+   "name": "func_01ae92",
+   "size": 114,
+   "source": "src/player/targeting.c",
+   "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01aec2",
+   "name": "func_01af04",
+   "size": 180,
+   "source": "src/player/steering.c",
+   "source_sha256": "b4470d7adca9ee147d0270dfba5e3adc250205f22dee4365cb5465d2d25e1ed6",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01beb8",
+   "name": "func_01befa",
+   "size": 654,
+   "source": "src/player/projectiles.c",
+   "source_sha256": "769f282aad4d6393f10f61cfc6546399ac6095d9f55f0d00f68e71632569738d",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01c146",
+   "name": "func_01c188",
+   "size": 282,
+   "source": "src/player/projectiles.c",
+   "source_sha256": "769f282aad4d6393f10f61cfc6546399ac6095d9f55f0d00f68e71632569738d",
+   "checkpoint": "c004-wave-1b"
   },
   {
    "version": "rev00",
@@ -262,6 +307,87 @@
    "source": "src/engine/random_counter.c",
    "source_sha256": "a50ddc7efbda20aaac2f7c443b0c32a8cd01aad6a87d2d195a05458509b561af",
    "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01daee",
+   "name": "func_01db30",
+   "size": 234,
+   "source": "src/ui/pause.c",
+   "source_sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01dbd8",
+   "name": "GamePaused",
+   "size": 718,
+   "source": "src/ui/pause.c",
+   "source_sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x021f30",
+   "name": "DoMoleAbility",
+   "size": 474,
+   "source": "src/player/mole.c",
+   "source_sha256": "9c3635c5df31a3ce318074c0ba6ebc5a4046e2be68489f3eb0edafa4ef7cc031",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x02210a",
+   "name": "MoleAbility",
+   "size": 458,
+   "source": "src/player/mole.c",
+   "source_sha256": "9c3635c5df31a3ce318074c0ba6ebc5a4046e2be68489f3eb0edafa4ef7cc031",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x022b7e",
+   "name": "func_022bf6",
+   "size": 130,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x022c00",
+   "name": "func_022c78",
+   "size": 112,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x022c70",
+   "name": "CheckForTelephone",
+   "size": 810,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x02300e",
+   "name": "func_023086",
+   "size": 206,
+   "source": "src/graphics/funkatron_scene.c",
+   "source_sha256": "2fc8e0e221b4604686f7141450e2a2291860717e8ba608c8b19e674648d1f2e5",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0230dc",
+   "name": "func_023154",
+   "size": 724,
+   "source": "src/graphics/funkatron_scene.c",
+   "source_sha256": "2fc8e0e221b4604686f7141450e2a2291860717e8ba608c8b19e674648d1f2e5",
+   "checkpoint": "c004-wave-1b"
   },
   {
    "version": "rev00",
@@ -332,8 +458,8 @@
    "name": "func_00300a",
    "size": 832,
    "source": "src/player/center_for_split.c",
-   "source_sha256": "6e81942be63d52cc6674bd2bac70ebbbc0b5e74bcf15939fdabebf4a96aaa6b2",
-   "checkpoint": "c003-wave-1a"
+   "source_sha256": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
+   "checkpoint": "c004-wave-1b"
   },
   {
    "version": "rev02",
@@ -422,8 +548,8 @@
    "name": "SpriteLoadingStuff",
    "size": 202,
    "source": "src/sprites/load_sprites.c",
-   "source_sha256": "c05ad026aa123736ba55d4eeaa03d7d475cff7821838bf5125721e59ca53d1f5",
-   "checkpoint": "c003-wave-1a"
+   "source_sha256": "deaa56a1dde7ada7a5a1a9e4414d18f18467393c10416c43c3e628a7f4d46027",
+   "checkpoint": "c004-wave-1b"
   },
   {
    "version": "rev02",
@@ -503,8 +629,8 @@
    "name": "func_00d9dc",
    "size": 250,
    "source": "src/map/terrain_at_position.c",
-   "source_sha256": "b16120d207554e13ad5973c0276026f895865272439cfe1194c238bfbeb09cc3",
-   "checkpoint": "c003-wave-1a"
+   "source_sha256": "750a167566afd5dde8f7e73112915b1bd3fcdc54489f0da585539315742a6b2a",
+   "checkpoint": "c004-wave-1b"
   },
   {
    "version": "rev02",
@@ -521,8 +647,53 @@
    "name": "ProcessMovement",
    "size": 812,
    "source": "src/player/process_movement.c",
-   "source_sha256": "201f752d481890528bee455f71389c82a4689769a2387e9771e56ce49a1c3e79",
-   "checkpoint": "c003-wave-1a"
+   "source_sha256": "44d2a1d2ff66a6181967140688707f4298b2c0818e5d11016568dcda8203801a",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01aa20",
+   "name": "func_01aa20",
+   "size": 1138,
+   "source": "src/player/targeting.c",
+   "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01ae92",
+   "name": "func_01ae92",
+   "size": 114,
+   "source": "src/player/targeting.c",
+   "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01af04",
+   "name": "func_01af04",
+   "size": 180,
+   "source": "src/player/steering.c",
+   "source_sha256": "b4470d7adca9ee147d0270dfba5e3adc250205f22dee4365cb5465d2d25e1ed6",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01befa",
+   "name": "func_01befa",
+   "size": 654,
+   "source": "src/player/projectiles.c",
+   "source_sha256": "769f282aad4d6393f10f61cfc6546399ac6095d9f55f0d00f68e71632569738d",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01c188",
+   "name": "func_01c188",
+   "size": 282,
+   "source": "src/player/projectiles.c",
+   "source_sha256": "769f282aad4d6393f10f61cfc6546399ac6095d9f55f0d00f68e71632569738d",
+   "checkpoint": "c004-wave-1b"
   },
   {
    "version": "rev02",
@@ -532,6 +703,87 @@
    "source": "src/engine/random_counter.c",
    "source_sha256": "a50ddc7efbda20aaac2f7c443b0c32a8cd01aad6a87d2d195a05458509b561af",
    "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01db30",
+   "name": "func_01db30",
+   "size": 234,
+   "source": "src/ui/pause.c",
+   "source_sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01dc1a",
+   "name": "GamePaused",
+   "size": 718,
+   "source": "src/ui/pause.c",
+   "source_sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x021fa8",
+   "name": "DoMoleAbility",
+   "size": 474,
+   "source": "src/player/mole.c",
+   "source_sha256": "9c3635c5df31a3ce318074c0ba6ebc5a4046e2be68489f3eb0edafa4ef7cc031",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x022182",
+   "name": "MoleAbility",
+   "size": 458,
+   "source": "src/player/mole.c",
+   "source_sha256": "9c3635c5df31a3ce318074c0ba6ebc5a4046e2be68489f3eb0edafa4ef7cc031",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x022bf6",
+   "name": "func_022bf6",
+   "size": 130,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x022c78",
+   "name": "func_022c78",
+   "size": 112,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x022ce8",
+   "name": "CheckForTelephone",
+   "size": 810,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x023086",
+   "name": "func_023086",
+   "size": 206,
+   "source": "src/graphics/funkatron_scene.c",
+   "source_sha256": "2fc8e0e221b4604686f7141450e2a2291860717e8ba608c8b19e674648d1f2e5",
+   "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x023154",
+   "name": "func_023154",
+   "size": 724,
+   "source": "src/graphics/funkatron_scene.c",
+   "source_sha256": "2fc8e0e221b4604686f7141450e2a2291860717e8ba608c8b19e674648d1f2e5",
+   "checkpoint": "c004-wave-1b"
   },
   {
    "version": "rev02",

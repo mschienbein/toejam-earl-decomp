@@ -1,0 +1,82 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C004Review",
+  "checkpoint": "c004-wave-1b",
+  "checks": [
+    {
+      "id": "scope-and-input-binding",
+      "result": "PASS",
+      "what": "Reviewed commit 5ee0e4b411e7e7ee6379bababdb2494a59e9f747. All 79 prepare input hashes equal both an independent archive of that commit and the working inputs captured at review start. The seven new adopted sources equal the author's delivered files, with exactly 14 functions and 6,234 bytes: six complete original spans plus the 180-byte steering prefix. Including four changed earlier files, the review covers 11 files, 18 functions, and 8,330 bytes per revision. The unmatched func_01afb8 is not included or credited.",
+      "evidence": ["input-binding.json", "scope-evidence.json", "prepared-evidence/prepare.json"]
+    },
+    {
+      "id": "prepare-record-verification",
+      "result": "PASS",
+      "what": "Verified all four original prepare receipts: normalized receipt hashes equal prepare.json; actual image hashes equal the receipt, prepare record, and pinned original; complete C-unit lists equal the prepared list; every compiler options list is empty; raw words are zero. The prepare record is PASS and names the reviewed commit. Its SHA-256 is 542c3b5f1cec98d7f1274cdc78ea41e28e13b144c79cc559d1ecf8229f260198.",
+      "evidence": ["input-binding.json", "prepared-evidence/"]
+    },
+    {
+      "id": "strict-single-file-matching",
+      "result": "PASS",
+      "what": "Executed tools/match.py for every new and changed file in REV 02 and REV 00: all 22 invocations return 0 and all 18 functions MATCH in each revision. No --define or --option was used. Kept compiler listings, objects, link scripts, and linked single-file images.",
+      "evidence": ["reproduction.json", "reproduction-summary.json", "logs/match-*.json", "matches/"]
+    },
+    {
+      "id": "fresh-full-rom-builds",
+      "result": "PASS",
+      "what": "Independently built the exact archived tree twice per revision, moving each build out before the next run. All four builds PASS with zero raw words. Images equal the pinned originals and prepare images. Every receipt's complete C-unit list equals prepare.json: 33 units and 44 functions in each revision. All corresponding prepared tool/compiler fingerprint fields equal the fresh receipts.",
+      "evidence": ["reproduction-summary.json", "builds/rev02-1/receipt.json", "builds/rev02-2/receipt.json", "builds/rev00-1/receipt.json", "builds/rev00-2/receipt.json"]
+    },
+    {
+      "id": "suite",
+      "result": "PASS",
+      "what": "Independently ran the prepared tree's unittest discovery: 115 tests, OK, return code 0. Temporary and synthetic test fixtures were confined to reviewer scratch.",
+      "evidence": ["logs/suite.json"]
+    },
+    {
+      "id": "source-rules-and-canonical-names",
+      "result": "PASS",
+      "what": "Read all eleven sources and inspected kept object references. K&R C; no preprocessor directives, inline assembly, pragmas, initialized code/data blobs, numeric integer-to-pointer address bypasses, or option overrides. All address spellings either are canonical spellings/aliases or refer to unnamed places. dat_0ae4a0 and dat_0af0b0 are unnamed interior data positions. The sound argument's (long)Sfx_Telephone remains symbolic and revision-remapped; it is not a numeric-address bypass. Accessed record layouts and interface widths agree with the packets, with uncertain discarded return types explicitly marked as inference in the author's manifest.",
+      "evidence": ["source-symbol-audit.json", "logs/source-symbol-audit.json", "matches/", "report.md"]
+    },
+    {
+      "id": "natural-c-plausibility",
+      "result": "PASS",
+      "what": "[INFERENCE] The adopted spellings are plausible ordinary period C, not instruction-emitting scaffolds. Independently compiled 12 alternative spellings in both revisions. Inline projectile scaling without quarter_velocity ALSO MATCHes, as does a pointer-valued targeting conditional; these are optional simplifications, not required qualifications. An index-valued targeting conditional fails by four bytes, reproducing that specific author observation. A bound of 41 also matches, confirming that matching alone does not prove 40; the author correctly labels the bound inference and supplies independent allocation/layout evidence. Other tested alternatives produce byte differences or contiguous-placement failures. All failed evidence is retained.",
+      "evidence": ["natural-spellings.json", "natural/", "natural-builds/", "logs/natural-*.json", "report.md"]
+    },
+    {
+      "id": "behaviour-comments-and-folders",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "what": "Generated 18 reviewed-function packets and 15 context packets independently. Compared source behavior and comments with observed distance/eligibility tests, projectile strides and frame triggers, mole inventory/state transitions, telephone visibility/countdowns/map opening, pause input/reset loops, and scene descriptor/group/proximity logic. Confirmed the mole's nearby-player precondition through its typed contact callback and proximity-gated indirect dispatcher. Confirmed 277 scene placements with 30 zero-x delimiters and the level-26 caller gate. Facing/extent/discarded-return guesses are identified as inference in source or manifest. [INFERENCE] Folder choices are plausible under existing conventions. One low-severity mode-14 comment-accuracy qualification is recorded below; no implementation defect is claimed.",
+      "evidence": ["packets/", "context-packets.json", "logs/context-packet-*.json", "logs/binary-reference-context.json", "report.md"]
+    },
+    {
+      "id": "previous-checkpoint-fixes",
+      "result": "PASS",
+      "what": "All four requested changes are present and match both revisions: load_sprites marks queue capacity 40 as unproved inference; center_for_split consistently uses distance_divisor rather than frame_count; terrain_at_position states the exact zero/upper-bound tests and qualifies the nonnegative-caller assumption without changing the original condition; process_movement removes the unnecessary register hint. The commit's earlier-file patch is confined to these corrections. All C003 findings are addressed.",
+      "evidence": ["report.md", "logs/match-*.json", "packets/"]
+    },
+    {
+      "id": "mutation-sanity",
+      "result": "PASS",
+      "what": "In two isolated archived trees, changed steering.c's delta_x < 20 to <= 20 and telephone.c's ring timer 60 to 61. For each mutation and each revision, match.py returns DIFF/1 and the full build returns FAIL/1, retaining original function extents and reporting zero raw words. Full-build first differences: steering 0x01af70 REV 02 / 0x01af2e REV 00; telephone 0x022caf REV 02 / 0x022c37 REV 00. No assembly/raw-code fallback hides either mutation.",
+      "evidence": ["mutations.json", "mutation-trees/", "mutation-matches/", "logs/mutation-*.json"]
+    },
+    {
+      "id": "independence-and-write-boundary",
+      "result": "PASS",
+      "what": "No other c004-wave-1b review was read before sealing. The explicitly requested prior C003 review was consulted for its fixes. All reviewer outputs, packets, temporary files, copied source experiments, archived builds, mutation fixtures, and synthetic test fixtures are under scratch/agents/C004Review. Original tracked files and repository git state were not modified. Shared ROMs and toolchain/cache were read-only inputs. tools/accept.py review/finalize were not invoked. No gameplay/emulator run is claimed.",
+      "evidence": ["report.md", "seal.json"]
+    }
+  ],
+  "findings": [
+    {
+      "id": "C004-01",
+      "severity": "low",
+      "file": "src/player/targeting.c:28-30",
+      "what": "The header groups modes 12, 7, and 14 as selecting specialized steering calls. Modes 12 and 7 select returning steering helpers, but mode 14 conditionally calls func_01b078 and then still uses ordinary func_01af04 steering. The inspected func_01b078 only tests status, invokes another routine, and sets a byte flag; it neither writes motion nor returns a specialized steering direction. This is comment precision only; the implementation matches the original.",
+      "suggested_fix": "Describe modes 12 and 7 as selecting steering helpers, and mode 14 as conditionally invoking func_01b078 before ordinary steering. Keep the helper's unproved gameplay meaning neutral; do not change behavior. Evidence: targeting packet 0x01ae40..0x01ae76 and packets/func_01b078.md."
+    }
+  ]
+}

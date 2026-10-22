@@ -1,0 +1,442 @@
+{
+ "added": [
+  {
+   "address": "0x023086",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_023086",
+   "size": 206,
+   "source": "src/graphics/funkatron_scene.c",
+   "source_sha256": "2fc8e0e221b4604686f7141450e2a2291860717e8ba608c8b19e674648d1f2e5",
+   "version": "rev02"
+  },
+  {
+   "address": "0x023154",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_023154",
+   "size": 724,
+   "source": "src/graphics/funkatron_scene.c",
+   "source_sha256": "2fc8e0e221b4604686f7141450e2a2291860717e8ba608c8b19e674648d1f2e5",
+   "version": "rev02"
+  },
+  {
+   "address": "0x021fa8",
+   "checkpoint": "c004-wave-1b",
+   "name": "DoMoleAbility",
+   "size": 474,
+   "source": "src/player/mole.c",
+   "source_sha256": "9c3635c5df31a3ce318074c0ba6ebc5a4046e2be68489f3eb0edafa4ef7cc031",
+   "version": "rev02"
+  },
+  {
+   "address": "0x022182",
+   "checkpoint": "c004-wave-1b",
+   "name": "MoleAbility",
+   "size": 458,
+   "source": "src/player/mole.c",
+   "source_sha256": "9c3635c5df31a3ce318074c0ba6ebc5a4046e2be68489f3eb0edafa4ef7cc031",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01befa",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01befa",
+   "size": 654,
+   "source": "src/player/projectiles.c",
+   "source_sha256": "769f282aad4d6393f10f61cfc6546399ac6095d9f55f0d00f68e71632569738d",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01c188",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01c188",
+   "size": 282,
+   "source": "src/player/projectiles.c",
+   "source_sha256": "769f282aad4d6393f10f61cfc6546399ac6095d9f55f0d00f68e71632569738d",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01af04",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01af04",
+   "size": 180,
+   "source": "src/player/steering.c",
+   "source_sha256": "b4470d7adca9ee147d0270dfba5e3adc250205f22dee4365cb5465d2d25e1ed6",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01aa20",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01aa20",
+   "size": 1138,
+   "source": "src/player/targeting.c",
+   "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01ae92",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01ae92",
+   "size": 114,
+   "source": "src/player/targeting.c",
+   "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+   "version": "rev02"
+  },
+  {
+   "address": "0x022bf6",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_022bf6",
+   "size": 130,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "version": "rev02"
+  },
+  {
+   "address": "0x022c78",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_022c78",
+   "size": 112,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "version": "rev02"
+  },
+  {
+   "address": "0x022ce8",
+   "checkpoint": "c004-wave-1b",
+   "name": "CheckForTelephone",
+   "size": 810,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01db30",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01db30",
+   "size": 234,
+   "source": "src/ui/pause.c",
+   "source_sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01dc1a",
+   "checkpoint": "c004-wave-1b",
+   "name": "GamePaused",
+   "size": 718,
+   "source": "src/ui/pause.c",
+   "source_sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+   "version": "rev02"
+  },
+  {
+   "address": "0x02300e",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_023086",
+   "size": 206,
+   "source": "src/graphics/funkatron_scene.c",
+   "source_sha256": "2fc8e0e221b4604686f7141450e2a2291860717e8ba608c8b19e674648d1f2e5",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0230dc",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_023154",
+   "size": 724,
+   "source": "src/graphics/funkatron_scene.c",
+   "source_sha256": "2fc8e0e221b4604686f7141450e2a2291860717e8ba608c8b19e674648d1f2e5",
+   "version": "rev00"
+  },
+  {
+   "address": "0x021f30",
+   "checkpoint": "c004-wave-1b",
+   "name": "DoMoleAbility",
+   "size": 474,
+   "source": "src/player/mole.c",
+   "source_sha256": "9c3635c5df31a3ce318074c0ba6ebc5a4046e2be68489f3eb0edafa4ef7cc031",
+   "version": "rev00"
+  },
+  {
+   "address": "0x02210a",
+   "checkpoint": "c004-wave-1b",
+   "name": "MoleAbility",
+   "size": 458,
+   "source": "src/player/mole.c",
+   "source_sha256": "9c3635c5df31a3ce318074c0ba6ebc5a4046e2be68489f3eb0edafa4ef7cc031",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01beb8",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01befa",
+   "size": 654,
+   "source": "src/player/projectiles.c",
+   "source_sha256": "769f282aad4d6393f10f61cfc6546399ac6095d9f55f0d00f68e71632569738d",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01c146",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01c188",
+   "size": 282,
+   "source": "src/player/projectiles.c",
+   "source_sha256": "769f282aad4d6393f10f61cfc6546399ac6095d9f55f0d00f68e71632569738d",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01aec2",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01af04",
+   "size": 180,
+   "source": "src/player/steering.c",
+   "source_sha256": "b4470d7adca9ee147d0270dfba5e3adc250205f22dee4365cb5465d2d25e1ed6",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01a9de",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01aa20",
+   "size": 1138,
+   "source": "src/player/targeting.c",
+   "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01ae50",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01ae92",
+   "size": 114,
+   "source": "src/player/targeting.c",
+   "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+   "version": "rev00"
+  },
+  {
+   "address": "0x022b7e",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_022bf6",
+   "size": 130,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "version": "rev00"
+  },
+  {
+   "address": "0x022c00",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_022c78",
+   "size": 112,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "version": "rev00"
+  },
+  {
+   "address": "0x022c70",
+   "checkpoint": "c004-wave-1b",
+   "name": "CheckForTelephone",
+   "size": 810,
+   "source": "src/presents/telephone.c",
+   "source_sha256": "c32ca5c4469e1f639b577fee88091de296fd781a5ddeb3cbcbb2588503456654",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01daee",
+   "checkpoint": "c004-wave-1b",
+   "name": "func_01db30",
+   "size": 234,
+   "source": "src/ui/pause.c",
+   "source_sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01dbd8",
+   "checkpoint": "c004-wave-1b",
+   "name": "GamePaused",
+   "size": 718,
+   "source": "src/ui/pause.c",
+   "source_sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+   "version": "rev00"
+  }
+ ],
+ "checkpoint": "c004-wave-1b",
+ "final_images": {
+  "rev00": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+  "rev02": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163"
+ },
+ "finalized_utc": "2026-10-22T02:12:58Z",
+ "moved": [
+  {
+   "from": {
+    "address": "0x00d9dc",
+    "checkpoint": "c003-wave-1a",
+    "name": "func_00d9dc",
+    "size": 250,
+    "source": "src/map/terrain_at_position.c",
+    "source_sha256": "b16120d207554e13ad5973c0276026f895865272439cfe1194c238bfbeb09cc3",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00d9dc",
+    "checkpoint": "c004-wave-1b",
+    "name": "func_00d9dc",
+    "size": 250,
+    "source": "src/map/terrain_at_position.c",
+    "source_sha256": "750a167566afd5dde8f7e73112915b1bd3fcdc54489f0da585539315742a6b2a",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00300a",
+    "checkpoint": "c003-wave-1a",
+    "name": "func_00300a",
+    "size": 832,
+    "source": "src/player/center_for_split.c",
+    "source_sha256": "6e81942be63d52cc6674bd2bac70ebbbc0b5e74bcf15939fdabebf4a96aaa6b2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00300a",
+    "checkpoint": "c004-wave-1b",
+    "name": "func_00300a",
+    "size": 832,
+    "source": "src/player/center_for_split.c",
+    "source_sha256": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e422",
+    "checkpoint": "c003-wave-1a",
+    "name": "ProcessMovement",
+    "size": 812,
+    "source": "src/player/process_movement.c",
+    "source_sha256": "201f752d481890528bee455f71389c82a4689769a2387e9771e56ce49a1c3e79",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00e422",
+    "checkpoint": "c004-wave-1b",
+    "name": "ProcessMovement",
+    "size": 812,
+    "source": "src/player/process_movement.c",
+    "source_sha256": "44d2a1d2ff66a6181967140688707f4298b2c0818e5d11016568dcda8203801a",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00cef0",
+    "checkpoint": "c003-wave-1a",
+    "name": "SpriteLoadingStuff",
+    "size": 202,
+    "source": "src/sprites/load_sprites.c",
+    "source_sha256": "c05ad026aa123736ba55d4eeaa03d7d475cff7821838bf5125721e59ca53d1f5",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00cef0",
+    "checkpoint": "c004-wave-1b",
+    "name": "SpriteLoadingStuff",
+    "size": 202,
+    "source": "src/sprites/load_sprites.c",
+    "source_sha256": "deaa56a1dde7ada7a5a1a9e4414d18f18467393c10416c43c3e628a7f4d46027",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00d9bc",
+    "checkpoint": "c003-wave-1a",
+    "name": "func_00d9dc",
+    "size": 250,
+    "source": "src/map/terrain_at_position.c",
+    "source_sha256": "b16120d207554e13ad5973c0276026f895865272439cfe1194c238bfbeb09cc3",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00d9bc",
+    "checkpoint": "c004-wave-1b",
+    "name": "func_00d9dc",
+    "size": 250,
+    "source": "src/map/terrain_at_position.c",
+    "source_sha256": "750a167566afd5dde8f7e73112915b1bd3fcdc54489f0da585539315742a6b2a",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00300a",
+    "checkpoint": "c003-wave-1a",
+    "name": "func_00300a",
+    "size": 832,
+    "source": "src/player/center_for_split.c",
+    "source_sha256": "6e81942be63d52cc6674bd2bac70ebbbc0b5e74bcf15939fdabebf4a96aaa6b2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00300a",
+    "checkpoint": "c004-wave-1b",
+    "name": "func_00300a",
+    "size": 832,
+    "source": "src/player/center_for_split.c",
+    "source_sha256": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e402",
+    "checkpoint": "c003-wave-1a",
+    "name": "ProcessMovement",
+    "size": 812,
+    "source": "src/player/process_movement.c",
+    "source_sha256": "201f752d481890528bee455f71389c82a4689769a2387e9771e56ce49a1c3e79",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00e402",
+    "checkpoint": "c004-wave-1b",
+    "name": "ProcessMovement",
+    "size": 812,
+    "source": "src/player/process_movement.c",
+    "source_sha256": "44d2a1d2ff66a6181967140688707f4298b2c0818e5d11016568dcda8203801a",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00ced0",
+    "checkpoint": "c003-wave-1a",
+    "name": "SpriteLoadingStuff",
+    "size": 202,
+    "source": "src/sprites/load_sprites.c",
+    "source_sha256": "c05ad026aa123736ba55d4eeaa03d7d475cff7821838bf5125721e59ca53d1f5",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00ced0",
+    "checkpoint": "c004-wave-1b",
+    "name": "SpriteLoadingStuff",
+    "size": 202,
+    "source": "src/sprites/load_sprites.c",
+    "source_sha256": "deaa56a1dde7ada7a5a1a9e4414d18f18467393c10416c43c3e628a7f4d46027",
+    "version": "rev00"
+   }
+  }
+ ],
+ "note": "Main confirmation: MatchWave1B's 14 functions and the four C003Review fixes (C004Review PASS_WITH_QUALIFICATIONS: one comment-only note in targeting.c, applied in the next checkpoint).",
+ "prepare_sha256": "542c3b5f1cec98d7f1274cdc78ea41e28e13b144c79cc559d1ecf8229f260198",
+ "progress": {
+  "bytes": 11756,
+  "checkpoint": "c004-wave-1b",
+  "functions": 44,
+  "utc": "2026-10-22T02:12:58Z"
+ },
+ "reviews": [
+  {
+   "reviewer": "C004Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  },
+  {
+   "reviewer": "C004Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  }
+ ]
+}

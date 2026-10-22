@@ -58,14 +58,14 @@
    ]
   },
   {
-   "source": "src/graphics/reset_vectors.c",
+   "source": "src/math/random.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/math/random.c",
+   "source": "src/player/stop_player.c",
    "versions": [
     "rev02",
     "rev00"

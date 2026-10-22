@@ -99,13 +99,18 @@ def load(version: str, root: Path = ROOT) -> dict[int, Name]:
     primary_version = pairs["primary"] if pairs else version
     if pairs:
         primary = parse(json.loads(path(pairs["primary"], root).read_text(encoding="utf-8")), pairs["primary"])
+        catalogue = root / "config" / pairs["primary"] / "catalogue.json"
+        fragments = {f["address"] for f in json.loads(catalogue.read_text(encoding="utf-8"))["functions"]
+                     if f["kind"] == "fragment"} if catalogue.is_file() else set()
         for theirs, ours, size in pairs["functions"]:
             if ours in by_address:
                 continue
-            identity = primary[theirs].name if theirs in primary else f"func_{theirs:06x}"
+            fragment = theirs in fragments   # a fragment is labelled loc_XXXXXX, like the build names it
+            identity = primary[theirs].name if theirs in primary else f"{'loc' if fragment else 'func'}_{theirs:06x}"
             if identity in taken:
                 raise NamesError(f"names: {identity} (primary 0x{theirs:06x}) already names another {version} address")
-            by_address[ours] = Name(identity, ours, "function", size, "revision correspondence (tools/revmap.py)")
+            by_address[ours] = Name(identity, ours, "label" if fragment else "function", size,
+                                    "revision correspondence (tools/revmap.py)")
             taken.add(identity)
     units = data_units(primary_version, root)
     if units:

@@ -1,0 +1,106 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C008Review",
+  "checkpoint": "c008-wave-05",
+  "source_commit": "6eeefccd27af107141dd5704d327fb1e7607cbd9",
+  "independence": "Fresh independent reviewer. Only the expressly assigned C007Review review was consulted; no other independent review was read before sealing this verdict. No canonical source, git state, or acceptance state was changed.",
+  "checks": [
+    {
+      "id": "C1",
+      "check": "Re-derive every changed C file for both revisions",
+      "result": "PASS",
+      "evidence": "match-results.json: ten tools/match.py CLI invocations exited 0 without options or symbol overrides. random_cache.c has 3 MATCH, region_walk.c 3, region_cleanup.c 7, level_changes.c 3, main_loop.c 21: 37 functions per revision, 74 MATCH results. New units contain 13 functions / 6,274 bytes, of which 12 / 6,168 bytes are new rather than the existing GetRandomNumber. Compiler/link artifacts are retained under matches/."
+    },
+    {
+      "id": "C2",
+      "check": "Audit immutable prepare inputs, both repeated builds, and suite record",
+      "result": "PASS",
+      "evidence": "prepare-audit.json: all 88 prepared input hashes and both revision source digests equal current inputs; no added/missing inputs. Prepare records PASS, clean paths, the target commit, and suite returncode 0 / OK. All four saved receipts have the recorded canonical-JSON hashes and PASS results; all four on-disk image hashes equal their receipt, prepare record, and pinned original. Each has 42 C units / 105 functions / zero raw words and exactly the prepared C-unit records. The suite itself was not rerun by this reviewer."
+    },
+    {
+      "id": "C3",
+      "check": "Independent normal-source full builds of both revisions",
+      "result": "PASS",
+      "evidence": "build-results.json and builds/baseline/<revision>/receipt.json: REV 02 sha256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV 00 sha256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228. Both have exactly the prepared C units and zero raw words. Used tools/build.py build_image with ordinary sources, data packing, names, TU spans, and revision mapping; only output directories differ so writes stay private."
+    },
+    {
+      "id": "C4",
+      "check": "K&R source, primary names, source options, and prohibited matching mechanisms",
+      "result": "PASS",
+      "evidence": "New units are ordinary K&R C with no inline assembly, defined code/data blobs, pragmas, compiler-option injection, register hints, or gotos. The only changed main_loop.c lines are the typed declaration split. Existing hardware access macros and existing unrelated control flow are not new matching devices. Matcher canonical-name and contiguous-placement gates pass. All prepared source options are empty; dat_08bfc2 is an unnamed interior subtable address rather than a spelling of an exactly named place."
+    },
+    {
+      "id": "C5",
+      "check": "Honest typed interfaces and consistency with other src declarations",
+      "result": "QUALIFIED",
+      "evidence": "Cross-file grep plus private packets support long RNG state/previous-state return, 59 cached words, signed level/coordinate bytes, 26-by-19 map words, short pointer coordinates/results, and the observed lookup offsets. Existing declaration conventions are not consistently reused by the new files: signed cache index, range-function return type, byte-map/elevator object types, and lookup record type differ across units. F1-F4. Exact original C spellings where several return types compile identically remain [INFERENCE]."
+    },
+    {
+      "id": "C6",
+      "check": "Natural 1991 C and alternatives to suspicious or duplicate source forms",
+      "result": "PASS",
+      "evidence": "alternative-results.json: deleting both (short) casts from the -1 walker sentinel initializers MATCHes all three functions in both revisions; grouping the plain initializers also MATCHes. Reusing existing map/elevator/table declarations, existing unsigned cache index, and existing unsigned-long range return independently MATCHes the complete affected units in both revisions. By contrast, assigning -1 instead of 0xffff to func_0060ae's unsigned sentinel produces a 536-byte DIFF against 540 bytes in both revisions. Combined private recommended/ candidates remove the two casts and resolve F1-F4; all 13 functions MATCH both revisions and both complete ROM builds PASS, with 42 C units / 105 functions / zero raw words. recommended-match-results.json and recommended-build-results.json. No contortion-only matching qualification was established."
+    },
+    {
+      "id": "C7",
+      "check": "Comments, names, preserved behavior, and ORIGINAL BUG markers",
+      "result": "QUALIFIED",
+      "evidence": "Seventeen packets regenerated privately and inspected with callers. Code/comments agree on Park-Miller constants and result, seed normalization and full previous state, cache save/restore, reciprocal map direction bits, bounded movement/overlap/elevator tests, rectangle relabeling, cleanup passes, placement eligibility, and four-corner lookup masks. StackBasedRandom's minimum-long negation behavior is preserved and marked ORIGINAL BUG; the existing main-loop marker remains. Local semantic labels such as terrain/region are descriptive interpretations, not proof of historical terminology. Scanner counter history is preserved but the comments oversimplify it; F5. Whether that quirk is an unintended reachable gameplay defect is [INFERENCE], not established here."
+    },
+    {
+      "id": "C8",
+      "check": "C007 F1/F2 resolved without losing matching code",
+      "result": "PASS",
+      "evidence": "Target commit patch removes the unused active_masks initializer and its qualification from level_changes.c; that complete unit matches both revisions. main_loop.c now declares extern long StackBasedRandom(), agreeing with change_level.c and the new definition; the packet returns the full old RNG state and ChangeLevel saves/restores it as long. The complete changed main-loop unit matches both revisions and participates in both successful baseline full builds."
+    },
+    {
+      "id": "C9",
+      "check": "GetRandomNumber unchanged in substance after relocation",
+      "result": "PASS",
+      "evidence": "random-move-audit.json: recovered historical src/math/random.c at 320be93 has sha256 3161446ba977939e0d1c09c823d90f649021ab7af112e4b567b6ec64e352e081, exactly the accepted c002 ledger hash. Its complete GetRandomNumber definition is text-identical to the adopted definition (both definition hashes f4abbcaa4da1d392df3ae7558ef9fb9dbd1e38ac44bf8e6e11237bfa365807e2). src/math/random.c no longer exists and each revision includes only random_cache.c as its math unit. Current acceptance credit is still the pre-finalize old-path record; no duplicate current definition or source inclusion was observed."
+    },
+    {
+      "id": "C10",
+      "check": "Semantic mutation rejected by matcher and full build",
+      "result": "PASS",
+      "evidence": "Private mutation/random_cache.c changes only the zero-seed fallback from 1 to 2. mutation-match-results.json: both matcher runs exit 1; StackBasedRandom is DIFF at unchanged 46-byte extent while GetRandomNumber and PreGenerateRandoms MATCH. Both complete mutant builds FAIL at byte 0x004f0b, with zero raw words and the mutated source recorded in their receipts; build-results.json and builds/mutation/. No source fallback conceals the mutation."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "low",
+      "file": "src/math/random_cache.c:3",
+      "what": "ram_ff91e0 is newly declared short, but its existing cache consumers in graphics/glyph_map.c:1 and player/mole.c:33 declare unsigned short. PreGenerateRandoms only clears the word, so its packet does not establish signedness. No binary defect was observed, but the same cross-unit object has incompatible type claims.",
+      "suggested_fix": "Use extern unsigned short ram_ff91e0 consistently. The private recommended/random_cache.c does so and matches both revisions; the combined recommended full builds also PASS. Adoption changes prepared source hashes and requires a new immutable checkpoint."
+    },
+    {
+      "id": "F2",
+      "severity": "low",
+      "file": "src/map/region_cleanup.c:2",
+      "what": "The new func_004f50 declaration returns unsigned short, whereas change_level.c:11, level_changes.c:8, and level_generation.c:13 declare unsigned long. The packet narrows a result to a word and zero-extends it into full D0; these callers immediately narrow it, so matching alone does not uniquely establish the historical return-type spelling. The cross-unit inconsistency is directly observed.",
+      "suggested_fix": "Choose one evidenced return declaration across callers. Minimal demonstrated fix: use the existing extern unsigned long func_004f50() in region_cleanup.c. Both complete cleanup units and the combined recommended full builds MATCH/PASS for both revisions. Alternatively consolidate a different consistent type only after checking all affected callers. Any adoption needs a new prepare/checkpoint."
+    },
+    {
+      "id": "F3",
+      "severity": "low",
+      "file": "src/map/region_walk.c:5-6; src/map/region_cleanup.c:4",
+      "what": "New storage declarations disagree with existing map units: gMapDataD is a bounded [26][19] byte array here versus [52][19] elsewhere, and ELEVATOR_POS_TABLE is char[3][2] here versus struct elevator_position[8] in level_changes.c/change_level.c. Observed accesses agree within the common prefix, and the leading-view comment is candid, but an extern object declaration is not a separate typed view and these are incompatible declarations of the same objects.",
+      "suggested_fix": "Reuse the established [52][19] byte-grid declaration and struct elevator_position { char x, y; } ELEVATOR_POS_TABLE[8], reading .x/.y for the three tested pairs. Private recommended/region_walk.c and recommended/region_cleanup.c demonstrate that all affected functions still MATCH both revisions and both full ROMs PASS. Prefer a shared declaration when integrating; use a new immutable checkpoint."
+    },
+    {
+      "id": "F4",
+      "severity": "low",
+      "file": "src/map/region_cleanup.c:6-12",
+      "what": "MapGenerationLookupTables is redeclared with a second record type, struct MapGenerationLookups, rather than the existing struct map_generation_tables in level_generation.c:3-9. Both total 196 bytes and agree at the accessed offsets 16 and 36, but they have different tags, member names, and tail members. This adds another inconsistent cross-unit object type without a matching necessity.",
+      "suggested_fix": "Reuse the existing map_generation_tables layout and its edge_plain/edge_alternate fields. The complete private recommended/region_cleanup.c and combined recommended full builds prove both revisions remain byte-identical. Consolidate the declaration rather than retaining a second convention; any adoption needs a new prepare/checkpoint."
+    },
+    {
+      "id": "F5",
+      "severity": "low",
+      "file": "src/map/region_cleanup.c:81-83,145-146",
+      "what": "The comments describe runs of four/five without the preserved counter-history qualification. A nonqualifying cell sets run_length to 1 without resetting previous_terrain. A specified sequence of one qualifying label, a gap, then the same label therefore triggers a non-edge action after only three subsequent qualifying cells (or an edge clear after four). Packets confirm the reset behavior; scanner-counter-trace.json records a source-level witness. This is not a claim that the sequence occurs during gameplay or that the original intent is known.",
+      "suggested_fix": "Clarify the source comments to describe counter thresholds and the preserved remembered-label/reset-to-one quirk; keep executable code unchanged. If it is explicitly characterized as an original bug, label that interpretation and preserve the required ORIGINAL BUG marker. Gameplay reachability and unintended original intent remain [INFERENCE]."
+    }
+  ]
+}

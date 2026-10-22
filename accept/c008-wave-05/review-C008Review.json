@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c008-wave-05",
+ "prepare_sha256": "5be8e656eb7bce4c40792bdb5d3a1c8859803fb49bac1ba288883a55df2717d8",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T03:24:16Z",
+ "review_file": "review.json",
+ "review_sha256": "a54ba93c92729bde75c3407b48e54e6a229b3f169e60765fadbc924558290805",
+ "reviewer": "C008Review",
+ "verdict": "PASS_WITH_QUALIFICATIONS"
+}

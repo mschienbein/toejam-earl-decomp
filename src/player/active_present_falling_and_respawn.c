@@ -2,6 +2,382 @@
 #include "player_animation_groups.h"
 #include "present_types.h"
 #include "terrain.h"
+#include "entities.h"
+#include "player.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
+
+/* Select the player's idle sprite from the active present and terrain,
+ * resetting the animation and horizontal velocity for a new selection. */
+int GetActivePresentSprite(player)
+struct object_state *player;
+{
+    register unsigned short land;
+    short player_number;
+    char sprite;
+
+    player_number = player->entity_index;
+    land = player_number == PLAYER_TOEJAM ? LAND_UNDER_TOEJAM : LAND_UNDER_EARL;
+    land &= TERRAIN_CLASS_MASK;
+    if (gPlayer1Powerup[player_number] == PRESENT_INNERTUBE) {
+        if (land == TERRAIN_WATER)
+            sprite = PLAYER_ANIM_INNERTUBE_WATER_IDLE;
+        else if (!ELEVATOR_FLAG[player_number])
+            sprite = PLAYER_ANIM_INNERTUBE_IDLE;
+        else {
+            sprite = PLAYER_ANIM_IDLE;
+            player->frame = -1;
+        }
+    } else if (gPlayer1Powerup[player_number] == PRESENT_ROCKET_SKATES) {
+        OpenRocketSkates(player, player_number, land);
+        sprite = -1;
+        return sprite;
+    } else if (land == TERRAIN_WATER && !player->height)
+        sprite = PLAYER_ANIM_SWIM_IDLE;
+    else if (gPlayer1Powerup[player_number] == PRESENT_SPRING_SHOES && !ELEVATOR_FLAG[player_number])
+        sprite = PLAYER_ANIM_SPRING_SHOES_DOWN;
+    else if (!gPlayer1Powerup[player_number] && !ELEVATOR_FLAG[player_number]) {
+        if ((player->animation_group_mask & PLAYER_GROUP_ICARUS_FLY) && player->height > 0) {
+            sprite = -1;
+            return sprite;
+        } else {
+            player->draw_flags |= ENTITY_SHADOW;
+            sprite = PLAYER_ANIM_ICARUS_IDLE;
+        }
+    } else {
+        sprite = PLAYER_ANIM_IDLE;
+        player->frame = -1;
+    }
+    player->velocity_x = 0;
+    player->velocity_y = 0;
+    if (sprite != 4)
+        player->draw_flags &= ~ENTITY_SHADOW;
+    return sprite;
+}
+
+
+#include "entities.h"
+#include "ram_player.h"
+#include "ram_camera.h"
+#include "ram_system.h"
+#include "assets_map.h"
+#include "hardware.h"
+#include "player.h"
+
+/* Clear tile priority around the falling player, stopping each column
+ * after a low-property tile below the player's row. */
+void MapClearTilePriorityNearPlayer()
+{
+    short viewport, column, center_row, bottom_row, right_column, top_row;
+    short row, wrapped_row, wrapped_column;
+    unsigned short tile;
+    short first_column;
+    short player_x, player_y;
+    unsigned char property;
+    struct object_state *player;
+
+    player = &gPlayerInfo[gTerrainPriorityUpdatePlayer];
+    player_x = player->x;
+    player_y = player->y;
+    center_row = player_y >> 3;
+    top_row = center_row - 6;
+    bottom_row = center_row + 6;
+    first_column = (player_x >> 3) - 4;
+    right_column = first_column + 9;
+    viewport = 0;
+    if (gTerrainPriorityUpdatePlayer == 1 && SPLIT_SCREEN)
+        viewport = 1;
+    VDP_CONTROL_WORD = 0x8c81;
+    for (column = first_column; column <= right_column; ++column) {
+        for (row = top_row; row <= bottom_row; ++row) {
+            wrapped_row = row & 31;
+            wrapped_column = column & 63;
+            if (!viewport)
+                VDP_COMMAND = ((wrapped_row << 23) + 0x20000002L) + (wrapped_column << 17);
+            else
+                VDP_COMMAND = ((wrapped_row << 23) + 3L) + (wrapped_column << 17);
+            tile = VDP_DATA;
+            if (row > center_row) {
+                property = PlayerTilePropertyLookup[tile & 0x7ff];
+                if (property < 0x90)
+                    break;
+            }
+            tile &= 0x7fff;
+            if (!viewport)
+                VDP_COMMAND = ((wrapped_row << 23) + 0x60000002L) + (wrapped_column << 17);
+            else
+                VDP_COMMAND = ((wrapped_row << 23) + 0x40000003L) + (wrapped_column << 17);
+            VDP_DATA = tile;
+        }
+    }
+    WAIT_FOR_VBLANK_FLAG = 0;
+}
+
+
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "terrain.h"
+#include "entities.h"
+#include "assets_audio.h"
+#include "audio_calls.h"
+#include "player.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
+#include "ram_speech.h"
+#include "ram_system.h"
+#include "speech.h"
+#include "sprite_calls.h"
+
+/* Start falling in the current facing direction, nudging away from a
+ * neighboring supported tile before the vblank terrain-priority update. */
+void PlayerStartFalling(player, player_number)
+struct object_state *player;
+short player_number;
+{
+    unsigned char *nearby_land;
+    char sprite;
+    short center_tile;
+
+    nearby_land = player_number == PLAYER_TOEJAM ? &LAND_NEAR_TOEJAM[0][0] : &LAND_NEAR_EARL[0][0];
+    TOEJAM_FALL_STATE[player_number] = 1;
+    sprite = (player->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_FALL_UP;
+    center_tile = 12;
+    if (sprite == PLAYER_ANIM_FALL_UP || sprite == PLAYER_ANIM_FALL_DOWN) {
+        if (nearby_land[center_tile - 1] < TERRAIN_WATER)
+            player->x += 8;
+        else if (nearby_land[center_tile + 1] < TERRAIN_WATER)
+            player->x -= 8;
+    }
+    player->acceleration_height = -128;
+    SetSprite(player, sprite);
+    player->animation_motion_axes = ANIMATION_MOTION_NONE;
+    player->tile &= 0x7fff;
+    gTerrainPriorityUpdatePlayer = player_number;
+    WAIT_FOR_VBLANK_FLAG = 1;
+    while (WAIT_FOR_VBLANK_FLAG)
+        ;
+    GenerateSpeech(player_number, "Bummer", 0);
+    PlaySoundEffect((long)Sfx_Falling, 50, 0);
+}
+
+/* Launch a short directional fall and remember that it has started. */
+void PlayerStartTeeteringFall(player)
+struct object_state *player;
+{
+    short player_number;
+    char sprite;
+
+    player_number = player->entity_index;
+    player->height = 5;
+    player->velocity_height = 512;
+    player->acceleration_height = -80;
+    player->animation_motion_axes = ANIMATION_MOTION_NONE;
+    sprite = (player->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_FALL_UP;
+    gPlayerLandingCounterSeed[player_number] = 1;
+    player->velocity_x = 0;
+    player->velocity_y = 0;
+    if (sprite == PLAYER_ANIM_FALL_UP)
+        player->velocity_y = -256;
+    else if (sprite == PLAYER_ANIM_FALL_DOWN)
+        player->velocity_y = 256;
+    else if (sprite == PLAYER_ANIM_FALL_LEFT)
+        player->velocity_x = -512;
+    else if (sprite == PLAYER_ANIM_FALL_RIGHT)
+        player->velocity_x = 512;
+    SetSprite(player, sprite);
+}
+
+/* Count the teetering frames and play the observed randomized speech sounds.
+ * After thirty frames, start the short fall unless the shared flag delays it. */
+void PlayerUpdateTeetering(player)
+struct object_state *player;
+{
+    short player_number;
+    unsigned short sound_choice;
+
+    player_number = player->entity_index;
+    if (player->animation_group_mask & PLAYER_GROUP_LEAN) {
+        if (++TOEJAM_JUMP_COUNTER[player_number] > 30) {
+            if (gElevatorDepartureInProgress)
+                --TOEJAM_JUMP_COUNTER[player_number];
+            else
+                PlayerStartTeeteringFall(player);
+        } else if (TOEJAM_JUMP_COUNTER[player_number] == 1) {
+            if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
+                PlaySoundEffect((long)Sfx_Teetering1, 86, 0);
+            else
+                PlaySoundEffect((long)Sfx_Teetering2, 86, 0);
+        } else if (!gPcmEffectCooldownTicks) {
+            sound_choice = PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 15;
+            if (sound_choice == 0)
+                PlaySoundEffect((long)Sfx_Teetering1, 20, 0);
+            else if (sound_choice == 1)
+                PlaySoundEffect((long)Sfx_Teetering2, 20, 0);
+            else if (sound_choice == 2)
+                PlaySoundEffect((long)Sfx_Teetering3, 20, 0);
+        }
+    }
+}
+
+
+#include "entities.h"
+#include "earthlings.h"
+#include "ram_player.h"
+#include "ram_effects.h"
+#include "ram_ui.h"
+#include "ram_camera.h"
+#include "ram_system.h"
+#include "ram_elevator.h"
+#include "assets_audio.h"
+#include "player.h"
+#include "earthling_calls.h"
+#include "elevator_calls.h"
+#include "sprite_calls.h"
+#include "audio_calls.h"
+#include "speech.h"
+#include "random.h"
+
+/* Advance both falling players, handle their landing animation, and test
+ * whether the falling player overlaps the other player's position. */
+/* MATCHING QUALIFICATION: one char sprite ID is deliberately shared by the
+ * current-player and partner selections. These lifetimes do not overlap: the
+ * partner decision initializes it after the early current-player update, and
+ * the last current-player update follows the partner update. This retains the
+ * original byte-promotion sequence; independent result locals normalize
+ * differently. The canonical int GetActivePresentSprite interface is unchanged.
+ * This is a meaningful scalar-role reuse, not an unused value or fake ABI. */
+void CheckPlayerFalling()
+{
+  char falling[2];
+  short player_number;
+  long other_number;
+  struct object_state *player;
+  struct object_state *other;
+  unsigned short land;
+  char direction;
+  char selected_sprite;
+  falling[0] = 0;
+  falling[1] = 0;
+  for (player_number = 0; player_number <= 1; ++player_number)
+  {
+    if (gPlayerLives[player_number] < 0)
+      continue;
+    player = &gPlayerInfo[player_number];
+    other_number = (unsigned long) (player_number ^ 1);
+    other = &gPlayerInfo[other_number];
+    if (TOEJAM_FALL_STATE[player_number] == 1)
+    {
+      if (player->height < (-224))
+      {
+        player->velocity_height = 0;
+        player->acceleration_height = 0;
+        falling[player_number] = 1;
+        if (gPlayer1Powerup[player_number] == 5)
+          TOEJAM_JUMP_COUNTER[player_number] = 1;
+        else
+          TOEJAM_JUMP_COUNTER[player_number] = 3;
+      }
+      else
+        player->acceleration_height = -128;
+    }
+    else
+      if (TOEJAM_FALL_STATE[player_number] == 2)
+    {
+      if (player_number == 0)
+        land = LAND_UNDER_TOEJAM;
+      else
+        land = LAND_UNDER_EARL;
+      direction = player->sprite_state & 3;
+      if (land >= 0x80)
+      {
+        if (!(player->animation_group_mask & 32))
+        {
+          SetSprite(player, direction + 20);
+          player->velocity_height = 0;
+          player->acceleration_height = -128;
+        }
+        TOEJAM_FALL_STATE[player_number] = 0;
+        continue;
+      }
+      if (TOEJAM_JUMP_COUNTER[player_number] <= 0)
+      {
+        player->height = 0;
+        player->velocity_height = 0;
+        player->acceleration_height = 0;
+        TOEJAM_FALL_STATE[player_number] = 0;
+        selected_sprite = GetActivePresentSprite(player);
+        SetSprite(player, selected_sprite);
+      }
+      else
+        if ((player->velocity_height < 0) && (player->height < 4))
+      {
+        SetSprite(player, direction + 24);
+        player->height = 0;
+        player->velocity_height = 0;
+        player->acceleration_height = 0;
+      }
+      else
+        if (!player->frame_duration)
+      {
+        short jump_count;
+        SetSprite(player, direction + 20);
+        player->velocity_height = 512;
+        player->acceleration_height = -64;
+        jump_count = TOEJAM_JUMP_COUNTER[player_number];
+        player->velocity_height += jump_count << 8;
+        --TOEJAM_JUMP_COUNTER[player_number];
+      }
+      selected_sprite = -1;
+      if (((((((other->sprite_state == 0) ||
+        (other->sprite_state == 4)) ||
+        (other->animation_group_mask & 0x20400000)) ||
+        (other->sprite_state == 76)) ||
+        (other->sprite_state == 1)) ||
+        ((other->sprite_state == 57) &&
+        (!other->velocity_y))) &&
+        EntityIsNearPosition(other, player->x, player->y, player->level))
+      {
+        if (player->height < 20)
+        {
+          selected_sprite = 2;
+          other->draw_flags |= 0x80;
+          PlaySoundEffect((long) Sfx_Squish, 50, 0);
+        }
+        else
+          if (((other->sprite_state != 1) && (!(other->animation_group_mask & 0x20000000))) && (player->height < 300))
+          selected_sprite = 1;
+      }
+      else
+        if (other->sprite_state == 1)
+        selected_sprite = GetActivePresentSprite(other);
+      if (selected_sprite != (-1))
+      {
+        SetSprite(other, selected_sprite);
+        other->velocity_x = 0;
+        other->velocity_y = 0;
+      }
+    }
+    if ((player->sprite_state == 2) && (!player->frame_duration))
+    {
+      selected_sprite = GetActivePresentSprite(player);
+      SetSprite(player, selected_sprite);
+      player->draw_flags &= 0x7f;
+      player->behavior_flags |= 0x10;
+      ram_ffda2a[player_number] = 20;
+    }
+  }
+
+  MakePlayerFall(falling);
+}
+
+
+
+
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "present_types.h"
+#include "terrain.h"
 #include "psg_effects.h"
 #include "entities.h"
 #include "hardware.h"
@@ -715,3 +1091,4 @@ void ProcessPlayers()
     if (PLAYER_INDICATOR == 2)
         PlayerUpdateHealthSharingClap();
 }
+

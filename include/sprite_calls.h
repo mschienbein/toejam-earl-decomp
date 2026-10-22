@@ -50,4 +50,5 @@ extern short AllocateEntity();
 #endif
 extern void FreeEntity();
 
+extern void SpriteUnpackRaw();
 #endif

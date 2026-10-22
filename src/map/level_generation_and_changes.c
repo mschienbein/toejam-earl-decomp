@@ -347,3 +347,328 @@ void MapSwapPlayerBanks()
             gMapDataD[row][column] |= saved_mask >> 4;
         }
 }
+
+
+#include "elevator.h"
+#include "assets_map.h"
+#include "map_calls.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+#include "random.h"
+
+/* Copy one player's complete map and visibility nibble to the other. */
+void CopyLevelBetweenPlayers(player)
+short player;
+{
+    unsigned short row, column;
+    unsigned short *source, *destination;
+    unsigned char mask;
+
+    if (!player) {
+        source = gMapDataA[0];
+        destination = gMapDataB[0];
+    } else {
+        source = gMapDataB[0];
+        destination = gMapDataA[0];
+    }
+    for (row = 0; row < 26; ++row)
+        for (column = 0; column < 19; ++column) {
+            *destination++ = *source++;
+            mask = gMapDataD[row][column];
+            if (!player)
+                gMapDataD[row][column] = (mask << 4) | (mask & 15);
+            else
+                gMapDataD[row][column] = (mask >> 4) | (mask & 0xf0);
+        }
+}
+
+/* Exchange a player's map with the saved map, preserving the other
+ * player's visibility nibble in the active mask plane. */
+void MapSwapPlayerWithSavedBank(player)
+short player;
+{
+    unsigned short row, column, saved_cell;
+    unsigned short *map, *saved_map = gMapDataC[0];
+    unsigned char mask;
+
+    if (!player) {
+        gLevel9130 = gLevel912C;
+        map = gMapDataA[0];
+    } else {
+        gLevel9130 = gLevel912E;
+        map = gMapDataB[0];
+    }
+    for (row = 0; row < 26; ++row)
+        for (column = 0; column < 19; ++column) {
+            saved_cell = *map;
+            *map++ = *saved_map;
+            *saved_map++ = saved_cell;
+            mask = gMapDataD[row][column];
+            if (!player) {
+                gMapDataD[row][column] = (mask & 0xf0) | (gSavedMapPathDirections[row][column] & 15);
+                gSavedMapPathDirections[row][column] = mask;
+            } else {
+                gMapDataD[row][column] = (gSavedMapPathDirections[row][column] << 4) | (mask & 15);
+                gSavedMapPathDirections[row][column] = mask >> 4;
+            }
+        }
+}
+
+/* Install the fixed seed table or draw a seed for each of the 26 levels. */
+void GenerateLevelSeeds()
+{
+    short level;
+
+    for (level = 0; level < 26; ++level)
+        if (gWorldType)
+            gLevelSeeds[level] = FixedWorldSeeds[level];
+        else
+            gLevelSeeds[level] = GetRandomNumber();
+    gLevel912C = 1;
+    gLevel912E = 1;
+    gLevel9130 = -1;
+    gHighestLevel = 1;
+}
+
+/* Generate separated positions inside the level-dependent coordinate
+ * bounds and return the requested position count. */
+int MapGenerateSeparatedAnchors()
+{
+    short previous, position, min_y, min_x, count, max_y, max_x;
+
+    for (position = 0; position < 8; ++position) {
+        ELEVATOR_POS_TABLE[position].x = 0;
+        ELEVATOR_POS_TABLE[position].y = 0;
+    }
+    if (gLevel912A < 4) {
+        min_x = 5;
+        max_x = 13;
+        min_y = 8;
+        max_y = 17;
+    } else {
+        min_x = 2;
+        max_x = 16;
+        min_y = 2;
+        max_y = 23;
+    }
+    count = MapGetRandomGenerationParameter(6);
+    for (position = 0; position < count; ++position) {
+        ELEVATOR_POS_TABLE[position].x =
+            GetRandomNumber() % (max_x - min_x + 1) + min_x;
+        ELEVATOR_POS_TABLE[position].y =
+            GetRandomNumber() % (max_y - min_y + 1) + min_y;
+        for (previous = position - 1; previous >= 0; --previous)
+            if (abs(ELEVATOR_POS_TABLE[position].x - ELEVATOR_POS_TABLE[previous].x) < 3 &&
+                abs(ELEVATOR_POS_TABLE[position].y - ELEVATOR_POS_TABLE[previous].y) < 5) {
+                --position;
+                break;
+            }
+    }
+    return count;
+}
+
+
+#include "ram_elevator.h"
+#include "map_calls.h"
+#include "random.h"
+
+/* Connect generated positions and extend a random path from each one.
+ * MATCHING QUALIFICATION: the three identity assignments below emit no
+ * instructions. They retain the original cursor/target/probability register
+ * allocation; they are compiler coaxing, not claimed historical operations.
+ * Removing any one of the three, or using natural split arithmetic instead,
+ * does not match. All assigned values are initialized before being read.
+ */
+void MapConnectAnchorPositions(count)
+short count;
+{
+    short position, target_x, target_y;
+
+    MapCarveDirectionalPath(ELEVATOR_POS_TABLE[0].y, ELEVATOR_POS_TABLE[0].x,
+               ELEVATOR_POS_TABLE[1].y, ELEVATOR_POS_TABLE[1].x, 20, 60);
+    MapCarveDirectionalPath(ELEVATOR_POS_TABLE[1].y, ELEVATOR_POS_TABLE[1].x,
+               ELEVATOR_POS_TABLE[2].y, ELEVATOR_POS_TABLE[2].x, 20, 60);
+    for (position = 0; position < count; ++position) {
+        target_x = ((short)GetRandomNumber() & 3) + 4;
+        target_x = target_x;
+        if (ELEVATOR_POS_TABLE[position].x + target_x < 17 &&
+            GetRandomNumber() % 100 < 50)
+            target_x += ELEVATOR_POS_TABLE[position].x;
+        else {
+            if (ELEVATOR_POS_TABLE[position].x - target_x <= 2) {
+                --position;
+                continue;
+            }
+            target_x = ELEVATOR_POS_TABLE[position].x - target_x;
+        }
+        target_y = ((short)GetRandomNumber() & 3) + 5;
+        target_y = target_y;
+        if (ELEVATOR_POS_TABLE[position].y + target_y < 24 &&
+            GetRandomNumber() % 100 < 50) {
+            target_y += ELEVATOR_POS_TABLE[position].y;
+            target_y = target_y;
+        } else {
+            if (ELEVATOR_POS_TABLE[position].y - target_y <= 2) {
+                --position;
+                continue;
+            }
+            target_y = ELEVATOR_POS_TABLE[position].y - target_y;
+        }
+        MapCarveDirectionalPath(ELEVATOR_POS_TABLE[position].y, ELEVATOR_POS_TABLE[position].x,
+                   target_y, target_x, 1, 0);
+    }
+}
+
+
+#include "entities.h"
+#include "elevator.h"
+#include "assets_map.h"
+#include "map_calls.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "random.h"
+
+/* Reuse a player or saved map when possible; otherwise generate the requested
+ * level under its stored random seed. Successful loads restore the prior random
+ * state; a rejected generation returns 1 without restoring it. */
+int ChangeLevel(player)
+short player;
+{
+    char loaded = 0;
+    short row, column, position_count;
+    unsigned short filled_cells;
+    long saved_random;
+
+    saved_random = StackBasedRandom(gLevelSeeds[gLevel912A]);
+    if (gLevel912A > 1)
+        position_count = MapGenerateSeparatedAnchors();
+    if (!player) {
+        if (gLevel912C == gLevel912A)
+            loaded = 1;
+        else {
+            if (gLevel912E == gLevel912A) {
+                if (gLevel912C)
+                    MapSwapPlayerWithSavedBank(0);
+                CopyLevelBetweenPlayers(1);
+                loaded = 1;
+            } else if (gLevel9130 == gLevel912A) {
+                MapSwapPlayerWithSavedBank(0);
+                loaded = 1;
+            } else {
+                if (gLevel912C > 1)
+                    MapSwapPlayerWithSavedBank(0);
+            }
+            gLevel912C = gLevel912A;
+        }
+    } else {
+        if (gLevel912E == gLevel912A)
+            loaded = 1;
+        else {
+            if (gLevel912C == gLevel912A) {
+                if (gLevel912C)
+                    MapSwapPlayerWithSavedBank(1);
+                CopyLevelBetweenPlayers(0);
+                loaded = 1;
+            } else if (gLevel9130 == gLevel912A) {
+                MapSwapPlayerWithSavedBank(1);
+                loaded = 1;
+            } else {
+                if (gLevel912E > 1)
+                    MapSwapPlayerWithSavedBank(1);
+                MapSwapPlayerBanks();
+            }
+            gLevel912E = gLevel912A;
+        }
+    }
+    if (!loaded && gLevel912A <= 1) {
+        if (!gLevel912A) {
+            for (row = 0; row < 26; ++row)
+                for (column = 0; column < 19; ++column)
+                    gMapDataA[row][column] = 34;
+            for (row = 0; row < 5; ++row)
+                for (column = 0; column < 4; ++column)
+                    gMapDataA[row + 12][column + 9] = Level0MapData[row][column];
+        } else {
+            for (row = 0; row < 26; ++row)
+                for (column = 0; column < 19; ++column)
+                    gMapDataA[row][column] = Level1MapData[row][column];
+        }
+        if (player == 1)
+            MapSwapPlayerBanks();
+        loaded = 1;
+    }
+    if (loaded) {
+        StackBasedRandom(saved_random);
+        return 0;
+    }
+    while (VBLANK_FLAG_2)
+        ;
+    if (gLevel912A > gHighestLevel)
+        gHighestLevel = gLevel912A;
+    for (row = 0; row < 26; ++row)
+        for (column = 0; column < 19; ++column) {
+            gMapDataA[row][column] = 0;
+            gMapDataD[row][column] &= 0xf0;
+        }
+    MapConnectAnchorPositions(position_count);
+    filled_cells = MapGetRandomGenerationParameter(3);
+    filled_cells = filled_cells * 19 * 26;
+    filled_cells /= 100;
+    for (row = 0; row < position_count; ++row)
+        MapGrowTerrainRegion(4096, row, (row + 1) * (filled_cells / position_count),
+                    ELEVATOR_POS_TABLE[row].y, ELEVATOR_POS_TABLE[row].x);
+    MapStabilizeRegionConnections();
+    if (MapIsAnchorConnectionMissing())
+        return 1;
+    MapSeedFilledTerrainRegions();
+    MapBuildRegionEdgeShapes(position_count);
+    MapBuildFilledTerrainShapes();
+    MapBuildDirectionalPathShapes();
+    MapScatterTerrainFeatures();
+    MapAssignTransitionChain();
+    MapChooseMetatileAlternatives();
+    if (player == 1)
+        MapSwapPlayerBanks();
+    StackBasedRandom(saved_random);
+    return 0;
+}
+
+/* Copy the complete final-level map to both player planes. The level bytes
+ * are written once per cell, as in the observed loop. */
+void LoadFinalLevel(level)
+short level;
+{
+    short row, column;
+
+    for (row = 0; row < 26; ++row)
+        for (column = 0; column < 19; ++column) {
+            gMapDataA[row][column] = FunkatronMapData[row][column];
+            gMapDataB[row][column] = FunkatronMapData[row][column];
+            gLevel912C = level;
+            gLevel912E = level;
+        }
+}
+
+/* Load the final map directly, or retry ordinary generation with a fresh
+ * seed until ChangeLevel accepts the generated map. */
+void MapLoadPlayerLevel(player, level)
+short player, level;
+{
+    if (level >= 26) {
+        if (gLevel912C != level)
+            LoadFinalLevel(level);
+        return;
+    }
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
+        player = 0;
+    gLevel912A = level;
+    while (ChangeLevel(player)) {
+        gLevelSeeds[level] = GetRandomNumber();
+        if (!player)
+            gLevel912C = -1;
+        else
+            gLevel912E = -1;
+    }
+}

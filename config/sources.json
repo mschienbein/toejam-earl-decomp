@@ -149,21 +149,7 @@
    ]
   },
   {
-   "source": "src/camera/camera_row_transfer.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/camera/camera_scroll.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/camera/metatile_tiles.c",
+   "source": "src/camera/camera_tiles_and_scroll.c",
    "versions": [
     "rev02",
     "rev00"
@@ -499,13 +485,6 @@
    ]
   },
   {
-   "source": "src/map/change_level.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/map/elevator_icon.c",
    "versions": [
     "rev02",
@@ -520,14 +499,7 @@
    ]
   },
   {
-   "source": "src/map/level_changes.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/map/level_generation.c",
+   "source": "src/map/level_generation_and_changes.c",
    "versions": [
     "rev02",
     "rev00"
@@ -555,14 +527,7 @@
    ]
   },
   {
-   "source": "src/map/random_and_regions.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/map/region_cleanup.c",
+   "source": "src/map/random_regions_and_cleanup.c",
    "versions": [
     "rev02",
     "rev00"
@@ -597,7 +562,7 @@
    ]
   },
   {
-   "source": "src/player/active_present_sprite.c",
+   "source": "src/player/active_present_falling_and_respawn.c",
    "versions": [
     "rev02",
     "rev00"
@@ -660,13 +625,6 @@
    ]
   },
   {
-   "source": "src/player/level_fall_sinking_and_respawn.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/player/mole.c",
    "versions": [
     "rev02",
@@ -717,13 +675,6 @@
   },
   {
    "source": "src/player/sprite_movement.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/player/start_falling.c",
    "versions": [
     "rev02",
     "rev00"
@@ -905,7 +856,7 @@
    ]
   },
   {
-   "source": "src/sprites/sprite_frame_budget.c",
+   "source": "src/sprites/sprite_frame_preparation.c",
    "versions": [
     "rev02",
     "rev00"
@@ -913,13 +864,6 @@
   },
   {
    "source": "src/sprites/sprite_links_vdp.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/sprites/sprite_pixel_masks.c",
    "versions": [
     "rev02",
     "rev00"

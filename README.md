@@ -1,18 +1,29 @@
 # ToeJam & Earl decompilation
 
-[![Code progress](https://bytematch.dev/mschienbein/toejam-earl-decomp.svg?label=Code&measure=matched_code_percent)](https://bytematch.dev/mschienbein/toejam-earl-decomp)
-[![Functions](https://bytematch.dev/mschienbein/toejam-earl-decomp.svg?label=Functions&measure=matched_functions)](https://bytematch.dev/mschienbein/toejam-earl-decomp)
+[![Code](https://bytematch.dev/mschienbein/toejam-earl-decomp.svg?label=C%20code&measure=matched_code_percent)](https://bytematch.dev/mschienbein/toejam-earl-decomp)
+[![Functions](https://bytematch.dev/mschienbein/toejam-earl-decomp.svg?label=C%20functions&measure=matched_functions)](https://bytematch.dev/mschienbein/toejam-earl-decomp)
+[![Data](https://bytematch.dev/mschienbein/toejam-earl-decomp.svg?label=Typed%20data&measure=matched_data_percent)](https://bytematch.dev/mschienbein/toejam-earl-decomp)
+[![REV 00](https://bytematch.dev/mschienbein/toejam-earl-decomp.svg?label=REV%2000%20C%20code&measure=matched_code_percent&version=rev00)](https://bytematch.dev/mschienbein/toejam-earl-decomp)
 [![progress](https://github.com/mschienbein/toejam-earl-decomp/actions/workflows/progress.yml/badge.svg)](https://github.com/mschienbein/toejam-earl-decomp/actions/workflows/progress.yml)
 
 A work-in-progress **matching decompilation** of *ToeJam & Earl* (Sega Genesis / Mega Drive, 1991,
 Johnson Voorsanger Productions, `GM MK-1020`): C source that compiles back to the exact original ROM.
 
 **Status:** both retail revisions rebuild **byte-identically** from this repository's sources plus
-assets extracted from your own dump at build time. Of the 603 functions written in C, **577 are
-matched C** in both revisions (93.3% of the C code bytes, checkpoints in `accept/`); 45 hand-written
-68000 routines and the Z80 sound driver are readable assembly source (ruling
-[R007](docs/rulings/R007-assembly-sources.md)); every data byte comes from a typed asset. The rest
-(26 C functions) is still generated assembly. Details: [docs/STATUS.md](docs/STATUS.md).
+assets extracted from your own dump at build time. The badges above are live (every push to `main`
+uploads a report per revision to [ByteMatch](https://bytematch.dev/mschienbein/toejam-earl-decomp));
+they measure the code written in C — the functions classified as hand-written assembly or compiler
+runtime are not counted there, because they are built from assembly source instead.
+
+| Part of the ROM (REV 02) | Built from | Progress (checkpoint c025) |
+|---|---|---|
+| 603 C functions, 175,412 bytes | matched C in `src/` (MCC68K 3.3K, both revisions) | **581 functions, 164,674 bytes (93.9%)**; 22 still generated assembly |
+| 36 hand-written routines + 6 compiler runtime helpers | readable 68000 assembly, `src/asm/` (ruling [R007](docs/rulings/R007-assembly-sources.md)) | all 42 |
+| Z80 sound driver + boot stub, 1,332 bytes | Z80 assembly, `src/z80/` | all |
+| 867,264 bytes of data | typed assets extracted from your dump (`docs/DATA.md`) | all; 6 bytes typed `unreferenced` (no reader found) |
+
+REV 00 builds from the same sources (`revision.h` covers its few differences); its C progress is
+the same 581 functions. History: [docs/STATUS.md](docs/STATUS.md); what remains: [docs/RESUME.md](docs/RESUME.md).
 
 | Revision | Role | Functions | Rebuild |
 |---|---|---:|---|

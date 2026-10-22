@@ -8,9 +8,9 @@ is up.
 
 | Piece | File | Notes |
 |---|---|---|
-| Report generator | `ci/progress_report.py` | objdiff report v2 JSON; needs no ROM. Denominator: the REV 02 catalogue's 651 functions (180,702 bytes). Numerator: functions credited in `config/matches.json` (empty). Units are 64 KiB address blocks. |
-| Workflow | `.github/workflows/progress.yml` | Runs on push to `main`, pull requests and on demand; uploads artifact `rev02_report` containing `report.json`. |
-| Badges | `README.md` | Commented out until the first run is ingested; `measure=matched_code_percent` and `measure=matched_functions`. |
+| Report generator | `ci/progress_report.py` | objdiff report v2 JSON; needs no ROM. Denominator: the catalogue's functions minus those classified with high confidence as hand-written assembly, runtime helpers or Sega library code (`config/rev02/classification.json`; REV 00 through the correspondence): 603 C functions, 175,412 bytes in REV 02. Numerator: functions credited in `config/matches.json` (checkpoints). Data: bytes of typed data units; `raw` and `unreferenced` units are counted separately. Units are 64 KiB address blocks. |
+| Workflow | `.github/workflows/progress.yml` | Runs on push to `main`, pull requests and on demand; uploads artifacts `rev02_report` and `rev00_report` (one `report.json` each). |
+| Badges | `README.md` | `measure=matched_code_percent`, `matched_functions`, `matched_data_percent`; `version=rev00` selects REV 00. |
 
 ## Requirements (from the previous registrations and ByteMatch's docs)
 

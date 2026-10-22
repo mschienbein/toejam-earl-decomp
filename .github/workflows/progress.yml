@@ -46,13 +46,22 @@ jobs:
       - name: Tests
         run: uv run python -m unittest discover -s tests -v
 
-      - name: Generate objdiff progress report
-        run: python3 ci/progress_report.py --version rev02 --output report.json --summary "$GITHUB_STEP_SUMMARY"
+      - name: Generate objdiff progress reports (REV 02 primary, REV 00 from the same source)
+        run: |
+          mkdir -p reports/rev02 reports/rev00
+          python3 ci/progress_report.py --version rev02 --output reports/rev02/report.json --summary "$GITHUB_STEP_SUMMARY"
+          python3 ci/progress_report.py --version rev00 --output reports/rev00/report.json --summary "$GITHUB_STEP_SUMMARY"
 
-      # ByteMatch reads the <version>_report artifact: default-branch push runs feed its history,
+      # ByteMatch reads the <version>_report artifacts: default-branch push runs feed its history,
       # pull request runs feed its PR comments (docs/BYTEMATCH.md).
-      - name: Upload progress report
+      - name: Upload REV 02 progress report
         uses: actions/upload-artifact@v4
         with:
           name: rev02_report
-          path: report.json
+          path: reports/rev02/report.json
+
+      - name: Upload REV 00 progress report
+        uses: actions/upload-artifact@v4
+        with:
+          name: rev00_report
+          path: reports/rev00/report.json

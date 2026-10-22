@@ -4,7 +4,7 @@
  "version": "rev00",
  "rom_sha256": {"rev02": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163", "rev00": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228"},
  "method": "positional pairing of catalogued functions, verified by masked-signature alignment (tools/revmap.py)",
- "identical": 429,
+ "identical": 431,
  "functions": [
   {"rev02": "0x000200", "rev00": "0x000200", "size": [2, 2], "same": true},
   {"rev02": "0x000202", "rev00": "0x000202", "size": [142, 142], "same": true},
@@ -647,10 +647,12 @@
   {"rev02": "0x03ecda", "rev00": "0x03ec6a", "size": [148, 148], "same": true},
   {"rev02": "0x03ed6e", "rev00": "0x03ecfe", "size": [764, 764], "same": true},
   {"rev02": "0x03f57a", "rev00": "0x03f50a", "size": [98, 98], "same": true},
-  {"rev02": "0x03f5dc", "rev00": "0x03f56c", "size": [78, 78], "same": true},
+  {"rev02": "0x03f5dc", "rev00": "0x03f56c", "size": [64, 64], "same": true},
+  {"rev02": "0x03f61c", "rev00": "0x03f5ac", "size": [14, 14], "same": true},
   {"rev02": "0x03f62a", "rev00": "0x03f5ba", "size": [156, 156], "same": true},
   {"rev02": "0x03f6c6", "rev00": "0x03f656", "size": [170, 170], "same": true},
-  {"rev02": "0x03f770", "rev00": "0x03f700", "size": [58, 58], "same": true},
+  {"rev02": "0x03f770", "rev00": "0x03f700", "size": [44, 44], "same": true},
+  {"rev02": "0x03f79c", "rev00": "0x03f72c", "size": [14, 14], "same": true},
   {"rev02": "0x03f7aa", "rev00": "0x03f73a", "size": [84, 84], "same": true}
  ]
 }

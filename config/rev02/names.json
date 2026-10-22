@@ -18395,7 +18395,7 @@
       "source_line": 71555,
       "address": "0x03F5DC",
       "kind": "function",
-      "size": 78
+      "size": 64
     },
     {
       "name": "PlaySound",
@@ -18420,7 +18420,7 @@
       },
       "address": "0x03F770",
       "kind": "function",
-      "size": 58
+      "size": 44
     },
     {
       "name": "Sfx_Hallelujah",

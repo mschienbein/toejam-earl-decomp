@@ -306,6 +306,18 @@
    "address": "0x03e43a",
    "kind": "seed",
    "source": "tje-disasm via rev02 0x03e4aa"
+  },
+  {
+   "address": "0x03f5ac",
+   "kind": "fragment",
+   "source": "Main (MatchWave29, AsmClassifier evidence) via rev02 0x03f61c",
+   "note": "retry block of func_03f62a (its BNE at 0x03F64E targets it); PlaySoundEffect ends at its RTS"
+  },
+  {
+   "address": "0x03f72c",
+   "kind": "fragment",
+   "source": "Main (MatchWave29, AsmClassifier evidence) via rev02 0x03f79c",
+   "note": "retry block of func_03f7aa (its BNE at 0x03F7CE targets it); PlaySound ends at its RTS"
   }
  ]
 }

@@ -7888,11 +7888,12 @@
       "name": "PlaySoundEffect",
       "class": "compiled_c",
       "confidence": "high",
-      "size": 78,
-      "instruction_bytes": 78,
+      "size": 64,
+      "instruction_bytes": 64,
       "evidence": [
         "[INFERENCE] C-origin candidate based on 3 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 1 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
+        "Catalogue revision r6: the 14-byte block after its RTS is the retry loop of the following routine (entered by that routine's backward BNE), now a separate fragment."
       ]
     },
     {
@@ -7925,11 +7926,12 @@
       "name": "PlaySound",
       "class": "compiled_c",
       "confidence": "high",
-      "size": 58,
-      "instruction_bytes": 58,
+      "size": 44,
+      "instruction_bytes": 44,
       "evidence": [
         "[INFERENCE] C-origin candidate based on 2 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 1 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
+        "Catalogue revision r6: the 14-byte block after its RTS is the retry loop of the following routine (entered by that routine's backward BNE), now a separate fragment."
       ]
     },
     {
@@ -7948,8 +7950,8 @@
   "summary": {
     "compiled_c": {
       "functions": 528,
-      "catalogue_extent_bytes": 169540,
-      "instruction_bytes": 169066
+      "catalogue_extent_bytes": 169512,
+      "instruction_bytes": 169038
     },
     "handwritten_asm": {
       "functions": 19,
@@ -7994,6 +7996,28 @@
       "macro_source_lines": [],
       "proposed_class": "unknown",
       "confidence": "low"
+    },
+    {
+      "address": "0x03F61C",
+      "name": null,
+      "catalogue_kind": "fragment",
+      "size": 14,
+      "proposed_class": "handwritten_asm",
+      "confidence": "medium",
+      "evidence": [
+        "Retry loop of func_03f62a, entered by its backward BNE; Z80 bus-request handling with DBRA."
+      ]
+    },
+    {
+      "address": "0x03F79C",
+      "name": null,
+      "catalogue_kind": "fragment",
+      "size": 14,
+      "proposed_class": "handwritten_asm",
+      "confidence": "medium",
+      "evidence": [
+        "Retry loop of func_03f7aa, entered by its backward BNE; Z80 bus-request handling with DBRA."
+      ]
     }
   ],
   "byte_accounting": "Catalogue extent includes interior data gaps/jump tables; instruction bytes skip the 24 declared tables. Fragments are excluded from the 651-function summary."

@@ -20329,7 +20329,7 @@
       "source_line": 71555,
       "address": "0x03F56C",
       "kind": "function",
-      "size": 78,
+      "size": 64,
       "mapping_from_rev02": {
         "method": "unique_containing_signature",
         "source_address": "0x03F5DC",
@@ -20353,7 +20353,7 @@
       "source_line": 62864,
       "address": "0x03F700",
       "kind": "function",
-      "size": 58,
+      "size": 44,
       "mapping_from_rev02": {
         "method": "unique_containing_signature",
         "source_address": "0x03F770",

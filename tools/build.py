@@ -315,6 +315,11 @@ def z80_sources(version: str, data: dict | None, out: Path, entries: list[dict])
         raise BuildError("Z80 sources need the version's data units")
     (out / "z80").mkdir(parents=True, exist_ok=True)
     by_name = {name: k for k, (_, _, name, _) in enumerate(data["units"])}
+    for key in ("unit", "source"):
+        seen = [e[key] for e in z80]
+        if len(seen) != len(set(seen)):
+            raise BuildError(f"config/sources.json: a Z80 {key} is listed more than once")
+    executed = toolchain.verified_binutils("z80-elf")   # the pinned programs about to run, checked
     for entry in z80:
         source = ROOT / entry["source"]
         stem = source.stem
@@ -333,7 +338,7 @@ def z80_sources(version: str, data: dict | None, out: Path, entries: list[dict])
             raise BuildError(f"{entry['source']}: assembles to {image.stat().st_size} bytes, {name} has {size}")
         data["units"][k] = (address, size, name, image)
         records.append({"source": entry["source"], "kind": "z80", "unit": name, "address": f"0x{address:06x}",
-                        "size": size, "sha256": sha256(source.read_bytes())})
+                        "size": size, "sha256": sha256(source.read_bytes()), "binutils_z80_elf": executed})
     return records
 
 

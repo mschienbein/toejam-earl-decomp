@@ -54,7 +54,20 @@ def load_sources(version: str, path: Path = SOURCES) -> list[dict]:
     document = json.loads(path.read_text(encoding="utf-8"))
     if document.get("schema_version") != 1:
         raise CUnitError("sources.json: schema_version must be 1")
-    return [u for u in document["units"] if version in u.get("versions", [])]
+    units = document["units"]
+    sources = [u["source"] for u in units]
+    if len(sources) != len(set(sources)):
+        raise CUnitError("sources.json: a source is listed more than once")
+    for u in units:
+        kind = u.get("kind")
+        if kind not in (None, "z80") or (kind == "z80") != ("unit" in u):
+            raise CUnitError(f"sources.json: {u['source']}: kind must be absent (.c/.s by suffix) or z80 with a unit")
+        if Path(u["source"]).suffix not in (".c", ".s"):
+            raise CUnitError(f"sources.json: {u['source']}: sources are .c or .s files")
+    names = [unit_name(Path(u["source"])) for u in units if u.get("kind") != "z80"]
+    if len(names) != len(set(names)):
+        raise CUnitError("sources.json: two sources share a file name (their objects would collide)")
+    return [u for u in units if version in u.get("versions", [])]
 
 
 def unit_name(source: Path) -> str:

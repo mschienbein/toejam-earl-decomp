@@ -249,7 +249,9 @@ short player_number, upload_now;
          * zero-extended long indexed address. A bare word index selects word
          * addressing; ordinary pointer addition chooses different arithmetic.
          * The shared buffer declaration and word offset are unchanged. */
-        DmaCopyWordsToVram(&gSpriteTileUploadBuffer[(int)gSpriteTileBufferOffset], tile_number << 5, 128);
+        DmaCopyWordsToVram(
+            &gSpriteTileUploadBuffer[(int)gSpriteTileBufferOffset],
+            tile_number << 5, 128);
         while (gHudDisplayedHealth[player_number] < gPlayerHealth[player_number])
             HudAnimateHealthBar(player_number);
     } else {

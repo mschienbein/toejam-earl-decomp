@@ -77,6 +77,8 @@ REVIEWED_FALSE_POSITIVES = {
     # paths (scratch/agents/C027Review/natural/<Function>/), which read as Base64 runs.
     ("6835a9a57dfd33550a0a2f6e4e83211190c03eb9", "accept/c027-eight-matches/review-C027Review-review.json"):
         ("opaque Base64 run",),
+    # A long DmaCopyWordsToVram call in the HUD unit as first committed (ec7f98e); split since.
+    ("5d824791a59b51101a9247b7133a2a6e5553ad43", "src/ui/hud.c"): ("opaque Z85 run",),
 }
 
 

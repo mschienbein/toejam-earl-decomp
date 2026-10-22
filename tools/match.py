@@ -48,9 +48,14 @@ def symbol_table(version: str) -> dict[str, int]:
     """
     table: dict[str, int] = {}
     for name in namestool.load(version).values():
-        for spelling in (name.name, *name.aliases):
+        for spelling in (name.name, *name.aliases):   # aliases resolve (the runtime's entries); authors write primaries
             table[spelling] = name.address
     return table
+
+
+def aliases(version: str) -> dict[str, str]:
+    """Alias -> primary name: C writes the primary name of every place."""
+    return {alias: name.name for name in namestool.load(version).values() for alias in name.aliases}
 
 
 def defined_functions(obj: Path, unit: str) -> list[tuple[str, int, int]]:
@@ -130,6 +135,7 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
     catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text())
     extents = {f["address"]: f["size"] for f in catalogue["functions"]}
     table = symbol_table(version)
+    alias_of = aliases(version)
     translate = revmap.translator(version)
     for name, address in (defines or {}).items():   # experiments may add unknown names, never move known ones
         if name in table or ADDRESSED.match(name):
@@ -150,6 +156,10 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
         obj = work / f"{unit}.o"
         mcc.assemble(compiled.gas, source, obj, unit)
         functions = defined_functions(obj, unit)
+        spelled = [n for n, _, _ in functions] + undefined_symbols(obj)
+        for name in spelled:
+            if name in alias_of and name not in mcc.RUNTIME_ENTRIES:
+                raise MatchError(f"{name} is an alias: write {alias_of[name]}")
         homes = {}
         for name, _, _ in functions:
             if name in (defines or {}):

@@ -37,6 +37,9 @@ import toolchain  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 AS_FLAGS = ["-m68000"]   # registers are spelled %d0 by adapt(); bare words are always symbols
+# Entry points of the MCC68K 3.3K runtime that the compiler itself calls (docs/COMPILER.md); C never
+# spells them, so their alias names (two entries share a body) are not an author's choice.
+RUNTIME_ENTRIES = frozenset({"abs", "lmodt", "ldivt", "lmult", "ulmult", "ulmodt", "uldivt"})
 CODE_SECTION = 9         # MCC68K's code section number
 PC16_REACH = 32767
 REGISTER = re.compile(r"^(?:[DA][0-7]|SP|PC|SR|CCR|USP)$", re.I)

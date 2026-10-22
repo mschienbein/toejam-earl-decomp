@@ -385,7 +385,7 @@ class AuditTest(unittest.TestCase):
         self.assertIn("ROM window", " ".join(audit_public.content_reasons("notes.txt", small, index)))
 
     def test_long_numeric_blocks_are_rom_free_policy_not_metadata_fields(self):
-        self.assertEqual(audit_public.NUMERIC_ALLOWLIST, frozenset())
+        self.assertNotIn("NUMERIC_ALLOWLIST", vars(audit_public))
         single_values = b"\n".join(b"// ff" for _ in range(audit_public.MAX_NUMERIC_RUN))
         self.assertIn("numeric run", " ".join(audit_public.content_reasons("notes.txt", single_values, None)))
         padded = b", ".join(f"0x{value:04x}".encode() for value in range(audit_public.MAX_NUMERIC_RUN))
@@ -398,7 +398,7 @@ class AuditTest(unittest.TestCase):
         fields = {f"field{n}": n % 256 for n in range(300)}
         self.assertEqual(audit_public.content_reasons("config/facts.json", json.dumps(fields, indent=2).encode(), None), [])
         first = b", ".join(str(n).encode() for n in range(32))
-        self.assertEqual(audit_public.content_reasons("notes.txt", first + b"\n\n" + first, None), [])
+        self.assertIn("numeric run", " ".join(audit_public.content_reasons("notes.txt", first + b"\n\n" + first, None)))
 
     def test_embedded_binary_signatures_across_all_decoders_without_roms(self):
         prefixes = {
@@ -566,25 +566,28 @@ class AuditTest(unittest.TestCase):
                 self.assertTrue(any("ROM window" in reason for reason in audit_public.content_reasons(path, source, index00)))
                 self.assertFalse(any("ROM window" in reason for reason in audit_public.content_reasons(path, source, index02)))
 
-    def test_opaque_runs_are_rom_free_and_only_standalone_hashes_are_excepted(self):
-        for size in (47, 48, 49):
-            reasons = audit_public.content_reasons("payload.txt", b"g" * size, None)
+    def test_opaque_entropy_mixing_length_and_standing_hash_boundaries(self):
+        encoded = base64.b64encode(hashlib.shake_256(b"opaque length boundary").digest(36))
+        for size, value in ((47, encoded[:47]), (48, encoded), (49, encoded + encoded[:1])):
+            reasons = audit_public.content_reasons("payload.txt", value, None)
             self.assertEqual(any("opaque" in reason for reason in reasons), size >= 48)
         for size in (40, 64):
-            digest = b"b" * size
+            digest = (b"0123456789abcdef" * 4)[:size]
             for source in (digest, b"digest: " + digest, json.dumps({"sha": digest.decode()}).encode()):
-                self.assertIsNone(audit_public.opaque_reason("facts.json" if source.startswith(b"{") else "facts.txt", source))
-        for size in (48, 63, 65, 128):
-            self.assertIn("opaque", audit_public.opaque_reason("payload.txt", b"b" * size))
-        self.assertIn("opaque", audit_public.opaque_reason("payload.txt", b"prefix" + b"b" * 64))
-        plain = b"independently authored human-readable fixture"
+                self.assertIsNone(audit_public.opaque_reason("facts.txt", source))
+            self.assertFalse(audit_public.structured_text_view(digest).strip())
+        balanced_hex = b"0123456789abcdef" * 3
+        self.assertAlmostEqual(audit_public.opaque_metrics(balanced_hex)[0], 4.0)
+        self.assertIn("opaque", audit_public.opaque_reason("payload.txt", balanced_hex))
+        self.assertIn("opaque", audit_public.opaque_reason("payload.txt", b"prefix" + b"0123456789abcdef" * 4))
+        for value in (b"g" * 128, b"x" * 1_000_000, b"ABCDEFGHIJKLMNOPQRSTUVWXYZ" * 4):
+            self.assertIsNone(audit_public.opaque_reason("padding.txt", value))
+        plain = b"an independently authored fixture with several ordinary short words"
         for encoded in (base64.b32encode(plain), base64.b85encode(plain), quopri.encodestring(plain, quotetabs=True)):
             self.assertTrue(audit_public.content_reasons("encoded.txt", encoded, None))
         hash_like = b"0b0cc" + b"1" * 59
         self.assertIsNone(audit_public.opaque_reason("facts.txt", hash_like))
         self.assertEqual(audit_public.numeric_fields(hash_like)[0], b"")
-        # A missing SCP-reference boundary formerly retried a greedy match at every byte.
-        self.assertIn("opaque", audit_public.opaque_reason("padding.txt", b"x" * 1_000_000))
 
     def test_structured_facts_and_source_syntax_are_not_opaque_payloads(self):
         references = [
@@ -607,26 +610,40 @@ class AuditTest(unittest.TestCase):
         self.assertIsNone(audit_public.opaque_reason("syntax.py", source))
         addresses = {f"target{n}": f"0x{0x30000 + n * 16:06X}" for n in range(16)}
         self.assertIsNone(audit_public.opaque_reason("facts.json", json.dumps(addresses).encode()))
-        payload_source = b'VALUE = "' + b"g" * 48 + b'"\n'
+        payload_source = b'VALUE = "' + base64.b64encode(self.image[17:113]) + b'"\n'
         self.assertIn("opaque", audit_public.opaque_reason("syntax.py", payload_source))
 
-    def test_legacy_synthetic_exceptions_are_exact_and_do_not_skip_rom_checks(self):
+    def test_historical_regex_exceptions_are_exact_spans_only(self):
+        spans = (
+            b're.compile(rb"' + audit_public.DATA_URI.pattern + b'",',
+            b're.compile(rb"' + audit_public.MARKER.pattern.split(b"{6,8}")[0],
+        )
+        self.assertEqual({hashlib.sha256(value).hexdigest() for value in spans},
+                         audit_public.LEGACY_OPAQUE_SHA256)
+        secret = base64.b64encode(self.image[17:113])
+        for value in spans:
+            self.assertIsNone(audit_public.opaque_reason("unrelated.txt", value))
+            self.assertIn("opaque", audit_public.opaque_reason("unrelated.txt", value + b"1"))
+            self.assertIn("opaque", audit_public.opaque_reason("unrelated.txt", value + b"\n" + secret))
+            raw = value + b" readable fixture continuation " * 4
+            index = audit_public.RomIndex([raw])
+            self.assertIn("ROM window", " ".join(audit_public.content_reasons("unrelated.txt", raw, index)))
+
+    def test_low_entropy_instruction_literals_still_receive_rom_checks(self):
         programs = (
             (0x0C40, 0x0002, 0x6E1C, 0xD040, 0x303B, 0x0006, 0x4EFB, 0x0002, 0x0006,
              0x000A, 0x000E, 0x7001, 0x4E75, 0x7002, 0x4E75, 0x70FF, 0x4E75, 0x7000, 0x4E75),
             (0x4E56, 0xFFF8, 0x48E7, 0x3000, 0x302E, 0x0008, 0x222F, 0x0018,
              0x4CDF, 0x000C, 0x4E5E, 0x4E75),
         )
-        digests = set()
         for words in programs:
             raw = b"".join(word.to_bytes(2, "big") for word in words)
             encoded = raw.hex().encode()
-            digests.add(hashlib.sha256(encoded).hexdigest())
             self.assertIsNone(audit_public.opaque_reason("fixture.txt", encoded))
-            self.assertIn("opaque", audit_public.opaque_reason("fixture.txt", encoded + b"1"))
+            self.assertLess(audit_public.opaque_metrics(encoded)[0], 4.0)
+            self.assertIsNone(audit_public.opaque_reason("fixture.txt", encoded + b"1"))
             index = audit_public.RomIndex([raw + self.image])
             self.assertIn("ROM window", " ".join(audit_public.content_reasons("fixture.txt", encoded, index)))
-        self.assertEqual(digests, audit_public.LEGACY_SYNTHETIC_SHA256)
 
     def test_long_independent_numeric_data_is_intentionally_forbidden(self):
         vector = hashlib.shake_256(b"independent synthetic fixture").digest(80)
@@ -683,7 +700,7 @@ class AuditTest(unittest.TestCase):
                 with self.subTest(size=size, format=name):
                     self.assertTrue(audit_public.content_reasons(path, source, index))
                     # Record shapes/long opaque runs are independent of the reference ROM.
-                    if name in ("intel", "intel16", "srecord") or size == 96 and name in ("uu", "base32", "base85", "z85", "ascii85", "qp", "chunks"):
+                    if name in ("intel", "intel16", "srecord") or size == 96 and name in ("uu", "base32", "base85", "z85", "ascii85", "qp"):
                         self.assertTrue(audit_public.content_reasons(path, source, None))
 
     def test_short_numeric_wrappers_are_decoded_not_hidden_by_thresholds(self):
@@ -703,9 +720,97 @@ class AuditTest(unittest.TestCase):
             with self.subTest(format=name):
                 self.assertIsNotNone(audit_public.opaque_reason("records.txt", cases[name]))
         parts = json.dumps({f"part{n}": self.image[17 + 8*n:25 + 8*n].hex() for n in range(4)}).encode()
-        self.assertIn("opaque", audit_public.opaque_reason("parts.json", parts))
+        index = audit_public.RomIndex([self.image])
+        self.assertIn("ROM window", " ".join(audit_public.content_reasons("parts.json", parts, index)))
         hashes = json.dumps({f"sha{n}": hashlib.sha256(str(n).encode()).hexdigest() for n in range(4)}).encode()
         self.assertIsNone(audit_public.opaque_reason("hashes.json", hashes))
+
+    def lexical_cases(self, raw):
+        numbers = lambda value: b", ".join(str(byte).encode() for byte in value)
+        small, long = raw[:32], raw[:80]
+        encoded = base64.b85encode(raw)
+        return (
+            ("tests/single.js", b"const expected = '" + encoded + b"';\n", True),
+            ("tests/template.js", b"const expected = `" + encoded + b"`;\n", True),
+            ("tests/raw.go", b"package fixture\nvar expected = `" + base64.b64encode(raw) + b"`\n", True),
+            ("tests/tuple.py", b"EXPECTED = (" + numbers(small) + b")\n", False),
+            ("tests/tuple_long.py", b"EXPECTED = (" + numbers(long) + b")\n", True),
+            ("tests/return.py", b"def expected():\n    return bytes([" + numbers(long) + b"])\n", True),
+            ("tests/assert.py", b"self.assertEqual(list(self.frame), [" + numbers(long) + b"])\n", True),
+            ("src/compound.c", b"void f() { consume((unsigned char[]){" + numbers(long) + b"}, 80); }\n", True),
+            ("tests/braces.cpp", b"std::array<unsigned char, 80> expected{{" + numbers(long) + b"}};\n", True),
+            ("tests/fixture.ini", b"[test]\nexpected = " + numbers(small) + b"\n", False),
+        )
+
+    def test_ar6_quoting_and_numeric_reproductions_are_path_independent(self):
+        raw = self.image[17:113]
+        index = audit_public.RomIndex([self.image])
+        for path, source, structural in self.lexical_cases(raw):
+            for spelling in (path, "artifact.txt"):
+                with self.subTest(path=spelling, shape=path):
+                    self.assertTrue(audit_public.content_reasons(spelling, source, index))
+                    self.assertEqual(bool(audit_public.content_reasons(spelling, source, None)), structural)
+
+    def test_ar6_shapes_with_private_retail_bytes(self):
+        references = [ROOT / f"orig/{version}/baserom.bin" for version in ("rev02", "rev00")]
+        if not all(path.is_file() for path in references):
+            self.skipTest("private reference ROMs absent")
+        images = [path.read_bytes() for path in references]
+        index = audit_public.RomIndex(images)
+        for path, source, structural in self.lexical_cases(images[1][0x17600:0x17660]):
+            with self.subTest(path=path):
+                self.assertTrue(audit_public.content_reasons(path, source, index))
+                self.assertEqual(bool(audit_public.content_reasons(path, source, None)), structural)
+
+    def test_numeric_sequences_are_context_free_and_do_not_mask_string_contents(self):
+        raw = self.image[17:97]
+        sequence = b", ".join(str(value).encode() for value in raw)
+        wrappers = (
+            (b"VALUE = '", b"'"), (b'VALUE = "', b'"'), (b"VALUE = `", b"`"),
+            (b"VALUE = r'''", b"'''"), (b"values = (", b")"),
+            (b"key: [", b"]"), (b"[section]\nkey=", b"\n"),
+            (b"# stored values = ", b"\n"), (b"/* stored values = (", b") */"),
+            (b"f(", b")"), (b"return {", b"}"),
+        )
+        for prefix, suffix in wrappers:
+            with self.subTest(prefix=prefix):
+                self.assertIn("numeric", " ".join(audit_public.content_reasons("artifact.txt", prefix + sequence + suffix, None)))
+        values = b", ".join(str(n).encode() for n in range(32))
+        self.assertIn("numeric", " ".join(audit_public.content_reasons("artifact.txt", values + b"\n\n" + values, None)))
+        facts = {f"field_{n}": n % 97 for n in range(256)}
+        self.assertEqual(audit_public.content_reasons("artifact.txt", json.dumps(facts).encode(), None), [])
+
+    def test_adjacent_text_literals_do_not_invent_an_opaque_source_run(self):
+        value = bytes(range(33, 118))
+        self.assertIsNotNone(audit_public.opaque_reason("joined.txt", value))
+        pieces = [json.dumps(value[n:n + 32].decode()).encode() for n in range(0, len(value), 32)]
+        source = b"char *message = " + b" /* continuation */ ".join(pieces) + b";\n"
+        index = audit_public.RomIndex([value])
+        self.assertEqual(audit_public.content_reasons("src/message.c", source, index), [])
+
+    def test_json_name_chunks_are_decoding_candidates_not_literal_opaque_runs(self):
+        values = []
+        for n in range(8):
+            middle = "".join(chr(65 + byte % 26) for byte in hashlib.shake_256(str(n).encode()).digest(30))
+            values.append("z" + middle + "z")
+        joined = "".join(values).encode()
+        self.assertIsNotNone(audit_public.opaque_reason("joined.txt", joined))
+        source = json.dumps({"aliases": values}).encode()
+        self.assertEqual(audit_public.content_reasons("config/names.json", source, None), [])
+
+    def test_reference_exceptions_do_not_hide_high_entropy_components(self):
+        secret = base64.b64encode(self.image[17:113])
+        for source in (
+                b"https://example.invalid/file?payload=" + secret,
+                b"https://example.invalid/data/" + secret,
+                b"source:src/main.c:" + secret,
+                b'{"name":"' + secret + b'"}'):
+            with self.subTest(source=source[:40]):
+                self.assertIn("opaque", audit_public.opaque_reason("facts.txt", source))
+        digest = b"0123456789abcdef" * 4
+        package = b"https://files.pythonhosted.org/packages/" + digest[:2] + b"/" + digest[2:4] + b"/" + digest[4:] + b"/package.whl"
+        self.assertIsNone(audit_public.opaque_reason("uv.lock", package))
+        self.assertIsNone(audit_public.opaque_reason("facts.txt", b"https://example.invalid/" + digest + b"/file"))
 
 
 class PinnedObjdumpAuditTest(unittest.TestCase):

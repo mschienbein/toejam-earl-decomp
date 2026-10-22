@@ -15,6 +15,7 @@ import csv
 import hashlib
 import io
 import json
+import math
 import quopri
 import string
 import re
@@ -24,6 +25,7 @@ import sys
 import time
 import tokenize
 import zlib
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote_to_bytes
@@ -37,10 +39,11 @@ MIN_TEXT_MATCH = 64
 MAX_JSON_DEPTH = 64
 MAX_NON_TEXT_ESCAPES = 8
 MAX_NUMERIC_RUN = 64
-NUMERIC_ALLOWLIST: frozenset[str] = frozenset()  # No numeric-dump exemptions are approved.
 MAX_SIGNATURE_OUTPUT = 4096
 MAX_ENCODING_DEPTH = 4
-DATA_URI = re.compile(rb"data:([^,\s\"'<>]*),([^\s\"'<>]+)", re.I)
+DATA_URI = re.compile(
+    rb"data:([^,\s\"'<>]*),"
+    rb"([^\s\"'<>]+)", re.I)
 PRIVATE_DIRS = {"build", "asm", "orig", ".cache", "scratch"}
 ASSET_SUFFIXES = {
     ".bin", ".gen", ".smd", ".sgd", ".zip", ".7z", ".gz", ".xz", ".rar", ".bz2", ".tar", ".zlib", ".lib",
@@ -54,7 +57,9 @@ ASSET_SUFFIXES = {
 PADDING = b" " * 16
 HEADER_TEXT = (b"(C)SEGA 1991.OCT", b"(C)SEGA 1991.JUL", b"GM MK-1020 -02", b"GM MK-1020 -00")
 ALLOWED_TEXT = {"tests/support.py": (b"SEGA GENESIS" + b" " * 4,)}
-MARKER = re.compile(rb"(?m)^\s*(?:[0-9a-fA-F]+\s+<)?\.Li_[0-9a-fA-F]{6,8}>?\s*:")
+MARKER = re.compile(
+    rb"(?m)^\s*(?:[0-9a-fA-F]+\s+<)?"
+    rb"\.Li_[0-9a-fA-F]{6,8}>?\s*:")
 INCBIN = re.compile(rb"(?im)^\s*\.?incbin\s+[\"'][^\"'\r\n{}]*baserom(?:\.bin|[/\\])")
 CONDITION = rb"(?:ra|sr|hi|ls|cc|cs|ne|eq|vc|vs|pl|mi|ge|lt|gt|le|f|t)"
 ASM_WORD = (
@@ -91,11 +96,19 @@ C_GAP = re.compile(rb"(?:\s|/\*[\s\S]*?\*/|//[^\r\n]*(?:\n|$))*")
 C_ESCAPE = re.compile(rb"\\(?:x[0-9a-fA-F]|[0-7])")
 CHARACTER = rb"(?:u8|[uUL])?'(?:\\[\s\S]|[^'\\])*'"
 INTEGER = rb"(?:0[xX]_?[0-9a-fA-F](?:_?[0-9a-fA-F])*|\$[0-9a-fA-F](?:_?[0-9a-fA-F])*|0[oO]_?[0-7](?:_?[0-7])*|0[bB]_?[01](?:_?[01])*|[0-9](?:_?[0-9])*|[0-9a-fA-F]{2,})(?:_?[uUiI](?:8|16|32|64|128|size)|[uUlL]*)"
-NUMBER = re.compile(rb"(?<![\w.])[+-]?(?:" + CHARACTER + rb"|" + INTEGER + rb")(?![\w.])")
+NUMBER = re.compile(rb"(?<![\w.\\])[+-]?(?:" + CHARACTER + rb"|" + INTEGER + rb")(?![\w.])")
+INTEGER_NUMBER = re.compile(rb"(?<![\w.\\])[+-]?(?:" + INTEGER + rb")(?![\w.])")
 LINE_COMMENT = re.compile(rb"//[^\r\n]*|/\*[^\r\n]*?\*/")
-LINE_LABEL = re.compile(rb"^\s*(?:(?:0[xX]|\$)?[0-9a-fA-F]{1,16}|[A-Za-z_][\w.]*):[ \t]*")
-BYTE_SEPARATORS = re.compile(rb"^[\s,;{}\[\]()=:+*/\\|<>-]*$")
+BYTE_SEPARATORS = re.compile(rb"""^[\s,;:{}\[\]()=:+*/\\|<>?&!%~^`"'-]*$""")
 INT_SUFFIX = re.compile(rb"(?:_?[uUiI](?:8|16|32|64|128|size)|[uUlL]+)$")
+ROW_LABEL = re.compile(
+    rb"(?m)^[ \t]*[A-Za-z_]\w*:"
+    rb"[ \t]*(?=\r?$)")
+ARRAY_DECLARATION = re.compile(
+    rb"(?m)(?:^|(?<=[;{}]))[ \t]*"
+    rb"(?:[A-Za-z_]\w*(?:[ \t]+|\*[ \t]*)){1,8}"
+    rb"[A-Za-z_]\w*[ \t]*\[[^\]\r\n]*\]"
+    rb"[ \t]*=[ \t]*\{")
 MAX_OPAQUE_RUN = 48
 OPAQUE_ALPHABETS = {
     "hex": string.hexdigits.encode(),
@@ -109,22 +122,29 @@ OPAQUE_ALPHABETS = {
 }
 OPAQUE_RUNS = {name: re.compile(b"[" + re.escape(alphabet) + b"]{" + str(MAX_OPAQUE_RUN).encode() + b",}")
                for name, alphabet in OPAQUE_ALPHABETS.items()}
+OPAQUE_ENTROPY = {
+    name: 4.0 if name in ("hex", "Base32") else 4.45 if name in ("Base64", "URL-safe Base64") else 4.5
+    for name in OPAQUE_RUNS
+}
 HASH_WORD = re.compile(rb"(?<![A-Za-z0-9_+/=-])(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})(?![A-Za-z0-9_+/=-])")
 URI_REFERENCE = re.compile(rb"""(?:https?|ftp|ssh|git)://[^\s"'<>]+|(?<![\w.@-])[\w.-]+@[\w.-]+:[^\s"'<>]+""")
-PATH_REFERENCE = re.compile(rb"(?:\.{0,2}/)?[\w.@-]+(?:/[\w.@-]+)+(?:[?#][\w.,:=%&+@/?#~-]*)?")
-CITATION_REFERENCE = re.compile(rb"[\w.-]+:(?:[\w.@-]+/)*[\w.@-]+\.[A-Za-z0-9]{1,12}(?::[\w.@$+/-]+)*")
-NAMESPACE_REFERENCE = re.compile(rb"[a-z][a-z0-9_]{0,31}:[a-z][a-z0-9_]{0,31}(?:-[a-z][a-z0-9_]{0,31}){2,}")
-ADDRESS_LIST = re.compile(rb"[0-9A-Fa-f]{4,8}(?:,[0-9A-Fa-f]{4,8})+")
+PATH_REFERENCE = re.compile(rb"(?<![\w.@-])(?:\.{0,2}/)?[\w.@-]+(?:/[\w.@-]+)+(?:[?#][\w.,:=%&+@/?#~-]*)?")
+CITATION_REFERENCE = re.compile(rb"(?<![\w.@$+-])[\w.-]+:(?:[\w.@-]+/)*[\w.@-]+\.[A-Za-z0-9]{1,12}(?::[\w.@$+/-]+)*")
+NAMESPACE_REFERENCE = re.compile(rb"(?<!\w)[a-z][a-z0-9_]{0,31}:[a-z][a-z0-9_]{0,31}(?:-[a-z][a-z0-9_]{0,31}){2,}")
+HASH_COMPONENT = re.compile(rb"""(?<=/)(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})(?=[/?.#"'`]|$)""")
+PACKAGE_HASH = re.compile(rb"(?<=/packages/)[0-9a-fA-F]{2}/[0-9a-fA-F]{2}/[0-9a-fA-F]{60}(?=/)")
+QUOTED_IDENTIFIER = re.compile(rb"""(["'])([A-Za-z_]\w*)\1""")
+REFERENCE_EXPRESSION = re.compile(rb"[A-Za-z_]\w*(?:[.\[\](),;]+(?:[A-Za-z_]\w*|[0-9]+)?)+")
 INTEL_LINE = re.compile(rb"^[ \t]*:[0-9A-Fa-f]{10,}[ \t]*$")
 SRECORD_LINE = re.compile(rb"^[ \t]*S[0-9][0-9A-Fa-f]{4,}[ \t]*$")
 UU_LINE = re.compile(rb"^M[ -`]{60}[ \t]*$")
 QP_ESCAPE = re.compile(rb"=[0-9A-Fa-f]{2}")
-# Reviewed synthetic test literals predate the opaque policy; history is immutable.
-# Only opaque classification is excepted. ROM, asset and decoded-content checks still apply.
-# First: tests/{support,toolsmith_support}.py. Second: tests/test_packet.py.
-LEGACY_SYNTHETIC_SHA256 = frozenset({
-    "6fdad49cd15ee2f4f0ba4915a7a3439f3fb1332b1495a6c0d431569b8714692d",
-    "718061e0ac3631f4b6fa9c9872d390361a1c41947f2fd3b5f1410a0fe0044549",
+# Only these two exact historical r6 regex-source spans survive entropy calibration.
+# Current DATA_URI/MARKER definitions are split into short source fragments instead.
+# This never exempts their files or any numeric/ROM/media check.
+LEGACY_OPAQUE_SHA256 = frozenset({
+    "910106863497592ff6eb3f0acfcff2e3251937fd99b4fa6cdaee5884c0249230",
+    "6286a75fe5594367894c754702055b644638a7b5b30516d30fffd7f553fe0b89",
 })
 
 
@@ -147,133 +167,81 @@ def ordered_string_chunks(mapping: dict):
         yield b"".join(values)
 
 
-def opaque_channels(path: str, data: bytes):
-    """Inspect payload/comment text, not identifiers or punctuation in executable syntax."""
-    suffix = PurePosixPath(path).suffix.lower()
-    if suffix == ".py":
-        try:
-            tree = ast.parse(data)
-        except (SyntaxError, ValueError):
-            yield data
-            return
-        patterns = set()
-        bindings = {}
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Assign):
-                for target in node.targets:
-                    if isinstance(target, ast.Name):
-                        bindings[target.id] = node.value
-            elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
-                bindings[node.target.id] = node.value
-
-        def mark_pattern(expression, names):
-            if expression is None:
-                return
-            for part in ast.walk(expression):
-                if isinstance(part, ast.Constant):
-                    patterns.add(id(part))
-                elif isinstance(part, ast.Name) and part.id in bindings and part.id not in names:
-                    mark_pattern(bindings[part.id], names | {part.id})
-
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
-                if node.func.value.id == "re" and node.func.attr in ("compile", "search", "match", "fullmatch", "findall", "finditer", "split", "sub", "subn") and node.args:
-                    mark_pattern(node.args[0], set())
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Constant) and id(node) not in patterns:
-                if isinstance(node.value, str):
-                    yield node.value.encode("utf-8", "surrogatepass")
-                elif isinstance(node.value, bytes):
-                    yield node.value
-        try:
-            for token in tokenize.tokenize(io.BytesIO(data).readline):
-                if token.type == tokenize.COMMENT:
-                    text = token.string.lstrip("# ").encode()
-                    if not re.fullmatch(rb"[-=_*~.]+", text):
-                        yield text
-                elif token.type == tokenize.NUMBER and len(token.string) >= MAX_OPAQUE_RUN:
-                    yield token.string.encode()
-        except (tokenize.TokenError, SyntaxError, UnicodeError):
-            pass
-        return
-    if suffix == ".json":
-        try:
-            work = [json.loads(data)]
-        except (ValueError, UnicodeError, RecursionError):
-            yield data
-            return
-        while work:
-            item = work.pop()
-            if isinstance(item, str):
-                yield item.encode("utf-8", "surrogatepass")
-            elif isinstance(item, list):
-                work.extend(item)
-            elif isinstance(item, dict):
-                for joined in ordered_string_chunks(item):
-                    yield (joined, False)  # A concatenation was not a standing hash token.
-                work.extend(item.keys())
-                work.extend(item.values())
-        return
-    if suffix in (".c", ".h", ".cpp", ".rs", ".js", ".go"):
-        for token in C_LEXEME.finditer(data):
-            value = token.group()
-            if value.startswith((b"//", b"/*")):
-                text = value[2:-2] if value.startswith(b"/*") else value[2:]
-                if not re.fullmatch(rb"[\s*=_~.-]+", text):
-                    yield text
-            elif not value.startswith(b"'"):
-                try:
-                    yield decode_c_literal(value)[0]
-                except DecodeLimitError:
-                    yield value
-        # Integer literals, unlike source identifiers, can themselves hold encoded material.
-        for number in re.finditer(rb"(?<!\w)(?:0[xX][0-9a-fA-F]{48,}|[0-9]{48,})(?!\w)", data):
-            yield number.group()
-        return
-    if suffix in (".md", ".rst"):
-        data = re.sub(rb"(?m)^[ \t]*[-=_*~.]{12,}[ \t]*$", b"", data)
-    yield data
+def opaque_metrics(value: bytes) -> tuple[float, int]:
+    """Shannon bits per character and the number of digit/upper/lower/symbol classes."""
+    counts = Counter(value)
+    if not counts:
+        return 0.0, 0
+    classes = {0 if 48 <= byte <= 57 else 1 if 65 <= byte <= 90 else 2 if 97 <= byte <= 122 else 3
+               for byte in counts}
+    size = len(value)
+    entropy = math.log2(size) - sum(count * math.log2(count) for count in counts.values()) / size
+    return entropy, len(classes)
 
 
-def structured_text_view(text: bytes, allow_hash: bool = True) -> bytes:
-    view = URI_REFERENCE.sub(lambda match: b" " * len(match.group()), text)
+def opaque_component(value: bytes) -> bool:
+    if len(value) < MAX_OPAQUE_RUN:
+        return False
+    entropy, classes = opaque_metrics(value)
+    return classes >= 2 and any(pattern.fullmatch(value) and entropy >= OPAQUE_ENTROPY[name]
+                                for name, pattern in OPAQUE_RUNS.items())
 
-    def reference_word(match):
-        token = match.group().strip(b"`'\"()[]{}.,;")
-        citation = CITATION_REFERENCE.fullmatch(token)
-        namespace = NAMESPACE_REFERENCE.fullmatch(token)
-        path = PATH_REFERENCE.fullmatch(token)
-        if citation or namespace or path and (b"." in token or b"-" in token):
-            return b" " * len(match.group())
-        return match.group()
 
-    view = re.sub(rb"\S+", reference_word, view)
-    view = ADDRESS_LIST.sub(lambda match: b" " * len(match.group()) if all(int(value, 16) > 255 for value in match.group().split(b",")) else match.group(), view)
-    return HASH_WORD.sub(lambda match: b" " * len(match.group()), view) if allow_hash else view
+def structured_text_view(text: bytes) -> bytes:
+    """Remove complete reviewed fact shapes, never a language, file or string category."""
+    spans = [match.span() for pattern in (HASH_WORD, HASH_COMPONENT, PACKAGE_HASH)
+             for match in pattern.finditer(text)]
+    for pattern in (URI_REFERENCE, CITATION_REFERENCE, PATH_REFERENCE, NAMESPACE_REFERENCE):
+        for match in pattern.finditer(text):
+            token = match.group()
+            if pattern is PATH_REFERENCE and b"." not in token and b"-" not in token:
+                continue
+            components = HASH_COMPONENT.sub(b"", PACKAGE_HASH.sub(b"", token))
+            if not any(opaque_component(part) for part in re.split(rb"[/?:=&]", components)):
+                spans.append(match.span())
+    # Short/low-entropy identifier atoms do not become secrets just because JSON/code framing
+    # supplies extra punctuation. High-entropy literal identifiers remain candidates.
+    for match in QUOTED_IDENTIFIER.finditer(text):
+        if not opaque_component(match[2]):
+            spans.append(match.span())
+    for match in re.finditer(rb"\S+", text):
+        word = match.group().strip(b"();,")
+        if REFERENCE_EXPRESSION.fullmatch(word) and not any(
+                opaque_component(atom) for atom in re.findall(rb"[A-Za-z_]\w*|[0-9]+", word)):
+            spans.append(match.span())
+    view = bytearray(text)
+    for start, end in spans:
+        view[start:end] = b" " * (end - start)
+    return bytes(view)
 
 
 def opaque_reason(path: str, data: bytes) -> str | None:
-    for text in opaque_channels(path, data):
-        text, allow_hash = text if isinstance(text, tuple) else (text, True)
-        if hashlib.sha256(text).hexdigest() in LEGACY_SYNTHETIC_SHA256:
-            continue
-        for line in text.splitlines():
-            if INTEL_LINE.fullmatch(line):
-                return "Intel HEX record-line representation is not public source"
-            if SRECORD_LINE.fullmatch(line):
-                return "Motorola S-record representation is not public source"
-            if UU_LINE.fullmatch(line):
-                return "uuencode M-record representation is not public source"
-            escapes = list(QP_ESCAPE.finditer(line))
-            if len(escapes) >= 4 and 3 * len(escapes) >= len(line.strip()) // 4:
-                return "dense quoted-printable record-line representation is not public source"
-        # URLs, filesystem references and address lists are structured facts, not opaque data.
-        # Their normal ROM/signature checks remain active; this is not a path whitelist.
-        view = structured_text_view(text, allow_hash)
-        for name, pattern in OPAQUE_RUNS.items():
-            match = pattern.search(view)
-            if match is not None:
-                return f"opaque {name} run of {len(match.group())} characters (limit {MAX_OPAQUE_RUN - 1}; only standalone 40/64-hex hashes excepted)"
+    # This raw pass is unconditional and path-independent: no source-language parser may
+    # discard single quotes, templates, raw strings, comments or malformed source snippets.
+    view = structured_text_view(data)
+    for line in view.splitlines():
+        if INTEL_LINE.fullmatch(line):
+            return "Intel HEX record-line representation is not public source"
+        if SRECORD_LINE.fullmatch(line):
+            return "Motorola S-record representation is not public source"
+        if UU_LINE.fullmatch(line):
+            return "uuencode M-record representation is not public source"
+        escapes = list(QP_ESCAPE.finditer(line))
+        if len(escapes) >= 4 and 3 * len(escapes) >= len(line.strip()) // 4:
+            return "dense quoted-printable record-line representation is not public source"
+    metrics = {}
+    for name, pattern in OPAQUE_RUNS.items():
+        for match in pattern.finditer(view):
+            key = match.span()
+            if key not in metrics:
+                metrics[key] = opaque_metrics(match.group())
+            entropy, classes = metrics[key]
+            if classes >= 2 and entropy >= OPAQUE_ENTROPY[name]:
+                if hashlib.sha256(match.group()).hexdigest() in LEGACY_OPAQUE_SHA256:
+                    continue
+                return (f"opaque {name} run of {len(match.group())} characters; "
+                        f"entropy {entropy:.3f} >= {OPAQUE_ENTROPY[name]:.2f} bits/char, "
+                        f"{classes} character classes")
     return None
 
 
@@ -380,6 +348,8 @@ class DecodeBudget:
     def __init__(self):
         self.used = 0
         self.structural_failure = False
+        self.numeric_scanned = set()
+        self.opaque_scanned = set()
 
     def charge(self, size: int) -> None:
         self.used += size
@@ -482,17 +452,17 @@ def json_payloads(text: str, budget: DecodeBudget):
     except RecursionError as error:
         raise DecodeLimitError("JSON exceeds the bounded decoding depth") from error
 
-    def variants(value: str):
+    def variants(value: str, literal: bool = True):
         raw = value.encode("utf-8", "surrogatepass")
         budget.charge(len(raw))
-        yield raw
+        yield raw, literal
         try:
             latin = value.encode("latin1")
         except UnicodeEncodeError:
             return
         if latin != raw:
             budget.charge(len(latin))
-            yield latin
+            yield latin, literal
 
     work = [(document, 0)]
     nodes = 0
@@ -506,7 +476,7 @@ def json_payloads(text: str, budget: DecodeBudget):
         elif isinstance(value, dict):
             for joined in ordered_string_chunks(value):
                 budget.charge(len(joined))
-                yield joined
+                yield joined, False
             work.extend((item, depth + 1) for pair in value.items() for item in pair)
         elif isinstance(value, list):
             # Preserve adjacency, including runs separated by non-string elements.
@@ -516,7 +486,7 @@ def json_payloads(text: str, budget: DecodeBudget):
                     run.append(item)
                 else:
                     if len(run) > 1:
-                        yield from variants("".join(run))
+                        yield from variants("".join(run), literal=False)
                     run = []
             work.extend((item, depth + 1) for item in value)
 
@@ -608,53 +578,25 @@ def literal_values(token: bytes) -> tuple[tuple[int | None, ...], bytes]:
     return (value, decimal, hexadecimal, octal), packed
 
 
-def initializer_body(line: bytes) -> bytes:
-    """Strip a declaration/constructor prefix before parsing data, not after splitting it."""
-    assignment = re.search(rb"(?<![=!<>])=(?!=)", line)
-    if assignment is None:
-        return line
-    expression = line[assignment.end():].lstrip()
-    for opener in re.finditer(rb"[\[{]", expression):
-        prefix = expression[:opener.start()]
-        if prefix.strip() and not any(marker in prefix for marker in (b"(", b"]", b"{")) and opener.group() != b"{":
-            continue  # table[index] is code, not an array initializer.
-        body = expression[opener.end():].lstrip()
-        if not body or NUMBER.match(body) or body[:1] in (b"[", b"{"):
-            return body
-    return line
-
-
-def numeric_fields(line: bytes) -> tuple[bytes, ...] | None:
-    """A data row, not unrelated constants in prose, JSON object fields or ordinary code."""
-    line = initializer_body(line.strip())
-    label = LINE_LABEL.match(line)
-    if label:
-        name, rest = line[:label.end()].rstrip().rstrip(b":"), line[label.end():]
-        address = re.fullmatch(rb"(?:0[xX]|\$)?[0-9a-fA-F]{1,16}", name)
-        if not address and rest.strip() and len(list(NUMBER.finditer(rest))) <= 1:
-            return None  # Named scalar YAML/C metadata is not an ordered byte row.
-        line = rest
-    declaration = re.search(rb"(?:=\s*|\)\s*)[\{\[]", line)
-    array_key = re.search(rb"@\s*:\s*\[", line)
-    if declaration:
-        line = line[declaration.end():]
-    elif array_key:
-        line = line[array_key.end():]
-    line = re.sub(rb"^\s*(?:dc\.[bwl]|\.byte|\.short|\.word|\.long)\s+", b"", line, flags=re.I)
-    if b"@" in line:
-        return None  # Masked string/key: a scalar metadata field is not a numeric dump.
-    matches = list(NUMBER.finditer(line))
-    if not matches or BYTE_SEPARATORS.fullmatch(NUMBER.sub(b" ", line)) is None:
-        return None
+def numeric_variants(data: bytes, matches: list[re.Match]) -> tuple[bytes, ...]:
+    """Decode one lexical run, retaining lossless and optional address-filtered views."""
     streams = [bytearray() for _ in range(10)]
+    line_start = 0
+    previous_end = 0
     for ordinal, match in enumerate(matches):
+        newline = data.rfind(b"\n", previous_end, match.start())
+        if newline >= 0:
+            line_start = newline + 1
+        first_on_line = ordinal == 0 or matches[ordinal - 1].end() <= line_start
         token = match.group()
         spelling = INT_SUFFIX.sub(b"", token.lstrip(b"+-")).replace(b"_", b"")
         digits = spelling[2:] if spelling.lower().startswith(b"0x") else spelling[1:] if spelling.startswith(b"$") else spelling
-        # Retain a lossless literal view as well as an address-column-filtered view; an octal
-        # or padded byte value must not disappear merely because it resembles an offset.
         offset = b"'" not in spelling and token[:1] not in (b"+", b"-") and not spelling.lower().startswith((b"0o", b"0b"))
-        offset = offset and ordinal == 0 and len(matches) > 1 and len(digits) >= 4 and not line[:match.start()].strip() and line[match.end():matches[1].start()].isspace()
+        offset = offset and first_on_line and ordinal + 1 < len(matches) and len(digits) >= 4
+        if offset:
+            prefix = data[line_start:match.start()].strip()
+            gap = data[match.end():matches[ordinal + 1].start()]
+            offset = not prefix and bool(gap) and b"\n" not in gap and not gap.strip(b": \t\r")
         values, packed = literal_values(token)
         chunks = tuple(bytes([value & 255]) if value is not None and -128 <= value <= 255 else b"" for value in values) + (packed,)
         for stream, chunk in zip(streams[:5], chunks):
@@ -662,87 +604,97 @@ def numeric_fields(line: bytes) -> tuple[bytes, ...] | None:
         if not offset:
             for stream, chunk in zip(streams[5:], chunks):
                 stream.extend(chunk)
+        previous_end = match.end()
     return tuple(bytes(stream) for stream in streams)
 
 
+def numeric_fields(data: bytes) -> tuple[bytes, ...] | None:
+    """Decode an all-numeric spelling; never infer an assignment or container grammar."""
+    matches = list(NUMBER.finditer(data))
+    if not matches or BYTE_SEPARATORS.fullmatch(NUMBER.sub(b" ", data)) is None:
+        return None
+    return numeric_variants(data, matches)
+
+
 def numeric_blocks(data: bytes, budget: DecodeBudget):
-    """Contiguous data rows, including comments; annotations never become payload bytes."""
+    """Every maximal numeric-token run, in any lexical context or container syntax."""
     if CONTROL_BYTES.search(data):
         return
     try:
         data.decode("utf-8")
     except UnicodeDecodeError:
         return
-    if NUMBER.search(data) is None:
-        return
-
-    def mask(match):
-        token = match.group()
-        if token.startswith((b"//", b"/*", b"'")) or re.match(rb"(?:u8|[uUL])'", token):
-            return token
-        return b"@" + bytes(10 if byte == 10 else 32 for byte in token[1:])
-
-    view = C_LEXEME.sub(mask, data)
-    streams = [bytearray() for _ in range(10)]
-    first_line = 0
-
-    def flush():
-        nonlocal first_line
-        values = tuple(bytes(stream) for stream in streams)
-        for value in set(values):
-            budget.charge(len(value))
-        result = (first_line, values)
-        for stream in streams:
-            stream.clear()
-        first_line = 0
-        return result
 
     def annotation(match):
         token = match.group()
         body = token[2:-2] if token.startswith(b"/*") else token[2:]
-        # A comment containing data remains data. A prose/offset/index annotation does not.
-        return body if numeric_fields(body) is not None else b" " * len(token)
+        if numeric_fields(body) is not None:
+            return token
+        return bytes(10 if byte == 10 else 32 for byte in token)
 
-    for line_number, original in enumerate(view.splitlines(), 1):
-        if not original.strip():
-            if first_line:
-                yield flush()
-            continue
-        line = LINE_COMMENT.sub(annotation, original)
-        if not line.strip() or not LINE_LABEL.sub(b"", line).strip():
-            continue
-        line = initializer_body(line)
-        # Keep ordered numeric rows across declaration/comment punctuation; only blank or
-        # genuinely non-data lines end a block.
-        pieces = line.split(b";") if re.search(rb";[^;]*=\s*\{", line) else [line]
-        for piece in pieces:
-            piece = piece.split(b";", 1)[0]
-            if not piece.strip() or BYTE_SEPARATORS.fullmatch(piece) and NUMBER.search(piece) is None:
-                continue
-            fields = numeric_fields(piece)
-            if fields is None:
-                if first_line:
-                    yield flush()
-                continue
-            if any(fields):
-                if not first_line:
-                    first_line = line_number
-                for stream, values in zip(streams, fields):
-                    stream.extend(values)
-    if first_line:
-        yield flush()
+    def views():
+        yield data  # Always inspect the raw run before doing optional normalization.
+        normalized = LINE_COMMENT.sub(annotation, data)
+        for pattern in (ROW_LABEL, ARRAY_DECLARATION):
+            normalized = pattern.sub(lambda match: bytes(10 if byte == 10 else 32 for byte in match.group()), normalized)
+        if normalized != data:
+            yield normalized
+
+    seen = set()
+    for view in views():
+        # The integer lexer sees through every kind of quoted string. A second character-atom
+        # view preserves C/Python escape arrays without letting a long quote swallow numbers.
+        lexers = (INTEGER_NUMBER, NUMBER) if b"'" in view else (INTEGER_NUMBER,)
+        for lexer in lexers:
+            run = []
+            first_line = 0
+            current_line = 1
+            previous_end = 0
+
+            def flush():
+                nonlocal run, first_line
+                variants = numeric_variants(view, run)
+                result = (first_line, variants)
+                run = []
+                if variants in seen:
+                    return None
+                seen.add(variants)
+                for value in set(variants):
+                    budget.charge(len(value))
+                return result
+
+            for match in lexer.finditer(view):
+                gap = view[previous_end:match.start()]
+                current_line += gap.count(b"\n")
+                if run and BYTE_SEPARATORS.fullmatch(gap) is None:
+                    result = flush()
+                    if result is not None:
+                        yield result
+                if not run:
+                    first_line = current_line
+                run.append(match)
+                current_line += match.group().count(b"\n")
+                previous_end = match.end()
+            if run:
+                result = flush()
+                if result is not None:
+                    yield result
 
 
 def numeric_reason(data: bytes, index: RomIndex | None, allowed: tuple[bytes, ...],
                    budget: DecodeBudget, origin: str, path: str) -> str | None:
+    key = hashlib.sha256(data).digest()
+    if key in budget.numeric_scanned:
+        return None
+    budget.numeric_scanned.add(key)
     for line, variants in numeric_blocks(data, budget):
         for raw in dict.fromkeys(variants):
             reason = payload_reason(raw, index, allowed, f"{origin}: numeric run at line {line}", budget)
             if reason is not None:
                 return reason
         count = max(map(len, variants[:4]), default=0)
-        if count >= MAX_NUMERIC_RUN and path not in NUMERIC_ALLOWLIST:
-            return f"{origin}: numeric run contains {count} byte values (limit {MAX_NUMERIC_RUN - 1}; no approved path exemption)"
+        if count >= MAX_NUMERIC_RUN:
+            return f"{origin}: numeric run contains {count} byte values (limit {MAX_NUMERIC_RUN - 1}; no exemptions)"
     return None
 
 
@@ -1036,7 +988,15 @@ def conventional_payloads(data: bytes, budget: DecodeBudget):
 
 
 def encoded_reason(data: bytes, index: RomIndex | None, allowed: tuple[bytes, ...],
-                   budget: DecodeBudget, origin: str, decoded: bool = False, path: str = "", depth: int = 0) -> str | None:
+                   budget: DecodeBudget, origin: str, decoded: bool = False, path: str = "", depth: int = 0,
+                   check_opaque: bool = True) -> str | None:
+    key = hashlib.sha256(data).digest()
+    if check_opaque and key not in budget.opaque_scanned:
+        budget.opaque_scanned.add(key)
+        reason = opaque_reason(path, data)
+        if reason is not None:
+            budget.structural_failure = True
+            return reason
     if decoded:
         reason = payload_reason(data, index, allowed, origin, budget)
         if reason is not None:
@@ -1049,7 +1009,7 @@ def encoded_reason(data: bytes, index: RomIndex | None, allowed: tuple[bytes, ..
             reason = inspect_decoded(raw, index, allowed, budget, origin + ": numeric table column", path, depth)
             if reason is not None:
                 return reason
-            if len(raw) >= MAX_NUMERIC_RUN and path not in NUMERIC_ALLOWLIST:
+            if len(raw) >= MAX_NUMERIC_RUN:
                 return f"{origin}: numeric table column contains {len(raw)} byte values (limit {MAX_NUMERIC_RUN - 1})"
         for kind, raw in conventional_payloads(data, budget):
             reason = inspect_decoded(raw, index, allowed, budget, origin + ": " + kind, path, depth)
@@ -1118,10 +1078,15 @@ def content_reasons(path: str, data: bytes, index: RomIndex | None) -> list[str]
     allowed = HEADER_TEXT + ALLOWED_TEXT.get(path, ())
     budget = DecodeBudget()
     structural = opaque_reason(path, data)
+    budget.opaque_scanned.add(hashlib.sha256(data).digest())
     if structural is not None:
         reasons.append(structural)
         budget.structural_failure = True
     try:
+        numeric = numeric_reason(data, index, allowed, budget, "blob", path)
+        if numeric is not None:
+            reasons.append(numeric)
+            budget.structural_failure = True
         raw_kind = embedded_kind(data, budget)
         if raw_kind is not None:
             reasons.append(f"embedded {raw_kind} payload")
@@ -1134,7 +1099,8 @@ def content_reasons(path: str, data: bytes, index: RomIndex | None) -> list[str]
                 reasons.append(f"suspicious C literal: {group.escaped_nontext} non-text escaped bytes (limit {MAX_NON_TEXT_ESCAPES})")
             reason = payload_reason(group.raw, None if exempt else index, allowed, "C string literal", budget)
             if reason is None:
-                reason = encoded_reason(group.raw, index, allowed, budget, "C string literal", path=path)
+                reason = encoded_reason(group.raw, index, allowed, budget, "C string literal",
+                                        path=path, check_opaque=len(group.spans) == 1)
             if reason is not None and reason not in reasons:
                 reasons.append(reason)
         view = source_view(path, data, literals)
@@ -1150,8 +1116,9 @@ def content_reasons(path: str, data: bytes, index: RomIndex | None) -> list[str]
                 reasons.append(f"raw ROM window (binary >=16 bytes or text >={MIN_TEXT_MATCH}) at blob offset 0x{offset:x}")
         reason = encoded_reason(view, index, allowed, budget, "blob", path=path)
         if reason is None and is_text:
-            for payload in json_payloads(text if view is data else view.decode("utf-8"), budget):
-                reason = encoded_reason(payload, index, allowed, budget, "JSON string/adjacent array", decoded=True, path=path)
+            for payload, literal in json_payloads(text if view is data else view.decode("utf-8"), budget):
+                reason = encoded_reason(payload, index, allowed, budget, "JSON string/adjacent array",
+                                        decoded=True, path=path, check_opaque=literal)
                 if reason is not None:
                     break
         if reason is not None:

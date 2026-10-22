@@ -20,30 +20,31 @@ positive size and SHA-256. Missing/invalid inputs are errors, not an implicit we
 explicit `--no-rom` skips ROM comparison. This gate is defense in depth against **accidental**
 author/tool leaks, not a detector for deliberate obfuscation.
 
-**ROM-free structural layer:** payload/comment text may not contain a whitespace-free run of
-**48 or more encoding-alphabet characters** (hex, Base32, Base64/URL-safe, Base85/Z85/Ascii85 or
-uuencode). Intel HEX, Motorola S-record, uuencode M-lines and dense `=XX` quoted-printable lines
-are forbidden by record shape. The only general opaque-token exception is a **standing 40- or
-64-character hex hash**, not a hash prefix embedded in a larger encoding. The ROM decoder
-remains active on hash-shaped tokens, so calling a ROM extract a hash does not bypass the
-private check.
+**ROM-free structural layer:** every maximal encoding-alphabet run of **48 or more characters**
+is inspected in raw text, regardless of file extension, source syntax or quoting style. A run is
+opaque only when it has at least two digit/uppercase/lowercase/symbol classes and Shannon entropy
+at or above **4.00 bits/character for hex/Base32**, **4.45 for Base64/URL-safe Base64**, or
+**4.50 for Base85/Z85/Ascii85/uuencode**. Low-entropy identifiers, word-like text and rulers are
+not opaque merely because they are long. Intel HEX, Motorola S-record, uuencode M-lines and dense
+`=XX` quoted-printable lines remain forbidden by record shape.
 
-Source identifiers, compiled regular expressions, comment rulers, well-formed links/paths/citation
-references and explicit lists of non-byte addresses are syntactically structured facts, not opaque
-payloads. This classification is content/grammar based, never a per-path exemption. Literal
-encoding data inside source assignments/comments is still checked.
+Standing **40/64-hex hashes** and hash-shaped URL path components are allowed, including the
+exact `2/2/60` hexadecimal package-digest shard format. Complete URLs, paths, provenance references
+and identifier expressions are classified by whole fact shapes; a high-entropy component is
+not hidden by that classification. This never exempts a file, source language or quote category.
+There is no blanket `re.compile` or C-string structural exemption. ROM/media checks remain active.
 
-Two reviewed, independently authored synthetic test literals predate this policy and remain in
-immutable history. Their **exact literal SHA-256s**, not their paths, exempt opaque classification
-only; all ROM/media checks remain active:
+Two exact historical regex-source spans in r6's `tools/audit_public.py` survive this calibration.
+Their SHA-256s exempt opaque classification only; their current definitions are split into short
+source fragments. Appending a byte or adding another opaque run does not inherit the exception:
 
-- `6fdad49cd15ee2f4f0ba4915a7a3439f3fb1332b1495a6c0d431569b8714692d`:
-  38-byte synthetic switch fixture in `tests/support.py` / `tests/toolsmith_support.py`.
-- `718061e0ac3631f4b6fa9c9872d390361a1c41947f2fd3b5f1410a0fe0044549`:
-  24-byte synthetic argument/frame fixture in `tests/test_packet.py`.
+- `910106863497592ff6eb3f0acfcff2e3251937fd99b4fa6cdaee5884c0249230`:
+  old `DATA_URI` definition fragment (49 characters; entropy 4.645).
+- `6286a75fe5594367894c754702055b644638a7b5b30516d30fffd7f553fe0b89`:
+  old `MARKER` definition fragment (59 characters; entropy 4.836).
 
-Do not add further encoded test literals. Generate fixture bytes from instructions/word values
-instead; changes to either approved literal do not inherit its exception.
+The older synthetic-byte exceptions are removed: those low-entropy fixtures need none under the
+entropy policy. Continue generating test bytes programmatically instead of committing dumps.
 
 ROM evidence is an exact binary-looking window of at least 16 raw bytes or 12 decoded bytes.
 An ordinary printable 12/16-byte overlap is **not** evidence: prose and JSON explanations can
@@ -68,6 +69,8 @@ The same pipeline accepts Python byte/C literals, JavaScript typed-array and Go 
 numeric CSV/TSV columns, data URIs, JSON escaped bytes, array chunks and explicitly consecutive
 numbered part fields. Unrelated object fields or files are not concatenated. Base64 runs normalize
 whitespace, indentation, YAML scalars and Markdown fences without executing source or requiring YAML.
+Adjacent literals/array strings still supply private decoding candidates, but concatenation alone
+does not establish an opaque run that never occurred literally in the input.
 JSON is bounded to 64 levels / 400,000 nodes; encoded wrappers to four levels; total decoded
 candidates to 16,000,000 bytes per blob. Bounds fail closed.
 
@@ -83,26 +86,27 @@ Binary literals are still compared to both originals; more than eight escaped no
 in a literal/adjacent run are suspicious even in `--no-rom`. Encoded media and numeric dumps
 inside otherwise printable literals are still checked. Comments never hide binary experiments.
 
-**Numeric-block policy:** normalized signed/unsigned byte atoms are read in order across contiguous
-data lines, including comments and disabled arrays. Labels/address columns have bounded alternate
-views; scalar JSON/YAML metadata and prose are not dumps. A matching ROM window is a finding;
-64 or more byte values are a structural finding even without a ROM, **including independently
-authored test vectors/calibration tables**. Tests must generate such data programmatically instead
-of committing literal dumps. There are no numeric path, content or recipe exceptions.
-Blank/non-data lines delimit numeric blocks.
+**Numeric-block policy:** every maximal numeric-token sequence is inspected directly in raw text,
+including quoted values, tuples, return/call arguments, compound/direct-list initializers,
+INI/TOML/YAML fields, comments and disabled code. Assignment/container syntax never decides whether
+to scan. A matching ROM window is a finding; **64 or more byte-range values** is a structural
+finding even without a ROM, including independent test vectors/calibration tables. Blank lines
+do not interrupt a sequence. Identifier keys separate unrelated scalar metadata. Bounded alternate
+views retain annotated rows and address columns; they never replace or suppress the raw pass.
+There are no numeric path, content or recipe exceptions. Generate long test data programmatically.
 
 Independent checks reject private output directories, generated instruction markers, baserom
 includes, genuine GNU objdump output, asm-differ headers/rows, Capstone listings at low or high
 addresses, assets/binary/archive filenames, non-text blobs and non-Markdown `.md` files.
 `config/**/*.json` has an explicit **4,000,000-byte** cap; **every other file** keeps the
 **1,000,000-byte** cap. Large config JSON is still scanned, not exempt from content checks.
-Opaque encoded prose and long padding strings are deliberately disallowed too, even when their
-decoded contents are independently authored. The structural policy avoids a new decoder race for
-every large encoding. Small split-file exports, unrecognized transforms and expression-built
-streams are not exhaustively covered; the tool does not prove copyright safety.
+High-entropy encoded prose may be rejected even when independently authored. Low-entropy padding
+is not opaque, but size, decode-budget and private ROM checks still apply. Entropy screening is a
+heuristic; short/low-entropy encodings can pass ROM-free CI. Small split-file exports, unrecognized
+transforms and expression-built streams are not exhaustively covered. This is not a copyright proof.
 
-**Add** this ROM-free CI step after the existing full-history checkout; copying the tools does not
-install it. It needs only Python's standard library and Git, not a ROM, binutils or project packages:
+The ROM-free CI step follows the full-history checkout. It needs only Python's standard library
+and Git, not a ROM, binutils or project packages:
 
 ```yaml
 - uses: actions/checkout@v4
@@ -120,6 +124,12 @@ Known gaps (independent review AuditReview6, 2026-10-22; being closed): encoded 
 JavaScript single-quoted or template strings and Go raw strings, and numeric data written as
 tuples, call or return arguments, compound literals, list initialisation or INI values, can pass.
 Until the next revision lands, check such files by hand before pushing.
+
+Known gaps (independent review AuditReview7, 2026-10-22): substrings that look like facts can
+mask high-entropy Z85 runs; 40/64-hex Intel HEX record bodies pass as hashes; short Base85 inside
+JavaScript/TypeScript, Go, Rust, Lua and Python f-string literals escapes the private decoders;
+annotated 80-value arrays in Python, Lua and YAML pass. The gate is defence in depth against
+accidents; check such files by hand before pushing.
 
 ## Private function packets
 

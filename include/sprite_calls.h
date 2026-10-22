@@ -40,7 +40,7 @@ extern int AllocateSpriteSlots();
 extern char AllocateSpriteSlot();
 extern void FreeSpriteSlots();
 extern void FreeSpriteSlot();
-extern int IsSpriteSlotNonReclaimable();
+extern int IsSpriteSlotLocked();
 extern short AllocateSpriteTileRun();
 extern void FreeSpriteTileRun();
 extern void AllocateEntityViewportSprites();

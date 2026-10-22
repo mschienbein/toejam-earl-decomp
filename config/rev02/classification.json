@@ -24,14 +24,18 @@
     {
       "address": "0x000202",
       "name": "_start",
-      "class": "sega_library",
-      "confidence": "medium",
+      "class": "handwritten_asm",
+      "confidence": "high",
       "size": 142,
       "instruction_bytes": 142,
       "evidence": [
-        "Observed: reset initialization performs the TMSS SEGA write, USP setup, VDP/Z80/PSG setup and RAM clearing; tje-disasm:src/main.S:37-138 describes generic Genesis initialization.",
-        "[INFERENCE] Its conventional startup sequence suggests stock Sega/Genesis library provenance, but no external Sega library binary was compared. The observed machine/startup role is stronger than the medium-confidence origin assignment.",
-        "Observed 2 direct hardware-port reference instructions and 7 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 50 decoded instructions in the 142-byte catalogue extent; 0 stack-slot argument hints, 1 resolved direct callers and 1 outbound direct control edges.",
+        "Caller evidence: 0 resolved sites are in credited C. Example func_00034e at 0x000356 has 0 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "USP initialization at 0x000236 and SR setup at 0x00028a are machine-state operations outside ordinary C; the entry also clears machine memory without an established C frame.",
+        "Six DBRA sites implement reset-time VDP/Z80/RAM/PSG initialization; this is startup machinery, not an ordinary C ABI leaf.",
+        "[INFERENCE] Hand-written startup assembly is high-confidence; Sega-library ancestry remains unproved. Generic Genesis/TMSS initialization is non-unique and no sample/library source or binary was matched.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
@@ -5741,46 +5745,77 @@
     {
       "address": "0x025978",
       "name": "VDPWritesRoutine1",
-      "class": "compiled_c",
+      "class": "handwritten_asm",
       "confidence": "high",
       "size": 218,
       "instruction_bytes": 218,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; 3 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 8 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 54 decoded instructions in the 218-byte catalogue extent; 3 stack-slot argument hints, 13 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4, 8, 12; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "Caller evidence: 9 resolved sites are in credited C. Example FurtherInitialisation at 0x0012b0 has 4 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "Two standalone delay NOPs at 0x025a3e and 0x025a4a follow absolute memory-to-memory hardware writes. They cannot be forward PC-relative relocation padding.",
+        "The function otherwise has a C-shaped stack ABI and saved D2-D4 set. W24 preserved a 214-byte ordinary-C candidate against the 218-byte original.",
+        "[INFERENCE] Classify as assembly-touched, not unmodified plain C; this does not claim that all its arithmetic was originally authored in assembly.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x025A52",
       "name": "SpriteUnpackInterleavedRLE",
-      "class": "unknown",
-      "confidence": "medium",
+      "class": "handwritten_asm",
+      "confidence": "high",
       "size": 208,
       "instruction_bytes": 208,
       "evidence": [
-        "Sprite decompressor; tje-disasm:src/main.S:54169-54344 documents the stream and stack parameters. It has the same stack ABI/register-save style as game C; decompressor role alone does not prove assembly origin. Exclude from C credit until policy/origin review."
+        "Observed 74 decoded instructions in the 208-byte catalogue extent; 2 stack-slot argument hints, 8 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4, 10; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "Caller evidence: 1 resolved sites are in credited C. Example func_013160 at 0x01319a has 2 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "Four DBRA loops consume decoded token/run counts, not fixed-size aggregate copies. Byte rotation occurs at 0x025abc; the tested nibble-swap C forms emit shifts and OR, not rotate.",
+        "Stack arguments, a four-byte local frame and register saves make the wrapper C-compatible but do not explain these checked loop/rotate idioms.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x025aa2, 0x025ad0, 0x025af0, 0x025afe. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x025B22",
       "name": "SpriteUnpackRLE",
-      "class": "unknown",
-      "confidence": "medium",
+      "class": "handwritten_asm",
+      "confidence": "high",
       "size": 122,
       "instruction_bytes": 122,
       "evidence": [
-        "Sprite decompressor; tje-disasm:src/main.S:54169-54344 documents the stream and stack parameters. It has the same stack ABI/register-save style as game C; decompressor role alone does not prove assembly origin. Exclude from C credit until policy/origin review."
+        "Observed 43 decoded instructions in the 122-byte catalogue extent; 2 stack-slot argument hints, 8 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4, 10; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "Caller evidence: 1 resolved sites are in credited C. Example func_013160 at 0x0131a8 has 4 stack-push sites in the preceding 12 instructions and 1 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "Three DBRA loops consume variable decoded run counts. Their token-dependent fill/copy control is not the fixed aggregate-copy DBF lowering observed in the counterexample probes.",
+        "W24 preserved eight full C candidates, including same-size variants, but their failure is only supporting evidence and is not the classification criterion.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x025b66, 0x025b80, 0x025b8c. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x025B9C",
       "name": "SpriteUnpackRaw",
-      "class": "compiled_c",
+      "class": "handwritten_asm",
       "confidence": "high",
       "size": 50,
       "instruction_bytes": 50,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on 2 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "Observed 17 decoded instructions in the 50-byte catalogue extent; 2 stack-slot argument hints, 1 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4, 10; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "Caller evidence: 0 resolved sites are in credited C. Example func_00c920 at 0x00c9b4 has 4 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "The incoming word count controls a DBRA around eight explicit longword copies, with word predecrement at 0x025bb6. It is a runtime outer count, not a compiler-known struct size.",
+        "The copy_blocks probe naturally reproduces an eight-longword aggregate body but retains a separate decrement/conditional branch for its variable outer loop. W24's nearest candidate agreed on the first 44 bytes and 46 of 50 aligned bytes.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x025bc8. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
@@ -5841,136 +5876,200 @@
     {
       "address": "0x026F44",
       "name": "ClearVideoRAM",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "handwritten_asm",
+      "confidence": "high",
       "size": 28,
       "instruction_bytes": 28,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 2 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 55842); these are modern disassembler notation, not evidence of the original source language."
+        "Observed 5 decoded instructions in the 28-byte catalogue extent; 0 stack-slot argument hints, 2 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 1 resolved sites are in credited C. Example FurtherInitialisation at 0x00130e has 1 stack-push sites in the preceding 12 instructions and 1 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "The fixed-port clear loop combines an immediate-zero word MOVE at 0x026f52 with DBRA at 0x026f5a. It repeatedly writes one hardware address, so it is not an aggregate copy.",
+        "Hardware access alone is not the criterion; the checked zero-store/scalar-loop idioms are.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x026f5a. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x026F60",
       "name": "ClearSRAM",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "handwritten_asm",
+      "confidence": "high",
       "size": 28,
       "instruction_bytes": 28,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 2 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 55850); these are modern disassembler notation, not evidence of the original source language."
+        "Observed 5 decoded instructions in the 28-byte catalogue extent; 0 stack-slot argument hints, 2 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 1 resolved sites are in credited C. Example FurtherInitialisation at 0x001308 has 2 stack-push sites in the preceding 12 instructions and 1 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "The fixed-port clear loop combines an immediate-zero word MOVE at 0x026f6e with DBRA at 0x026f76 over 40 writes.",
+        "The VDP command selects VSRAM despite the preserved ClearSRAM primary name; no renaming is proposed here.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x026f76. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x026F7C",
       "name": "ClearColourRAM",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "handwritten_asm",
+      "confidence": "high",
       "size": 28,
       "instruction_bytes": 28,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 2 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 55858); these are modern disassembler notation, not evidence of the original source language."
+        "Observed 5 decoded instructions in the 28-byte catalogue extent; 0 stack-slot argument hints, 3 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 1 resolved sites are in credited C. Example FurtherInitialisation at 0x001302 has 2 stack-push sites in the preceding 12 instructions and 1 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "The fixed-port clear loop combines an immediate-zero word MOVE at 0x026f8a with DBRA at 0x026f92 over 64 writes; this is not aggregate-copy lowering.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x026f92. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x026F98",
       "name": "func_026F98",
-      "class": "compiled_c",
+      "class": "handwritten_asm",
       "confidence": "high",
       "size": 42,
       "instruction_bytes": 42,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on 3 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 2 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 12 decoded instructions in the 42-byte catalogue extent; 3 stack-slot argument hints, 0 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4, 8, 12; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "The longword incoming count is shifted and consumed by low-word DBRA at 0x026fbc while repeatedly writing a single VDP port.",
+        "The mixed-width shift/SWAP/BSET command packing supports a hand-optimized interpretation, but BSET itself is not exclusion evidence because C bitfields can generate it.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x026fbc. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x026FC2",
       "name": "func_026FC2",
-      "class": "compiled_c",
+      "class": "handwritten_asm",
       "confidence": "high",
       "size": 22,
       "instruction_bytes": 22,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on 2 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 6 decoded instructions in the 22-byte catalogue extent; 2 stack-slot argument hints, 2 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4, 8; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "Caller evidence: 0 resolved sites are in credited C. Example func_03a48a at 0x03a4c0 has 4 stack-push sites in the preceding 12 instructions and 1 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "Two incoming longword arguments provide source and count; the count is then used as a word in SUBQ/DBRA at 0x026fd2 for repeated VDP writes. This is a variable scalar loop, not fixed aggregate assignment.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x026fd2. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "value fill (writes a repeated value), not a source-pointer copy (ClassReview correction)",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x026FD8",
       "name": "func_026FD8",
-      "class": "compiled_c",
+      "class": "handwritten_asm",
       "confidence": "high",
       "size": 22,
       "instruction_bytes": 22,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on 2 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 6 decoded instructions in the 22-byte catalogue extent; 2 stack-slot argument hints, 0 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4, 8; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "The incoming count is loaded as a longword but consumed as a low-word scalar DBRA at 0x026fe8; byte transfers repeatedly target the same VDP port.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x026fe8. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "value fill (writes a repeated value), not a source-pointer copy (ClassReview correction)",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x026FEE",
       "name": "MoveDataToVRAM",
-      "class": "compiled_c",
+      "class": "handwritten_asm",
       "confidence": "high",
       "size": 22,
       "instruction_bytes": 22,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on 2 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 6 decoded instructions in the 22-byte catalogue extent; 2 stack-slot argument hints, 23 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4, 8; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "Caller evidence: 12 resolved sites are in credited C. Example UpdateCameraY at 0x001ab4 has 2 stack-push sites in the preceding 12 instructions and 1 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "The incoming longword count is word-predecremented and drives DBRA at 0x026ffe around repeated VDP word transfers. Stack-compatible arguments do not make this the aggregate-copy compiler idiom.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x026ffe. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x027004",
       "name": "func_027004",
-      "class": "compiled_c",
+      "class": "handwritten_asm",
       "confidence": "high",
       "size": 78,
       "instruction_bytes": 78,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on LINK A6 frame; 5 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 2 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 24 decoded instructions in the 78-byte catalogue extent; 5 stack-slot argument hints, 1 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4, 8, 12, 16, 20; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "Caller evidence: 0 resolved sites are in credited C. Example SEGAVideo at 0x03a55a has 7 stack-push sites in the preceding 12 instructions and 1 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "Two DBRA instructions at 0x027044 and 0x027048 implement runtime inner and outer VDP transfer loops; those loops are absent from tested scalar C lowering.",
+        "LINK with zero local allocation is only supporting evidence: /DEBUG=TRACE proves MCC can generate it. The high-confidence proposal does not depend on that blanket claim.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x027044, 0x027048. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x027052",
       "name": "CopyPaletteToCRAMSlot",
-      "class": "compiled_c",
+      "class": "handwritten_asm",
       "confidence": "high",
       "size": 44,
       "instruction_bytes": 44,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on 2 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 2 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 11 decoded instructions in the 44-byte catalogue extent; 2 stack-slot argument hints, 36 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4, 8; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "Caller evidence: 3 resolved sites are in credited C. Example func_000d7e at 0x000eaa has 4 stack-push sites in the preceding 12 instructions and 1 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "DBRA at 0x027078 performs 16 color writes to a fixed VDP data port. A fixed count alone is not enough: the non-incrementing destination distinguishes it from compiler aggregate assignment.",
+        "Word OR/SWAP command formation is supporting style evidence, not the exclusion criterion.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x027078. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave24. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x02707E",
       "name": "GetCtrl1Input",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 102,
       "instruction_bytes": 102,
       "evidence": [
-        "[INFERENCE] Controller polling explicitly arbitrates Z80 bus access and uses fixed DBF delay loops; no observed stack data/address operand or compiler frame. tje-disasm labels GetCtrl1Input/GetCtrl2Input.",
-        "Observed 9 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 20 decoded instructions in the 102-byte catalogue extent; 0 stack-slot argument hints, 29 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 1 resolved sites are in credited C. Example HandleVBlank at 0x000832 has 1 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "Two empty-body DBRA delay loops at 0x02709a and 0x0270b8 separate controller strobes and reads; these are not memory-copy compiler intrinsics.",
+        "Immediate-zero hardware writes at 0x02708e and 0x0270da differ from the tested literal-zero CLR lowering. Ordinary callers consume its D0 return; D0 return is not itself a register argument.",
+        "[INFERENCE] Controller protocol resemblance does not establish Sega-library provenance; no historical sample was matched.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x02709a, 0x0270b8. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x0270E4",
       "name": "GetCtrl2Input",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 102,
       "instruction_bytes": 102,
       "evidence": [
-        "[INFERENCE] Controller polling explicitly arbitrates Z80 bus access and uses fixed DBF delay loops; no observed stack data/address operand or compiler frame. tje-disasm labels GetCtrl1Input/GetCtrl2Input.",
-        "Observed 9 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 20 decoded instructions in the 102-byte catalogue extent; 0 stack-slot argument hints, 29 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 1 resolved sites are in credited C. Example HandleVBlank at 0x000840 has 1 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "Two empty-body DBRA delay loops at 0x027100 and 0x02711e separate controller strobes and reads; these are not aggregate-copy compiler intrinsics.",
+        "Immediate-zero hardware writes at 0x0270f4 and 0x027140 differ from tested direct literal-zero CLR lowering. No Sega-library source identity was established.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x027100, 0x02711e. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
@@ -7736,12 +7835,18 @@
     {
       "address": "0x03E418",
       "name": "func_03E418",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "handwritten_asm",
+      "confidence": "high",
       "size": 36,
       "instruction_bytes": 36,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Observed 9 decoded instructions in the 36-byte catalogue extent; 0 stack-slot argument hints, 1 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 0 resolved sites are in credited C. Example MassiveRoutine at 0x03ed86 has 1 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "DBRA at 0x03e430 clears a contiguous pointer and a field in each of six 38-byte channel records. The sparse clear/stride body is not a fixed-size aggregate memory-copy lowering.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x03e430. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "Existing author hard-case lane: MatchWave29. A failed match is not used as origin evidence.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
@@ -7759,11 +7864,17 @@
       "address": "0x03E446",
       "name": "func_03E446",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 36,
       "instruction_bytes": 36,
       "evidence": [
-        "[INFERENCE] Sound-driver register protocol: internal routines pass channel/instrument/frequency state directly in D1/D3/D4/D5/A0 and preserve live registers explicitly around nested calls, unlike the game's usual stack ABI. This does not assert that every public sound entry is register-argument-only. Sources: tje-disasm:src/main.S:70654-70775, 71221-71264, 71267-71511 and 71617 onward."
+        "Observed 10 decoded instructions in the 36-byte catalogue extent; 0 stack-slot argument hints, 2 resolved direct callers and 1 outbound direct control edges.",
+        "Caller evidence: 0 resolved sites are in credited C. Example func_03e47e at 0x03e47e has 0 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "The function passes a channel index live in D1 to func_03ec74 at 0x03e450. Its stack MOVEM saves/restores D1 around the call; the callee reads D1 instead of a stack argument.",
+        "The DBRA iteration is a repeated register-ABI call, not an aggregate copy. The NOP after the forward PC-relative call is normal assembler padding and is NOT exclusion evidence.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x03e45a. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
@@ -7792,12 +7903,16 @@
       "address": "0x03E4AA",
       "name": "func_03E4AA",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 78,
       "instruction_bytes": 78,
       "evidence": [
-        "[INFERENCE] Sound-driver register protocol: internal routines pass channel/instrument/frequency state directly in D1/D3/D4/D5/A0 and preserve live registers explicitly around nested calls, unlike the game's usual stack ABI. This does not assert that every public sound entry is register-argument-only. Sources: tje-disasm:src/main.S:70654-70775, 71221-71264, 71267-71511 and 71617 onward.",
-        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 24 decoded instructions in the 78-byte catalogue extent; 0 stack-slot argument hints, 0 resolved direct callers and 2 outbound direct control edges.",
+        "The first instruction at 0x03e4aa dereferences incoming A0 before assigning it; no ordinary incoming stack-parameter load establishes that pointer.",
+        "No direct caller was resolved by the catalogue call graph. MassiveRoutine's indirect callback site at 0x03f056 has a live channel pointer in A0 and saves it around the callback; associating this exact entry with a particular data-table slot remains [INFERENCE].",
+        "BSR instructions and hardware-role adjacency are not themselves the high-confidence criterion; the register-input interface is.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
@@ -7815,72 +7930,100 @@
       "address": "0x03E504",
       "name": "func_03E504",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 150,
       "instruction_bytes": 150,
       "evidence": [
-        "[INFERENCE] Sound-driver register protocol: internal routines pass channel/instrument/frequency state directly in D1/D3/D4/D5/A0 and preserve live registers explicitly around nested calls, unlike the game's usual stack ABI. This does not assert that every public sound entry is register-argument-only. Sources: tje-disasm:src/main.S:70654-70775, 71221-71264, 71267-71511 and 71617 onward."
+        "Observed 38 decoded instructions in the 150-byte catalogue extent; 0 stack-slot argument hints, 1 resolved direct callers and 3 outbound direct control edges.",
+        "Caller evidence: 0 resolved sites are in credited C. Example MassiveRoutine at 0x03ed92 has 1 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "Three calls at 0x03e510, 0x03e528 and 0x03e540 supply channel numbers in D1 without ordinary argument pushes; func_03ec74 consumes D1 directly.",
+        "Its DBRA loops perform a sparse reset and a runtime-count channel-template copy, not solely fixed aggregate lowering.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x03e558, 0x03e58c. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x03E59A",
       "name": "SetupYM2612",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 1754,
       "instruction_bytes": 1754,
       "evidence": [
-        "[INFERENCE] Sound-driver register protocol: internal routines pass channel/instrument/frequency state directly in D1/D3/D4/D5/A0 and preserve live registers explicitly around nested calls, unlike the game's usual stack ABI. This does not assert that every public sound entry is register-argument-only. Sources: tje-disasm:src/main.S:70654-70775, 71221-71264, 71267-71511 and 71617 onward.",
-        "Observed 16 direct hardware-port reference instructions and 43 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 685 decoded instructions in the 1754-byte catalogue extent; 0 stack-slot argument hints, 1 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 0 resolved sites are in credited C. Example MassiveRoutine at 0x03eec2 has 0 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "The entry consumes channel/patch data in D1/D3/D4/D5 rather than an ordinary C stack interface, and writes D2/D3/D7/A4/A5 without entry saves.",
+        "Standalone NOP delay groups follow absolute YM2612/Z80 hardware accesses; these are not forward PC-relative assembler padding.",
+        "MassiveRoutine's call at 0x03eec2 sets the register operands without ordinary parameter pushes. No attributable Sega library/source match was made.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x03EC74",
       "name": "func_03EC74",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 102,
       "instruction_bytes": 102,
       "evidence": [
-        "[INFERENCE] Sound-driver register protocol: internal routines pass channel/instrument/frequency state directly in D1/D3/D4/D5/A0 and preserve live registers explicitly around nested calls, unlike the game's usual stack ABI. This does not assert that every public sound entry is register-argument-only. Sources: tje-disasm:src/main.S:70654-70775, 71221-71264, 71267-71511 and 71617 onward.",
-        "Observed 7 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 26 decoded instructions in the 102-byte catalogue extent; 0 stack-slot argument hints, 6 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 0 resolved sites are in credited C. Example func_03e446 at 0x03e450 has 2 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "D1 is tested at entry and used as a channel index before any stack load. Callers explicitly set D1, including func_03e504 and MassiveRoutine.",
+        "D3 and A5 are overwritten without callee saves, and six standalone timing NOPs occur. These independently violate the ordinary C ABI/profile; hardware access alone is not the argument.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x03ECDA",
       "name": "YM2612UpdateFrequency",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 148,
       "instruction_bytes": 148,
       "evidence": [
-        "[INFERENCE] Sound-driver register protocol: internal routines pass channel/instrument/frequency state directly in D1/D3/D4/D5/A0 and preserve live registers explicitly around nested calls, unlike the game's usual stack ABI. This does not assert that every public sound entry is register-argument-only. Sources: tje-disasm:src/main.S:70654-70775, 71221-71264, 71267-71511 and 71617 onward.",
-        "Observed caller at source lines 71385-71393 loads D4/D5 and D1 before JSR, with no pushed parameters; upstream explicitly documents D1/D4/D5 as inputs.",
-        "Observed 6 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 50 decoded instructions in the 148-byte catalogue extent; 0 stack-slot argument hints, 1 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 0 resolved sites are in credited C. Example MassiveRoutine at 0x03ef08 has 0 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "The function consumes D1/D4/D5 channel/frequency inputs and overwrites A5/D7 without callee saves.",
+        "MassiveRoutine's call at 0x03ef08 prepares those registers without stack arguments; standalone NOP groups separate YM2612 writes.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x03ED6E",
       "name": "MassiveRoutine",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 764,
       "instruction_bytes": 764,
       "evidence": [
-        "[INFERENCE] Sound-driver register protocol: internal routines pass channel/instrument/frequency state directly in D1/D3/D4/D5/A0 and preserve live registers explicitly around nested calls, unlike the game's usual stack ABI. This does not assert that every public sound entry is register-argument-only. Sources: tje-disasm:src/main.S:70654-70775, 71221-71264, 71267-71511 and 71617 onward.",
-        "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 211 decoded instructions in the 764-byte catalogue extent; 0 stack-slot argument hints, 6 resolved direct callers and 13 outbound direct control edges.",
+        "Caller evidence: 3 resolved sites are in credited C. Example HandleVBlank at 0x000822 has 1 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "The routine calls func_03ec74, SetupYM2612 and YM2612UpdateFrequency with register-only channel/patch operands. Its enclosing MOVEM protects interrupted game registers but does not convert those interfaces into ordinary C calls.",
+        "DBRA sites at 0x03ee3a and 0x03f060 traverse live channel state and dispatch callbacks; neither loop is an aggregate memory-copy intrinsic.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x03ee3a, 0x03f060. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x03F57A",
       "name": "LoadSoundDriverToZ80",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 98,
       "instruction_bytes": 98,
       "evidence": [
-        "[INFERENCE] Hardware/sound-driver leaf or tight loop, no observed stack data/address operand or compiler frame, and direct device-port references; register-oriented style is more consistent with an assembly driver than the game ABI.",
-        "Observed 6 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 21 decoded instructions in the 98-byte catalogue extent; 0 stack-slot argument hints, 1 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 1 resolved sites are in credited C. Example FurtherInitialisation at 0x0012c0 has 4 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "The incoming ROM-stored driver length controls a byte-copy DBRA at 0x03f5ae into Z80 RAM, rather than a compiler-known aggregate size.",
+        "Immediate-zero device stores and otherwise unused MULU operations used between reset writes support deliberate hardware timing. C-style D2 preservation alone is not evidence of compiled C.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x03f5ae. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
@@ -7900,25 +8043,34 @@
       "address": "0x03F62A",
       "name": "func_03F62A",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 156,
       "instruction_bytes": 156,
       "evidence": [
-        "[INFERENCE] Hardware/sound-driver leaf or tight loop, no observed stack data/address operand or compiler frame, and direct device-port references; register-oriented style is more consistent with an assembly driver than the game ABI.",
-        "Observed 12 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 34 decoded instructions in the 156-byte catalogue extent; 0 stack-slot argument hints, 1 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 0 resolved sites are in credited C. Example MassiveRoutine at 0x03ed9e has 1 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "D2 is overwritten from 0x03f632 onward without an entry save or exit restoration, violating the ordinary C callee-preservation contract.",
+        "The branch at 0x03f64e enters the separate r6 release/delay fragment at 0x03f61c. This multi-entry sharing corroborates assembly origin; it is not a distinct Sega-library identification.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
       "address": "0x03F6C6",
       "name": "func_03F6C6",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 170,
       "instruction_bytes": 170,
       "evidence": [
-        "[INFERENCE] Sound-driver register protocol: internal routines pass channel/instrument/frequency state directly in D1/D3/D4/D5/A0 and preserve live registers explicitly around nested calls, unlike the game's usual stack ABI. This does not assert that every public sound entry is register-argument-only. Sources: tje-disasm:src/main.S:70654-70775, 71221-71264, 71267-71511 and 71617 onward.",
-        "A zero-size LINK frame is followed by saving caller-volatile D0/D1/A0 as well as D2; source includes explicit Z80 bus polling/delay loops. Its pointer argument is stack-based, while this preservation/scheduling pattern differs from normal compiler callee saves.",
-        "Observed 13 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 40 decoded instructions in the 170-byte catalogue extent; 1 stack-slot argument hints, 4 resolved direct callers and 0 outbound direct control edges.",
+        "Observed stack operands at entry-relative offsets 4; these are slot hints, not independently proven source types/arity. This is compatible with ordinary C and also with C-callable assembly.",
+        "Caller evidence: 0 resolved sites are in credited C. Example MassiveRoutine at 0x03efd4 has 1 stack-push sites in the preceding 12 instructions and 1 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "An empty-body DBRA hardware delay at 0x03f6ee is reached on retry; this is not an aggregate-copy lowering.",
+        "The function saves volatile D0/D1/A0 as well as D2 and uses a zero-local LINK frame. Those are supporting style evidence only; debug compilation can independently produce LINK-zero.",
+        "Checked incompatible scalar-loop idiom: DBRA at 0x03f6ee. Zero DBcc in 370 source-backed compiler outputs and all 26 scalar-loop probes under six profiles; compiler-generated aggregate DBF counterexamples were explicitly distinguished by this loop's dataflow/body, not ignored.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     },
     {
@@ -7938,25 +8090,29 @@
       "address": "0x03F7AA",
       "name": "func_03F7AA",
       "class": "handwritten_asm",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 84,
       "instruction_bytes": 84,
       "evidence": [
-        "[INFERENCE] Hardware/sound-driver leaf or tight loop, no observed stack data/address operand or compiler frame, and direct device-port references; register-oriented style is more consistent with an assembly driver than the game ABI.",
-        "Observed 6 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 16 decoded instructions in the 84-byte catalogue extent; 0 stack-slot argument hints, 1 resolved direct callers and 0 outbound direct control edges.",
+        "Caller evidence: 0 resolved sites are in credited C. Example MassiveRoutine at 0x03edae has 0 stack-push sites in the preceding 12 instructions and 0 cleanup sites in the following three. These window counts do not establish argument arity.",
+        "D2 is overwritten at 0x03f7b2/0x03f7b6 with no callee save/restore; this is incompatible with the observed ordinary C ABI.",
+        "The branch at 0x03f7ce enters the separate r6 release/delay fragment at 0x03f79c. Its only direct caller is MassiveRoutine, which uses the custom driver interface.",
+        "[INFERENCE] High-confidence incompatibility with unmodified non-asm C under the identified MCC68K profile; handwritten_asm includes a compiler-shaped body with hand-edited/inserted assembly, not necessarily a wholly assembly-authored algorithm. Vendor/library authorship is not inferred.",
+        "AsmClassifier proposal (corpus statistics and MCC68K probes), independently accepted by ClassReview, 2026-10-22."
       ]
     }
   ],
   "summary": {
     "compiled_c": {
-      "functions": 528,
-      "catalogue_extent_bytes": 169512,
-      "instruction_bytes": 169038
+      "functions": 520,
+      "catalogue_extent_bytes": 169014,
+      "instruction_bytes": 168540
     },
     "handwritten_asm": {
-      "functions": 19,
-      "catalogue_extent_bytes": 3962,
-      "instruction_bytes": 3962
+      "functions": 34,
+      "catalogue_extent_bytes": 5052,
+      "instruction_bytes": 5052
     },
     "runtime_helper": {
       "functions": 6,
@@ -7964,14 +8120,14 @@
       "instruction_bytes": 342
     },
     "sega_library": {
-      "functions": 2,
-      "catalogue_extent_bytes": 144,
-      "instruction_bytes": 144
+      "functions": 1,
+      "catalogue_extent_bytes": 2,
+      "instruction_bytes": 2
     },
     "unknown": {
-      "functions": 90,
-      "catalogue_extent_bytes": 6774,
-      "instruction_bytes": 6774
+      "functions": 84,
+      "catalogue_extent_bytes": 6324,
+      "instruction_bytes": 6324
     }
   },
   "fragments": [

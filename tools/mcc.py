@@ -309,6 +309,8 @@ def compile_c(source: Path, include_dirs: list[Path] = (), options: list[str] = 
             folder = Path(folder)
             for header in sorted(folder.rglob("*.h")) if folder.is_dir() else []:
                 target = work / header.relative_to(folder).as_posix().upper()
+                if target.exists():
+                    continue   # an earlier directory (a proposal's headers) wins
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(header, target)
         (work / "REVISION.H").write_text(revision_header(version))

@@ -133,7 +133,7 @@ def side_by_side(expected: bytes, actual: bytes, address: int, rows: int = 12) -
 
 
 def match_file(source: Path, version: str, options: list[str], keep: Path | None = None,
-               defines: dict[str, int] | None = None) -> list[dict]:
+               defines: dict[str, int] | None = None, includes: list[Path] = ()) -> list[dict]:
     rom = romtool.load(version)
     catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text())
     extents = {f["address"]: f["size"] for f in catalogue["functions"]}
@@ -151,7 +151,7 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
         except MatchError:
             return None
 
-    compiled = mcc.compile_to_gas(source, unit, [ROOT / "include"], options, address_of, tus.load(version), version)
+    compiled = mcc.compile_to_gas(source, unit, [*includes, ROOT / "include"], options, address_of, tus.load(version), version)
     with tempfile.TemporaryDirectory(prefix="match-") as tmp:
         work = keep or Path(tmp)
         work.mkdir(parents=True, exist_ok=True)
@@ -216,12 +216,14 @@ def main() -> int:
     parser.add_argument("--version", default="rev02")
     parser.add_argument("--option", action="append", default=[])
     parser.add_argument("--keep", type=Path, help="keep the compiler output, object and link script here")
+    parser.add_argument("--include", type=Path, action="append", default=[],
+                        help="extra header directory searched before include/ (a proposal's headers)")
     parser.add_argument("--define", action="append", default=[], metavar="NAME=ADDRESS",
                         help="extra symbol, e.g. lmodt=0x027154 (experiments; real names belong in names.json)")
     args = parser.parse_args()
     defines = {d.split("=", 1)[0]: int(d.split("=", 1)[1], 0) for d in args.define}
     try:
-        reports = match_file(args.source, args.version, args.option, args.keep, defines)
+        reports = match_file(args.source, args.version, args.option, args.keep, defines, args.include)
     except (MatchError, mcc.CompileError, mcc.AdaptError, romtool.RomError, toolchain.ToolchainError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 2

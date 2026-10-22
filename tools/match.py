@@ -189,7 +189,7 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
             if homes[name] != base + offset:
                 raise MatchError(f"{name}: in the file it would be at 0x{base + offset:06x}, but the original is at "
                                  f"0x{homes[name]:06x} (functions must be a contiguous run in ROM order)")
-        script = ["SECTIONS {", f"  .text 0x{base:x} : {{ *({'.text' if assembly else '.text.' + unit}) }}", "  .data : { *(.data) }", "}"]
+        script = ["SECTIONS {", f"  .text 0x{base:x} : SUBALIGN(2) {{ *({'.text' if assembly else '.text.' + unit}) }}", "  .data : { *(.data) }", "}"]
         script += [f"{n} = 0x{resolve(n, table, translate):x};" for n in undefined_symbols(obj)]
         (work / "match.ld").write_text("\n".join(script) + "\n")
         elf = work / f"{unit}.elf"

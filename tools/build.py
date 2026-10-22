@@ -261,7 +261,9 @@ def check_object(unit: Unit, obj: Path) -> tuple[set[int], set[int]]:
 
 
 def linker_script(units: list[Unit], symbols: Symbols, extra: dict[str, int] | None = None) -> str:
-    lines = ['OUTPUT_FORMAT("elf32-m68k")', "OUTPUT_ARCH(m68k)", "SECTIONS", "{", "  .rom 0x0 : AT(0x0)", "  {"]
+    # SUBALIGN(2): every unit is word-aligned; GNU as gives a plain .text section 4-byte alignment, which
+    # must not push a hand-written unit off an address that is 2 mod 4.
+    lines = ['OUTPUT_FORMAT("elf32-m68k")', "OUTPUT_ARCH(m68k)", "SECTIONS", "{", "  .rom 0x0 : AT(0x0) SUBALIGN(2)", "  {"]
     lines += [f"    . = 0x{u.address:06x}; KEEP(obj/{u.name}.o({'.text' if u.kind == 'asm' else '.text.' + u.name}))"
               for u in units]
     lines += ["  }", "  /DISCARD/ : { *(.comment) *(.note*) }", "}"]

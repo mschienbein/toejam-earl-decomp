@@ -83,7 +83,7 @@ flowchart LR
 | `config/` | catalogues, names, classification, data units, sources, accepted matches per revision |
 | `accept/` | checkpoint records (prepare, reviews, finalize) |
 | `ci/progress_report.py` | objdiff-format report for [ByteMatch](https://bytematch.dev), no ROM needed |
-| `docs/` | [STATUS](docs/STATUS.md), [RESUME](docs/RESUME.md), [AUTHORING](docs/AUTHORING.md), [ACCEPTANCE](docs/ACCEPTANCE.md), [COMPILER](docs/COMPILER.md), [DATA](docs/DATA.md), [TOOLCHAIN](docs/TOOLCHAIN.md), [BYTEMATCH](docs/BYTEMATCH.md), `docs/rulings/` |
+| `docs/` | [STATUS](docs/STATUS.md), [RESUME](docs/RESUME.md), [AUTHORING](docs/AUTHORING.md), [ACCEPTANCE](docs/ACCEPTANCE.md), [COMPILER](docs/COMPILER.md), [DATA](docs/DATA.md), [QUALIFICATIONS](docs/QUALIFICATIONS.md), [TOOLCHAIN](docs/TOOLCHAIN.md), [BYTEMATCH](docs/BYTEMATCH.md), `docs/rulings/` |
 | `tests/` | synthetic tests (CI) + real-ROM builds (skipped without `orig/`) |
 
 ## Credits and prior work

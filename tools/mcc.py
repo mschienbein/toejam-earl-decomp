@@ -108,8 +108,39 @@ def code_labels(listing: str) -> set[str]:
     return labels
 
 
-def adapt(listing: str, unit: str) -> str:
-    """Microtec assembly -> GNU as assembly (directives, spellings and ASM68K sizing only)."""
+def external_calls(listing: str) -> list[str]:
+    """JSR/JMP targets that the listing does not define (other files, or the rest of this file's original unit)."""
+    local, seen = code_labels(listing), []
+    for raw in listing.splitlines():
+        call = CALL.match(DOTTED.sub(r"\1", raw.strip()))
+        if call and call.group(3) not in local and call.group(3) not in seen:
+            seen.append(call.group(3))
+    return seen
+
+
+def first_function(listing: str) -> str | None:
+    """The first label defined in the code section (the unit's lowest address)."""
+    in_code = False
+    for raw in listing.splitlines():
+        stripped = raw.strip()
+        section = re.match(r"SECTION\s+(\d+)", stripped, re.I)
+        if section:
+            in_code = section.group(1) == "9"
+            continue
+        label = LABEL.match(DOTTED.sub(r"\1", stripped))
+        if in_code and label and not label.group(1).startswith("_L"):
+            return label.group(1)
+    return None
+
+
+def adapt(listing: str, unit: str, near: dict[str, str] | None = None) -> str:
+    """Microtec assembly -> GNU as assembly (directives, spellings and ASM68K sizing only).
+
+    `near` names external call targets that sit in the same original translation unit as this C
+    file ("backward" before it, "forward" after it): a C file holding only part of an original unit
+    calls the rest the way the original assembler did, PC-relative (forward: plus NOP).
+    """
+    near = near or {}
     lines: list[str] = []
     defined: set[str] = set()
     local = code_labels(listing)
@@ -149,9 +180,11 @@ def adapt(listing: str, unit: str) -> str:
             mnemonic, gap, target = call.groups()
             if target in defined:
                 lines.append(f"\t{mnemonic}{gap}({target},PC)")
-            elif target in local:
+            elif target in local or near.get(target) == "forward":
                 lines.append(f"\t{mnemonic}{gap}({target},PC)")
                 lines.append("\tNOP")   # forward: PC-relative inside the 6 bytes reserved for absolute long
+            elif near.get(target) == "backward":
+                lines.append(f"\t{mnemonic}{gap}({target},PC)")
             else:
                 lines.append(f"\t{mnemonic}{gap}({target}).L")
             continue
@@ -159,9 +192,26 @@ def adapt(listing: str, unit: str) -> str:
     return "\n".join(lines) + "\n"
 
 
-def compile_to_gas(source: Path, unit: str, include_dirs: list[Path] = (), options: list[str] = ()) -> Compiled:
+def near_targets(listing: str, address_of, spans: list[tuple[int, int]]) -> dict[str, str]:
+    """External call targets inside the original translation unit that contains this file's first function."""
+    first = first_function(listing)
+    base = address_of(first) if first else None
+    if base is None:
+        return {}
+    span = next(((lo, hi) for lo, hi in spans if lo <= base < hi), None)
+    near = {}
+    for target in external_calls(listing):
+        address = address_of(target)
+        if span and address is not None and span[0] <= address < span[1]:
+            near[target] = "backward" if address < base else "forward"
+    return near
+
+
+def compile_to_gas(source: Path, unit: str, include_dirs: list[Path] = (), options: list[str] = (),
+                   address_of=None, spans: list[tuple[int, int]] = ()) -> Compiled:
     listing = compile_c(source, include_dirs, options)
-    return Compiled(source, listing, adapt(listing, unit))
+    near = near_targets(listing, address_of, list(spans)) if address_of else {}
+    return Compiled(source, listing, adapt(listing, unit, near))
 
 
 def main() -> int:

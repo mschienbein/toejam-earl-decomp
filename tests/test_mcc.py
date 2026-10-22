@@ -54,6 +54,14 @@ class AdaptTest(unittest.TestCase):
         self.assertEqual(self.lines[later + 1], "\tNOP")
         self.assertIn("\tJSR\t(helper).L", self.lines)
 
+    def test_calls_into_the_rest_of_the_original_unit_are_pc_relative(self):
+        near = mcc.adapt(LISTING, "unit", {"helper": "forward"}).splitlines()
+        call = near.index("\tJSR\t(helper,PC)")
+        self.assertEqual(near[call + 1], "\tNOP")
+        before = mcc.adapt(LISTING, "unit", {"helper": "backward"}).splitlines()
+        call = before.index("\tJSR\t(helper,PC)")
+        self.assertNotEqual(before[call + 1], "\tNOP")
+
     def test_explicit_short_branch_is_kept(self):
         self.assertIn("\tBEQ.S\t_L3", self.lines)
 

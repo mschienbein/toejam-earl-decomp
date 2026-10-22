@@ -60,14 +60,18 @@ def unit_name(source: Path) -> str:
     return "c_" + re.sub(r"[^A-Za-z0-9_]", "_", source.stem).lower()
 
 
-def compile_unit(entry: dict, out: Path, root: Path = ROOT) -> CUnit:
-    """Compile one C file with MCC68K and assemble it; out/asm and out/obj receive the outputs."""
+def compile_unit(entry: dict, out: Path, root: Path = ROOT, address_of=None, spans: list[tuple[int, int]] = ()) -> CUnit:
+    """Compile one C file with MCC68K and assemble it; out/asm and out/obj receive the outputs.
+
+    `address_of(name)` and the original translation-unit `spans` let calls into the rest of the
+    original unit be assembled PC-relative, as the original assembler did (tools/mcc.py `near`).
+    """
     source = root / entry["source"]
     if not source.is_file():
         raise CUnitError(f"{entry['source']} does not exist")
     name = unit_name(source)
     options = list(entry.get("options", []))
-    compiled = mcc.compile_to_gas(source, name, [root / "include"], options)
+    compiled = mcc.compile_to_gas(source, name, [root / "include"], options, address_of, spans)
     (out / "asm" / f"{name}.SRC").write_text(compiled.listing, encoding="latin-1")
     asm = out / "asm" / f"{name}.s"
     asm.write_text(compiled.gas)

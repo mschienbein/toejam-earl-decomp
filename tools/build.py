@@ -43,6 +43,7 @@ import m68k  # noqa: E402
 import rom as romtool  # noqa: E402
 import names as namestool  # noqa: E402
 import toolchain  # noqa: E402
+import tus  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = "m68k-elf"
@@ -251,7 +252,7 @@ def linker_script(units: list[Unit], symbols: Symbols, extra: dict[str, int] | N
 
 def tool_hashes() -> dict:
     here = Path(__file__).resolve().parent
-    return {name: sha256((here / name).read_bytes()) for name in ("build.py", "cunits.py", "m68k.py", "mcc.py", "names.py", "rom.py", "toolchain.py")}
+    return {name: sha256((here / name).read_bytes()) for name in ("build.py", "cunits.py", "m68k.py", "mcc.py", "names.py", "rom.py", "toolchain.py", "tus.py")}
 
 
 def build(version: str, jobs: int) -> dict:
@@ -263,7 +264,8 @@ def build(version: str, jobs: int) -> dict:
     if catalogue["rom_sha256"] != sha256(rom):
         raise BuildError(f"{catalogue_file.relative_to(ROOT)} was made for a different ROM")
     out = ROOT / "build" / version
-    result = build_image(rom, baserom, catalogue, out, jobs, namestool.load(version), cunits.load_sources(version))
+    result = build_image(rom, baserom, catalogue, out, jobs, namestool.load(version), cunits.load_sources(version),
+                         tus.load(version))
     result["inputs"]["catalogue_sha256"] = sha256(catalogue_file.read_bytes())
     names_file = namestool.path(version)
     result["inputs"]["names_sha256"] = sha256(names_file.read_bytes()) if names_file.is_file() else None
@@ -319,7 +321,7 @@ def place_c_units(c_units: list, units: list[Unit], symbols: Symbols, names: dic
 
 
 def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int, names: dict | None = None,
-                sources: list[dict] | None = None) -> dict:
+                sources: list[dict] | None = None, tus_spans: list[tuple[int, int]] | None = None) -> dict:
     """Generate, assemble and link every unit into out/; the result is PASS only when byte-identical."""
     started = time.time()
     for sub in ("asm", "obj"):  # units change whenever the catalogue does: never link stale objects
@@ -328,7 +330,13 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
     units = load_units(rom, catalogue)
     symbols = Symbols(units, catalogue, names)
     pool = ThreadPoolExecutor(max_workers=jobs)
-    c_units = list(pool.map(lambda entry: cunits.compile_unit(entry, out), sources or []))
+    by_label = {label: address for address, label in symbols.labels.items()}
+    for name in (names or {}).values():
+        for spelling in (name.name, *name.aliases):
+            by_label.setdefault(spelling, name.address)
+    spans = tus_spans or []
+    c_units = list(pool.map(lambda entry: cunits.compile_unit(entry, out, address_of=by_label.get, spans=spans),
+                            sources or []))
     units, extra = place_c_units(c_units, units, symbols, names)
     code_units = [u for u in units if u.insns]
     raw: set[int] = set()

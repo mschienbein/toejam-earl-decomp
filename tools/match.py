@@ -30,6 +30,7 @@ import mcc  # noqa: E402
 import names as namestool  # noqa: E402
 import rom as romtool  # noqa: E402
 import toolchain  # noqa: E402
+import tus  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 AS_FLAGS = ["-m68000", "--register-prefix-optional"]  # externals: absolute long, as ASM68K emits them
@@ -125,7 +126,13 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
     extents = {f["address"]: f["size"] for f in catalogue["functions"]}
     table = {**symbol_table(version), **(defines or {})}
     unit = mcc.dos_name(source.stem).lower()
-    compiled = mcc.compile_to_gas(source, unit, [ROOT / "include"], options)
+    def address_of(name: str) -> int | None:
+        try:
+            return resolve(name, table)
+        except MatchError:
+            return None
+
+    compiled = mcc.compile_to_gas(source, unit, [ROOT / "include"], options, address_of, tus.load(version))
     with tempfile.TemporaryDirectory(prefix="match-") as tmp:
         work = keep or Path(tmp)
         work.mkdir(parents=True, exist_ok=True)

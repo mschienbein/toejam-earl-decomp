@@ -1,0 +1,536 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "C017Review",
+  "checkpoint": "c017-waves-24-29-hardcases",
+  "qualifications": [
+    {
+      "function": "func_010294",
+      "file": "src/player/level_fall_sinking_and_respawn.c",
+      "spelling": "ram_ffda2e = 256;",
+      "accepted": true,
+      "reason": "Explicit MATCHING QUALIFICATION comment discloses byte truncation to zero and does not claim historical intent. ROM has MOVE.B immediate zero at 0x0103e0; natural 0L emits a nonmatching clear. Accepted only as a recorded artificial literal qualification.",
+      "evidence": [
+        "probe-results/sink-zero-long/rev02/result.json",
+        "probe-results/sink-zero-long/rev00/result.json"
+      ]
+    },
+    {
+      "function": "func_010294",
+      "file": "src/player/level_fall_sinking_and_respawn.c",
+      "spelling": "int timer; if (!((timer = TIME_COUNTER) & (unsigned long)60))",
+      "accepted": false,
+      "reason": "Assignment-only timer is compiler coaxing disclosed in HardCases1 report item 7, but not in the source. The nearby comment covers only literal 256. Both direct int and unsigned-long masks differ in both revisions; add a specific source qualification rather than silently removing the required copy.",
+      "evidence": [
+        "follow-probe-results/sink-direct-int-timer/rev02/result.json",
+        "probe-results/sink-direct-timer/rev02/result.json"
+      ]
+    },
+    {
+      "function": "func_0020aa",
+      "file": "src/graphics/camera_redraw_and_motion.c",
+      "spelling": "Block-local int selected_camera assigned before func_00200a(selected_camera)",
+      "accepted": true,
+      "reason": "Source compiler-shape note identifies the consumed promoted argument and D2 lifetime. Direct scalar promotion differs in both revisions; no dummy unobserved storage is introduced.",
+      "evidence": [
+        "probe-results/camera-direct-promotion/rev02/result.json"
+      ]
+    },
+    {
+      "function": "CupidAbility",
+      "file": "src/player/contact_cupid_and_touch.c",
+      "spelling": "Separate int exclusion_index = player_number for the unsized exclusion array",
+      "accepted": true,
+      "reason": "Source explains the distinct promoted and bounded index lifetimes. Direct int subscript differs in both revisions; the separate index is actually used.",
+      "evidence": [
+        "probe-results/cupid-direct-index/rev02/result.json"
+      ]
+    },
+    {
+      "function": "func_004f50",
+      "file": "src/map/range_and_region_walk.c",
+      "spelling": "int span; unsigned long selected; unsigned short result; return result;",
+      "accepted": true,
+      "reason": "Source explicitly describes the meaningful full-width selection and final unsigned-word stage. These are used semantic intermediates, not discarded dummy state; ROM normalizes the word before its wide return. Historical exact spelling remains unproved."
+    },
+    {
+      "function": "func_01f1b0",
+      "file": "src/map/land_processing.c",
+      "spelling": "Independent block-local short tile_offset in each sweep, shared effect_offset",
+      "accepted": true,
+      "reason": "The source explicitly records D6/D5 lifetime scheduling; each value controls real work. HardCases1 preserves failed broader/reordered lifetime forms; both full prepared-file matches independently reproduce this form."
+    },
+    {
+      "function": "TitleScreenVideo",
+      "file": "src/video/title_and_transition.c",
+      "spelling": "short random_word; random_word = GetRandomNumber();",
+      "accepted": true,
+      "reason": "Source explicitly preserves the discarded word read. Packet shows MOVE.W D0,D0 after the call; author evidence records that ignored-call/ignored-cast forms omit it. Accepted as a disclosed discarded-result qualification, not historical source proof."
+    },
+    {
+      "function": "func_0281e4",
+      "file": "src/engine/reset_sequences.c",
+      "spelling": "struct render_frame *frame; frame = Spr_TitleBigPlayers[index];",
+      "accepted": false,
+      "reason": "The selected pointer is never used. MatchWave25 report explicitly identifies this as a retained discarded read, but this function has no source comment disclosing the qualification. Omitting it or using an explicit void-discard expression differs in both revisions. Add a source comment documenting the observed unused read and retained matching qualification.",
+      "evidence": [
+        "probe-results/func_0281e4-omit-frame-read/rev02/result.json",
+        "probe-results/func_0281e4-explicit-discard/rev00/result.json"
+      ]
+    },
+    {
+      "function": "func_0284a8",
+      "file": "src/engine/reset_sequences.c",
+      "spelling": "struct render_frame *frame; frame = Spr_IntroEarlDriving[index];",
+      "accepted": false,
+      "reason": "The selected pointer is never used. MatchWave25 report explicitly identifies this as a retained discarded read, but this function has no source comment disclosing the qualification. Omitting it or using an explicit void-discard expression differs in both revisions. Add a source comment documenting the observed unused read and retained matching qualification.",
+      "evidence": [
+        "probe-results/func_0284a8-omit-frame-read/rev02/result.json",
+        "probe-results/func_0284a8-explicit-discard/rev00/result.json"
+      ]
+    },
+    {
+      "function": "func_0289da",
+      "file": "src/engine/late_helpers_ending_release.c",
+      "spelling": "Two handle branches choose the same first-handle object pointer, then share frame read",
+      "accepted": true,
+      "reason": "Source correctly states both the observed first-handle behavior and the branch-sharing reason. ROM confirms it. Author combined-guard, early-return and duplicated-return variants differ; no intended second-handle correction is asserted."
+    },
+    {
+      "function": "func_03b39e",
+      "file": "src/jam/jamout.c",
+      "spelling": "goto stop_scroll common-tail label shared by switch cases 0 and 1",
+      "accepted": true,
+      "reason": "Source explicitly explains the shared tail; ROM branches from 0x03b492 to the clear at 0x03b49a. Natural grouped selection without the label differs in both revisions.",
+      "evidence": [
+        "probe-results/jam-shared-layout-selection/rev02/result.json"
+      ]
+    },
+    {
+      "function": "func_03b6d2",
+      "file": "src/jam/jamout.c",
+      "spelling": "Unused short object_number assigned from each nonzero slot before a second lookup for release",
+      "accepted": true,
+      "reason": "Explicit QUALIFICATION comment identifies compiler coaxing. ROM really contains both word lookups. MatchWave29 already owned this qualified byte match; HardCases2 inherited it, not a new discovery. A natural pointer-iteration release differs in both revisions.",
+      "evidence": [
+        "probe-results/jam-pointer-release/rev02/result.json"
+      ]
+    },
+    {
+      "function": "func_01afb8",
+      "file": "src/player/steering.c",
+      "spelling": "char facing; facing = func_01af04(...); with facing otherwise unused",
+      "accepted": true,
+      "reason": "Source explicitly identifies cleanup-boundary coaxing. Void-discard, int-discard and char-discard alternatives differ in both revisions; original cleanup precedes the velocity test.",
+      "evidence": [
+        "probe-results/steering-void-result/rev02/result.json",
+        "follow-probe-results/steering-int-discard/rev02/result.json",
+        "follow-probe-results/steering-char-discard/rev02/result.json"
+      ]
+    },
+    {
+      "function": "UpdateLandAroundPlayer",
+      "file": "src/map/terrain_at_position.c",
+      "spelling": "Reuse signed map_cell for column/cell, reuse byte terrain for overlay/base/final result, selected register hints",
+      "accepted": true,
+      "reason": "The source explicitly discloses reused lifetimes and register scheduling. All values have real uses; the unsigned cell view preserves bit extraction. Removing hints differs in both revisions, and author separate-lifetime forms fail.",
+      "evidence": [
+        "probe-results/terrain-no-register/rev02/result.json"
+      ]
+    },
+    {
+      "function": "func_01c2a2",
+      "file": "src/presents/projectile_effects.c",
+      "spelling": "(short)(speed_x + 0)",
+      "accepted": true,
+      "reason": "Source explicitly calls this a compiler-spelling qualification and explains scratch-D1 preservation. Natural long widening differs in both revisions; author bare/short/int forms also differ. No pointer, address or emitted-byte trick is used.",
+      "evidence": [
+        "probe-results/projectile-long-speed/rev02/result.json"
+      ]
+    },
+    {
+      "function": "func_010ffc",
+      "file": "src/player/level_fall_sinking_and_respawn.c",
+      "spelling": "int active_sprite assigned only inside the SetSprite argument",
+      "accepted": true,
+      "reason": "Source explicitly qualifies the result-register copy. Bare direct call fails in the complete 13-function span. An explicit (int) direct-call cast also matches all 13 functions in both revisions, but the canonical getter already returns int: that identity cast is itself compiler coaxing, not proof of an unqualified natural replacement. Retain a disclosed copy qualification whichever representation is chosen.",
+      "evidence": [
+        "full-probe-results/full-respawn-direct-int/rev02/result.json",
+        "full-probe-results/full-respawn-direct-bare/rev00/result.json"
+      ]
+    },
+    {
+      "function": "SantaLogic",
+      "file": "src/earthlings/mole_santa.c",
+      "spelling": "Scoped int flags assignment inside unsigned-long mask; random range written % 129 + -64L",
+      "accepted": true,
+      "reason": "Source discloses the flags/mask compiler spelling; the negative addend expresses the real range base. Direct int/byte flag sampling and subtract-64 spelling differ in both revisions. No extra entity fields or fake storage are invented.",
+      "evidence": [
+        "follow-probe-results/santa-inline-int-flags/rev02/result.json",
+        "probe-results/santa-byte-flags/rev00/result.json",
+        "probe-results/santa-subtract-base/rev02/result.json"
+      ]
+    },
+    {
+      "function": "func_0292de",
+      "file": "src/intro/intro_background_objects.c",
+      "spelling": "Bounded render_piece (*)[4] payload view after the real render_frame prefix",
+      "accepted": true,
+      "reason": "Source records that four is a maximum payload bound, not a complete-frame stride. Independently extracted eight counts are [2,4,1,1,1,1,1,1]. Shared real records are reused; this is not a fabricated data layout or numeric pointer-address trick."
+    },
+    {
+      "function": "NewGameMainMenu",
+      "file": "src/ui/main_menu.c",
+      "spelling": "Incoming short selection parameter read although FurtherInitialisation supplies no argument",
+      "accepted": true,
+      "reason": "Source explicitly marks ORIGINAL BUG and explains the entry load. The call and entry agree with the original; omitting the parameter loses the observed stack load per the retained author experiment. Historical intent is not inferred."
+    },
+    {
+      "function": "FindSpawnLocationForEarthling / OpenEarthlingPresent",
+      "file": "src/earthlings/behaviour_tu25.c",
+      "spelling": "extern int GetRandomNumber();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_00b64a",
+      "file": "src/ui/hud_status.c",
+      "spelling": "extern char *RankCharsTable[];",
+      "accepted": true,
+      "reason": "Source explicitly documents the compatible incomplete-array compiler view. Element type remains canonical; using the real shared complete bound mismatches in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_01e9a0 / func_01ea66",
+      "file": "src/map/land_processing.c",
+      "spelling": "extern unsigned char *TileAlternativePointers[];",
+      "accepted": true,
+      "reason": "Source explicitly documents the compatible incomplete-array compiler view. Element type remains canonical; using the real shared complete bound mismatches in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_004174",
+      "file": "src/map/level_generation.c",
+      "spelling": "extern unsigned char *TileAlternativePointers[];",
+      "accepted": true,
+      "reason": "Source explicitly documents the compatible incomplete-array compiler view. Element type remains canonical; using the real shared complete bound mismatches in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "SantaLogic",
+      "file": "src/earthlings/mole_santa.c",
+      "spelling": "extern int func_00bdd8();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_028844",
+      "file": "src/engine/late_helpers_ending_create.c",
+      "spelling": "extern int func_00d904();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_028e74 / func_028f82 / func_029056 / func_029128 / func_0291ec",
+      "file": "src/intro/intro_object_slots.c",
+      "spelling": "extern int func_00d904();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "OpenEarthlingPresent / func_018f1e",
+      "file": "src/earthlings/behaviour_tu25.c",
+      "spelling": "extern int func_00d9dc();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_01916c / func_0191d2 / func_01942c / func_01948a",
+      "file": "src/earthlings/state_dispatch_tu26.c",
+      "spelling": "extern int func_00d9dc();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_014850",
+      "file": "src/presents/level_item_setup.c",
+      "spelling": "extern int func_00d9dc();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "ProcessTomatoRain / func_01cd9e",
+      "file": "src/presents/projectile_effects.c",
+      "spelling": "extern int func_00d9dc();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "ProcessTomatoRain / func_01cd9e",
+      "file": "src/presents/projectile_effects.c",
+      "spelling": "extern int func_015da6();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_017ac8 / OpenEarthlingPresent",
+      "file": "src/earthlings/behaviour_tu25.c",
+      "spelling": "extern int func_020eaa();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_0375c8",
+      "file": "src/cutscene/ending.c",
+      "spelling": "extern int func_0289da();",
+      "accepted": true,
+      "reason": "Source explicitly documents its caller-local result view with ORIGINAL BUG and labels historical missing declarations [INFERENCE]. Correct shared declaration and ordinary value-promotion alternatives both mismatch in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_01faf4",
+      "file": "src/ship/screen_setup.c",
+      "spelling": "extern char ram_ffb8da[];",
+      "accepted": true,
+      "reason": "Source explicitly documents the compatible incomplete-array compiler view. Element type remains canonical; using the real shared complete bound mismatches in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    },
+    {
+      "function": "func_027bc2",
+      "file": "src/video/cutscene_text.c",
+      "spelling": "extern char ram_ffb8da[];",
+      "accepted": true,
+      "reason": "Source explicitly documents the compatible incomplete-array compiler view. Element type remains canonical; using the real shared complete bound mismatches in both revisions under exact prepared header hashes.",
+      "evidence": [
+        "exception-evidence-audit.json",
+        "../HeaderSmith/exception-tests3/final-index.json"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "prepared-input-manifest",
+      "status": "PASS",
+      "commit": "57ad842f0417f87df015bce1f1696474eded4293",
+      "inputs_exact_at_start": 232,
+      "prepared_C_and_headers_exact_at_seal": true,
+      "evidence": "prepared-inputs.json"
+    },
+    {
+      "name": "prepared-build-records",
+      "status": "PASS",
+      "receipts_verified": 4,
+      "receipt_hashes_images_and_C_units_exact": true,
+      "suite_record": {
+        "returncode": 0,
+        "summary": "OK",
+        "independently_rerun": false
+      },
+      "evidence": "prepared-receipts.json"
+    },
+    {
+      "name": "all-active-source-matches",
+      "status": "PASS",
+      "commands": 244,
+      "source_files_per_revision": 122,
+      "functions_per_revision": 572,
+      "revisions": [
+        "rev02",
+        "rev00"
+      ],
+      "all_returncodes_zero": true,
+      "evidence": "matches.json"
+    },
+    {
+      "name": "independent-full-builds",
+      "status": "PASS",
+      "method": "Unchanged build.py pipeline functions; sandbox output directory only",
+      "rev02_sha256": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+      "rev00_sha256": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+      "C_units_per_revision": 122,
+      "functions_per_revision": 572,
+      "raw_instruction_words": 0,
+      "prepared_C_unit_lists_equal": true,
+      "executed_tool_hashes_equal_prepared": true,
+      "evidence": "builds/"
+    },
+    {
+      "name": "credit-and-superseded-coverage",
+      "status": "PASS",
+      "previous_functions_retained": 419,
+      "new_functions": 153,
+      "current_functions": 572,
+      "removed_source_paths": 19,
+      "removed_paths_still_present": 0,
+      "removed_functions_represented_once": 89,
+      "token_identical_bodies": 85,
+      "scalar_conversion_only_differences": [
+        "func_02234c",
+        "FindSpawnLocationForEarthling",
+        "func_01814c",
+        "func_01b746"
+      ],
+      "duplicate_definitions": 0,
+      "evidence": "superseded-coverage.json"
+    },
+    {
+      "name": "deep-new-function-behavior-sample",
+      "status": "PASS_WITH_SOURCE_DISCLOSURE_FINDINGS",
+      "new_functions_sampled": 33,
+      "evidence": "deep-samples.json"
+    },
+    {
+      "name": "caller-local-declarations",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "sites": 16,
+      "result_view_sites": 11,
+      "compatible_incomplete_array_sites": 5,
+      "all_source_commented": true,
+      "exact_profile_alternative_sources_verified": 27,
+      "existing_binary_mismatch_results_verified": 54,
+      "reported_failures_rerun": false,
+      "evidence": "exception-evidence-audit.json"
+    },
+    {
+      "name": "compiler-spelling-alternatives",
+      "status": "COMPLETE",
+      "reviewer_invocations": 90,
+      "passing_control_invocations": 32,
+      "spelling_alternative_invocations": 54,
+      "expected_mutant_failures": 4,
+      "result_counts": {
+        "DIFF": 44,
+        "MATCH": 44,
+        "BINARY_LAYOUT_MISMATCH": 2
+      },
+      "evidence": [
+        "probe-results.json",
+        "follow-probe-results.json",
+        "full-probe-results.json"
+      ]
+    },
+    {
+      "name": "source-and-header-mutation-sanity",
+      "status": "PASS",
+      "source_mutation": "Add one to func_03e4f8 effect argument: DIFF both revisions, 18 versus 12 bytes",
+      "header_mutation": "Widen menu x/y to unsigned short: DIFF both revisions, consumer 78 versus 76 bytes",
+      "unmodified_controls": "MATCH both revisions",
+      "evidence": [
+        "probe-results/mutation-source/",
+        "probe-results/mutation-header/",
+        "probe-results/control-header/"
+      ]
+    },
+    {
+      "name": "source-rules",
+      "status": "FAIL",
+      "inline_assembly_or_pragma_escapes_found": false,
+      "code_or_data_byte_blobs_found": false,
+      "numeric_pointer_address_tricks_found": false,
+      "primary_names_and_strict_addresses": "Validated by all strict matches",
+      "headers": 60,
+      "unique_shared_record_tags": 23,
+      "background_piece_counts": [
+        2,
+        4,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "preserved_bugs_in_sample": "Appropriate ORIGINAL BUG markers present",
+      "failure": "Undisclosed discarded frame locals and assignment-only timer bridge; F1/F2"
+    },
+    {
+      "name": "revision-guards",
+      "status": "PASS",
+      "TitleScreenVideo": "ROM-observed REV02 reset/direct comparison versus REV00 elapsed subtraction",
+      "SEGAVideo": "ROM-observed REV02-only TIME_COUNTER reset",
+      "ProcessLand": "Inherited unchanged source; REV02 excludes sprite states 78/79 at three sites, 702 versus REV00 648 bytes"
+    },
+    {
+      "name": "checkpoint-boundary-and-independence",
+      "status": "PASS",
+      "other_checkpoint_reviews_read_before_sealing": false,
+      "tracked_files_or_git_state_modified": false,
+      "reviewer_artifacts_only": "scratch/agents/C017Review/",
+      "HardCases3_unprepared_offers_excluded": [
+        "func_012028",
+        "func_028670"
+      ],
+      "later_observed_tool_change": "42efc75 changed tools/build.py and tools/match.py after fresh baseline checks; experiments use immutable prepared matcher"
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "medium",
+      "file": "src/engine/reset_sequences.c:55-60,176-181",
+      "what": "func_0281e4 and func_0284a8 retain assigned-but-unused frame-pointer locals solely to reproduce discarded ROM reads. The private Wave25 report discloses the qualification, but the delivered source has no such comment. Natural read-elimination and explicit void-discard alternatives both fail in both revisions, with matching unmodified controls. This violates the required in-source qualification disclosure.",
+      "suggested_fix": "Add a matching-qualification comment at each discarded pointer read, describing the observed load, its lack of gameplay use and the unknown historical spelling. Keep the required read unless an actually natural matching replacement is found; do not assert a historical original bug merely to label compiler coaxing."
+    },
+    {
+      "id": "F2",
+      "severity": "medium",
+      "file": "src/player/level_fall_sinking_and_respawn.c:203,218",
+      "what": "func_010294 has an assignment-only int timer bridge used to obtain copy/mask scheduling. HardCases1 explicitly describes this compiler-spelling constraint; source does not. Its nearby MATCHING QUALIFICATION comment describes only the independent 256-to-byte literal. Direct int and unsigned-long timer masks both differ in both revisions.",
+      "suggested_fix": "Add a source comment specifically disclosing the timer bridge/result-copy qualification and its matching purpose. Retain the separate literal-256 comment. Do not claim a known historical declaration or gameplay bug. Reprepare the changed source under a new immutable checkpoint profile."
+    }
+  ]
+}

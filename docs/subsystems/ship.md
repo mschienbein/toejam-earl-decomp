@@ -52,8 +52,8 @@ This distinction matters because historical/address-derived display names can
 otherwise be mistaken for the piece-to-level assignment table.
 
 `include/assets_scenes.h` declares `FixedWorldShipPieces[10]`,
-`ShipRelatedData[8][8]`, `Spr_TransitionBackground[50]`, and
-`AnimationPointerWords_AF040[2]`. Only pointer-word slot one is proved to be a
+`TransitionBackgroundTileOffsets[8][8]`, `Spr_TransitionBackground[50]`, and
+`IntroAndShipAnimationPointers[2]`. Only pointer-word slot one is proved to be a
 frame-table pointer; the header deliberately leaves the other slot opaque.
 
 Frames/pieces use `render_frame` and `render_piece` from `include/sprites.h`.
@@ -63,7 +63,7 @@ transition upload code consumes four (`AnimateShipScreenBackground`,
 `AnimateTransitionBackground`).
 
 `include/ram_sprites.h` supplies the shared unpack buffer, upload-run queue, and
-hardware sprite table. `include/ram_system.h` supplies `TIME_COUNTER`, rendering
+hardware sprite table. `include/ram_system.h` supplies `gFrameCounter`, rendering
 flags, and music state. Camera, player, effects, speech, and inventory state come
 from their respective `ram_*.h` headers; ship presentation does not own independent
 copies of those systems.
@@ -191,7 +191,7 @@ Earthling-owned findings are documented in the Earthlings subsystem.
 - The canonical `ShowShipPieces` body is absent. Its callers prove entry modes and
   helper interfaces, but not exact piece-placement composition, collection-table
   mutation, all cleanup paths, or the condition that triggers completion.
-- `AnimationPointerWords_AF040[0]` has no established pointee type; treating the
+- `IntroAndShipAnimationPointers[0]` has no established pointee type; treating the
   pair as an ordinary sequence/frame descriptor would assert more than the header.
 - The collection scan assumes some piece belongs to the player's level; its body
   can pass index ten onward otherwise. The source has no `ORIGINAL BUG:` comment
@@ -204,11 +204,11 @@ Earthling-owned findings are documented in the Earthlings subsystem.
   [INFERENCE] Preserve logical display events while replacing packed-tile work
   with platform textures, audio, and UI services.
 - **Shared-screen coupling:** `PlayShipCompletionSequence` closes the partner's
-  `P1_MENU_OPEN`, clears `SPLIT_SCREEN`, and cancels both powers. [INFERENCE]
+  `gPlayerInventoryOpen`, clears `gSplitScreenEnabled`, and cancels both powers. [INFERENCE]
   Per-player progress menus should not rewrite the partner's view; completion
   should instead be an explicit shared gameplay transition.
 - **Determinism:** `AssignShipPieceLevels` consumes RNG and
-  `WaitForShipScreenAcknowledgement` resets `TIME_COUNTER`. [INFERENCE] Separate
+  `WaitForShipScreenAcknowledgement` resets `gFrameCounter`. [INFERENCE] Separate
   world assignment RNG from cosmetic display RNG, and serialize
   `gShipPieceLevelAssignments`/collected state when reproducing seeded worlds.
 - **Content tables:** `AssignShipPieceLevels` reads fixed assignments;
@@ -216,6 +216,6 @@ Earthling-owned findings are documented in the Earthlings subsystem.
   [INFERENCE] Externalize those inputs/assets with stable piece IDs rather than
   depending on a ten-way string switch.
 - **Camera/visibility:** `ShipUpdatePendingPieceIndicator` uses one camera and
-  suppresses creation under `SPLIT_SCREEN`; screen setup fixes a 40×28-tile layout.
+  suppresses creation under `gSplitScreenEnabled`; screen setup fixes a 40×28-tile layout.
   [INFERENCE] Widescreen needs anchored layouts and per-view notices, while
   collectible activation follows `LoadInEarthlings`, not UI dimensions.

@@ -30,19 +30,19 @@ Elevator state numbers have no dedicated constants; narrative roles are
 `state`, display `entity` handle, and `timer`. `elevator_position` is a two-byte
 map-cell coordinate pair, not a pair of world-position shorts.
 
-`include/ram_elevator.h` declares `ELEVATOR_LOCATION[2][2]`. The first index selects
+`include/ram_elevator.h` declares `gElevatorRecords[2][2]`. The first index selects
 one of two retained level pairs; member zero is used for departure processing and
 member one for arrival processing (`ProcessElevatorStep1`/`ProcessElevatorStep2`).
 A public ID is one plus twice the pair index plus the member index.
-Zero in `ELEVATOR_FLAG[player]` means no attached
+Zero in `gPlayerElevatorFlags[player]` means no attached
 elevator; IDs 1/3 are departure records and 2/4 arrival records.
 
-`ARRIVING_ELEV_LEVEL` aliases `ELEVATOR_LOCATION[0][1].level`, and
-`gPlayer2ElevatorId` aliases `ELEVATOR_FLAG[1]`; these are not independent state.
+`gPrimaryArrivalElevatorLevel` aliases `gElevatorRecords[0][1].level`, and
+`gPlayer2ElevatorId` aliases `gPlayerElevatorFlags[1]`; these are not independent state.
 `gSecondaryArrivalElevatorLevel` is used alongside the first arrival-level view when
 deciding whether a blocked departure can become active (`ProcessElevatorStep1`).
 
-`ELEVATOR_POS_TABLE[8]` holds generated map-cell anchors. Arrival and ship-spawn
+`gLevelAnchorPositions[8]` holds generated map-cell anchors. Arrival and ship-spawn
 coordinate names alias selected bytes in this table (`include/ram_elevator.h`).
 `SetupElevator` uses map-cell coordinates for ordinary levels and fixed cells for
 level one and level 26. It converts them with 128-world-unit X and 64-world-unit Y
@@ -50,13 +50,13 @@ strides, then applies fixed offsets. `PlayerSetPositionFromSavedMapCell` uses th
 same conversion for the arrival anchor.
 
 `gElevatorDepartureInProgress`, per-player `gPlayerElevatorApproachInputGate`,
-`ARRIVING_ELEV_TIME`, `DEPARTING_ELEV_CYCLES`, and `DEPARTING_ELEV_TIME` coordinate
+`gArrivalElevatorCloseDelay`, `gDepartureElevatorShakeCycles`, and `gDepartureElevatorShakeDelay` coordinate
 transitions. The latter timers are global, not fields in each independent elevator
 record (`include/ram_elevator.h`, `elevator_transitions.c`).
 
 Ride state includes an object pointer, fixed-point scroll position and its existing
 low-word alias, velocity, acceleration, four speech handles, and an already-used
-dialogue bitmask. `TIME_COUNTER` and `gVBlankFunc` are shared system state in
+dialogue bitmask. `gFrameCounter` and `gVBlankFunc` are shared system state in
 `include/ram_system.h`; the ride resets and owns them while installed.
 
 The two display halves use `object_state` from `include/entities.h`. The primary
@@ -88,7 +88,7 @@ offset. A logical state change can therefore precede entity allocation.
 `ElevatorUpdateEntityVisibility` allocates near either active camera and releases
 entities outside both camera regions or in states 11/13. The explicit original
 bounds are X in (-160,480), Y in (-112,336), relative to the pending camera; the
-second camera is considered only with `SPLIT_SCREEN`. If both fixed display pairs
+second camera is considered only with `gSplitScreenEnabled`. If both fixed display pairs
 are occupied, `ElevatorCreateEntityPair` simply returns without allocating.
 
 `ElevatorBlocksPlayerMovement` compares proposed movement against every active,
@@ -155,7 +155,7 @@ places telephones, updates split mode, and clears the shared departure flag.
 Only when every active player is riding does it wait for `MUSIC_TRANSITION` and
 call `ElevatorBeginRideScene`. That scene centers the elevator, installs state 12,
 clears transient entities, waits for sprite readiness, replaces background/scroll/
-palette state, hides the HUD, resets `TIME_COUNTER`, and installs
+palette state, hides the HUD, resets `gFrameCounter`, and installs
 `ElevatorRideVBlank` as the interrupt override (`elevator_scene.c`).
 
 `ElevatorRideVBlank` integrates acceleration, speed, and scrolling; updates dialogue;
@@ -181,7 +181,7 @@ set fixed positions, and rebuild the shared/split presentation.
 - Earthling/item bank retain/release brackets riding; each subsystem supports two
   active levels, so the elevator transaction must not be reduced to a camera move.
 - Player movement calls threshold predicates; falls inspect the departure flag
-  to avoid conflicting relocation (`start_falling.c`, `level_fall_sinking_and_respawn.c`).
+  to avoid conflicting relocation (`src/player/active_present_falling_and_respawn.c`).
 - Inventory flags gate departure; telephone ring sound is suppressed during
   departure (`telephone.c`); audio resets accompany shared departure and arrival.
 - Sprite allocation and animation readiness directly gate state transitions.
@@ -211,12 +211,12 @@ No other `ORIGINAL BUG:` comments occur in these three inspected source files.
   `ElevatorRideVBlank`; `ElevatorEndRideScene` busy-waits during deceleration.
   [INFERENCE] Replace those waits/register writes with platform services and an
   explicitly ticked scene rather than an interrupt owning global time.
-- **Shared-screen coupling:** `ProcessElevatorStep1` reads `P1_MENU_OPEN` and
-  `HBLANK_FLAG_1`; `ElevatorAdvanceRidersToNextLevel` shows the shared ride only when
+- **Shared-screen coupling:** `ProcessElevatorStep1` reads `gPlayerInventoryOpen` and
+  `gPlayer2InventoryOpen`; `ElevatorAdvanceRidersToNextLevel` shows the shared ride only when
   all active players ride. [INFERENCE] Online co-op needs per-player presentation
   and menu rules while attachment/level/bank changes remain shared simulation events.
 - **Determinism:** `ProcessElevatorStep1`/`ProcessElevatorStep2` rely on animation
-  completion; `ElevatorUpdateRideDialogue` can jump `TIME_COUNTER`. [INFERENCE]
+  completion; `ElevatorUpdateRideDialogue` can jump `gFrameCounter`. [INFERENCE]
   Keep logical transition ticks separate from render frames and cosmetic dialogue RNG.
 - **Content tables:** `ElevatorSetState` consumes paired animation descriptors;
   `ElevatorPrepareRideDialogue` consumes exchange data. [INFERENCE] Externalize

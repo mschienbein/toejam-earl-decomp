@@ -1,6 +1,6 @@
 # How the game works, by subsystem
 
-One document per source folder (`src/<folder>/`), written from the matched sources and reviewed
+One document per source folder (`src/`), written from the matched sources and reviewed
 against them (DocSmithA/DocSmithB, DocReview). Each describes the files, data structures and RAM
 state, the main flows with function names, interactions with other subsystems, every
 `ORIGINAL BUG:` the sources preserve, open questions, and **Port notes**: what a native port

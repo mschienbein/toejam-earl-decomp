@@ -14,22 +14,23 @@ The C code and C function badges count only the code written in C; the functions
 hand-written assembly or compiler runtime are not in that count, because they are built from
 assembly source instead. The typed-data badges count data bytes rebuilt from typed assets.
 
-| Part of the ROM | Built from | REV 02 (checkpoint c025) | REV 00 (checkpoint c025) |
+| Part of the ROM | Built from | REV 02 (checkpoint c026) | REV 00 (checkpoint c026) |
 |---|---|---|---|
-| C functions (603 in each) | matched C in `src/` (MCC68K 3.3K) | **581 functions, 164,674 / 175,412 bytes (93.9%)** | **581 functions, 164,562 / 175,300 bytes (93.9%)** |
+| C functions (603 in each) | matched C in `src/` (MCC68K 3.3K) | **588 functions, 169,216 / 175,412 bytes (96.5%)** | **588 functions, 169,104 / 175,300 bytes (96.5%)** |
 | 36 hand-written routines + 6 compiler runtime helpers | readable 68000 assembly, `src/asm/` (ruling [R007](docs/rulings/R007-assembly-sources.md)) | all 42 | all 42 |
 | Z80 sound driver + boot stub (1,332 bytes) | Z80 assembly, `src/z80/` | all | all |
 | Other data | typed assets extracted from your dump at build time (`docs/DATA.md`) | all 865,932 bytes (6 typed `unreferenced`) | all 866,044 bytes (6 typed `unreferenced`) |
-| Still generated assembly | — | 22 C functions | the same 22 |
+| Still generated assembly | — | 15 C functions | the same 15 |
 
-Both revisions build from the same sources; `revision.h` covers their few differences (seven bug
-fixes in REV 02, [docs/REVISIONS.md](docs/REVISIONS.md)), so a function matched for one is checked
-and credited for both, and CI reports each revision to ByteMatch separately. History: [docs/STATUS.md](docs/STATUS.md); what remains: [docs/RESUME.md](docs/RESUME.md).
+Both revisions build from the same sources; the per-build `REVISION` value covers their few
+differences (seven bug fixes in REV 02, [docs/REVISIONS.md](docs/REVISIONS.md)), so a function
+matched for one is checked and credited for both, and CI reports each revision to ByteMatch
+separately. History: [docs/STATUS.md](docs/STATUS.md); what remains: [docs/RESUME.md](docs/RESUME.md).
 
 | Revision | Role | Functions | Rebuild |
 |---|---|---:|---|
 | REV 02 — *ToeJam & Earl (World) (Rev A)*, sha1 `85e8d0a4…` | primary target | 645 | byte-identical |
-| REV 00 — *ToeJam & Earl (World)*, sha1 `7f82d8b5…` | same source, `revision.h` | 645 | byte-identical |
+| REV 00 — *ToeJam & Earl (World)*, sha1 `7f82d8b5…` | same source, `REVISION` | 645 | byte-identical |
 
 ## Quick start
 
@@ -75,14 +76,14 @@ flowchart LR
 
 | Path | Contents |
 |---|---|
-| `src/<subsystem>/` | matched C, one folder per subsystem; `src/asm/` hand-written 68000, `src/z80/` the Z80 driver |
+| `src/` | matched C, one folder per subsystem; `src/asm/` hand-written 68000, `src/z80/` the Z80 driver |
 | `include/` | K&R headers per subsystem: records, constants, RAM, assets, calls |
 | `docs/subsystems/` | [how each subsystem works](docs/subsystems/README.md), with notes for a native port |
 | `tools/` | toolchain setup, ROM import, catalogue, build, compiler driver, matcher, acceptance, public audit |
 | `config/` | catalogues, names, classification, data units, sources, accepted matches per revision |
 | `accept/` | checkpoint records (prepare, reviews, finalize) |
 | `ci/progress_report.py` | objdiff-format report for [ByteMatch](https://bytematch.dev), no ROM needed |
-| `docs/` | [STATUS](docs/STATUS.md), [RESUME](docs/RESUME.md), [AUTHORING](docs/AUTHORING.md), [ACCEPTANCE](docs/ACCEPTANCE.md), [COMPILER](docs/COMPILER.md), [DATA](docs/DATA.md), [TOOLCHAIN](docs/TOOLCHAIN.md), [BYTEMATCH](docs/BYTEMATCH.md), `rulings/` |
+| `docs/` | [STATUS](docs/STATUS.md), [RESUME](docs/RESUME.md), [AUTHORING](docs/AUTHORING.md), [ACCEPTANCE](docs/ACCEPTANCE.md), [COMPILER](docs/COMPILER.md), [DATA](docs/DATA.md), [TOOLCHAIN](docs/TOOLCHAIN.md), [BYTEMATCH](docs/BYTEMATCH.md), `docs/rulings/` |
 | `tests/` | synthetic tests (CI) + real-ROM builds (skipped without `orig/`) |
 
 ## Credits and prior work

@@ -8,37 +8,37 @@ It also supplies the visible wipe and player-recentering effect used when the
 core changes from a shared screen to two half-height views.
 
 Evidence is the C/header implementation at the repository-root paths below.
-`config/rev02/names.json` identifies `BuildCameraTileRow` and
-`BuildCameraTileColumn`, but their bodies are absent from the represented source.
-Their callers and buffers are documented without inventing map-composition rules.
+`BuildCameraTileRow` and `BuildCameraTileColumn` now have matched C bodies in
+`src/camera/camera_tiles_and_scroll.c`, alongside the metatile lookups, streaming
+requests, and VBlank transfers. Canonical identities are in `config/rev02/names.json`.
 
 ## Files and roles
 
 - `src/camera/camera_follow.c`: `GetPlayerCameraVelocity`, `UpdateCameraFollowing`.
-- `src/camera/camera_scroll.c`: movement bounds, dirty-direction recording,
-  column uploads, complete redraw, and immediate pending-upload flushes.
-- `src/camera/camera_row_transfer.c`: row uploads and column clearing.
-- `src/camera/metatile_tiles.c`: row clearing and metatile word lookup/mirroring.
+- `src/camera/camera_tiles_and_scroll.c`: row/column construction and clearing,
+  metatile word lookup/mirroring, movement bounds, dirty-direction recording,
+  uploads, complete redraw, and immediate pending-upload flushes.
 - `src/camera/set_camera_position.c`: position setup and fixed-point synchronization.
 - `src/camera/split_views.c`: `AnimatePlayersIntoSplitViews`.
 - `src/camera/split_screen_wipe.c`: `AnimateSplitScreenWipe`.
-- `src/camera/toggle_camera_flag.c`: `ToggleLOC_00FF8196`, tile-priority attribute.
+- `src/camera/toggle_camera_flag.c`: `SetCameraTilePriorityEnabled`, tile-priority attribute.
 - `include/ram_camera.h`: coordinates, upload buffers, cursors, and follow state.
-- `include/graphics_calls.h`: call interfaces, including the two absent builders.
+- `include/graphics_calls.h`: call interfaces for builders, transfers, and view setup.
 - `src/core/startup_and_main_loop.c`: mode transitions and interrupt-time scrolling;
   ownership remains core even though it is necessary context for this document.
 
 ## State and coordinate spaces
 
-- `TOEJAM_CAMERA_NEWX/Y` and `EARL_CAMERA_NEWX/Y` are pending world-pixel origins.
-- `P1_CAMERA_X/Y` and `P2_CAMERA_X/Y` are the committed display origins.
+- `gCamera1PendingX`/`gCamera1PendingY` and `gCamera2PendingX`/`gCamera2PendingY` are pending world-pixel origins.
+- `gCamera1CommittedX`/`gCamera1CommittedY` and
+  `gCamera2CommittedX`/`gCamera2CommittedY` are the committed display origins.
 - `gCamera1FollowXFixed/YFixed` and camera-two equivalents are 24.8 accumulators.
 - `SetCameraPosition` calls `SetCameraViewOrigin` before initializing those
   accumulators from the clamped coordinates.
 - `gCamera1TileRowCursor/TileColumnCursor` and camera-two equivalents track the
   streamed tile position, initialized to `(pixel >> 3) - 1`.
-- `TOEJAM_CAMERA_X` and `EARL_CAMERA_X` are pending tile-column state, not the
-  same units as the similarly named `*_NEWX` pixel coordinates.
+- `gCamera1PendingTileColumn` and `gCamera2PendingTileColumn` are pending tile-column
+  state, distinct from the pending world-pixel origins.
 - `gCamera1PendingTileDirections` and camera-two equivalent encode up `1`,
   right `2`, down `4`, and left `8` (`MoveCamera*`).
 - `gCamera1PendingTileRow` and its partner record the requested row index.
@@ -48,7 +48,7 @@ Their callers and buffers are documented without inventing map-composition rules
 - `gCameraColumnUploadHeight` is 32 for shared view and 19 for split view.
 - `gCameraColumnUploadHeightLowByte` aliases that word's low byte on 68000.
 - `gCameraTileAttributes` is either zero or `0x8000` in its setter: tile priority.
-- `SPLIT_SCREEN`, player lives, and `P1_MENU_OPEN[]` influence almost every policy.
+- `gSplitScreenEnabled`, player lives, and `gPlayerInventoryOpen[]` influence almost every policy.
 
 ## Following a player
 
@@ -122,7 +122,15 @@ These are observed blank-buffer primitives, not evidence that all terrain is bla
 Bit `0x80` of the metatile selects column `15-column` and toggles tile flip `0x800`.
 `GetOverlayMetatileTile` treats overlay IDs as one-based; bit `0x10` selects
 mirroring. Empty overlay words stay zero instead of acquiring a flip bit.
-The lookup interfaces reveal 16-column metatile rows, not every map-format rule.
+The lookup interfaces use 16-column metatile rows.
+
+`BuildCameraTileRow` and `BuildCameraTileColumn` select the corresponding player map
+and compose the entering row or column. Nonzero overlay tiles take precedence over
+the base metatile, and `gCameraTileAttributes` is ORed into every result. Outside
+the 19-by-26 map, ordinary levels produce blank tiles; levels 1 and 26 use metatile
+82 instead. The row publishes a 45-word transfer; the column publishes
+`gCameraColumnUploadHeight` words. The buffers and pending flags remain shared
+with the VBlank consumers below.
 
 `RedrawCameraTileRows` iterates the viewport's buffered height, calls
 `BuildCameraTileRow(1,camera)` and `UpdateCameraY`, restores the starting row cursor,
@@ -139,7 +147,7 @@ pending vertical column, splits at 32 rows, then restores word auto-increment.
 Both functions call `MoveDataToVRAM` with word counts.
 
 `TryUpdateCameraY/X` temporarily hide the other camera's pending flag, set
-`VBLANK_FLAG_3` and `_6`, wait one VBlank, gate ordinary display work, perform the
+`gVBlankGraphicsPaused` and `gVBlankAudioInputOverride`, wait one VBlank, gate ordinary display work, perform the
 upload, restore the other flag, and restore display-service controls.
 This is a bounded-buffer ownership protocol implemented using global flags and
 video waits, not an independently running camera worker.
@@ -177,15 +185,11 @@ See `docs/subsystems/core.md` for separation thresholds and interrupt-service pr
 
 ## ORIGINAL BUG list
 
-No `ORIGINAL BUG:` comments occur in the represented camera files. This is not
-a claim that every edge case has been proven safe; the absent builders are
-outside that evidence.
+No `ORIGINAL BUG:` comments occur in the represented camera files, including the
+two builders. This is not a claim that every edge case has been proven safe.
 
 ## Open questions
 
-- The two builder bodies are absent from the supplied integration source tree;
-  overlay precedence, level selection, and out-of-world tile rules remain open.
-- `ToggleLOC_00FF8196` retains an address-era name despite its observed priority role.
 - [INFERENCE] A zero-distance split interpolation may need special treatment in
   a redesigned implementation; no new original-bug classification is asserted.
 - View-size constants are scattered between camera, core, and sprite/UI code.
@@ -194,7 +198,7 @@ outside that evidence.
 
 - Platform layer: replace `TryUpdateCameraX` and `TryUpdateCameraY` VBlank/VDP
   synchronization with renderer viewports and explicit upload ownership.
-- Shared-screen coupling: separate `SPLIT_SCREEN` and `P1_MENU_OPEN` view policy
+- Shared-screen coupling: separate `gSplitScreenEnabled` and `gPlayerInventoryOpen` view policy
   from each local/remote player's camera/menu context; one inventory must not
   stall another camera's simulation.
 - Determinism: keep `UpdateCameraFollowing` interpolation/render cadence outside

@@ -1,7 +1,8 @@
 # REV 00 and REV 02
 
-Both retail revisions build from the same sources: `include/revision.h` is generated per build
-(`REVISION` 0 or 2) and `#if REVISION` blocks hold the few real differences. Names, addresses
+Both retail revisions build from the same sources: `tools/mcc.py` generates the per-build revision
+header (`REVISION` 0 or 2), and `#if REVISION` blocks hold the few real differences.
+Checkpoint c026 matches 588 of 603 C functions in each revision. Names, addresses
 spelled in the source and all documents refer to REV 02; `tools/revmap.py` maps REV 02 addresses
 to REV 00.
 
@@ -13,7 +14,8 @@ to REV 00.
 
 ## What changed in the code
 
-Of 648 paired functions, 431 are byte-identical and 210 differ only in addresses, because the
+Of 648 paired code entries (645 functions and three fragments), 431 are byte-identical and 210
+differ only in addresses, because the
 code or data they refer to moved (REV 02's changes push everything after them by up to 112
 bytes): the pairing verifies this with address-masked instruction signatures, and every matched
 one builds both revisions from one unchanged source. Seven functions differ in their logic; all
@@ -21,16 +23,16 @@ seven read as fixes to REV 00 behaviour:
 
 | Function (file) | REV 02 change |
 |---|---|
-| `SetupSelectedPresent` (`src/presents/present_effects.c`) | Rocket skates no longer start while the player is falling (`TOEJAM_FALL_STATE` check around `OpenRocketSkates`), and one more animation group (bit 27 of `animation_group_mask`) lets the active-present pose replace the current one. |
+| `SetupSelectedPresent` (`src/presents/present_effects.c`) | Rocket skates no longer start while the player is falling (`gPlayerFallStates` check around `OpenRocketSkates`), and one more animation group (bit 27 of `animation_group_mask`) lets the active-present pose replace the current one. |
 | `ProcessLand` (`src/map/land_processing.c`) | A player caught in a whirlwind (`PLAYER_ANIM_WHIRLWIND`, `PLAYER_ANIM_WHIRLWIND_RECOVERY`) no longer starts falling when the land under them turns to void; applied to ToeJam and to Earl in both shared and split screen. |
 | `ProcessSleep` (`src/player/sleep.c`) | The idle counter that puts a player to sleep does not run while an interaction choice is open (`gPlayerInteractionChoiceActive`), so a player no longer falls asleep in the middle of a choice prompt. |
-| `DrawGameMap` (`src/map/map_drawing_controller.c`) | Opening the map resets the opener's idle counter (`P1_IDLE_COUNTER`). |
+| `DrawGameMap` (`src/map/map_drawing_controller.c`) | Opening the map resets the opener's idle counter (`gPlayerIdleTicks`). |
 | `DrawInventory` (`src/ui/inventory.c`) | Opening the inventory resets the opener's idle counter too. |
-| `TitleScreenVideo` (`src/cutscenes/title_and_transition.c`) | The 1,200-tick title wait restarts the global `TIME_COUNTER` at zero instead of measuring from the value it had on entry. |
-| `SEGAVideo` (`src/cutscenes/sega_logo.c`) | The Sega logo restarts `TIME_COUNTER` at zero before its 120-tick fade, as above. |
+| `TitleScreenVideo` (`src/cutscenes/title_and_transition.c`) | The 1,200-tick title wait restarts the global `gFrameCounter` at zero instead of measuring from the value it had on entry. |
+| `SEGAVideo` (`src/cutscenes/sega_logo.c`) | The Sega logo restarts `gFrameCounter` at zero before its 120-tick fade, as above. |
 
 The two idle-counter resets and the sleep guard together keep a player from dozing off because
-time spent in the map, the inventory or a choice prompt counted as idle time. The `TIME_COUNTER`
+time spent in the map, the inventory or a choice prompt counted as idle time. The `gFrameCounter`
 restarts make the attract-sequence timing start from a known value [INFERENCE: it also changes
 how far the counter has advanced when the game begins].
 

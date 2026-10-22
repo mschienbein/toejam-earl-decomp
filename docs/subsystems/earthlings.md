@@ -54,14 +54,15 @@ The array shape and kind-dependent interpretation are intentionally preserved.
 ability, and touch pointers; `movement_mode`; dimensions and tile/sprite counts;
 target/turn chances and distance; `behavior_flags`; spawn radius; contact ranges;
 damage; target/turn/move timer ranges; state delay; and health.
-`include/assets_earthlings.h` declares `EARTHLING_DATA` with `EARTHLING_KIND_COUNT`
+`include/assets_earthlings.h` declares `EarthlingDefinitions` with `EARTHLING_KIND_COUNT`
 logical records and `LevelEarthlingChoices[26][20]`. The final record's `unused`
 byte overlaps `EarthlingCoordinatePairs`; asset partitions are not logical type bounds.
 
-`include/ram_earthlings.h` owns `EARTHLINGS_IN_LEVEL[2][20]`, load/reference flags,
+`include/ram_earthlings.h` owns `gEarthlingBanks[2][20]`, load/reference flags,
 level identities, per-level high-bit-first failure/removal masks, update parity,
 two six-byte mailbox states, friendly interaction states, and mole theft state.
-`EARTHLINGS_IN_LEVEL_COPY` and `EARTHLING_LOAD_FLAG_COPY` alias bank one, not new banks.
+`gEarthlingBank2Records` and `gEarthlingBank2Users` alias the second bank
+(index one), not new banks.
 
 `special_earthling_state` has mode, level, short timer, and two contact bytes.
 Its per-player contacts are interpreted by mailbox touch logic. Wizard, wiseman,
@@ -287,7 +288,7 @@ symptom. Preserve that qualification when deciding native bug compatibility.
 ## Open questions
 
 - `include/earthling_types.h` now names all content kinds; this account does not
-  enumerate every `EARTHLING_DATA` row or invent additional per-kind state enums.
+  enumerate every `EarthlingDefinitions` row or invent additional per-kind state enums.
 - Some record words alternate between coordinates, terrain, and one-shot state;
   a native tagged behavior state should be designed from all consumers, not one AI.
 - Spawn-bank selection assumes the two-bank occupancy protocol; unsupported extra
@@ -302,7 +303,7 @@ symptom. Preserve that qualification when deciding native bug compatibility.
   Expose those presentation effects as events and keep display-capacity failure
   separate from authoritative life/bank decisions.
 - **Shared-screen coupling:** `EarthlingIsUpdateBlocked` combines visibility with
-  `P1_MENU_OPEN`/`HBLANK_FLAG_1`; `ProcessEarthlings` returns when both menus are open.
+  `gPlayerInventoryOpen`/`gPlayer2InventoryOpen`; `ProcessEarthlings` returns when both menus are open.
   `AI_OperaSingerTouch` uses viewport masks for damage. [INFERENCE] Online menus need
   explicit interaction protection rather than view-owned enemy suspension.
 - **Determinism:** `ProcessEarthlings` toggles `gEarthlingUpdateParity`, and
@@ -310,11 +311,11 @@ symptom. Preserve that qualification when deciding native bug compatibility.
   `EarthlingRetainLevelBank` restores its seed before ordinary choices. [INFERENCE]
   Preserve those orders and timer widths; lockstep needs simulation RNG and
   activation regions independent of each client's render visibility.
-- **Content tables:** `EarthlingAllocateEntities` consumes `EARTHLING_DATA`;
+- **Content tables:** `EarthlingAllocateEntities` consumes `EarthlingDefinitions`;
   `AI_GenericEnemyThink` consumes its probabilities/ranges, and `AI_WizardTouch`
   contains a service cost. [INFERENCE] Externalize these inputs with stable
   behavior IDs and per-kind tagged state rather than raw RAM aliases.
 - **Camera/visibility:** `LoadInEarthlings` uses fixed activation bounds and
-  `SPLIT_SCREEN`, while `SantaLogic` retries relocation until neither view sees it.
+  `gSplitScreenEnabled`, while `SantaLogic` retries relocation until neither view sees it.
   [INFERENCE] Define activation independently of display width, or deliberately
   version the changed behavior so widescreen does not silently alter co-op simulation.

@@ -58,7 +58,7 @@ These are reused between parts, not an array of independently running scripts.
 `gSceneBackgroundPairIndex`, frame phase/timer, background-advance counter,
 scene-update counter, and last accepted music-event time drive shared backgrounds.
 `gTitleLogoSelector` selects one of two logos.
-`SEGA_PAL_LOAD_FLAG` plus `SEGA_PAL_TO_LOAD` publish a pending palette to VBlank.
+`gSegaPaletteUploadPending` plus `gSegaPaletteUploadSource` publish a pending palette to VBlank.
 Sega state also remembers whether sprite updates are enabled, trademark handle,
 and whether the once-only rocketship pass has already been shown.
 
@@ -90,8 +90,8 @@ tone sound cues at exact positions. It frees these objects and remembers the pas
 It waits one final counter change before clearing the VBlank override.
 
 `SegaLogoVBlank` consumes the queued palette into slot three, optionally loads
-sprites/selects viewport zero, services `MassiveRoutine`, and increments
-`TIME_COUNTER`. Core's ordinary VBlank counter increment is bypassed by override.
+sprites/selects viewport zero, services `MusicUpdateSequencer`, and increments
+`gFrameCounter`. Core's ordinary VBlank counter increment is bypassed by override.
 `SegaLogoCreateTrademarkEntity` reserves ten pieces/108 tiles and uses a held
 frame; its release clears the stored handle.
 
@@ -161,7 +161,7 @@ Eight large parts exist, but `IntroPositionLargePlayerParts` shows seven initial
 The asteroid reserves twelve pieces/160 tiles.
 
 `IntroCreateHiddenFrameEntities` uses only slot one of
-`AnimationPointerWords_AF040` as a proved frame table, constructs ten hidden
+`IntroAndShipAnimationPointers` as a proved frame table, constructs ten hidden
 objects, and sums tile area. Slot zero is not evidence of another typed animation
 descriptor. Reveal clears hidden; release clears handles and refreshes sprites.
 
@@ -276,8 +276,9 @@ created objects are collidable (`FunkatronCreateSceneEntity`).
 
 - Allocation-failure assumptions and stale-handle lifetimes are not consistently
   guarded; no extra original-bug labels are invented beyond source comments.
-- Some whole-renderer queue/preparation bodies are absent from the integration
-  tree, limiting proof of shared-copy and animation advancement internals.
+- `QueueSpritePieceTiles` and `UpdateAndQueueEntitySprites` remain absent, limiting
+  proof of high-level queue order, shared-copy calls, and animation advancement;
+  `PrepareEntitySpriteFrame` now has a matched body.
 - Several composite resources retain address-based names; their exact depicted
   identities are not established by the constructor's frame pointer alone.
 - The flagged cleanup offset mismatch and first-player frame fallback are

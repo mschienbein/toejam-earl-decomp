@@ -13,8 +13,8 @@ Source paths describe the repository layout. Present C files live in `src/presen
 bare C filenames below abbreviate that directory. Telephone helpers are
 `src/presents/telephone_clear.c`/`src/presents/telephone_open.c`, and the empty
 callback is in `src/presents/noop.c`. Canonical identities are in `config/rev02/names.json`.
-`DropPresent` has declarations and callers but no canonical C body in this snapshot;
-its actual dropped-bank insertion/overwrite algorithm remains open.
+`DropPresent` has a matched body in `src/presents/level_item_setup.c`; it searches
+nearby terrain and inserts into the circular dropped-present bank.
 
 Content IDs come from `include/present_types.h`, terrain from `include/terrain.h`,
 and entity policy/state names from `include/entities.h` and the player-animation headers.
@@ -22,7 +22,8 @@ and entity policy/state names from `include/entities.h` and the player-animation
 ## Files and roles
 
 - `src/presents/level_item_setup.c`: identity shuffle, initial inventories, item-bank
-  reference lifetime, placement constraints/search, weights, and level population.
+  reference lifetime, placement constraints/search, weights, level population, and
+  dropped-present insertion.
 - `item_updates.c`: item display entities/visibility, food/pickup/hazard effects,
   powerup expiration/HUD blink, and the item/present update entry point.
 - `present_effects.c`: transient reveal effects, decoys, doorways, promotions,
@@ -48,7 +49,8 @@ unread `unused_kind`/`unused` bytes). `object` is a `gPlayerInfo` handle, not a 
 `include/ram_presents.h` owns `gPresentInfo[28]`, `gPlayerInventory[2][16]`, two
 32-record `gObjectTable` banks, their player-reference counts and loaded-level
 identities, `gDroppedPresentTable[32]`, its index, and per-level collected-item masks.
-The `LEVEL_ITEMS_2`, `LEVEL_PLAYERS_FLAG_2`, and `LEVEL_LOADED_2` names alias bank one.
+The `gItemBank2Records`, `gItemBank2Users`, and `gItemBank2Level` names alias the
+second bank (index one).
 `ITEM_UNUSED`/`PRESENT_NONE` mark empty item/inventory entries. `ITEM_GROUND_BASE`
 separates presents from ground items; `ITEM_BUCK` is money, `ITEM_LARGE_BASE`
 starts large objects, and `ITEM_HURT_HAZARD` selects the large hurt source (`item_updates.c`).
@@ -60,8 +62,8 @@ or answers it (`OpenTelephone`, `CheckForTelephone`).
 `include/ram_effects.h` supplies the independent parallel arrays for active powerup
 IDs/timers, transient effects, decoys/hit counts, doorways/contact flags, promotions,
 burps, clouds, boom boxes, projectiles/owners, control-remap effects, and terrain
-effects. Several historical scalar names alias player-two elements. The misleading
-`gPlayer1RainCloudState` actually holds an entity handle in these consumers.
+effects. Several scalar names alias player-two elements.
+`gPlayerRainCloudStates[player]` holds a cloud entity handle in these consumers.
 
 The shared tomato pool has twelve handles/owners: player launches search slots 0–3;
 Earthling aiming and tomato rain search 4–11. Remap projectiles use a separate four
@@ -94,7 +96,7 @@ uniformly from the IDs; mystery resolution and world population reuse this selec
 
 ## Level item population and placement
 
-`PlaceStuffInLevel` returns for level 26+, increments references for an existing
+`LoadLevelItemBank` returns for level 26+, increments references for an existing
 bank, or chooses an unused bank and exchanges in the level seed. It creates 12
 ordinary slots when either player is absent, otherwise 16, adds level-2 above
 level two, and caps the result at 28. It restores the previous RNG state at exit.
@@ -103,7 +105,7 @@ Level one uses twelve fixed coordinates and present-only choices; its first four
 slots reject selected risky IDs. Level zero skips ordinary slots and initializes
 three fixed objects at slots 28–30 through `InitializeLevelZeroFixedItems`.
 Ordinary higher levels choose roughly half presents, otherwise weighted food/money,
-and omit slots whose collected bit is already set (`PlaceStuffInLevel`).
+and omit slots whose collected bit is already set (`LoadLevelItemBank`).
 
 `MapFindItemPlacementPosition` chooses the active map matching the level, tests
 small or large rectangle footprints, rejects marked/excluded metatiles, calls
@@ -120,6 +122,15 @@ unnamed kind 82 and `ITEM_HURT_HAZARD`; other terrain chooses `ITEM_LARGE_BASE`.
 `MapReleaseLevelItemBank` only frees/invalidates records when the last player's
 reference leaves a loaded level. Collected masks persist separately so deterministic
 regeneration need not resurrect collected ordinary items (`level_item_setup.c`).
+
+`DropPresent` rejects swimming poses, selects the current circular-bank slot, and
+frees its existing display object before searching. One cached random value
+changes the orientation of a five-by-five terrain-perimeter scan. Both passes
+reject water and void; the first also rejects positions occupied by another
+dropped present on the same level, while the second permits that overlap. A
+success writes the present, level, and position and advances
+`gDroppedPresentTableIdx` modulo 32. If no position qualifies, the function returns
+without advancing the index; the earlier display-object release has already happened.
 
 ## Item visibility, pickup, hazards, and update order
 
@@ -307,12 +318,10 @@ when identification or resolution changes something (`src/ui/inventory.c`).
 Return-view comments preserve observed matching ABI behavior; historical missing
 declarations are [INFERENCE], not a proven explanation or an observed gameplay
 symptom. UI-owned findings are documented only in the
-[UI subsystem](docs/subsystems/ui.md).
+[UI subsystem](ui.md).
 
 ## Open questions
 
-- `DropPresent`'s missing body prevents documenting ring-index/overwrite/full-bank
-  behavior, despite declared `gDroppedPresentTableIdx` and observed callers.
 - Direct `PRESENT_RANDOMIZER` selection is special; `OpenSelectedPresent` has no
   equivalent branch. Mystery resolution and direct calls are not assumed identical.
 - Named content identities now include `PRESENT_INNERTUBE`; animation group names
@@ -327,12 +336,12 @@ symptom. UI-owned findings are documented only in the
   [INFERENCE] Present creation should emit simulation events with independently
   renderable effects rather than blocking on presentation work.
 - **Shared-screen coupling:** `MapUpdateItemsAndPresents` gates work with
-  `P1_MENU_OPEN`; `CheckIfOpenForBoth` can close the partner's menu, and
+  `gPlayerInventoryOpen`; `CheckIfOpenForBoth` can close the partner's menu, and
   `CheckForTelephone` blocks in the map screen. [INFERENCE] Online co-op needs
   authoritative effect ownership and per-player nonblocking menus; retain global
   identification only as a deliberate gameplay rule.
 - **Determinism:** `ReducePresentTimer` applies player/elevator/menu gates,
-  `ProcessPresents` fixes effect update order, and `PlaceStuffInLevel` exchanges and
+  `ProcessPresents` fixes effect update order, and `LoadLevelItemBank` exchanges and
   restores the level seed. [INFERENCE] Use fixed ticks, explicit RNG streams, and
   replicated item/effect state; do not derive outcomes from render allocation.
 - **Content tables:** `SetupSelectedPresent` embeds timers/ability setup;

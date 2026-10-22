@@ -23,7 +23,7 @@ not reverse-invented from their names.
 - `include/ram_speech.h`: four bubble slots, two replies, lifetime override/aliases.
 - `include/entities.h`: shared object fields and attachment conventions.
 - `include/sprites.h`: runtime frame/piece format.
-- `include/assets_ui.h`: `RuntimeTextMetasprite_0AFADC` and font resources.
+- `include/assets_ui.h`: `SpeechBubbleTextFrame` and font resources.
 - `src/ui/inventory.c`: shared character mapping/font behavior, not bubble ownership.
 - `src/sprites/entity_visibility.c`: deliberately excludes bubbles from ordinary
   automatic viewport allocation.
@@ -141,7 +141,7 @@ A final loop checks only slot zero for a control-remap entity, proximity below
 branch is unreachable with the observed loop bound. The source marks this bug.
 
 `StartDialogue` itself is absent from the supplied integration sources.
-Its canonical-name evidence describes `DialogueDescriptors`, initial/reply
+Its canonical-name evidence describes dialogue descriptors, initial/reply
 speaker selection, unavailable-player/occupied-slot rejection, immediate opening
 speech, and a delayed reply. Descriptor layout, exact delays, and complete
 speaker rules remain outside direct C-body evidence in this assignment.

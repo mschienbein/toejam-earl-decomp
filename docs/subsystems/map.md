@@ -9,7 +9,7 @@ screen-sized levels: `ChangeLevel` manages two active maps and one saved map, wh
 `GetMapTerrainAtWorldPosition` translates world coordinates into metatiles and tiles.
 
 Source paths describe the repository layout. Map C files live in `src/map`;
-bare C filenames below abbreviate that directory, including `random_and_regions.c`.
+bare C filenames below abbreviate that directory, including `random_regions_and_cleanup.c`.
 Function names are canonical source/header identities also recorded in
 `config/rev02/names.json`, not proof of historical source spelling.
 `include/terrain.h` names tile terrain and final metatile fields. Generation-region
@@ -18,16 +18,13 @@ VDP attribute constants.
 
 ## Files and their roles
 
-- `change_level.c`: `ChangeLevel`, `MapLoadPlayerLevel`, and `LoadFinalLevel`;
-  cache selection, generation orchestration, retry policy, fixed special maps.
-- `level_changes.c`: `GenerateLevelSeeds`, `MapGenerateSeparatedAnchors`,
-  `CopyLevelBetweenPlayers`, and `MapSwapPlayerWithSavedBank`.
-- `random_and_regions.c`: Park–Miller RNG, seed exchange, random cache,
-  generation parameter selection, directional path carving, region-origin searches.
-- `region_cleanup.c`: rectangular region merging, boundary widening, path-side
-  expansion, interior seeding, and region-edge shape masks.
-- `level_generation.c`: filled shapes, path shapes, scattered features,
-  metatile alternatives, and player-bank exchange.
+- `level_generation_and_changes.c`: `GenerateLevelSeeds`, anchor generation and
+  connection, filled/path shapes, scattered features, metatile alternatives,
+  `ChangeLevel`, `MapLoadPlayerLevel`, `LoadFinalLevel`, and player/saved-bank exchange.
+- `random_regions_and_cleanup.c`: Park–Miller RNG, seed exchange, random cache,
+  generation parameters, directional path carving, region-origin searches/growth,
+  rectangular region merging, boundary widening, path-side expansion, interior
+  seeding, and region-edge shape masks.
 - `map_population.c`: recursive anchor connectivity test, despite its broad name.
 - `transition_paths.c`: descriptor membership and recursive overlay-chain selection.
 - `terrain_at_position.c`: point queries and the two five-by-five player caches.
@@ -40,17 +37,17 @@ VDP attribute constants.
 
 ## Data structures and RAM
 
-`include/ram_map.h` declares `gMapDataA`, `gMapDataB`, and `gMapDataC`, each
+`include/ram_map.h` declares `gPlayer1LevelMap`, `gPlayer2LevelMap`, and `gSavedLevelMap`, each
 26 rows by 19 unsigned-short cells. A and B are active map planes and C is the
 saved plane (`ChangeLevel`, `CopyLevelBetweenPlayers`, `MapSwapPlayerWithSavedBank`).
-`gLevel912A` selects the level being loaded; `gLevel912C` and `gLevel912E` identify
-the active planes; `gLevel9130` identifies the saved plane. These address-derived
-names should not be mistaken for four independent player level fields.
+`gRequestedMapLevel` selects the level being loaded; `gPlayer1MapLevel` and `gPlayer2MapLevel` identify
+the active planes; `gSavedMapLevel` identifies the saved plane. These identities
+belong to map-cache banks, not four independent player-entity level fields.
 
-`gMapDataD[52][19]` supplies packed per-active-map direction nibbles; the existing
+`gMapPathDirectionBanks[52][19]` supplies packed per-active-map direction nibbles; the existing
 `gSavedMapPathDirections[26][19]` view starts at its row 26. Copy and swap routines
 move the appropriate nibble while preserving the other player's nibble. These are
-aliases, not separately allocated maps (`include/ram_map.h`, `level_changes.c`).
+aliases, not separately allocated maps (`include/ram_map.h`, `level_generation_and_changes.c`).
 
 Map-word meaning changes during generation. `MapCarveDirectionalPath` writes
 class `0x2000` plus direction bits 1/2/4/8. Region cleanup uses classes `0x1000`
@@ -78,17 +75,17 @@ handles, and the shared terrain-query word. Its visited-table outer extent is
 explicitly marked [INFERENCE] in that header. The query's low-byte alias assumes
 the original big-endian layout.
 
-`include/ram_system.h` owns `gRNGState`, `PREGEN_RANDOMS[59]`, and
+`include/ram_system.h` owns `gRNGState`, `gCachedRandomValues[59]`, and
 `gRandomCacheIndex`; `include/random.h` declares their public operations.
 Player terrain neighborhoods are in `include/ram_player.h`; elevator and ship
-anchor coordinates are views of `ELEVATOR_POS_TABLE` in `include/ram_elevator.h`.
+anchor coordinates are views of `gLevelAnchorPositions` in `include/ram_elevator.h`.
 
 ## Random-number behavior
 
 `GetRandomNumber` implements the Park–Miller recurrence using Schrage's split:
 it divides the state by 127773, combines the quotient and remainder using 16807
 and 2836, and adds 2147483647 when the result is nonpositive. It stores the full
-new state but returns only its low unsigned 16 bits (`random_and_regions.c`).
+new state but returns only its low unsigned 16 bits (`random_regions_and_cleanup.c`).
 
 `StackBasedRandom(seed)` returns the previous state while normalizing and installing
 the supplied seed. It negates negative values, subtracts the modulus once when
@@ -100,10 +97,10 @@ from calling `GetRandomNumber`; `DisplayMap` explicitly cycles through the cache
 
 `GenerateLevelSeeds` copies `FixedWorldSeeds` when `gWorldType` is nonzero;
 otherwise it draws all 26 seeds. It initializes both active level identities to
-one, the saved identity to -1, and the highest level to one (`level_changes.c`).
+one, the saved identity to -1, and the highest level to one (`level_generation_and_changes.c`).
 
-The main loop also advances the RNG repeatedly while waiting for `TIME_COUNTER`
-to change, and initial world seeding combines a draw with `TIME_COUNTER`
+The main loop also advances the RNG repeatedly while waiting for `gFrameCounter`
+to change, and initial world seeding combines a draw with `gFrameCounter`
 (`FurtherInitialisation`, `src/core/startup_and_main_loop.c`). Thus a stored
 level seed is useful evidence for generation, but is not by itself a complete
 record of every runtime random decision.
@@ -111,7 +108,7 @@ record of every runtime random decision.
 ## Level-loading and generation pipeline
 
 1. `MapLoadPlayerLevel` sends levels 26 and above to `LoadFinalLevel`; ordinary
-   requests set `gLevel912A` and call `ChangeLevel` until it succeeds.
+   requests set `gRequestedMapLevel` and call `ChangeLevel` until it succeeds.
 2. `ChangeLevel` exchanges in `gLevelSeeds[level]`, retaining the previous RNG state.
    For levels above one it first regenerates separated anchor coordinates.
 3. It reuses the requested player's active bank, copies the partner's bank, or
@@ -150,10 +147,20 @@ record of every runtime random decision.
 it rejects a new anchor if both its X distance is below three and its Y distance
 is below five from an earlier anchor. `MapCarveDirectionalPath` writes reciprocal
 cardinal links and stops wandering after the requested random-step allowance.
-The exact connection and growth algorithms are not fully documented here because
-`MapConnectAnchorPositions` and `MapGrowTerrainRegion` have declarations/callers but
-no canonical C bodies in the inspected `src` snapshot. Their names and recorded
-roles are supported by `config/rev02/names.json`; their internals remain open.
+`MapConnectAnchorPositions` first connects anchors zero to one and one to two
+through `MapCarveDirectionalPath`, then extends a randomized path from each anchor.
+The additional targets are 4–7 cells away horizontally and 5–8 vertically; bounds
+and random direction tests can retry an anchor rather than accepting an invalid
+target (`level_generation_and_changes.c`).
+
+`MapGrowTerrainRegion` writes labelled two-by-two blocks. For class `0x1000`,
+encountering another labelled region relabels every matching cell across the map.
+It chooses preferred turns and retries untried cardinal directions through
+`MapFindRegionGrowthOrigin` or `MapFindInteriorGrowthOrigin`; exhausting all four
+directions returns immediately. Otherwise a random stop test ends growth only
+when the requested minimum count for that terrain class has been reached
+(`random_regions_and_cleanup.c`). These c026 bodies make stopping rules and
+random-call order directly inspectable rather than inferred from their names.
 
 ## Terrain and live land changes
 
@@ -198,7 +205,7 @@ idle counter; the `REVISION` branch preserves REV 00's difference.
 `DisplayMap` retains previously revealed cover, uses cached random choices for
 additional reveals, then draws unrevealed blocks. Player, ship-piece, and elevator
 markers use `Map_DrawPlayer`, `Map_DrawShipPiece`, and `Map_DrawElevator`;
-`DrawMapCharacters` blinks markers from `TIME_COUNTER` bits 3/4.
+`DrawMapCharacters` blinks markers from `gFrameCounter` bits 3/4.
 
 On exit, `DrawGameMap` restores gameplay graphics/HUD/palettes or calls
 `ShowShipPieces`, and redraws the partner's inventory if needed. Telephones invoke
@@ -225,10 +232,8 @@ it is not an `ORIGINAL BUG:`-labelled finding and should remain distinct.
 
 ## Open questions
 
-- Missing canonical C bodies for connection and region growth prevent a complete
-  source-only explanation of their stopping rules and random-call order.
-- The address-derived level variables and stage-dependent flag bits need semantic
-  names only after their consumers agree; this document does not invent enum names.
+- Stage-dependent generation flags still require their consumers for interpretation;
+  final terrain enum names do not describe every intermediate region label.
 - Exact negative-coordinate behavior and invalid-data behavior are outside normal
   call assumptions; a safe native implementation requires an explicit policy.
 - Reproducing a historical world requires the accepted replacement seed after a
@@ -241,7 +246,7 @@ it is not an `ORIGINAL BUG:`-labelled finding and should remain distinct.
   [INFERENCE] Separate map simulation from rendering jobs and replace register
   access with a renderer interface.
 - **Shared-screen coupling:** `ChangeLevel` owns A/B/C cache selection;
-  `MapAnimateMarkedLandPaths` uses `SPLIT_SCREEN` and freezes entity animations;
+  `MapAnimateMarkedLandPaths` uses `gSplitScreenEnabled` and freezes entity animations;
   `DrawGameMap` blocks. [INFERENCE] Online menus need independent view state while
   shared terrain mutations remain authoritative.
 - **Determinism:** `GetRandomNumber` truncates its return, `ChangeLevel` exchanges

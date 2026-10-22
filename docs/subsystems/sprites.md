@@ -18,8 +18,8 @@ to reveal a missing function's implementation.
 - `entity_visibility.c`: view/level tests and residency transitions.
 - `entity_sprite_order.c`: attachments, positioning, links, and Y sorting.
 - `entity_depth.c`: optional shadows and their elevation-dependent appearance.
-- `sprite_frame_budget.c`: raw tile buffering and animation-motion budget.
-- `sprite_pixel_masks.c`: buffered pixel clipping/mask removal.
+- `sprite_frame_preparation.c`: frame-piece decoding, tile-run queuing, raw tile
+  buffering, animation-motion budget, and buffered pixel clipping/mask removal.
 - `load_sprites.c`: hardware table and queued tile-run DMA uploads.
 - `set_sprite.c`: selection/reset of player animation descriptors.
 - `entity_indexes.c`: stable object indices and initial sprite sentinels.
@@ -43,11 +43,11 @@ to reveal a missing function's implementation.
 - Two 12-handle sprite arrays, two shadow handles, and `sprite_ready`.
 - `owner` plus three offset/latch bytes, `next`, and stable `entity_index`.
 
-`render_frame` is a four-byte prefix followed by `count` ten-byte pieces;
+`render_frame` is a four-byte prefix followed by `piece_count` ten-byte pieces;
 there is no fixed 12-piece stride in the ROM frame format.
 Its prefix contains piece count, X/Y motion multipliers, and tile-reuse flag.
-`render_piece` contains tile dimensions, signed pixel offsets, flipped X,
-a format byte, and a raw/packed tile-data pointer (`sprites.h`).
+`render_piece` contains `width`/`height` tile dimensions, signed pixel offsets,
+`flipped_x`, `tile_format`, and the raw/packed `tile_data` pointer (`sprites.h`).
 A `timed_animation` pairs sequence/frame pointers with period and Y offset.
 
 `hardware_sprite` is the eight-byte VDP entry: Y, size/link bytes, tile word, X.
@@ -132,7 +132,7 @@ Shadows stay at ground-relative Y and depend on the sprite size bits.
 
 `UpdateEntityShadows` allocates a reclaimable slot per resident view, quantizes
 elevation into size/tile variants, and selects a special sunk image for negative
-height. `Process2FEntityFlag` performs this dispatch for 26 records.
+height. `UpdateAllEntityShadows` performs this dispatch for 26 records.
 `HideFlaggedPlayerSprites` writes Y one directly to VRAM for a ready player
 with `ENTITY_PLAYER_SUPPRESSED`; core alternates its serviced player in VBlank.
 
@@ -151,17 +151,24 @@ for animation-controlled axes. This function is not the complete decoder.
 `ClipSpritePixelsBelowCutoff` blanks packed rows below the cutoff, preserving a
 partial boundary mask; `ClearSpriteMaskPixels` removes selected all-ones patterns.
 
-`SpriteLoadingStuff` is gated by `VBLANK_FLAG_2`, force, or tiles-only request.
+`UploadQueuedSpriteGraphics` is gated by `gSpriteGraphicsUploadPending`, force, or tiles-only request.
 It DMA-uploads the complete 80-record table to VRAM `0xf800` unless tiles-only,
 caches sentinel links, then uploads destination/count pairs from the tile queue.
-It resets the buffer offset, queue word count, and `_2` after consumption.
+It resets the buffer offset, queue word count, and `gSpriteGraphicsUploadPending` after consumption.
 `SelectPrimaryViewportSprites`, `SelectSecondaryViewportSprites`, and chain
 termination helpers patch live VRAM links, enabling HBlank view switching.
 
-`QueueSpritePieceTiles`, `PrepareEntitySpriteFrame`, and
-`UpdateAndQueueEntitySprites` are declared/called but lack bodies in the supplied
-integration tree. Their complete decode/queue ordering remains an evidence gap.
-Core calls the last function in its odd iteration and uses VBlank for loading.
+`PrepareEntitySpriteFrame` now supplies the matched piece decoder. Unless tiles
+are reused, a negative `tile_format` selects interleaved RLE, bit `0x40` selects
+raw tiles, and the remaining format selects contiguous RLE. Sunk-player clipping
+and `ENTITY_MASK_PIXELS` can modify the buffered pixels. It writes the chosen
+viewport's hardware size/tile fields, derives palette bits from the format, and
+appends a destination/count upload pair when a new nonempty tile run is produced.
+The source does not add an upload-buffer capacity check.
+
+`QueueSpritePieceTiles` and `UpdateAndQueueEntitySprites` still lack bodies in the
+supplied integration tree, leaving high-level queue order and countdown advancement
+open. Core calls the latter in its odd iteration and uses VBlank for loading.
 
 ## Interactions
 
@@ -181,15 +188,15 @@ Core calls the last function in its odd iteration and uses VBlank for loading.
 
 ## Open questions
 
-- Missing queue/preparation bodies prevent a complete account of format-bit
-  decoding, animation countdown advancement, and upload-buffer overflow policy.
+- Missing queue/controller bodies still limit the account of animation countdown
+  advancement and high-level ordering; the frame decoder itself is now available.
 - The upload buffer's declared span must not be confused with a checked capacity.
 - Shared flag bytes encode rendering and gameplay policy; a clean separation
   requires tracing all consumers, not merely replacing the hardware table.
 
 ## Port notes
 
-- Platform layer: replace `SpriteLoadingStuff` VDP table/tile DMA and live chain
+- Platform layer: replace `UploadQueuedSpriteGraphics` VDP table/tile DMA and live chain
   writes with a metasprite renderer and decoded resources.
 - Shared-screen coupling: decouple `AllocateEntityViewportSprites` per-view
   reservations from one 54-slot budget; preserve authored ordering without

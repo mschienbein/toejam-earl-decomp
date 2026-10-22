@@ -10,16 +10,18 @@ This is not a conventional Z80 music sequencer with a passive 68000 interface.
 Evidence is the C request files/headers, `src/asm/sound*.s`, `z80bus.s`,
 `include/sound.inc`, `include/hardware.inc`, and both Z80 sources.
 All source paths refer to the current repository-root layout.
-`PlaySound`/`PlaySoundEffect` have declarations, callers, and canonical identities,
-but no bodies in the supplied C/handwritten-assembly source set.
+`PlaySound` and `PlaySoundEffect` have matched C bodies in `src/audio/`; they
+apply shared priority/cooldown policy before publishing requests.
 
 ## Files and roles
 
-- `src/audio/request_channel_release.c`: queues six-channel FM release.
+- `src/audio/play_sound.c`: indexed PSG request admission and shared priority.
+- `play_sound_effect.c`: direct PCM request admission and optional FM/sequencer stop.
+- `request_channel_release.c`: queues six-channel FM release.
 - `request_track_reset.c`: queues clearing six music owner/stream pointers.
 - `request_template_effect.c`: queues an auxiliary FM template effect number.
 - `src/asm/sound.s`: auxiliary templates, YM patch/frequency/key-mask writes,
-  and `MassiveRoutine`, the per-tick music bytecode interpreter.
+  and `MusicUpdateSequencer`, the per-tick music bytecode interpreter.
 - `sound_schedule.s`: song banks, six-channel templates, restart callback.
 - `sound_init.s`: copies the 276-byte initial music RAM image.
 - `sound_channels.s`: releases all six stored FM key masks.
@@ -44,26 +46,34 @@ Assembly `sound.inc` supplies the finer interpreted offsets:
 - Frequency bytes `+0x10/+0x11`, note-active `+0x12`, selected-owner `+0x13`.
 - Loop depth and indexed count storage beginning at `+0x14`.
 
-`gMusicPointer1` is the six-entry hardware-channel owner table.
-Six primary channel records start at `gMusicChannel1Ptr1`; additional auxiliary
-records begin at `ram_ffff14` (`AudioLoadPendingChannelTemplateEffect`).
-`gMusicUnknownFE2E` controls the inclusive record-walk count in `MassiveRoutine`;
+`gMusicFmChannelOwners` is the six-entry hardware-channel owner table.
+Six primary channel records start at `gMusicChannels`; additional auxiliary
+records begin at `gFmEffectChannels` (`AudioLoadPendingChannelTemplateEffect`).
+`gMusicChannelScanCountMinusOne` controls the inclusive record-walk count in `MusicUpdateSequencer`;
 it is not safe to assume the interpreter always visits exactly six records.
 FM patch records also occupy 38 bytes; their final byte stores the operator mask.
 
-The C wrappers write requests, not hardware:
+The C wrappers write requests, not hardware. `PlaySound` accepts an indexed request
+when both `gPcmEffectCooldownTicks` and `gPsgEffectStatus` are zero, or when its
+priority is at least `gSoundEffectPriority`; it records the pending PSG ID and
+new priority. `PlaySoundEffect` uses the same gate for a pending PCM pointer.
+A nonzero stop-channels argument also sets `gPcmBlocksSequencer` and requests
+FM release; a zero argument does not clear an already set blocking latch.
+Later accepted requests can replace the shared pending value before service.
 
-- `AudioRequestFmChannelRelease`: `gMusicUnknownE478 = 1`.
-- `MusicRequestTrackPointerReset`: `gMusicUnknownE47A = 1`.
-- `AudioRequestChannelTemplateEffect(n)`: `gMusicUnknownE47C = n`.
+The other wrappers publish the following requests:
 
-`gMusicUnknownE47E` is a pending indexed PSG request, with negative none sentinel.
-`gMusicUnknownE480` is a pending direct PCM pointer.
-`gPcmEffectCooldownTicks` and `gMusicUnknownE470` control speech blocking.
-`gMusicUnknownE46E` is the 15-tick PSG status countdown.
+- `AudioRequestFmChannelRelease`: `gFmChannelReleaseRequested = 1`.
+- `MusicRequestTrackPointerReset`: `gMusicTrackResetRequested = 1`.
+- `AudioRequestChannelTemplateEffect(n)`: `gPendingFmEffect = n`.
+
+`gPendingPsgEffect` is a pending indexed PSG request, with negative none sentinel.
+`gPendingPcmSample` is a pending direct PCM pointer.
+`gPcmEffectCooldownTicks` and `gPcmBlocksSequencer` control speech blocking.
+`gPsgEffectStatus` is the 15-tick PSG status countdown.
 `gMusicAlternateTemplateBankEnabled`, `gBoomBoxMusicTemplateHold`, and
-`ram_ffe486` affect template restart scheduling.
-`gMusicUnknownE488/E489` provide a music event flag/channel selector used by Jam Out.
+`gMusicTemplateRestartState` affect template restart scheduling.
+`gMusicAnimationEvent` and `gMusicAnimationChannel` provide a music event flag/channel selector used by Jam Out.
 
 ## Boot and driver loading
 
@@ -73,7 +83,7 @@ It differs from the later six-byte idle program written by C `InitialiseTheZ80`.
 `LoadSoundDriverToZ80` requests the bus with a bounded poll, copies the driver's
 inclusive `SoundDriverProgramSize` range, pulses reset, releases the bus, and
 sets a two-tick start countdown (`z80bus.s`).
-`RAMWritesRoutine1` restores 276 bytes beginning at `gMusicPointer1` from the
+`MusicRestoreInitialState` restores 276 bytes beginning at `gMusicFmChannelOwners` from the
 initial-state resource; it is not a generic work-RAM clearing function.
 
 The Z80 driver sets IM1 but keeps interrupts disabled; its IRQ entry returns.
@@ -83,10 +93,10 @@ Normal execution polls the command byte rather than waiting on an IRQ.
 
 ## Main audio update flow
 
-Core normally calls `MassiveRoutine` from VBlank; an outstanding music-bank
+Core normally calls `MusicUpdateSequencer` from VBlank; an outstanding music-bank
 change instead runs `MusicSelectSongTemplateBank` for that service slot.
 Cutscenes and Jam Out can supply different VBlank callbacks.
-`MassiveRoutine` services requests in this order:
+`MusicUpdateSequencer` services requests in this order:
 
 1. Release all FM channels when requested.
 2. Clear six owner/stream pointers when requested.
@@ -109,7 +119,7 @@ Template effect zero means clear, not an ordinary effect stream.
 
 ## Music bytecode
 
-`MassiveRoutine` interprets multiple commands in one tick until a wait/stop path.
+`MusicUpdateSequencer` interprets multiple commands in one tick until a wait/stop path.
 A negative command byte sets a wait count from its low seven bits; the tick
 path immediately decrements the wait and invokes any installed callback.
 Nonnegative commands are:
@@ -168,7 +178,8 @@ a short delay, then retry; keeping the bus stopped would prevent lock completion
 `AudioSubmitPendingIndexedCommand` consumes the PSG request even on bus timeout;
 accepted submission starts the 15-tick status timer.
 `AudioSubmitPendingPcmSample` retains its PCM pointer on timeout, cancels pending
-PSG, and on acceptance sets cooldown `floor(length/138)+5` then clears the pointer.
+PSG, and on acceptance sets cooldown to the integer quotient of length by 138,
+plus five, then clears the pointer.
 `AudioTrySubmitSequencerPcmSample` rejects during speech cooldown, alternate-bank
 inhibit, or nonzero PSG-active state; it does not start speech cooldown.
 
@@ -209,9 +220,6 @@ Some routines silence midway, so zero PSG-active does not prove final completion
 
 ## Open questions
 
-- `PlaySound` and `PlaySoundEffect` bodies are absent; full caller-priority and
-  speech-inhibit admission rules cannot be recovered from declarations alone.
-- Several music RAM fields retain address-era names despite observed local roles.
 - Exact audible sample rate depends on hardware-cycle pacing and bank/FM steals;
   the code does not declare a portable Hz rate.
 - Stream callbacks are raw pointers; an external format needs explicit event IDs.
@@ -222,7 +230,7 @@ Some routines silence midway, so zero PSG-active does not prove final completion
   YM/PSG MMIO, bank latch, and cycle-counted DAC with a native audio backend.
 - Shared-screen coupling: local menus should not globally issue
   `AudioRequestFmChannelRelease` for the partner unless shared audio policy requires it.
-- Determinism: schedule `MassiveRoutine` and `gPcmEffectCooldownTicks` from an
+- Determinism: schedule `MusicUpdateSequencer` and `gPcmEffectCooldownTicks` from an
   explicit tick clock; timestamp sound events and mix on independent audio time.
 - Content tables: export songs, instrument maps/patches, template counts, PCM
   headers/payloads, and PSG envelopes/routines without shipping ROM byte blobs here.

@@ -18,7 +18,7 @@ Orchestration is in `docs/subsystems/core.md` and `docs/subsystems/audio.md`.
 - `src/asm/startup.s`: `_start`, reset setup stream, TMSS, VDP/Z80/RAM/PSG setup.
 - `interrupts.s`: `GameProgram`, SR masks, VBlank/HBlank wrappers, software reset.
 - `vdp.s`: clears, palette upload, port fills, word copies, rectangular upload.
-- `dma.s`: `VDPWritesRoutine1`, 68000 memory-to-VRAM DMA programming.
+- `dma.s`: `DmaCopyWordsToVram`, 68000 memory-to-VRAM DMA programming.
 - `controllers.s`: `GetCtrl1Input` and `GetCtrl2Input`, three-button TH multiplexing.
 - `rle.s`: raw, contiguous RLE, and four-lane interleaved sprite unpackers.
 - `runtime.s`: stock Microtec long multiply/divide/remainder and absolute value.
@@ -41,7 +41,7 @@ For example `VDP_CONTROL_WORD` and `VDP_COMMAND` share the control port but have
 different transfer widths; an ordinary integer assignment is not an abstraction.
 
 `gMode2RegSoftcopy` is the VDP mode-register shadow consumed by DMA and C display
-control. `USED_BY_VDP_1/2` are the two views used to publish a packed DMA command.
+control. `gVdpDmaCommand` and `gVdpDmaCommandLowWord` are the two views used to publish a packed DMA command.
 `gSpriteTileUploadBuffer` and `gSpriteTileBufferOffset` are shared decoder output
 state, not allocations owned by each decompression call.
 Z80 mailbox state includes command, lock, argument, PCM address/count, DAC pacing,
@@ -68,8 +68,8 @@ not imitate stack/register manipulation.
 
 `ClearVideoRAM` writes zero to all 32768 VRAM words using the existing increment.
 `ClearColourRAM` clears 64 CRAM color words.
-Despite its historical name, `ClearSRAM` clears 40 VSRAM scrolling words; it does
-not erase cartridge save RAM (`vdp.s` explicit comment and command selection).
+`ClearVerticalScrollRam` clears 40 VSRAM scrolling words, not cartridge save RAM
+(`vdp.s` explicit comment and command selection).
 
 `MoveDataToVRAM(source,count)` copies words to the current VDP destination.
 `FillVdpDataWords(value,count)` writes the low word repeatedly.
@@ -93,7 +93,7 @@ implicit state, so merely replacing the final stores is insufficient.
 
 ## DMA flow
 
-`VDPWritesRoutine1(source,vram_byte_address,word_count)`:
+`DmaCopyWordsToVram(source,vram_byte_address,word_count)`:
 
 1. Reads the mode-two shadow and enables DMA in the programmed register value.
 2. Writes low/high 16-bit DMA word-count registers.
@@ -125,11 +125,11 @@ both hardware protocols while keeping logical-player button mapping separate.
 
 ## Sprite unpacking formats
 
-All three unpackers read `render_piece.data` at record offset six and write at
+All three unpackers read `render_piece.tile_data` at record offset six and write at
 `gSpriteTileUploadBuffer + gSpriteTileBufferOffset` (`rle.s`).
 They do not themselves advance the shared upload offset.
-`SpriteUnpackRaw` copies eight longwords, 32 bytes, per tile; the historical
-inner label `Copy8Bytes` does not describe the actual amount.
+`SpriteUnpackRaw` copies eight longwords, 32 bytes, per tile; its inner loop is
+labelled `SpriteUnpackRaw_CopyTileLongwords`.
 
 `SpriteUnpackRLE` expands a contiguous target of tile-count times 32 bytes:
 
@@ -191,7 +191,7 @@ stages; there is no reason to emulate all three to implement the native soundtra
 No `ORIGINAL BUG:` comments occur in the inspected canonical 68000 assembly.
 The paired Z80 driver's marked defects are owned solely by
 `docs/subsystems/audio.md`; consult its ORIGINAL BUG list.
-Inclusive counts, misleading legacy names, and unchecked ROM-format assumptions
+Inclusive counts and unchecked ROM-format assumptions
 above are observed semantics, not newly asserted original-bug classifications.
 
 ## Open questions
@@ -204,7 +204,7 @@ above are observed semantics, not newly asserted original-bug classifications.
 
 ## Port notes
 
-- Platform layer: replace `VDPWritesRoutine1` MMIO/DMA and
+- Platform layer: replace `DmaCopyWordsToVram` MMIO/DMA and
   `gMode2RegSoftcopy` hardware shadowing with an explicit renderer interface.
   Replace audio/reset, decoder, and timing operations at the same boundary.
 - Shared-screen coupling: make per-player UI/view passes independent of HBlank

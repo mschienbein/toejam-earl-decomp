@@ -15,9 +15,10 @@ and camera positioning/split-view animation live in `src/camera`; those are not
 counted as player implementation here. Identifiers match the repository headers.
 
 Several important interfaces have declarations/callers but no canonical C body in
-the inspected `src`: `SpriteChecks`, `PlayerProcessTerrainMotion`,
-`CheckPlayerFalling`, `Player_Youch`, and `MapClearTilePriorityNearPlayer`.
-Their exact missing internals remain open rather than being reconstructed from names.
+the inspected `src`: `SpriteChecks`, `PlayerProcessTerrainMotion`, and `Player_Youch`.
+`CheckPlayerFalling` and `MapClearTilePriorityNearPlayer` now have matched bodies
+in `src/player/active_present_falling_and_respawn.c`.
+The three remaining missing implementations are not reconstructed from their names.
 
 ## Files and roles
 
@@ -27,13 +28,12 @@ Their exact missing internals remain open rather than being reconstructed from n
   and the two installed player terrain callbacks.
 - `process_movement.c`: fixed-point integration of all linked active entities,
   with additional player bounds and collision handling.
-- `level_fall_sinking_and_respawn.c`: ordered player updates, sinking, jump/landing,
-  spring shoes, level falls, relocation, death, and last-life removal.
-- `start_falling.c`: falling initiation, VBlank terrain priority handoff, teetering.
+- `active_present_falling_and_respawn.c`: active-power poses, ordered player updates,
+  sinking, jump/landing, spring shoes, falling initiation/readiness, VBlank terrain
+  priority handoff, teetering, level falls, relocation, death, and last-life removal.
 - `jump_motion.c`, `start_motion_mode.c`: phased jump input/state and initialization.
 - `rocket_motion.c`, `open_rocket_skates.c`: skates input, acceleration, turns,
   terrain-dependent sprites, and opening setup.
-- `active_present_sprite.c`: the active powerup/terrain-dependent idle selection.
 - `projectiles.c`: player firing poses and launch into the shared projectile pool.
 - `sleep.c`: schoolbook, idle sleep, wake effects, and wake-input checks.
 - `edge_hop_and_clap.c`: automatic terrain-edge hop and two-player health sharing.
@@ -56,7 +56,7 @@ Earthling pointer, `owner`/attachment fields, and linked-list membership. Height
 world elevation; `height_pixels` is the sprite extent, not a duplicate coordinate.
 
 `include/ram_player.h` declares `gPlayerInfo[40]`; `PLAYER_TOEJAM`/`PLAYER_EARL`
-in `include/entities.h` identify the two players. `gEarlPositionX` aliases Earl's record,
+in `include/entities.h` identify the two players. `gPlayer2Entity` aliases Earl's record,
 and `gToejamLevel`/`gEarlLevel` name existing
 level bytes. Records 26–39 also host inventory displays: two selector-plus-six-item
 chains initialized in `SetupPlayer`, not fourteen extra player actors.
@@ -66,8 +66,8 @@ shadow values. Player-two scalar names alias element one of the corresponding
 arrays. Incomplete array bounds in the header are deliberately not promoted here
 to guessed independent allocations.
 
-`LAND_NEAR_TOEJAM` and `LAND_NEAR_EARL` are five-by-five tile-property neighborhoods;
-the `LAND_UNDER_TOEJAM`/`LAND_UNDER_EARL` names alias center [2][2]. Player handlers
+`gPlayer1NearbyTerrain` and `gPlayer2NearbyTerrain` are five-by-five tile-property neighborhoods;
+the `gPlayer1TerrainUnderfoot`/`gPlayer2TerrainUnderfoot` names alias center [2][2]. Player handlers
 commonly mask that property with `TERRAIN_CLASS_MASK` (`include/terrain.h`), while
 destination/edge logic can inspect full property bytes (`PlayerApplyTerrainDestination`).
 
@@ -114,7 +114,7 @@ elevator collision flag. Promotion, control-remap, and terrain-effect updates fo
 for non-skipped records; absent players instead enter the life-request path.
 
 After both players, `ProcessPlayers` calls `CheckPlayerFalling` and, when
-`PLAYER_INDICATOR == 2`, health-sharing clap processing. A menu-open active player
+`gPlayerSelection == 2`, health-sharing clap processing. A menu-open active player
 hits `continue`, skipping even the common tail for that player.
 
 ## Ordinary movement and terrain response
@@ -194,17 +194,27 @@ waits for a VBlank terrain-priority operation before speech/sound. Teetering cou
 past thirty updates, but departure-in-progress delays its short launch
 (`PlayerUpdateTeetering`, `PlayerStartTeeteringFall`).
 
+`MapClearTilePriorityNearPlayer` services that VBlank request. It visits ten
+wrapped tile columns around the selected player and up to thirteen rows per
+column, clearing the priority bit. Below the player, a tile property below
+`0x90` stops that column. Earl uses the second plane only in split view, and
+the function clears `gTerrainPriorityUpdatePending` on completion.
+
 `MakePlayerFall` waits until the relevant falling players are ready. It releases
 old Earthling/item banks, decrements level (wrapping below zero to the highest
 level), assigns height 600 and downward motion, loads/repopulates destination banks,
 and positions falling players together or beside a supported partner. It avoids
 using an unsupported/dead partner and refreshes split mode, level HUD, and video
-state. `CheckPlayerFalling` decides when to call this flow but its body is absent.
+state. `CheckPlayerFalling` supplies its two readiness flags: fall state one
+becomes ready below height -224, while state two handles terrain-dependent
+landing and the powerup-dependent bounce counters. It also updates partner
+crouch/squish poses on same-level overlap and the temporary suppression after
+a squish animation, then calls `MakePlayerFall` with both readiness flags.
 
 `PlayerUpdateJumpLandingAnimation` advances preparation/launch/landing flags and
 chooses splash or the fall-state landing path. `PlayerUpdatePresentCompletionAndTerrainPose`
 returns finished present poses to the active state and searches nearby support when
-leaving the resting water pose (`level_fall_sinking_and_respawn.c`).
+leaving the resting water pose (`active_present_falling_and_respawn.c`).
 
 `PlayerUpdateTerrainSinking` lowers eligible grounded players on `TERRAIN_SINKING`,
 using time-counter masks, per-character depth thresholds, cached speech chance,
@@ -214,7 +224,7 @@ not asserted to be an original gameplay bug.
 
 `PlayerUpdateHurtRecoveryAndIdle` applies pending damage after the hurt animation,
 restores skates/air/terrain motion, nudges toward support, and can start a void fall.
-Its Earl-only idle variation consumes direct RNG (`level_fall_sinking_and_respawn.c`).
+Its Earl-only idle variation consumes direct RNG (`active_present_falling_and_respawn.c`).
 
 `PlayerRelocateToPartnerOrNextLevel` returns to the live partner, reloads banks if
 levels differ in split mode, or advances toward the highest level when alone.
@@ -283,8 +293,8 @@ Matching qualifications and uncertain historical spellings are not extra bug cla
 - Missing `SpriteChecks` and `PlayerProcessTerrainMotion` bodies leave the complete
   input-to-destination dispatch path open; the shown directional and terrain helpers
   establish important parts, not the entire missing controller.
-- Missing `CheckPlayerFalling` and `Player_Youch` bodies leave exact fall readiness
-  and common hurt eligibility/damage initiation outside this source-only account.
+- The missing `Player_Youch` body leaves common hurt eligibility and damage
+  initiation outside this source-only account.
 - `animation_group_mask` is derived from `sprite_state`; named group constants
   describe individual families, but composite eligibility masks still require all consumers.
 - `PlayerAdvanceToNextLevel` and relocation use some explicit map-zero queries even
@@ -292,11 +302,11 @@ Matching qualifications and uncertain historical spellings are not extra bug cla
 
 ## Port notes
 
-- **Platform layer:** `PlayerStartFalling` waits on `WAIT_FOR_VBLANK_FLAG` after its
+- **Platform layer:** `PlayerStartFalling` waits on `gTerrainPriorityUpdatePending` after its
   terrain-priority request; `PlayerRelocateToPartnerOrNextLevel` changes VDP/blanking
   state. [INFERENCE] Split logical state changes from renderer/audio notifications
   and eliminate these blocking waits inside native simulation.
-- **Shared-screen coupling:** `ProcessPlayers` skips the owner of `P1_MENU_OPEN`;
+- **Shared-screen coupling:** `ProcessPlayers` skips the owner of `gPlayerInventoryOpen`;
   `PlayerApplyTerrainDestination` rejects final-level movement that requires separate
   views. Death/fall relocation also coordinates the partner. [INFERENCE] Online
   co-op needs explicit per-player suspension and shared transition policies rather

@@ -10,7 +10,7 @@ C evidence is `src/core/startup_and_main_loop.c` and
 `include/ram_system.h`; assembly evidence is `src/asm/startup.s` and
 `src/asm/interrupts.s`. All source paths are repository-root paths in the
 current subsystem layout. Function names are the source/canonical identifiers.
-The old README status is historical; `docs/STATUS.md` is the newer progress record.
+`README.md` summarizes current progress; `docs/STATUS.md` retains its history.
 
 ## Files and roles
 
@@ -28,25 +28,25 @@ The old README status is historical; `docs/STATUS.md` is the newer progress reco
 
 ## Key RAM state
 
-- `TIME_COUNTER` is an unsigned short incremented by normal `HandleVBlank`.
-- `INPUT_READING_FLAG_LO` aliases its low byte on the big-endian target; it is
+- `gFrameCounter` is an unsigned short incremented by normal `HandleVBlank`.
+- `gFrameCounterLowByte` aliases its low byte on the big-endian target; it is
   not a separately advanced input clock (`ram_system.h`).
 - `gVBlankFunc` replaces the ordinary VBlank body when non-null.
-- `SKIP_VBLANK_FLAG` and `SKIP_HBLANK_FLAG` are misleadingly named: setting them
-  enables the corresponding gameplay display work in these C handlers.
-- `VBLANK_FLAG_2` through `_8` select mutually prioritized display/audio tasks;
-  their names do not establish a general-purpose bitfield or queue.
-- `WAIT_FOR_VBLANK_FLAG` requests the special map-priority service path.
-- `P1_PAD_INPUT` and `P2_PAD_INPUT` are physical-controller samples.
-- `P1_PROCESSED_INPUT[]` and `P1_PREV_PROCESSED_INPUT[]` are logical-player inputs.
+- `gVBlankGraphicsEnabled` and `gHBlankGraphicsEnabled` enable the corresponding
+  gameplay display work in these C handlers.
+- Sprite-upload, graphics-pause, inventory-phase, HUD-redraw, and music-selection
+  variables are separate shared controls, not a general-purpose bitfield or queue.
+- `gTerrainPriorityUpdatePending` requests the special map-priority service path.
+- `gController1RawInput` and `gController2RawInput` are physical-controller samples.
+- `gPlayerProcessedInput[]` and `gPlayerPreviousProcessedInput[]` are logical-player inputs.
 - `gPlayer2PreviousProcessedInput` aliases the second previous-input byte.
 - `gControllerPortsSwapped` swaps controllers, not the player records.
 - `gControllerButtonsAcSwapped` exchanges the `0x20` and `0x40` button bits.
 - `gMode2RegSoftcopy` mirrors VDP mode state; bit `0x40` gates display-sensitive waits.
-- `HBLANK_FLAG_1` aliases `P1_MENU_OPEN[1]`, not independent interrupt storage.
-- `SPLIT_SCREEN`, current camera coordinates, and target camera coordinates live
+- `gPlayer2InventoryOpen` aliases `gPlayerInventoryOpen[1]`, not independent interrupt storage.
+- `gSplitScreenEnabled`, current camera coordinates, and target camera coordinates live
   in `ram_camera.h`; menu-open bytes live in `ram_ui.h`.
-- `PREGEN_RANDOMS[59]`, `gRandomCacheIndex`, and `gRNGState` are shared RNG state.
+- `gCachedRandomValues[59]`, `gRandomCacheIndex`, and `gRNGState` are shared RNG state.
 
 ## Reset and boot flow
 
@@ -81,7 +81,7 @@ pointer, and jumps to `_start`; it is not merely a return to the title screen.
 7. Upload level, inventory-label, and HUD graphics and draw the starfield plane.
 8. Load gameplay palettes, set up players/game state, and position the first level.
 9. Set the camera flag, select initial shared/split mode, and reseed RNG using
-   `GetRandomNumber() | ((long)TIME_COUNTER << 16)` before generating level seeds.
+   `GetRandomNumber() | ((long)gFrameCounter << 16)` before generating level seeds.
 10. Draw HUD and initialize elevators, inventory, and earthlings.
 11. Sample input, publish camera coordinates, enable display and gameplay handlers.
 
@@ -91,7 +91,7 @@ between two palette-animation tables according to level `< 26` versus `>= 26`.
 
 ## Normal frame scheduler
 
-The permanent loop snapshots `TIME_COUNTER` at the start of each iteration.
+The permanent loop snapshots `gFrameCounter` at the start of each iteration.
 Its local `frame` counter selects three different work groups:
 
 - Odd iterations: `UpdateScreenSplitMode`, `UpdateCameraFollowing`, `ProcessLand`,
@@ -103,7 +103,7 @@ Its local `frame` counter selects three different work groups:
 - Both even cases then run movement, per-viewport sprites, animation motion,
   and speech/dialogue updates.
 
-Finally it repeatedly calls `GetRandomNumber` until `TIME_COUNTER` changes.
+Finally it repeatedly calls `GetRandomNumber` until `gFrameCounter` changes.
 This is observable RNG consumption during spare CPU time, not an inert wait.
 [INFERENCE] A native fixed-step loop cannot reproduce the original random stream
 merely by keeping the initial seed and the visible update-call order.
@@ -121,17 +121,19 @@ window/plane and parallax scrolling.
 
 Display-service precedence inside that branch is:
 
-1. `WAIT_FOR_VBLANK_FLAG`: `MapClearTilePriorityNearPlayer`, then frame increment.
-2. If `_3` is clear, `_4`: inventory redraw service.
-3. Otherwise `_2`: sprite loading and viewport-chain selection.
-4. Otherwise `_5`: lives tiles and complete HUD redraw.
+1. `gTerrainPriorityUpdatePending`: `MapClearTilePriorityNearPlayer`, then frame increment.
+2. If `gVBlankGraphicsPaused` is clear, `gInventoryRedrawPhase`: inventory redraw service.
+3. Otherwise `gSpriteGraphicsUploadPending`: sprite loading and viewport-chain selection.
+4. Otherwise `gHudRedrawPending`: lives tiles and complete HUD redraw.
 5. Otherwise font-bank animation; if idle, palette, camera rows/columns, and
    both health bars; alternate player sprite hiding each such call.
 
-Outside the display branch, unless `_3` blocks it without `_6`, VBlank changes
-music-template bank if `_7 != _8`, otherwise runs `MassiveRoutine`, then reads
-one physical controller according to the frame-counter low-bit alias.
-The ordinary body increments `TIME_COUNTER` even when gameplay display work is off.
+Outside the display branch, unless `gVBlankGraphicsPaused` blocks it without
+`gVBlankAudioInputOverride`, VBlank changes music-template bank if
+`gRequestedMusicSelection != gCurrentMusicSelection`, otherwise runs
+`MusicUpdateSequencer`, then reads one physical controller according to the
+frame-counter low-bit alias.
+The ordinary body increments `gFrameCounter` even when gameplay display work is off.
 
 `HandleHBlank` selects the lower-view sprite chain when enabled on gameplay levels.
 It switches to the lower menu window or plane A base/scrolling as appropriate,
@@ -169,13 +171,11 @@ or gate display work around tilemap/HUD changes and then restore it.
 ## ORIGINAL BUG list
 
 - `FurtherInitialisation`: `frame` is read uninitialized. The source comment
-  observes the allocated register previously held `TIME_COUNTER << 16`; any
+  observes the allocated register previously held `gFrameCounter << 16`; any
   historical reliance on that residue is explicitly [INFERENCE].
 
 ## Open questions
 
-- Several numbered VBlank flags remain named by location rather than recovered
-  intent; their observed precedence above is firmer than a semantic rename.
 - The source does not define an authoritative real-time duration for a simulation
   tick independent of video mode; a port must choose one explicitly.
 - [INFERENCE] The exact idle-wait random-call count is hardware/load dependent;
@@ -186,7 +186,7 @@ or gate display work around tilemap/HUD changes and then restore it.
 
 - Platform layer: replace reset, SR masks, exception entry, VDP accesses, Z80 bus,
   and controller polling; retain game initialization ordering as an explicit flow.
-- Shared-screen coupling: global pause, `SPLIT_SCREEN`, window aliases, and
+- Shared-screen coupling: global pause, `gSplitScreenEnabled`, window aliases, and
   VBlank service flags must not become network-wide menu locks. Per-player menus
   need separate UI state while partner/world simulation continues.
 - Determinism: use an explicit fixed simulation schedule, versioned RNG algorithm,

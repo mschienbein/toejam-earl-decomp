@@ -29,26 +29,26 @@ transient-cleanup primitives. Identifiers refer to source functions/shared state
 
 ## Key state and storage aliases
 
-`P1_MENU_OPEN[player]` is not just boolean: observed values are ordinary inventory
+`gPlayerInventoryOpen[player]` is not just boolean: observed values are ordinary inventory
 `1`, mail order `2`, and identification `3`; zero is closed.
-Its second byte also has the scalar `HBLANK_FLAG_1` name (`ram_ui.h`).
+Its second byte also has the scalar `gPlayer2InventoryOpen` name (`ram_ui.h`).
 Separate arrays track scroll row, selected row/column, and action-banner mode.
-`gInventoryRedrawPlayer` plus `VBLANK_FLAG_4` coordinate one shared redraw service.
+`gInventoryRedrawPlayer` plus `gInventoryRedrawPhase` coordinate one shared redraw service.
 `gInventorySavedCamera*` hold temporary camera suspension state.
 `gInventoryLabelsSuppressed` supports the randomizer animation.
 
 The two selectors alias entity records 26 and 33; six present entities follow
 each at 27..32 and 34..39. Their scalar flag names alias `behavior_flags`, not
 new allocations. This shares storage with the expanded level-26 entity pool.
-`TEXT_SPRITE_DATA_START[][1888]` stores two writable font banks.
-`P1_TEXT_WIGGLE`, `P1_MENU_COUNTER`, and `VHBLANK_FLAG_2` control font alternation.
+`gTextFontBuffers[][1888]` stores two writable font banks.
+`gTextFontBank`, `gTextFontAnimationTick`, and `gTextFontAnimationEnabled` control font alternation.
 Mailbox items/prices have three entries per player.
-`gMenuCursorObjId` and `gMenuHeaderObjId` are dynamic object handles.
+`gMenuCursorEntity` and `gMenuHeaderEntity` are dynamic object handles.
 
 HUD uses fixed hardware sprite records: level digits 11..14, health bars 15..18,
 lives 19..20, and action icons 21..22 (`hud_*` files).
 `gHudDisplayedHealth` is distinct from actual health, and death checks read both.
-`PLAYER_INDICATOR`, rank, points, lives, bucks, powerups, and restore-health state
+`gPlayerSelection`, rank, points, lives, bucks, powerups, and restore-health state
 come from player/effect RAM interfaces, not a self-contained UI model.
 
 ## Inventory open/redraw/close state machine
@@ -61,7 +61,7 @@ The loop waits until interrupt-time service reaches zero; it publishes the
 menu-open value once background phases have progressed far enough.
 In shared mode it repurposes the secondary camera origin as `(0,112)`.
 
-`InventoryServiceRedrawPhase` decrements `_4` after each service:
+`InventoryServiceRedrawPhase` decrements `gInventoryRedrawPhase` after each service:
 
 - Phase 4 and 3 upload seven rows each to the requested half of the window map.
 - Phase 2 forces black text background, draws stats/banner, then HUD.
@@ -132,7 +132,7 @@ This is a gameplay mutation presented through a blocking animation.
 `TextCopyFontBanksToRam` copies two 1888-byte source banks into consecutive RAM.
 `TextAnimateFontBanks(rate)` swaps and DMA-uploads a 944-word bank at the selected
 rate. Its nonzero return consumes core's ordinary graphics-service slot.
-`ClearVHBlankFlag2` leaves animation enabled while either menu is open.
+`DisableTextFontAnimationIfMenusClosed` leaves animation enabled while either menu is open.
 `ForceTextBackgroundColorToBlack` selects black or dark blue in one CRAM entry.
 
 `TextMapCharacterToGlyph` maps case-insensitive letters, digits, punctuation,
@@ -170,9 +170,9 @@ refreshes health graphics, and requests combined HUD redraw when appropriate.
 `SetupTheMainGame` gives active players level one, three lives, three bucks,
 base health, no powerup, and fresh HUD resources.
 `PlayerResetRankAndResources` has separate solo/two-player reset resource rules.
-`HealthAndLivesChecks` waits for displayed as well as actual health to reach zero
+`PlayerUpdateHealthAndLives` waits for displayed as well as actual health to reach zero
 before death, decrements lives subject to its observed last-life branch, handles
-saved health during swimming, drains health according to `TIME_COUNTER & 12`,
+saved health during swimming, drains health according to `gFrameCounter & 12`,
 and invokes promotion. Presentation state therefore affects gameplay timing.
 `HudInitializeHealthBar` is called here but its body is absent from this tree.
 
@@ -230,8 +230,8 @@ telephones. Its cross-subsystem cleanup role must not be mistaken for window-onl
 - Platform layer: replace `InventoryServiceRedrawPhase` tilemap/CRAM work,
   sprite DMA, controller presence probes, and busy waits with UI services.
 - Shared-screen coupling: replace the blocking `CheckBButton` and `GamePaused`
-  loops with per-player UI state machines. Preserve `P1_MENU_OPEN` and
-  `SPLIT_SCREEN` action policy explicitly while partner simulation continues.
+  loops with per-player UI state machines. Preserve `gPlayerInventoryOpen` and
+  `gSplitScreenEnabled` action policy explicitly while partner simulation continues.
 - Determinism: separate `DrawMenuWindowFrame`/glyph cosmetic RNG from simulation,
   preserve `SetMailOrderPresents` reseeding, and move death rules out of HUD animation.
 - Content tables: externalize menu entries, labels, prices/exclusions, glyph maps,

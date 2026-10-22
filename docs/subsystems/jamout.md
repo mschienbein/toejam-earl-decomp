@@ -38,7 +38,7 @@ See `docs/subsystems/audio.md` for soundtrack implementation and
 - `gMusicAlternateTemplateBankEnabled` is shared with the music driver.
 - `gSharedTileSpriteCopiesEnabled` is renderer-global, not Jam-private allocation.
 - `gVBlankFunc` replaces ordinary core VBlank while this mode is active.
-- `gMusicUnknownE488` is the music event flag consumed by shared scene cadence.
+- `gMusicAnimationEvent` is the music event flag consumed by shared scene cadence.
 
 ## Entry and exit flow
 
@@ -71,14 +71,14 @@ releases copies, disables shared-copy mode, and releases flagged scene entities.
 ## Standard VBlank controller and audio flow
 
 `JamOutVBlank` changes song templates when the requested/loaded selections differ;
-otherwise it services `MassiveRoutine`. It increments `TIME_COUNTER` itself.
+otherwise it services `MusicUpdateSequencer`. It increments `gFrameCounter` itself.
 It alternately polls one logical player per frame-counter parity, respecting
 physical-port swap. Any change of the complete input byte copies the whole
 current input into audio and animation pending words.
 This is not a per-button rising-edge mask: a changed combination can include
 other still-held buttons.
 
-When `PLAYER_INDICATOR == 1`, it swaps audio route words and temporarily increments
+When `gPlayerSelection == 1`, it swaps audio route words and temporarily increments
 the frame counter again for routing parity, then decrements it before return.
 The final net counter increment remains one.
 Animation words stay associated with player/character, not swapped audio route.
@@ -94,8 +94,11 @@ Route one requests PCM:
 Route two requests FM channel templates 22/20/19 for A/B/C and 21 for direction
 or Start (`fm_effects.h`). A can also set the no-song event flag.
 Each serviced route clears its pending word.
-Multiple set bits issue multiple requests in source order; full admission and
-replacement behavior depends on audio APIs whose bodies are absent here.
+Multiple set bits issue multiple requests in source order. The matched
+`PlaySound`/`PlaySoundEffect` wrappers accept idle requests or requests at least as
+high-priority as the current effect; later accepted requests can replace pending
+values before the sequencer services them. Audio gives pending PCM precedence
+over indexed PSG (`docs/subsystems/audio.md`).
 
 ## Random-sample VBlank
 
@@ -144,8 +147,8 @@ Only viewport zero is explicitly allocated by this helper.
 `JamOutSynchronizeEntityCopies` walks 40 records. For active shared-tile objects,
 it copies the parent's frame, readiness, current frame pointer, and each hardware
 piece's size/tile fields. Position remains each copy's own layout position.
-The caller of this helper is not represented in the supplied queue/preparation
-bodies; the global shared-copy flag is evidence of the intended integration,
+The caller of this helper is not represented in the still-absent high-level
+`UpdateAndQueueEntitySprites` body; the global shared-copy flag is evidence of the intended integration,
 not a reconstructed hidden call sequence.
 `JamOutReleaseCharacterCopies` frees nonzero handles but does not explicitly
 zero the handle arrays in the shown body.
@@ -200,9 +203,8 @@ explicit matching qualification, not an original-bug label or design requirement
 
 - Allocation failure of a lead before later copies is not covered by a marked
   bug or a documented resource guarantee in the shown constructor.
-- Missing queue/preparation bodies leave the shared-copy helper's callsite open.
-- Exact effect admission when multiple simultaneous bits request PCM/FM is
-  delegated to absent `PlaySound`/`PlaySoundEffect` bodies.
+- The missing `UpdateAndQueueEntitySprites` body leaves the shared-copy helper's
+  callsite and full animation-advance ordering open.
 - Some cycle/input words are not explicitly reset in `StartJamOut`; persistent
   cross-entry behavior should be derived from full callers before changing it.
 

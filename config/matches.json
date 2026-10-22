@@ -251,8 +251,8 @@
    "name": "ClearCameraTileRow",
    "size": 106,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -260,8 +260,8 @@
    "name": "GetLevelMetatileTile",
    "size": 94,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -269,8 +269,8 @@
    "name": "GetOverlayMetatileTile",
    "size": 98,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -278,8 +278,8 @@
    "name": "BuildCameraTileRow",
    "size": 764,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -287,8 +287,8 @@
    "name": "UpdateCameraY",
    "size": 378,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -296,8 +296,8 @@
    "name": "ClearCameraTileColumn",
    "size": 96,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -305,8 +305,8 @@
    "name": "BuildCameraTileColumn",
    "size": 772,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -314,8 +314,8 @@
    "name": "UpdateCameraX",
    "size": 350,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -323,8 +323,8 @@
    "name": "RedrawCameraTileRows",
    "size": 160,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -332,8 +332,8 @@
    "name": "SetCameraViewOrigin",
    "size": 242,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -341,8 +341,8 @@
    "name": "BuildPendingCameraTiles",
    "size": 206,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -350,8 +350,8 @@
    "name": "TryUpdateCameraY",
    "size": 104,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -359,8 +359,8 @@
    "name": "TryUpdateCameraX",
    "size": 104,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -368,8 +368,8 @@
    "name": "MoveCameraUp",
    "size": 172,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -377,8 +377,8 @@
    "name": "MoveCameraDown",
    "size": 202,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -386,8 +386,8 @@
    "name": "MoveCameraLeft",
    "size": 172,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -395,8 +395,8 @@
    "name": "MoveCameraRight",
    "size": 172,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -413,8 +413,8 @@
    "name": "GetPlayerCameraVelocity",
    "size": 636,
    "source": "src/camera/camera_follow.c",
-   "source_sha256": "85059eb7464497bbfb5eee364a5d2e05ae69345784e44ba26387d9d311a28a79",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "5e59940a1154ada47645eeccb35eaf0d409901d9e15f235e8eb5911c65c907e7",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -422,8 +422,8 @@
    "name": "UpdateCameraFollowing",
    "size": 1396,
    "source": "src/camera/camera_follow.c",
-   "source_sha256": "85059eb7464497bbfb5eee364a5d2e05ae69345784e44ba26387d9d311a28a79",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "5e59940a1154ada47645eeccb35eaf0d409901d9e15f235e8eb5911c65c907e7",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -754,126 +754,135 @@
    "address": "0x0077d8",
    "name": "MapChooseBackgroundTileBucket",
    "size": 44,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x007804",
    "name": "MapDrawFixedBackgroundDecorations",
    "size": 164,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x0078a8",
    "name": "MapDrawBackgroundAndTerrain",
    "size": 636,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x007b24",
    "name": "MapCoverBlockContainsTerrain",
    "size": 194,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x007be6",
    "name": "DisplayMap",
    "size": 876,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x007f52",
    "name": "LoadMapIntoVRAM",
    "size": 388,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x0080d6",
    "name": "LoadLevel1Tiles",
    "size": 134,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00815c",
    "name": "MapAppendCoverBlockSprites",
    "size": 214,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x008232",
    "name": "MapInitializeScreenSprites",
    "size": 292,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x008356",
    "name": "PlayerHasOddElevatorState",
    "size": 58,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x008390",
    "name": "Map_DrawPlayer",
    "size": 316,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x0084cc",
    "name": "Map_DrawShipPiece",
    "size": 446,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00868a",
    "name": "DrawMapCharacters",
    "size": 144,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00871a",
+   "name": "MapUploadCoverAnimationFrame",
+   "size": 284,
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x008836",
    "name": "DrawGameMap",
    "size": 812,
-   "source": "src/map/map_drawing_controller.c",
-   "source_sha256": "df521735ec2d494cd5d0a3c063cd60473fdc0a82e6b647d8da57f978a720cdb1",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -1213,153 +1222,162 @@
    "address": "0x00aa3a",
    "name": "HudLoadLevelNumberSprites",
    "size": 356,
-   "source": "src/ui/hud_initialization.c",
-   "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00ab9e",
    "name": "HudPositionLevelNumberSprites",
    "size": 268,
-   "source": "src/ui/hud_initialization.c",
-   "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00acaa",
    "name": "HudLoadActionIconSprite",
    "size": 192,
-   "source": "src/ui/hud_initialization.c",
-   "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00ad6a",
    "name": "HudPositionActionIconSprite",
    "size": 262,
-   "source": "src/ui/hud_initialization.c",
-   "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00ae70",
    "name": "PlayerGetMaximumHealth",
    "size": 40,
-   "source": "src/ui/hud_initialization.c",
-   "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00ae98",
+   "name": "HudInitializeHealthBar",
+   "size": 532,
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00b0ac",
    "name": "HudPositionHealthBarSprites",
    "size": 192,
-   "source": "src/ui/hud_health_update.c",
-   "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00b16c",
    "name": "HudAnimateHealthBar",
    "size": 600,
-   "source": "src/ui/hud_health_update.c",
-   "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00b3c4",
    "name": "HudLoadLivesSpriteTiles",
    "size": 428,
-   "source": "src/ui/hud_health_update.c",
-   "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00b570",
    "name": "HudPositionLivesSprite",
    "size": 186,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00b62a",
    "name": "HudDrawRankLabels",
    "size": 232,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00b72e",
    "name": "DrawHUD",
    "size": 330,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00b878",
    "name": "GetScoreForPromo",
    "size": 54,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00b8ae",
    "name": "CheckPromotionScore",
    "size": 142,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00b93c",
    "name": "HudHidePlayerSprites",
    "size": 326,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00ba82",
    "name": "PlayerResetRankAndResources",
    "size": 246,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00bb78",
    "name": "SetupTheMainGame",
    "size": 176,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00bc28",
    "name": "PlayerUpdateHealthAndLives",
    "size": 400,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -1411,81 +1429,99 @@
    "address": "0x00c150",
    "name": "UpdateAttachedEntityPosition",
    "size": 210,
-   "source": "src/sprites/entity_sprite_order.c",
-   "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00c222",
    "name": "PositionEntitySprites",
    "size": 696,
-   "source": "src/sprites/entity_sprite_order.c",
-   "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00c4da",
    "name": "BuildViewportSpriteLinks",
    "size": 438,
-   "source": "src/sprites/entity_sprite_order.c",
-   "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00c690",
    "name": "SortEntitiesForSpriteDraw",
    "size": 248,
-   "source": "src/sprites/entity_sprite_order.c",
-   "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00c788",
+   "name": "QueueSpritePieceTiles",
+   "size": 178,
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00c83a",
    "name": "ClipSpritePixelsBelowCutoff",
    "size": 146,
-   "source": "src/sprites/sprite_frame_preparation.c",
-   "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00c8cc",
    "name": "ClearSpriteMaskPixels",
    "size": 52,
-   "source": "src/sprites/sprite_frame_preparation.c",
-   "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00c900",
    "name": "PrepareEntitySpriteFrame",
    "size": 508,
-   "source": "src/sprites/sprite_frame_preparation.c",
-   "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00cafc",
    "name": "AppendSpriteTilesToBuffer",
    "size": 56,
-   "source": "src/sprites/sprite_frame_preparation.c",
-   "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00cb34",
    "name": "ProcessEntityAnimationMotion",
    "size": 302,
-   "source": "src/sprites/sprite_frame_preparation.c",
-   "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00cc62",
+   "name": "UpdateAndQueueEntitySprites",
+   "size": 512,
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -1745,8 +1781,8 @@
    "name": "PlayerApplyTerrainDestination",
    "size": 616,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -1754,8 +1790,8 @@
    "name": "StopPlayer",
    "size": 30,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -1763,8 +1799,8 @@
    "name": "Player1ProcessTerrainMotion",
    "size": 16,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -1772,8 +1808,8 @@
    "name": "Player2ProcessTerrainMotion",
    "size": 18,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -1781,8 +1817,8 @@
    "name": "ProcessMovement",
    "size": 812,
    "source": "src/player/process_movement.c",
-   "source_sha256": "f253146e41ebb05a22033d7f83018ac3049417f53e708e7241dbaf2d7508d636",
-   "checkpoint": "c025-structs-layout-permuter-r2"
+   "source_sha256": "5badcc58ccdee679569fe944f5cc730a99e41e4c929e9564ce00ea18392eabd3",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -1804,21 +1840,30 @@
   },
   {
    "version": "rev00",
+   "address": "0x00edce",
+   "name": "SpriteChecks",
+   "size": 542,
+   "source": "src/player/sprite_checks_and_movement.c",
+   "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev00",
    "address": "0x00efec",
    "name": "PlayerChooseDirectionalMovement",
    "size": 630,
-   "source": "src/player/sprite_movement.c",
-   "source_sha256": "0a03f211d78d4d6fc03b118e93f85b03110f2b5134ba4570ce41bf3cb1166a50",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/sprite_checks_and_movement.c",
+   "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x00f262",
    "name": "PlayerApplyDirectionalMovementAnimation",
    "size": 782,
-   "source": "src/player/sprite_movement.c",
-   "source_sha256": "0a03f211d78d4d6fc03b118e93f85b03110f2b5134ba4570ce41bf3cb1166a50",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/sprite_checks_and_movement.c",
+   "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -3121,99 +3166,108 @@
    "address": "0x01b068",
    "name": "PlayerCanReceiveEarthlingEffect",
    "size": 78,
-   "source": "src/player/earthling_player_eligibility.c",
-   "source_sha256": "2ccb498d1d028bdaa6844bfedccced374d393942e9f5b6a1a8bc3bcf1a676b42",
-   "checkpoint": "c025-structs-layout-permuter-r2"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01b0b6",
+   "name": "Player_Youch",
+   "size": 536,
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01b2d6",
    "name": "Player_Squish",
    "size": 202,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01b3a0",
    "name": "HulaAbility",
    "size": 476,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01b588",
    "name": "EarthlingStartHorizontalAttack",
    "size": 98,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01b5ea",
    "name": "CupidAbility",
    "size": 282,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01b704",
    "name": "EarthlingUpdateBouncingDamageState",
    "size": 180,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01b7b8",
    "name": "WhirlWindAbility",
    "size": 192,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01b878",
    "name": "PlayerUpdateWhirlwindAndRecovery",
    "size": 668,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01bb20",
    "name": "EarthlingCheckDecoyAttackRange",
    "size": 164,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01bbc4",
    "name": "ChickenAbility",
    "size": 284,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01bce0",
    "name": "AI_BoogieTouch",
    "size": 174,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -3487,48 +3541,66 @@
   },
   {
    "version": "rev00",
+   "address": "0x01ded8",
+   "name": "QueueSpeechTextTiles",
+   "size": 248,
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev00",
    "address": "0x01dfd0",
    "name": "SetNextSpeechLifetime",
    "size": 12,
-   "source": "src/speech/speech_core.c",
-   "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01dfdc",
    "name": "GenerateSpeech",
    "size": 678,
-   "source": "src/speech/speech_core.c",
-   "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01e282",
    "name": "ClearSpeechBubblesAndReplies",
    "size": 78,
-   "source": "src/speech/speech_core.c",
-   "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01e2d0",
    "name": "HasSpeakerSpeech",
    "size": 124,
-   "source": "src/speech/speech_core.c",
-   "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01e34c",
+   "name": "StartDialogue",
+   "size": 342,
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01e4a2",
    "name": "UpdateSpeechAndDialogue",
    "size": 594,
-   "source": "src/speech/speech_update.c",
-   "source_sha256": "ff86d0add7940123a63fe6586fcf7ae7c0c65223c7f2bdd64050f58e13a059b6",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -3670,117 +3742,126 @@
    "address": "0x01fa7c",
    "name": "FillSpriteOpaquePixels",
    "size": 76,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01fac8",
    "name": "AnimateShipScreenBackground",
    "size": 280,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01fbe0",
    "name": "RestoreGameplayGraphics",
    "size": 256,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01fce0",
    "name": "AnimateTransitionBackground",
    "size": 272,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x01fdf0",
    "name": "PlayShipCompletionSequence",
    "size": 794,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x02010a",
    "name": "InitializeShipScreenTilemapAndPalettes",
    "size": 398,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x020298",
    "name": "ShowShipPieceName",
    "size": 222,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x020456",
    "name": "ShowMissingShipPieceSummary",
    "size": 282,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x020640",
    "name": "AnimateShipScreenPalette",
    "size": 392,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x0207c8",
    "name": "WaitForShipScreenAcknowledgement",
    "size": 164,
-   "source": "src/ship/screen_acknowledgement.c",
-   "source_sha256": "d0119614f9e9b353da492573206a45eff51210e504e31a681e8996ec0cd48868",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev00",
+   "address": "0x02086c",
+   "name": "ShowShipPieces",
+   "size": 938,
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x020c16",
    "name": "ShipPieceAbility",
    "size": 168,
-   "source": "src/ship/piece_collection.c",
-   "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x020cc6",
    "name": "ShipUpdatePendingPieceIndicator",
    "size": 236,
-   "source": "src/ship/piece_collection.c",
-   "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
    "address": "0x020db2",
    "name": "ShowRandomUncollectedShipPiece",
    "size": 70,
-   "source": "src/ship/piece_collection.c",
-   "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -3905,8 +3986,8 @@
    "name": "EarthlingSpawnMoleEffect",
    "size": 170,
    "source": "src/earthlings/mole_santa.c",
-   "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -3914,8 +3995,8 @@
    "name": "ReleaseFinishedMoleEffectsAndStolenPresents",
    "size": 146,
    "source": "src/earthlings/mole_santa.c",
-   "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -3923,8 +4004,8 @@
    "name": "SantaLogic",
    "size": 1032,
    "source": "src/earthlings/mole_santa.c",
-   "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -3932,8 +4013,8 @@
    "name": "DropPresentsAbility",
    "size": 236,
    "source": "src/earthlings/mole_santa.c",
-   "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev00",
@@ -5543,8 +5624,8 @@
    "name": "ClearCameraTileRow",
    "size": 106,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5552,8 +5633,8 @@
    "name": "GetLevelMetatileTile",
    "size": 94,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5561,8 +5642,8 @@
    "name": "GetOverlayMetatileTile",
    "size": 98,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5570,8 +5651,8 @@
    "name": "BuildCameraTileRow",
    "size": 764,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5579,8 +5660,8 @@
    "name": "UpdateCameraY",
    "size": 378,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5588,8 +5669,8 @@
    "name": "ClearCameraTileColumn",
    "size": 96,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5597,8 +5678,8 @@
    "name": "BuildCameraTileColumn",
    "size": 772,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5606,8 +5687,8 @@
    "name": "UpdateCameraX",
    "size": 350,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5615,8 +5696,8 @@
    "name": "RedrawCameraTileRows",
    "size": 160,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5624,8 +5705,8 @@
    "name": "SetCameraViewOrigin",
    "size": 242,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5633,8 +5714,8 @@
    "name": "BuildPendingCameraTiles",
    "size": 206,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5642,8 +5723,8 @@
    "name": "TryUpdateCameraY",
    "size": 104,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5651,8 +5732,8 @@
    "name": "TryUpdateCameraX",
    "size": 104,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5660,8 +5741,8 @@
    "name": "MoveCameraUp",
    "size": 172,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5669,8 +5750,8 @@
    "name": "MoveCameraDown",
    "size": 202,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5678,8 +5759,8 @@
    "name": "MoveCameraLeft",
    "size": 172,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5687,8 +5768,8 @@
    "name": "MoveCameraRight",
    "size": 172,
    "source": "src/camera/camera_tiles_and_scroll.c",
-   "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5705,8 +5786,8 @@
    "name": "GetPlayerCameraVelocity",
    "size": 636,
    "source": "src/camera/camera_follow.c",
-   "source_sha256": "85059eb7464497bbfb5eee364a5d2e05ae69345784e44ba26387d9d311a28a79",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "5e59940a1154ada47645eeccb35eaf0d409901d9e15f235e8eb5911c65c907e7",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -5714,8 +5795,8 @@
    "name": "UpdateCameraFollowing",
    "size": 1396,
    "source": "src/camera/camera_follow.c",
-   "source_sha256": "85059eb7464497bbfb5eee364a5d2e05ae69345784e44ba26387d9d311a28a79",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "5e59940a1154ada47645eeccb35eaf0d409901d9e15f235e8eb5911c65c907e7",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -6046,126 +6127,135 @@
    "address": "0x0077d8",
    "name": "MapChooseBackgroundTileBucket",
    "size": 44,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x007804",
    "name": "MapDrawFixedBackgroundDecorations",
    "size": 164,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x0078a8",
    "name": "MapDrawBackgroundAndTerrain",
    "size": 636,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x007b24",
    "name": "MapCoverBlockContainsTerrain",
    "size": 194,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x007be6",
    "name": "DisplayMap",
    "size": 876,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x007f52",
    "name": "LoadMapIntoVRAM",
    "size": 388,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x0080d6",
    "name": "LoadLevel1Tiles",
    "size": 134,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00815c",
    "name": "MapAppendCoverBlockSprites",
    "size": 214,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x008232",
    "name": "MapInitializeScreenSprites",
    "size": 292,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x008356",
    "name": "PlayerHasOddElevatorState",
    "size": 58,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x008390",
    "name": "Map_DrawPlayer",
    "size": 316,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x0084cc",
    "name": "Map_DrawShipPiece",
    "size": 446,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00868a",
    "name": "DrawMapCharacters",
    "size": 144,
-   "source": "src/map/map_drawing.c",
-   "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00871a",
+   "name": "MapUploadCoverAnimationFrame",
+   "size": 284,
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x008836",
    "name": "DrawGameMap",
    "size": 828,
-   "source": "src/map/map_drawing_controller.c",
-   "source_sha256": "df521735ec2d494cd5d0a3c063cd60473fdc0a82e6b647d8da57f978a720cdb1",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -6505,153 +6595,162 @@
    "address": "0x00aa5a",
    "name": "HudLoadLevelNumberSprites",
    "size": 356,
-   "source": "src/ui/hud_initialization.c",
-   "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00abbe",
    "name": "HudPositionLevelNumberSprites",
    "size": 268,
-   "source": "src/ui/hud_initialization.c",
-   "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00acca",
    "name": "HudLoadActionIconSprite",
    "size": 192,
-   "source": "src/ui/hud_initialization.c",
-   "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00ad8a",
    "name": "HudPositionActionIconSprite",
    "size": 262,
-   "source": "src/ui/hud_initialization.c",
-   "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00ae90",
    "name": "PlayerGetMaximumHealth",
    "size": 40,
-   "source": "src/ui/hud_initialization.c",
-   "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00aeb8",
+   "name": "HudInitializeHealthBar",
+   "size": 532,
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00b0cc",
    "name": "HudPositionHealthBarSprites",
    "size": 192,
-   "source": "src/ui/hud_health_update.c",
-   "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00b18c",
    "name": "HudAnimateHealthBar",
    "size": 600,
-   "source": "src/ui/hud_health_update.c",
-   "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00b3e4",
    "name": "HudLoadLivesSpriteTiles",
    "size": 428,
-   "source": "src/ui/hud_health_update.c",
-   "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00b590",
    "name": "HudPositionLivesSprite",
    "size": 186,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00b64a",
    "name": "HudDrawRankLabels",
    "size": 232,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00b74e",
    "name": "DrawHUD",
    "size": 330,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00b898",
    "name": "GetScoreForPromo",
    "size": 54,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00b8ce",
    "name": "CheckPromotionScore",
    "size": 142,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00b95c",
    "name": "HudHidePlayerSprites",
    "size": 326,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00baa2",
    "name": "PlayerResetRankAndResources",
    "size": 246,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00bb98",
    "name": "SetupTheMainGame",
    "size": 176,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00bc48",
    "name": "PlayerUpdateHealthAndLives",
    "size": 400,
-   "source": "src/ui/hud_status.c",
-   "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -6703,81 +6802,99 @@
    "address": "0x00c170",
    "name": "UpdateAttachedEntityPosition",
    "size": 210,
-   "source": "src/sprites/entity_sprite_order.c",
-   "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00c242",
    "name": "PositionEntitySprites",
    "size": 696,
-   "source": "src/sprites/entity_sprite_order.c",
-   "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00c4fa",
    "name": "BuildViewportSpriteLinks",
    "size": 438,
-   "source": "src/sprites/entity_sprite_order.c",
-   "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00c6b0",
    "name": "SortEntitiesForSpriteDraw",
    "size": 248,
-   "source": "src/sprites/entity_sprite_order.c",
-   "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00c7a8",
+   "name": "QueueSpritePieceTiles",
+   "size": 178,
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00c85a",
    "name": "ClipSpritePixelsBelowCutoff",
    "size": 146,
-   "source": "src/sprites/sprite_frame_preparation.c",
-   "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00c8ec",
    "name": "ClearSpriteMaskPixels",
    "size": 52,
-   "source": "src/sprites/sprite_frame_preparation.c",
-   "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00c920",
    "name": "PrepareEntitySpriteFrame",
    "size": 508,
-   "source": "src/sprites/sprite_frame_preparation.c",
-   "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00cb1c",
    "name": "AppendSpriteTilesToBuffer",
    "size": 56,
-   "source": "src/sprites/sprite_frame_preparation.c",
-   "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00cb54",
    "name": "ProcessEntityAnimationMotion",
    "size": 302,
-   "source": "src/sprites/sprite_frame_preparation.c",
-   "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00cc82",
+   "name": "UpdateAndQueueEntitySprites",
+   "size": 512,
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -7037,8 +7154,8 @@
    "name": "PlayerApplyTerrainDestination",
    "size": 616,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -7046,8 +7163,8 @@
    "name": "StopPlayer",
    "size": 30,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -7055,8 +7172,8 @@
    "name": "Player1ProcessTerrainMotion",
    "size": 16,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -7064,8 +7181,8 @@
    "name": "Player2ProcessTerrainMotion",
    "size": 18,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -7073,8 +7190,8 @@
    "name": "ProcessMovement",
    "size": 812,
    "source": "src/player/process_movement.c",
-   "source_sha256": "f253146e41ebb05a22033d7f83018ac3049417f53e708e7241dbaf2d7508d636",
-   "checkpoint": "c025-structs-layout-permuter-r2"
+   "source_sha256": "5badcc58ccdee679569fe944f5cc730a99e41e4c929e9564ce00ea18392eabd3",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -7096,21 +7213,30 @@
   },
   {
    "version": "rev02",
+   "address": "0x00edee",
+   "name": "SpriteChecks",
+   "size": 542,
+   "source": "src/player/sprite_checks_and_movement.c",
+   "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev02",
    "address": "0x00f00c",
    "name": "PlayerChooseDirectionalMovement",
    "size": 630,
-   "source": "src/player/sprite_movement.c",
-   "source_sha256": "0a03f211d78d4d6fc03b118e93f85b03110f2b5134ba4570ce41bf3cb1166a50",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/sprite_checks_and_movement.c",
+   "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x00f282",
    "name": "PlayerApplyDirectionalMovementAnimation",
    "size": 782,
-   "source": "src/player/sprite_movement.c",
-   "source_sha256": "0a03f211d78d4d6fc03b118e93f85b03110f2b5134ba4570ce41bf3cb1166a50",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/sprite_checks_and_movement.c",
+   "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -8413,99 +8539,108 @@
    "address": "0x01b0aa",
    "name": "PlayerCanReceiveEarthlingEffect",
    "size": 78,
-   "source": "src/player/earthling_player_eligibility.c",
-   "source_sha256": "2ccb498d1d028bdaa6844bfedccced374d393942e9f5b6a1a8bc3bcf1a676b42",
-   "checkpoint": "c025-structs-layout-permuter-r2"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01b0f8",
+   "name": "Player_Youch",
+   "size": 536,
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01b318",
    "name": "Player_Squish",
    "size": 202,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01b3e2",
    "name": "HulaAbility",
    "size": 476,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01b5ca",
    "name": "EarthlingStartHorizontalAttack",
    "size": 98,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01b62c",
    "name": "CupidAbility",
    "size": 282,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01b746",
    "name": "EarthlingUpdateBouncingDamageState",
    "size": 180,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01b7fa",
    "name": "WhirlWindAbility",
    "size": 192,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01b8ba",
    "name": "PlayerUpdateWhirlwindAndRecovery",
    "size": 668,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01bb62",
    "name": "EarthlingCheckDecoyAttackRange",
    "size": 164,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01bc06",
    "name": "ChickenAbility",
    "size": 284,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01bd22",
    "name": "AI_BoogieTouch",
    "size": 174,
-   "source": "src/player/contact_cupid_and_touch.c",
-   "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -8779,48 +8914,66 @@
   },
   {
    "version": "rev02",
+   "address": "0x01df1a",
+   "name": "QueueSpeechTextTiles",
+   "size": 248,
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev02",
    "address": "0x01e012",
    "name": "SetNextSpeechLifetime",
    "size": 12,
-   "source": "src/speech/speech_core.c",
-   "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01e01e",
    "name": "GenerateSpeech",
    "size": 678,
-   "source": "src/speech/speech_core.c",
-   "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01e2c4",
    "name": "ClearSpeechBubblesAndReplies",
    "size": 78,
-   "source": "src/speech/speech_core.c",
-   "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01e312",
    "name": "HasSpeakerSpeech",
    "size": 124,
-   "source": "src/speech/speech_core.c",
-   "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01e38e",
+   "name": "StartDialogue",
+   "size": 342,
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01e4e4",
    "name": "UpdateSpeechAndDialogue",
    "size": 594,
-   "source": "src/speech/speech_update.c",
-   "source_sha256": "ff86d0add7940123a63fe6586fcf7ae7c0c65223c7f2bdd64050f58e13a059b6",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -8962,117 +9115,126 @@
    "address": "0x01faf4",
    "name": "FillSpriteOpaquePixels",
    "size": 76,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01fb40",
    "name": "AnimateShipScreenBackground",
    "size": 280,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01fc58",
    "name": "RestoreGameplayGraphics",
    "size": 256,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01fd58",
    "name": "AnimateTransitionBackground",
    "size": 272,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x01fe68",
    "name": "PlayShipCompletionSequence",
    "size": 794,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x020182",
    "name": "InitializeShipScreenTilemapAndPalettes",
    "size": 398,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x020310",
    "name": "ShowShipPieceName",
    "size": 222,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x0204ce",
    "name": "ShowMissingShipPieceSummary",
    "size": 282,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x0206b8",
    "name": "AnimateShipScreenPalette",
    "size": 392,
-   "source": "src/ship/screen_setup.c",
-   "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x020840",
    "name": "WaitForShipScreenAcknowledgement",
    "size": 164,
-   "source": "src/ship/screen_acknowledgement.c",
-   "source_sha256": "d0119614f9e9b353da492573206a45eff51210e504e31a681e8996ec0cd48868",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
+  },
+  {
+   "version": "rev02",
+   "address": "0x0208e4",
+   "name": "ShowShipPieces",
+   "size": 938,
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x020c8e",
    "name": "ShipPieceAbility",
    "size": 168,
-   "source": "src/ship/piece_collection.c",
-   "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x020d3e",
    "name": "ShipUpdatePendingPieceIndicator",
    "size": 236,
-   "source": "src/ship/piece_collection.c",
-   "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
    "address": "0x020e2a",
    "name": "ShowRandomUncollectedShipPiece",
    "size": 70,
-   "source": "src/ship/piece_collection.c",
-   "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
-   "checkpoint": "c026-seven-matches-readability"
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -9197,8 +9359,8 @@
    "name": "EarthlingSpawnMoleEffect",
    "size": 170,
    "source": "src/earthlings/mole_santa.c",
-   "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -9206,8 +9368,8 @@
    "name": "ReleaseFinishedMoleEffectsAndStolenPresents",
    "size": 146,
    "source": "src/earthlings/mole_santa.c",
-   "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -9215,8 +9377,8 @@
    "name": "SantaLogic",
    "size": 1032,
    "source": "src/earthlings/mole_santa.c",
-   "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",
@@ -9224,8 +9386,8 @@
    "name": "DropPresentsAbility",
    "size": 236,
    "source": "src/earthlings/mole_santa.c",
-   "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
-   "checkpoint": "c026-seven-matches-readability"
+   "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+   "checkpoint": "c029-matches-disclosures-r2"
   },
   {
    "version": "rev02",

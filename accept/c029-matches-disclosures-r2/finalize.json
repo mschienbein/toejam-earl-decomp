@@ -1,0 +1,4162 @@
+{
+ "added": [
+  {
+   "address": "0x00871a",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "MapUploadCoverAnimationFrame",
+   "size": 284,
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01b0f8",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "Player_Youch",
+   "size": 536,
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00edee",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "SpriteChecks",
+   "size": 542,
+   "source": "src/player/sprite_checks_and_movement.c",
+   "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0208e4",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "ShowShipPieces",
+   "size": 938,
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01df1a",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "QueueSpeechTextTiles",
+   "size": 248,
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01e38e",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "StartDialogue",
+   "size": 342,
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00c7a8",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "QueueSpritePieceTiles",
+   "size": 178,
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00cc82",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "UpdateAndQueueEntitySprites",
+   "size": 512,
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00aeb8",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "HudInitializeHealthBar",
+   "size": 532,
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00871a",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "MapUploadCoverAnimationFrame",
+   "size": 284,
+   "source": "src/map/map_drawing_and_controller.c",
+   "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01b0b6",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "Player_Youch",
+   "size": 536,
+   "source": "src/player/earthling_damage_reactions.c",
+   "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00edce",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "SpriteChecks",
+   "size": 542,
+   "source": "src/player/sprite_checks_and_movement.c",
+   "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+   "version": "rev00"
+  },
+  {
+   "address": "0x02086c",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "ShowShipPieces",
+   "size": 938,
+   "source": "src/ship/ship_screen_and_collection.c",
+   "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01ded8",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "QueueSpeechTextTiles",
+   "size": 248,
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01e34c",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "StartDialogue",
+   "size": 342,
+   "source": "src/speech/speech_and_dialogue.c",
+   "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00c788",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "QueueSpritePieceTiles",
+   "size": 178,
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00cc62",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "UpdateAndQueueEntitySprites",
+   "size": 512,
+   "source": "src/sprites/entity_sprite_rendering.c",
+   "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00ae98",
+   "checkpoint": "c029-matches-disclosures-r2",
+   "name": "HudInitializeHealthBar",
+   "size": 532,
+   "source": "src/ui/hud.c",
+   "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+   "version": "rev00"
+  }
+ ],
+ "checkpoint": "c029-matches-disclosures-r2",
+ "final_images": {
+  "rev00": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+  "rev02": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163"
+ },
+ "finalized_utc": "2026-10-22T18:29:02Z",
+ "moved": [
+  {
+   "from": {
+    "address": "0x00267a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "GetPlayerCameraVelocity",
+    "size": 636,
+    "source": "src/camera/camera_follow.c",
+    "source_sha256": "85059eb7464497bbfb5eee364a5d2e05ae69345784e44ba26387d9d311a28a79",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00267a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "GetPlayerCameraVelocity",
+    "size": 636,
+    "source": "src/camera/camera_follow.c",
+    "source_sha256": "5e59940a1154ada47645eeccb35eaf0d409901d9e15f235e8eb5911c65c907e7",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0028f6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "UpdateCameraFollowing",
+    "size": 1396,
+    "source": "src/camera/camera_follow.c",
+    "source_sha256": "85059eb7464497bbfb5eee364a5d2e05ae69345784e44ba26387d9d311a28a79",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0028f6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "UpdateCameraFollowing",
+    "size": 1396,
+    "source": "src/camera/camera_follow.c",
+    "source_sha256": "5e59940a1154ada47645eeccb35eaf0d409901d9e15f235e8eb5911c65c907e7",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0015a8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ClearCameraTileRow",
+    "size": 106,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0015a8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ClearCameraTileRow",
+    "size": 106,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001612",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "GetLevelMetatileTile",
+    "size": 94,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x001612",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "GetLevelMetatileTile",
+    "size": 94,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001670",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "GetOverlayMetatileTile",
+    "size": 98,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x001670",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "GetOverlayMetatileTile",
+    "size": 98,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0016d2",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "BuildCameraTileRow",
+    "size": 764,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0016d2",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "BuildCameraTileRow",
+    "size": 764,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0019ce",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "UpdateCameraY",
+    "size": 378,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0019ce",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "UpdateCameraY",
+    "size": 378,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001b48",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ClearCameraTileColumn",
+    "size": 96,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x001b48",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ClearCameraTileColumn",
+    "size": 96,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001ba8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "BuildCameraTileColumn",
+    "size": 772,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x001ba8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "BuildCameraTileColumn",
+    "size": 772,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001eac",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "UpdateCameraX",
+    "size": 350,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x001eac",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "UpdateCameraX",
+    "size": 350,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00200a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "RedrawCameraTileRows",
+    "size": 160,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00200a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "RedrawCameraTileRows",
+    "size": 160,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0020aa",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "SetCameraViewOrigin",
+    "size": 242,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0020aa",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "SetCameraViewOrigin",
+    "size": 242,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00219c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "BuildPendingCameraTiles",
+    "size": 206,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00219c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "BuildPendingCameraTiles",
+    "size": 206,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00226a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "TryUpdateCameraY",
+    "size": 104,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00226a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "TryUpdateCameraY",
+    "size": 104,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0022d2",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "TryUpdateCameraX",
+    "size": 104,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0022d2",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "TryUpdateCameraX",
+    "size": 104,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00233a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MoveCameraUp",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00233a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MoveCameraUp",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0023e6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MoveCameraDown",
+    "size": 202,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0023e6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MoveCameraDown",
+    "size": 202,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0024b0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MoveCameraLeft",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0024b0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MoveCameraLeft",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00255c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MoveCameraRight",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00255c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MoveCameraRight",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x02234c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "EarthlingSpawnMoleEffect",
+    "size": 170,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x02234c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "EarthlingSpawnMoleEffect",
+    "size": 170,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0223f6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ReleaseFinishedMoleEffectsAndStolenPresents",
+    "size": 146,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0223f6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ReleaseFinishedMoleEffectsAndStolenPresents",
+    "size": 146,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x022488",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "SantaLogic",
+    "size": 1032,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x022488",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "SantaLogic",
+    "size": 1032,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x022890",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "DropPresentsAbility",
+    "size": 236,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x022890",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "DropPresentsAbility",
+    "size": 236,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0077d8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapChooseBackgroundTileBucket",
+    "size": 44,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0077d8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapChooseBackgroundTileBucket",
+    "size": 44,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x007804",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapDrawFixedBackgroundDecorations",
+    "size": 164,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x007804",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapDrawFixedBackgroundDecorations",
+    "size": 164,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0078a8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapDrawBackgroundAndTerrain",
+    "size": 636,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0078a8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapDrawBackgroundAndTerrain",
+    "size": 636,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x007b24",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapCoverBlockContainsTerrain",
+    "size": 194,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x007b24",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapCoverBlockContainsTerrain",
+    "size": 194,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x007be6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "DisplayMap",
+    "size": 876,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x007be6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "DisplayMap",
+    "size": 876,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x007f52",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "LoadMapIntoVRAM",
+    "size": 388,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x007f52",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "LoadMapIntoVRAM",
+    "size": 388,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0080d6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "LoadLevel1Tiles",
+    "size": 134,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0080d6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "LoadLevel1Tiles",
+    "size": 134,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00815c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapAppendCoverBlockSprites",
+    "size": 214,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00815c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapAppendCoverBlockSprites",
+    "size": 214,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x008232",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapInitializeScreenSprites",
+    "size": 292,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x008232",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapInitializeScreenSprites",
+    "size": 292,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x008356",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerHasOddElevatorState",
+    "size": 58,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x008356",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerHasOddElevatorState",
+    "size": 58,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x008390",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "Map_DrawPlayer",
+    "size": 316,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x008390",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "Map_DrawPlayer",
+    "size": 316,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0084cc",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "Map_DrawShipPiece",
+    "size": 446,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0084cc",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "Map_DrawShipPiece",
+    "size": 446,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00868a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "DrawMapCharacters",
+    "size": 144,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00868a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "DrawMapCharacters",
+    "size": 144,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x008836",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "DrawGameMap",
+    "size": 828,
+    "source": "src/map/map_drawing_controller.c",
+    "source_sha256": "df521735ec2d494cd5d0a3c063cd60473fdc0a82e6b647d8da57f978a720cdb1",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x008836",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "DrawGameMap",
+    "size": 828,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b0aa",
+    "checkpoint": "c025-structs-layout-permuter-r2",
+    "name": "PlayerCanReceiveEarthlingEffect",
+    "size": 78,
+    "source": "src/player/earthling_player_eligibility.c",
+    "source_sha256": "2ccb498d1d028bdaa6844bfedccced374d393942e9f5b6a1a8bc3bcf1a676b42",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01b0aa",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerCanReceiveEarthlingEffect",
+    "size": 78,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b318",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "Player_Squish",
+    "size": 202,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01b318",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "Player_Squish",
+    "size": 202,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b3e2",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HulaAbility",
+    "size": 476,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01b3e2",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HulaAbility",
+    "size": 476,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b5ca",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "EarthlingStartHorizontalAttack",
+    "size": 98,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01b5ca",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "EarthlingStartHorizontalAttack",
+    "size": 98,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b62c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "CupidAbility",
+    "size": 282,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01b62c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "CupidAbility",
+    "size": 282,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b746",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "EarthlingUpdateBouncingDamageState",
+    "size": 180,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01b746",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "EarthlingUpdateBouncingDamageState",
+    "size": 180,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b7fa",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "WhirlWindAbility",
+    "size": 192,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01b7fa",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "WhirlWindAbility",
+    "size": 192,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b8ba",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerUpdateWhirlwindAndRecovery",
+    "size": 668,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01b8ba",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerUpdateWhirlwindAndRecovery",
+    "size": 668,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01bb62",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "EarthlingCheckDecoyAttackRange",
+    "size": 164,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01bb62",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "EarthlingCheckDecoyAttackRange",
+    "size": 164,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01bc06",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ChickenAbility",
+    "size": 284,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01bc06",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ChickenAbility",
+    "size": 284,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01bd22",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "AI_BoogieTouch",
+    "size": 174,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01bd22",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "AI_BoogieTouch",
+    "size": 174,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e17a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerApplyTerrainDestination",
+    "size": 616,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00e17a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerApplyTerrainDestination",
+    "size": 616,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e3e2",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "StopPlayer",
+    "size": 30,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00e3e2",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "StopPlayer",
+    "size": 30,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e400",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "Player1ProcessTerrainMotion",
+    "size": 16,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00e400",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "Player1ProcessTerrainMotion",
+    "size": 16,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e410",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "Player2ProcessTerrainMotion",
+    "size": 18,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00e410",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "Player2ProcessTerrainMotion",
+    "size": 18,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e422",
+    "checkpoint": "c025-structs-layout-permuter-r2",
+    "name": "ProcessMovement",
+    "size": 812,
+    "source": "src/player/process_movement.c",
+    "source_sha256": "f253146e41ebb05a22033d7f83018ac3049417f53e708e7241dbaf2d7508d636",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00e422",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ProcessMovement",
+    "size": 812,
+    "source": "src/player/process_movement.c",
+    "source_sha256": "5badcc58ccdee679569fe944f5cc730a99e41e4c929e9564ce00ea18392eabd3",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00f00c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerChooseDirectionalMovement",
+    "size": 630,
+    "source": "src/player/sprite_movement.c",
+    "source_sha256": "0a03f211d78d4d6fc03b118e93f85b03110f2b5134ba4570ce41bf3cb1166a50",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00f00c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerChooseDirectionalMovement",
+    "size": 630,
+    "source": "src/player/sprite_checks_and_movement.c",
+    "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00f282",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerApplyDirectionalMovementAnimation",
+    "size": 782,
+    "source": "src/player/sprite_movement.c",
+    "source_sha256": "0a03f211d78d4d6fc03b118e93f85b03110f2b5134ba4570ce41bf3cb1166a50",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00f282",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerApplyDirectionalMovementAnimation",
+    "size": 782,
+    "source": "src/player/sprite_checks_and_movement.c",
+    "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01faf4",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "FillSpriteOpaquePixels",
+    "size": 76,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01faf4",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "FillSpriteOpaquePixels",
+    "size": 76,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01fb40",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "AnimateShipScreenBackground",
+    "size": 280,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01fb40",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "AnimateShipScreenBackground",
+    "size": 280,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01fc58",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "RestoreGameplayGraphics",
+    "size": 256,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01fc58",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "RestoreGameplayGraphics",
+    "size": 256,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01fd58",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "AnimateTransitionBackground",
+    "size": 272,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01fd58",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "AnimateTransitionBackground",
+    "size": 272,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01fe68",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayShipCompletionSequence",
+    "size": 794,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01fe68",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayShipCompletionSequence",
+    "size": 794,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020182",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "InitializeShipScreenTilemapAndPalettes",
+    "size": 398,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x020182",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "InitializeShipScreenTilemapAndPalettes",
+    "size": 398,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020310",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ShowShipPieceName",
+    "size": 222,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x020310",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ShowShipPieceName",
+    "size": 222,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0204ce",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ShowMissingShipPieceSummary",
+    "size": 282,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0204ce",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ShowMissingShipPieceSummary",
+    "size": 282,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0206b8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "AnimateShipScreenPalette",
+    "size": 392,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0206b8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "AnimateShipScreenPalette",
+    "size": 392,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020840",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "WaitForShipScreenAcknowledgement",
+    "size": 164,
+    "source": "src/ship/screen_acknowledgement.c",
+    "source_sha256": "d0119614f9e9b353da492573206a45eff51210e504e31a681e8996ec0cd48868",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x020840",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "WaitForShipScreenAcknowledgement",
+    "size": 164,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020c8e",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ShipPieceAbility",
+    "size": 168,
+    "source": "src/ship/piece_collection.c",
+    "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x020c8e",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ShipPieceAbility",
+    "size": 168,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020d3e",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ShipUpdatePendingPieceIndicator",
+    "size": 236,
+    "source": "src/ship/piece_collection.c",
+    "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x020d3e",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ShipUpdatePendingPieceIndicator",
+    "size": 236,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020e2a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ShowRandomUncollectedShipPiece",
+    "size": 70,
+    "source": "src/ship/piece_collection.c",
+    "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x020e2a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ShowRandomUncollectedShipPiece",
+    "size": 70,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01e012",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "SetNextSpeechLifetime",
+    "size": 12,
+    "source": "src/speech/speech_core.c",
+    "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01e012",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "SetNextSpeechLifetime",
+    "size": 12,
+    "source": "src/speech/speech_and_dialogue.c",
+    "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01e01e",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "GenerateSpeech",
+    "size": 678,
+    "source": "src/speech/speech_core.c",
+    "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01e01e",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "GenerateSpeech",
+    "size": 678,
+    "source": "src/speech/speech_and_dialogue.c",
+    "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01e2c4",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ClearSpeechBubblesAndReplies",
+    "size": 78,
+    "source": "src/speech/speech_core.c",
+    "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01e2c4",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ClearSpeechBubblesAndReplies",
+    "size": 78,
+    "source": "src/speech/speech_and_dialogue.c",
+    "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01e312",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HasSpeakerSpeech",
+    "size": 124,
+    "source": "src/speech/speech_core.c",
+    "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01e312",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HasSpeakerSpeech",
+    "size": 124,
+    "source": "src/speech/speech_and_dialogue.c",
+    "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01e4e4",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "UpdateSpeechAndDialogue",
+    "size": 594,
+    "source": "src/speech/speech_update.c",
+    "source_sha256": "ff86d0add7940123a63fe6586fcf7ae7c0c65223c7f2bdd64050f58e13a059b6",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01e4e4",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "UpdateSpeechAndDialogue",
+    "size": 594,
+    "source": "src/speech/speech_and_dialogue.c",
+    "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c170",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "UpdateAttachedEntityPosition",
+    "size": 210,
+    "source": "src/sprites/entity_sprite_order.c",
+    "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00c170",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "UpdateAttachedEntityPosition",
+    "size": 210,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c242",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PositionEntitySprites",
+    "size": 696,
+    "source": "src/sprites/entity_sprite_order.c",
+    "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00c242",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PositionEntitySprites",
+    "size": 696,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c4fa",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "BuildViewportSpriteLinks",
+    "size": 438,
+    "source": "src/sprites/entity_sprite_order.c",
+    "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00c4fa",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "BuildViewportSpriteLinks",
+    "size": 438,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c6b0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "SortEntitiesForSpriteDraw",
+    "size": 248,
+    "source": "src/sprites/entity_sprite_order.c",
+    "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00c6b0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "SortEntitiesForSpriteDraw",
+    "size": 248,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c85a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ClipSpritePixelsBelowCutoff",
+    "size": 146,
+    "source": "src/sprites/sprite_frame_preparation.c",
+    "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00c85a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ClipSpritePixelsBelowCutoff",
+    "size": 146,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c8ec",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ClearSpriteMaskPixels",
+    "size": 52,
+    "source": "src/sprites/sprite_frame_preparation.c",
+    "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00c8ec",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ClearSpriteMaskPixels",
+    "size": 52,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c920",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PrepareEntitySpriteFrame",
+    "size": 508,
+    "source": "src/sprites/sprite_frame_preparation.c",
+    "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00c920",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PrepareEntitySpriteFrame",
+    "size": 508,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00cb1c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "AppendSpriteTilesToBuffer",
+    "size": 56,
+    "source": "src/sprites/sprite_frame_preparation.c",
+    "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00cb1c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "AppendSpriteTilesToBuffer",
+    "size": 56,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00cb54",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ProcessEntityAnimationMotion",
+    "size": 302,
+    "source": "src/sprites/sprite_frame_preparation.c",
+    "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00cb54",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ProcessEntityAnimationMotion",
+    "size": 302,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00aa5a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudLoadLevelNumberSprites",
+    "size": 356,
+    "source": "src/ui/hud_initialization.c",
+    "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00aa5a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudLoadLevelNumberSprites",
+    "size": 356,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00abbe",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudPositionLevelNumberSprites",
+    "size": 268,
+    "source": "src/ui/hud_initialization.c",
+    "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00abbe",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudPositionLevelNumberSprites",
+    "size": 268,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00acca",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudLoadActionIconSprite",
+    "size": 192,
+    "source": "src/ui/hud_initialization.c",
+    "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00acca",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudLoadActionIconSprite",
+    "size": 192,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00ad8a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudPositionActionIconSprite",
+    "size": 262,
+    "source": "src/ui/hud_initialization.c",
+    "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00ad8a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudPositionActionIconSprite",
+    "size": 262,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00ae90",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerGetMaximumHealth",
+    "size": 40,
+    "source": "src/ui/hud_initialization.c",
+    "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00ae90",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerGetMaximumHealth",
+    "size": 40,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b0cc",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudPositionHealthBarSprites",
+    "size": 192,
+    "source": "src/ui/hud_health_update.c",
+    "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00b0cc",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudPositionHealthBarSprites",
+    "size": 192,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b18c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudAnimateHealthBar",
+    "size": 600,
+    "source": "src/ui/hud_health_update.c",
+    "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00b18c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudAnimateHealthBar",
+    "size": 600,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b3e4",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudLoadLivesSpriteTiles",
+    "size": 428,
+    "source": "src/ui/hud_health_update.c",
+    "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00b3e4",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudLoadLivesSpriteTiles",
+    "size": 428,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b590",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudPositionLivesSprite",
+    "size": 186,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00b590",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudPositionLivesSprite",
+    "size": 186,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b64a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudDrawRankLabels",
+    "size": 232,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00b64a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudDrawRankLabels",
+    "size": 232,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b74e",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "DrawHUD",
+    "size": 330,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00b74e",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "DrawHUD",
+    "size": 330,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b898",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "GetScoreForPromo",
+    "size": 54,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00b898",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "GetScoreForPromo",
+    "size": 54,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b8ce",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "CheckPromotionScore",
+    "size": 142,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00b8ce",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "CheckPromotionScore",
+    "size": 142,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b95c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudHidePlayerSprites",
+    "size": 326,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00b95c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudHidePlayerSprites",
+    "size": 326,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00baa2",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerResetRankAndResources",
+    "size": 246,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00baa2",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerResetRankAndResources",
+    "size": 246,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00bb98",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "SetupTheMainGame",
+    "size": 176,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00bb98",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "SetupTheMainGame",
+    "size": 176,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00bc48",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerUpdateHealthAndLives",
+    "size": 400,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00bc48",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerUpdateHealthAndLives",
+    "size": 400,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00267a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "GetPlayerCameraVelocity",
+    "size": 636,
+    "source": "src/camera/camera_follow.c",
+    "source_sha256": "85059eb7464497bbfb5eee364a5d2e05ae69345784e44ba26387d9d311a28a79",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00267a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "GetPlayerCameraVelocity",
+    "size": 636,
+    "source": "src/camera/camera_follow.c",
+    "source_sha256": "5e59940a1154ada47645eeccb35eaf0d409901d9e15f235e8eb5911c65c907e7",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0028f6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "UpdateCameraFollowing",
+    "size": 1396,
+    "source": "src/camera/camera_follow.c",
+    "source_sha256": "85059eb7464497bbfb5eee364a5d2e05ae69345784e44ba26387d9d311a28a79",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0028f6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "UpdateCameraFollowing",
+    "size": 1396,
+    "source": "src/camera/camera_follow.c",
+    "source_sha256": "5e59940a1154ada47645eeccb35eaf0d409901d9e15f235e8eb5911c65c907e7",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0015a8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ClearCameraTileRow",
+    "size": 106,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0015a8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ClearCameraTileRow",
+    "size": 106,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001612",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "GetLevelMetatileTile",
+    "size": 94,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x001612",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "GetLevelMetatileTile",
+    "size": 94,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001670",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "GetOverlayMetatileTile",
+    "size": 98,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x001670",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "GetOverlayMetatileTile",
+    "size": 98,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0016d2",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "BuildCameraTileRow",
+    "size": 764,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0016d2",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "BuildCameraTileRow",
+    "size": 764,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0019ce",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "UpdateCameraY",
+    "size": 378,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0019ce",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "UpdateCameraY",
+    "size": 378,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001b48",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ClearCameraTileColumn",
+    "size": 96,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x001b48",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ClearCameraTileColumn",
+    "size": 96,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001ba8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "BuildCameraTileColumn",
+    "size": 772,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x001ba8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "BuildCameraTileColumn",
+    "size": 772,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001eac",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "UpdateCameraX",
+    "size": 350,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x001eac",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "UpdateCameraX",
+    "size": 350,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00200a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "RedrawCameraTileRows",
+    "size": 160,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00200a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "RedrawCameraTileRows",
+    "size": 160,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0020aa",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "SetCameraViewOrigin",
+    "size": 242,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0020aa",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "SetCameraViewOrigin",
+    "size": 242,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00219c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "BuildPendingCameraTiles",
+    "size": 206,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00219c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "BuildPendingCameraTiles",
+    "size": 206,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00226a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "TryUpdateCameraY",
+    "size": 104,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00226a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "TryUpdateCameraY",
+    "size": 104,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0022d2",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "TryUpdateCameraX",
+    "size": 104,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0022d2",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "TryUpdateCameraX",
+    "size": 104,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00233a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MoveCameraUp",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00233a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MoveCameraUp",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0023e6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MoveCameraDown",
+    "size": 202,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0023e6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MoveCameraDown",
+    "size": 202,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0024b0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MoveCameraLeft",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0024b0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MoveCameraLeft",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00255c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MoveCameraRight",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "d319dfb6a73cc5bb9a178be4ecd35ff65fbe7909a86c03d59c643ac046c38f19",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00255c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MoveCameraRight",
+    "size": 172,
+    "source": "src/camera/camera_tiles_and_scroll.c",
+    "source_sha256": "9c110b77ecedc2bed29ac7aac0e832fe294a115774ff0f24561d6576fb128870",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0222d4",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "EarthlingSpawnMoleEffect",
+    "size": 170,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0222d4",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "EarthlingSpawnMoleEffect",
+    "size": 170,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x02237e",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ReleaseFinishedMoleEffectsAndStolenPresents",
+    "size": 146,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x02237e",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ReleaseFinishedMoleEffectsAndStolenPresents",
+    "size": 146,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x022410",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "SantaLogic",
+    "size": 1032,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x022410",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "SantaLogic",
+    "size": 1032,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x022818",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "DropPresentsAbility",
+    "size": 236,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "1c7849d8104d75e50dc3243b4e1c5fc1bade1003949fb414291a9bab63a1f346",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x022818",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "DropPresentsAbility",
+    "size": 236,
+    "source": "src/earthlings/mole_santa.c",
+    "source_sha256": "8a82b6508d95b632cf83c25795669d122ea4f09b16233901810f088b9daeb7ff",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0077d8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapChooseBackgroundTileBucket",
+    "size": 44,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0077d8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapChooseBackgroundTileBucket",
+    "size": 44,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x007804",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapDrawFixedBackgroundDecorations",
+    "size": 164,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x007804",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapDrawFixedBackgroundDecorations",
+    "size": 164,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0078a8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapDrawBackgroundAndTerrain",
+    "size": 636,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0078a8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapDrawBackgroundAndTerrain",
+    "size": 636,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x007b24",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapCoverBlockContainsTerrain",
+    "size": 194,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x007b24",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapCoverBlockContainsTerrain",
+    "size": 194,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x007be6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "DisplayMap",
+    "size": 876,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x007be6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "DisplayMap",
+    "size": 876,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x007f52",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "LoadMapIntoVRAM",
+    "size": 388,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x007f52",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "LoadMapIntoVRAM",
+    "size": 388,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0080d6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "LoadLevel1Tiles",
+    "size": 134,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0080d6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "LoadLevel1Tiles",
+    "size": 134,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00815c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapAppendCoverBlockSprites",
+    "size": 214,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00815c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapAppendCoverBlockSprites",
+    "size": 214,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x008232",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "MapInitializeScreenSprites",
+    "size": 292,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x008232",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "MapInitializeScreenSprites",
+    "size": 292,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x008356",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerHasOddElevatorState",
+    "size": 58,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x008356",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerHasOddElevatorState",
+    "size": 58,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x008390",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "Map_DrawPlayer",
+    "size": 316,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x008390",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "Map_DrawPlayer",
+    "size": 316,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0084cc",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "Map_DrawShipPiece",
+    "size": 446,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0084cc",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "Map_DrawShipPiece",
+    "size": 446,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00868a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "DrawMapCharacters",
+    "size": 144,
+    "source": "src/map/map_drawing.c",
+    "source_sha256": "74c69e901430f030608d26c54918a2fce27805823bcdd11f695f1bee09afa337",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00868a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "DrawMapCharacters",
+    "size": 144,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x008836",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "DrawGameMap",
+    "size": 812,
+    "source": "src/map/map_drawing_controller.c",
+    "source_sha256": "df521735ec2d494cd5d0a3c063cd60473fdc0a82e6b647d8da57f978a720cdb1",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x008836",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "DrawGameMap",
+    "size": 812,
+    "source": "src/map/map_drawing_and_controller.c",
+    "source_sha256": "c1d7838ebe391a466db9834998f5a6205b6d6d326ca59652b29d999eaa6d2383",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b068",
+    "checkpoint": "c025-structs-layout-permuter-r2",
+    "name": "PlayerCanReceiveEarthlingEffect",
+    "size": 78,
+    "source": "src/player/earthling_player_eligibility.c",
+    "source_sha256": "2ccb498d1d028bdaa6844bfedccced374d393942e9f5b6a1a8bc3bcf1a676b42",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01b068",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerCanReceiveEarthlingEffect",
+    "size": 78,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b2d6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "Player_Squish",
+    "size": 202,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01b2d6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "Player_Squish",
+    "size": 202,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b3a0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HulaAbility",
+    "size": 476,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01b3a0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HulaAbility",
+    "size": 476,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b588",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "EarthlingStartHorizontalAttack",
+    "size": 98,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01b588",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "EarthlingStartHorizontalAttack",
+    "size": 98,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b5ea",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "CupidAbility",
+    "size": 282,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01b5ea",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "CupidAbility",
+    "size": 282,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b704",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "EarthlingUpdateBouncingDamageState",
+    "size": 180,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01b704",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "EarthlingUpdateBouncingDamageState",
+    "size": 180,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b7b8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "WhirlWindAbility",
+    "size": 192,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01b7b8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "WhirlWindAbility",
+    "size": 192,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01b878",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerUpdateWhirlwindAndRecovery",
+    "size": 668,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01b878",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerUpdateWhirlwindAndRecovery",
+    "size": 668,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01bb20",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "EarthlingCheckDecoyAttackRange",
+    "size": 164,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01bb20",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "EarthlingCheckDecoyAttackRange",
+    "size": 164,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01bbc4",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ChickenAbility",
+    "size": 284,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01bbc4",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ChickenAbility",
+    "size": 284,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01bce0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "AI_BoogieTouch",
+    "size": 174,
+    "source": "src/player/contact_cupid_and_touch.c",
+    "source_sha256": "73048afcab519204bac14c43b729fb81d981193ffc5fb8b7a70278c991db3b9a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01bce0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "AI_BoogieTouch",
+    "size": 174,
+    "source": "src/player/earthling_damage_reactions.c",
+    "source_sha256": "b3a1916667c347c503023c01149a2eb39e29bc58c9347bcc5ee7f2d1cfbcf181",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e15a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerApplyTerrainDestination",
+    "size": 616,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00e15a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerApplyTerrainDestination",
+    "size": 616,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e3c2",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "StopPlayer",
+    "size": 30,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00e3c2",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "StopPlayer",
+    "size": 30,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e3e0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "Player1ProcessTerrainMotion",
+    "size": 16,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00e3e0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "Player1ProcessTerrainMotion",
+    "size": 16,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e3f0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "Player2ProcessTerrainMotion",
+    "size": 18,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "a75749127b1bfeb033905bec69811e4c2ac9d1b314eaa451627771035570aafc",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00e3f0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "Player2ProcessTerrainMotion",
+    "size": 18,
+    "source": "src/player/entity_motion_terrain.c",
+    "source_sha256": "da07b6c337d5bde7b698d42587bbf89d116057b1eef6945e1f4715055e13eaeb",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00e402",
+    "checkpoint": "c025-structs-layout-permuter-r2",
+    "name": "ProcessMovement",
+    "size": 812,
+    "source": "src/player/process_movement.c",
+    "source_sha256": "f253146e41ebb05a22033d7f83018ac3049417f53e708e7241dbaf2d7508d636",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00e402",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ProcessMovement",
+    "size": 812,
+    "source": "src/player/process_movement.c",
+    "source_sha256": "5badcc58ccdee679569fe944f5cc730a99e41e4c929e9564ce00ea18392eabd3",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00efec",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerChooseDirectionalMovement",
+    "size": 630,
+    "source": "src/player/sprite_movement.c",
+    "source_sha256": "0a03f211d78d4d6fc03b118e93f85b03110f2b5134ba4570ce41bf3cb1166a50",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00efec",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerChooseDirectionalMovement",
+    "size": 630,
+    "source": "src/player/sprite_checks_and_movement.c",
+    "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00f262",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerApplyDirectionalMovementAnimation",
+    "size": 782,
+    "source": "src/player/sprite_movement.c",
+    "source_sha256": "0a03f211d78d4d6fc03b118e93f85b03110f2b5134ba4570ce41bf3cb1166a50",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00f262",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerApplyDirectionalMovementAnimation",
+    "size": 782,
+    "source": "src/player/sprite_checks_and_movement.c",
+    "source_sha256": "2ba8edac92eb70ab2fe9b51dcd9ee55d66a00e49a00915694fe23dd219295c3e",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01fa7c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "FillSpriteOpaquePixels",
+    "size": 76,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01fa7c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "FillSpriteOpaquePixels",
+    "size": 76,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01fac8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "AnimateShipScreenBackground",
+    "size": 280,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01fac8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "AnimateShipScreenBackground",
+    "size": 280,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01fbe0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "RestoreGameplayGraphics",
+    "size": 256,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01fbe0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "RestoreGameplayGraphics",
+    "size": 256,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01fce0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "AnimateTransitionBackground",
+    "size": 272,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01fce0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "AnimateTransitionBackground",
+    "size": 272,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01fdf0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayShipCompletionSequence",
+    "size": 794,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01fdf0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayShipCompletionSequence",
+    "size": 794,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x02010a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "InitializeShipScreenTilemapAndPalettes",
+    "size": 398,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x02010a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "InitializeShipScreenTilemapAndPalettes",
+    "size": 398,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020298",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ShowShipPieceName",
+    "size": 222,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x020298",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ShowShipPieceName",
+    "size": 222,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020456",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ShowMissingShipPieceSummary",
+    "size": 282,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x020456",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ShowMissingShipPieceSummary",
+    "size": 282,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020640",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "AnimateShipScreenPalette",
+    "size": 392,
+    "source": "src/ship/screen_setup.c",
+    "source_sha256": "dee540dce8ddfd3d40063cea31ff066e9cd9d7487f87e2cdf96ec04eacb241c2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x020640",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "AnimateShipScreenPalette",
+    "size": 392,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0207c8",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "WaitForShipScreenAcknowledgement",
+    "size": 164,
+    "source": "src/ship/screen_acknowledgement.c",
+    "source_sha256": "d0119614f9e9b353da492573206a45eff51210e504e31a681e8996ec0cd48868",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0207c8",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "WaitForShipScreenAcknowledgement",
+    "size": 164,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020c16",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ShipPieceAbility",
+    "size": 168,
+    "source": "src/ship/piece_collection.c",
+    "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x020c16",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ShipPieceAbility",
+    "size": 168,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020cc6",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ShipUpdatePendingPieceIndicator",
+    "size": 236,
+    "source": "src/ship/piece_collection.c",
+    "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x020cc6",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ShipUpdatePendingPieceIndicator",
+    "size": 236,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x020db2",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ShowRandomUncollectedShipPiece",
+    "size": 70,
+    "source": "src/ship/piece_collection.c",
+    "source_sha256": "f1468485bdd8094cbd218d1837782d85bc2d24e78c3d4330ad5564af5e7550d0",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x020db2",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ShowRandomUncollectedShipPiece",
+    "size": 70,
+    "source": "src/ship/ship_screen_and_collection.c",
+    "source_sha256": "ab38b3b5db09f9d06136c2380ac6d46730bf6d48b80302b73eb51e8659bc0ac8",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01dfd0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "SetNextSpeechLifetime",
+    "size": 12,
+    "source": "src/speech/speech_core.c",
+    "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01dfd0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "SetNextSpeechLifetime",
+    "size": 12,
+    "source": "src/speech/speech_and_dialogue.c",
+    "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01dfdc",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "GenerateSpeech",
+    "size": 678,
+    "source": "src/speech/speech_core.c",
+    "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01dfdc",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "GenerateSpeech",
+    "size": 678,
+    "source": "src/speech/speech_and_dialogue.c",
+    "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01e282",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ClearSpeechBubblesAndReplies",
+    "size": 78,
+    "source": "src/speech/speech_core.c",
+    "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01e282",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ClearSpeechBubblesAndReplies",
+    "size": 78,
+    "source": "src/speech/speech_and_dialogue.c",
+    "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01e2d0",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HasSpeakerSpeech",
+    "size": 124,
+    "source": "src/speech/speech_core.c",
+    "source_sha256": "c384dcb2eeb8b2a4bbc8109ef13e9af0076c68e1cc0b33775f0733d782b44157",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01e2d0",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HasSpeakerSpeech",
+    "size": 124,
+    "source": "src/speech/speech_and_dialogue.c",
+    "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01e4a2",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "UpdateSpeechAndDialogue",
+    "size": 594,
+    "source": "src/speech/speech_update.c",
+    "source_sha256": "ff86d0add7940123a63fe6586fcf7ae7c0c65223c7f2bdd64050f58e13a059b6",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01e4a2",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "UpdateSpeechAndDialogue",
+    "size": 594,
+    "source": "src/speech/speech_and_dialogue.c",
+    "source_sha256": "f0ea11575162c89cd375321dda153f5b5692a1127e55bb8dd1fe86a41bd62bef",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c150",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "UpdateAttachedEntityPosition",
+    "size": 210,
+    "source": "src/sprites/entity_sprite_order.c",
+    "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00c150",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "UpdateAttachedEntityPosition",
+    "size": 210,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c222",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PositionEntitySprites",
+    "size": 696,
+    "source": "src/sprites/entity_sprite_order.c",
+    "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00c222",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PositionEntitySprites",
+    "size": 696,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c4da",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "BuildViewportSpriteLinks",
+    "size": 438,
+    "source": "src/sprites/entity_sprite_order.c",
+    "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00c4da",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "BuildViewportSpriteLinks",
+    "size": 438,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c690",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "SortEntitiesForSpriteDraw",
+    "size": 248,
+    "source": "src/sprites/entity_sprite_order.c",
+    "source_sha256": "467fe0a527ef14c0a15f618e34cb59d595b261a8ca6a452f0d5c20d26dbabecd",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00c690",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "SortEntitiesForSpriteDraw",
+    "size": 248,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c83a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ClipSpritePixelsBelowCutoff",
+    "size": 146,
+    "source": "src/sprites/sprite_frame_preparation.c",
+    "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00c83a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ClipSpritePixelsBelowCutoff",
+    "size": 146,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c8cc",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ClearSpriteMaskPixels",
+    "size": 52,
+    "source": "src/sprites/sprite_frame_preparation.c",
+    "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00c8cc",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ClearSpriteMaskPixels",
+    "size": 52,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00c900",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PrepareEntitySpriteFrame",
+    "size": 508,
+    "source": "src/sprites/sprite_frame_preparation.c",
+    "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00c900",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PrepareEntitySpriteFrame",
+    "size": 508,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00cafc",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "AppendSpriteTilesToBuffer",
+    "size": 56,
+    "source": "src/sprites/sprite_frame_preparation.c",
+    "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00cafc",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "AppendSpriteTilesToBuffer",
+    "size": 56,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00cb34",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "ProcessEntityAnimationMotion",
+    "size": 302,
+    "source": "src/sprites/sprite_frame_preparation.c",
+    "source_sha256": "ddb1be798e4d0e0da8a15fd0ffa8cd99a7664f31ee6f979f0e8f0bf40134ec5a",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00cb34",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "ProcessEntityAnimationMotion",
+    "size": 302,
+    "source": "src/sprites/entity_sprite_rendering.c",
+    "source_sha256": "3807a652a509c6faffe26bf0598d6fb22070a738df5f4baa56fe7049d7c64348",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00aa3a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudLoadLevelNumberSprites",
+    "size": 356,
+    "source": "src/ui/hud_initialization.c",
+    "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00aa3a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudLoadLevelNumberSprites",
+    "size": 356,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00ab9e",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudPositionLevelNumberSprites",
+    "size": 268,
+    "source": "src/ui/hud_initialization.c",
+    "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00ab9e",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudPositionLevelNumberSprites",
+    "size": 268,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00acaa",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudLoadActionIconSprite",
+    "size": 192,
+    "source": "src/ui/hud_initialization.c",
+    "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00acaa",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudLoadActionIconSprite",
+    "size": 192,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00ad6a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudPositionActionIconSprite",
+    "size": 262,
+    "source": "src/ui/hud_initialization.c",
+    "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00ad6a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudPositionActionIconSprite",
+    "size": 262,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00ae70",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerGetMaximumHealth",
+    "size": 40,
+    "source": "src/ui/hud_initialization.c",
+    "source_sha256": "3c0dd9bc8543c014f507a2ee98cefe406fae20ea478caa9ec5e0bd0bedd6ec5d",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00ae70",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerGetMaximumHealth",
+    "size": 40,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b0ac",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudPositionHealthBarSprites",
+    "size": 192,
+    "source": "src/ui/hud_health_update.c",
+    "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00b0ac",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudPositionHealthBarSprites",
+    "size": 192,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b16c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudAnimateHealthBar",
+    "size": 600,
+    "source": "src/ui/hud_health_update.c",
+    "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00b16c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudAnimateHealthBar",
+    "size": 600,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b3c4",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudLoadLivesSpriteTiles",
+    "size": 428,
+    "source": "src/ui/hud_health_update.c",
+    "source_sha256": "9032f15097bf0d83aaabc887e6c57a3393130d6b76b5ce72e1d95001a7a5bceb",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00b3c4",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudLoadLivesSpriteTiles",
+    "size": 428,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b570",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudPositionLivesSprite",
+    "size": 186,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00b570",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudPositionLivesSprite",
+    "size": 186,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b62a",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudDrawRankLabels",
+    "size": 232,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00b62a",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudDrawRankLabels",
+    "size": 232,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b72e",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "DrawHUD",
+    "size": 330,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00b72e",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "DrawHUD",
+    "size": 330,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b878",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "GetScoreForPromo",
+    "size": 54,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00b878",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "GetScoreForPromo",
+    "size": 54,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b8ae",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "CheckPromotionScore",
+    "size": 142,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00b8ae",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "CheckPromotionScore",
+    "size": 142,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00b93c",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "HudHidePlayerSprites",
+    "size": 326,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00b93c",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "HudHidePlayerSprites",
+    "size": 326,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00ba82",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerResetRankAndResources",
+    "size": 246,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00ba82",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerResetRankAndResources",
+    "size": 246,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00bb78",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "SetupTheMainGame",
+    "size": 176,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00bb78",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "SetupTheMainGame",
+    "size": 176,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00bc28",
+    "checkpoint": "c026-seven-matches-readability",
+    "name": "PlayerUpdateHealthAndLives",
+    "size": 400,
+    "source": "src/ui/hud_status.c",
+    "source_sha256": "8fea4f0866f9a9dcc47e0327d10b1b0cdc731afd7906973571e64f7a34d08661",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00bc28",
+    "checkpoint": "c029-matches-disclosures-r2",
+    "name": "PlayerUpdateHealthAndLives",
+    "size": 400,
+    "source": "src/ui/hud.c",
+    "source_sha256": "c1eb9356599c41896aaa4c6aef8a840af5e5cbd7d401d808f3ae82122e85e04d",
+    "version": "rev00"
+   }
+  }
+ ],
+ "note": "Eight functions from c027 (Solo10-16, HardCases9) with ShowShipPieces natural; HudInitializeHealthBar (Solo10); comment-only qualification disclosures (QualLedger)",
+ "prepare_sha256": "4e7e4ee943122fdb834825625a82955b3983bb187b8987e2297a902a5a97e34b",
+ "progress": {
+  "bytes": 173328,
+  "checkpoint": "c029-matches-disclosures-r2",
+  "functions": 597,
+  "utc": "2026-10-22T18:29:02Z",
+  "versions": {
+   "rev00": {
+    "bytes": 173216,
+    "functions": 597
+   },
+   "rev02": {
+    "bytes": 173328,
+    "functions": 597
+   }
+  }
+ },
+ "reviews": [
+  {
+   "reviewer": "C027Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  },
+  {
+   "reviewer": "C027Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  }
+ ]
+}

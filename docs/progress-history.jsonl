@@ -14,3 +14,4 @@
 {"bytes": 163638, "checkpoint": "c023-names-hardcases-data-r4", "functions": 577, "utc": "2026-10-22T14:14:28Z"}
 {"bytes": 164674, "checkpoint": "c025-structs-layout-permuter-r2", "functions": 581, "utc": "2026-10-22T15:11:58Z"}
 {"bytes": 169216, "checkpoint": "c026-seven-matches-readability", "functions": 588, "utc": "2026-10-22T17:20:21Z", "versions": {"rev00": {"bytes": 169104, "functions": 588}, "rev02": {"bytes": 169216, "functions": 588}}}
+{"bytes": 173328, "checkpoint": "c029-matches-disclosures-r2", "functions": 597, "utc": "2026-10-22T18:29:02Z", "versions": {"rev00": {"bytes": 173216, "functions": 597}, "rev02": {"bytes": 173328, "functions": 597}}}

@@ -1,0 +1,61 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C027Review",
+  "checkpoint": "c029-matches-disclosures-r2",
+  "checks": [
+    {
+      "name": "prepared_input_and_receipt_integrity",
+      "result": "PASS",
+      "details": "Prepared code commit f3b7821087202503e2f605383da04e9ffa1c28fa; prepare SHA-256 4e7e4ee943122fdb834825625a82955b3983bb187b8987e2297a902a5a97e34b. All 247 prepared input hashes and both source registries agree. All four retained prepare receipt hashes, actual image hashes, C-unit lists, and zero raw-word counts agree with prepare and pinned retail images. Compared with c028, only hud.c and audit_public.py inputs change.",
+      "evidence": "evidence2/metadata.json"
+    },
+    {
+      "name": "hud_whitespace_only_change",
+      "result": "PASS",
+      "details": "The HUD retains exactly 3617 C tokens, including unchanged literal tokens and operators; its non-whitespace bytes also agree. Only the DMA call's line wrapping changes. The explicit int index, qualification comment, all eighteen functions and established caller views are unchanged.",
+      "evidence": "evidence2/metadata.json"
+    },
+    {
+      "name": "historical_blob_identity",
+      "result": "PASS",
+      "details": "Reading hud.c directly from ec7f98e6b918f645970d2142ab9645e91e5c5880 gives Git blob 5d824791a59b51101a9247b7133a2a6e5553ad43. It is byte-identical to the c028-prepared HUD independently reviewed previously. The new exception identifies exactly this blob and src/ui/hud.c.",
+      "evidence": "evidence2/metadata.json"
+    },
+    {
+      "name": "exception_scope_and_current_content",
+      "result": "PASS",
+      "details": "Using the prepared c029 auditor and both private ROM references, the historical HUD's only unfiltered reason is the previously identified opaque Z85 false positive. The exact blob/path/Z85-prefix exception removes it. A changed blob, changed path, or different reason remains reported. The reformatted current HUD has no exception and no unfiltered content reasons. Removing the added exception entry and its explanatory comment reproduces the prior prepared auditor byte-for-byte; no detector, threshold, scan-scope, decoder or filtering-function logic changes.",
+      "evidence": "evidence2/exception.json"
+    },
+    {
+      "name": "fresh_hud_matches_both_revisions",
+      "result": "PASS",
+      "details": "Fresh official match.py CLI checks of the exact prepared HUD snapshot return exit 0 with 18/18 MATCH in REV02 and 18/18 MATCH in REV00, including all literal/alignment bytes. No compiler-profile, option, include or symbol/address override is used.",
+      "evidence": "evidence2/matches.json"
+    },
+    {
+      "name": "independent_full_builds_and_suite",
+      "result": "PASS",
+      "details": "The unmodified suite runs in a fresh byte-identical private input snapshot, using existing ROM/toolchain inputs read-only and no tool/test monkeypatch: 191 tests, OK, no skips or failures. Its real-ROM tests independently build both revisions. Both full builds PASS with zero raw words, exact prepared C-unit records, and actual image files equal to receipts and pinned retail expectations. REV02 SHA-256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV00 SHA-256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228.",
+      "evidence": "evidence2/suite.json"
+    },
+    {
+      "name": "canonical_history_public_audit",
+      "result": "PASS",
+      "details": "The explicitly requested independent canonical audit_public.py --history run exits 0 with both private ROM comparisons enabled: 1475 unique Git blobs, 138 trees, 390 tracked worktree files, two ROMs indexed, zero findings. This clears c028 finding D1 for historical as well as current content.",
+      "evidence": "evidence2/audit.json"
+    },
+    {
+      "name": "prior_source_qualifications_carried_forward",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "details": "No new qualification is introduced. The previously independently accepted SpriteChecks comparison locals, QueueSpeechTextTiles address boundaries, StartDialogue selected-speaker boundary, HUD explicit int DMA index and reviewed disclosure families remain unchanged from the sealed c027/c028 source judgments. The avoidable ship machinery remains removed. Historical spelling and compiler-internal ownership/coalescing explanations remain [INFERENCE], and finite natural controls do not prove global uniqueness.",
+      "evidence": "evidence2/metadata.json"
+    },
+    {
+      "name": "independence_and_write_boundary",
+      "result": "PASS",
+      "details": "Verdict sealed before reading any other c029 review. Earlier sealed verdicts remain unchanged. Only reviewer scratch artifacts were written; no canonical tracked file, repository Git state, acceptance record, ROM, toolchain configuration or compiler profile was changed. No nested agent or accept.py review/finalize command was used."
+    }
+  ],
+  "findings": []
+}

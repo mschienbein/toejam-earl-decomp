@@ -6,7 +6,7 @@ void ToggleLOC_00FF8196(enabled)
 short enabled;
 {
     if (enabled)
-        ram_ff8196 = 0x8000;
+        gCameraTileAttributes = 0x8000;
     else
-        ram_ff8196 = 0;
+        gCameraTileAttributes = 0;
 }

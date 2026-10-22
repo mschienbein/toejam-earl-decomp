@@ -11,7 +11,7 @@
  * capacity, not a fixed extent for every frame after its four-byte prefix. */
 
 /* Initialize ten intro objects from a frame table and sum each frame's tiles. */
-void func_028a0c()
+void IntroCreateHiddenFrameEntities()
 {
     short index, object_number, piece_number;
     struct render_frame **frames;
@@ -21,7 +21,7 @@ void func_028a0c()
     frames = AnimationPointerWords_AF040[1];
     for (index = 0; index < 10; ++index) {
         frame = frames[index];
-        if (object_number = func_00d904()) {
+        if (object_number = AllocateEntity()) {
             object = &gPlayerInfo[object_number];
             object->sprite_count = frame->count;
             object->tile_count = 0;
@@ -33,7 +33,7 @@ void func_028a0c()
             object->y = 160;
             object->tile |= 0x8000;
             object->flags_4d |= 64;
-            func_00d776(object, 0);
+            AllocateEntityViewportSprites(object, 0);
             object->sprite_ready = 0;
             object->sequence = (char *)&IntroHeldFrameStreams[index];
             object->frames = frames;
@@ -41,6 +41,6 @@ void func_028a0c()
             object->frame_duration = 1;
             object->frame = -1;
         }
-        ram_ffe3ce[index] = object_number;
+        gIntroComponentEntities[index] = object_number;
     }
 }

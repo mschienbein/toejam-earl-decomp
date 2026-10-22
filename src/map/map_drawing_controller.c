@@ -42,8 +42,8 @@ short player;
     VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     VDP_COMMAND = 0x40200000L;
     MoveDataToVRAM(MapScreenTiles, MapScreenTileCount << 4);
-    func_008232(sprites);
-    func_0078a8(map_number);
+    MapInitializeScreenSprites(sprites);
+    MapDrawBackgroundAndTerrain(map_number);
     LoadMapIntoVRAM(map_number, sprites);
     VDP_COMMAND = 0x40020010L;
     VDP_DATA = 8;
@@ -58,15 +58,15 @@ short player;
     Map_DrawPlayer(map_number, sprites);
     Map_DrawShipPiece(map_number, &sprites[2]);
     Map_DrawElevator(map_number, &sprites[6]);
-    func_00871a(sprites, 11, 1);
-    func_00871a(sprites, 0, 0);
+    MapUploadCoverAnimationFrame(sprites, 11, 1);
+    MapUploadCoverAnimationFrame(sprites, 0, 0);
     VDPWritesRoutine1(sprites, 0xf800, 320);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
-    if (ram_ff935a)
+    if (gMapRevealMode)
         for (map_number = 1; map_number < 12; ++map_number) {
             WaitForNextVBlank(4);
-            func_00871a(sprites, map_number, 0);
+            MapUploadCoverAnimationFrame(sprites, map_number, 0);
         }
     PreGenerateRandoms();
     while (MovePadInputIntoD0(player) & 0x20)
@@ -78,9 +78,9 @@ short player;
         WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
-    func_00046a();
-    VDPWritesRoutine1(ram_ffb65a, 0xf800, 320);
-    if (ram_ff935a || (buttons & 0x20)) {
+    DrawStarfieldPlane();
+    VDPWritesRoutine1(gHardwareSpriteTable, 0xf800, 320);
+    if (gMapRevealMode || (buttons & 0x20)) {
         VDP_COMMAND = 0x40000000L;
         MoveDataToVRAM(LevelTiles, (MapScreenTileCount + 41) << 4);
         VDP_CONTROL_WORD = 0x9100;
@@ -90,7 +90,7 @@ short player;
         CopyPaletteToCRAMSlot(PaletteGameLine2, 1);
         CopyPaletteToCRAMSlot(PaletteGameLine3, 2);
         if (P1_MENU_OPEN[player ^ 1])
-            func_0090c4(player ^ 1);
+            InventoryRedrawSynchronously(player ^ 1);
     } else
         ShowShipPieces(-1, player);
     gMode2RegSoftcopy |= 0x40;

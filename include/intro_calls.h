@@ -16,6 +16,6 @@ extern short IntroPart7();
 extern short IntroPart8();
 extern short IntroPart9();
 extern int IntroVideo();
-extern void func_029ca4();
+extern void IntroBeginLargePlayerScene();
 
 #endif

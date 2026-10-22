@@ -19,7 +19,7 @@ struct movement_destination {
 
 /* Apply the nearby terrain grid to a proposed 24.8 position. Properties at
  * least 0x80 also adjust edge cells and select collision-facing sprites. */
-void func_00e17a(player, entity, destination)
+void PlayerApplyTerrainDestination(player, entity, destination)
 short player;
 struct object_state *entity;
 struct movement_destination *destination;
@@ -40,7 +40,7 @@ struct movement_destination *destination;
         saved_y = entity->y;
         entity->x = destination->x;
         entity->y = destination->y;
-        if (func_000fb6()) {
+        if (PlayersRequireSeparateViews()) {
             entity->x = saved_x;
             entity->y = saved_y;
             entity->draw_flags |= 48;
@@ -140,14 +140,14 @@ struct object_state *state;
 }
 
 /* Process callbacks installed by SetupPlayer for the two player records. */
-void func_00e400(direction)
+void Player1ProcessTerrainMotion(direction)
 char *direction;
 {
-    func_00dd82(0, direction);
+    PlayerProcessTerrainMotion(0, direction);
 }
 
-void func_00e410(direction)
+void Player2ProcessTerrainMotion(direction)
 char *direction;
 {
-    func_00dd82(1, direction);
+    PlayerProcessTerrainMotion(1, direction);
 }

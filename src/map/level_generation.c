@@ -12,7 +12,7 @@
 extern unsigned char *TileAlternativePointers[];
 
 /* Refine marked map cells using the low-byte shapes of adjacent cells. */
-void func_00334a()
+void MapRefineFilledShapeMasks()
 {
     short row, column;
     unsigned short shape;
@@ -83,7 +83,7 @@ void func_00334a()
 
 /* Mark the cells with class 3, compute their filled corner bits, and select
  * a low-byte shape from the two lookup banks. */
-void func_003604()
+void MapBuildFilledTerrainShapes()
 {
     short row, column;
     unsigned short shape;
@@ -126,7 +126,7 @@ void func_003604()
                 gMapDataA[row][column] |= shape;
             }
         }
-    func_00334a();
+    MapRefineFilledShapeMasks();
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
             shape = gMapDataA[row][column];
@@ -145,7 +145,7 @@ void func_003604()
 
 /* Convert class-1 boundary cells next to class-2 cells, then fold the
  * per-cell corner mask into the class-2 shape lookup. */
-void func_0039e8()
+void MapBuildDirectionalPathShapes()
 {
     short row, column, shape;
     short replacement;
@@ -180,10 +180,10 @@ void func_0039e8()
                 if (replacement) {
                     if ((gMapDataA[row][column] &= 0xff00) & 0x8000)
                         gMapDataA[row][column] |=
-                            (unsigned short)dat_08bf6e[replacement];
+                            (unsigned short)MapBoundaryShapesAlternate[replacement];
                     else
                         gMapDataA[row][column] |=
-                            (unsigned short)dat_08bf5a[replacement];
+                            (unsigned short)MapBoundaryShapesPlain[replacement];
                 }
             }
         }
@@ -191,7 +191,7 @@ void func_0039e8()
         for (column = 0; column < 19; ++column) {
             shape = gMapDataA[row][column];
             corners = gMapDataD[row][column] & 15;
-            if (ram_ff91ea)
+            if (gMapDirectionalPathMode)
                 corners = 0;
             if ((shape & 0x3000) == 0x2000) {
                 shape ^= (unsigned short)corners;
@@ -205,7 +205,7 @@ void func_0039e8()
 
 /* Populate unmasked cells with individual shapes or a four-cell block.
  * The surrounding class-1 cells and the random thresholds select the bank. */
-void func_003cb6()
+void MapScatterTerrainFeatures()
 {
     short row, column, scan_row, scan_column;
     short nearby_plain, nearby_alternate, nearby_feature, alternate_chance;
@@ -275,7 +275,7 @@ void func_003cb6()
                 } else if (shape == 46) {
                     if (GetRandomNumber() % 100 < 10)
                         gMapDataA[row][column] = 0x902f;
-                } else if (GetRandomNumber() % 100 < func_004f50(7)) {
+                } else if (GetRandomNumber() % 100 < MapGetRandomGenerationParameter(7)) {
                     if (shape == 75)
                         gMapDataA[row][column] = 73;
                     else if (shape == 76)
@@ -289,7 +289,7 @@ void func_003cb6()
 
 /* Choose a tile alternative, using the transition descriptor when the
  * map word carries a descriptor number in bits 8 through 12. */
-void func_004174()
+void MapChooseMetatileAlternatives()
 {
     short row, column, choice, shape_number, shape_count;
     unsigned char old_shape, transition, bank;
@@ -332,7 +332,7 @@ void func_004174()
 }
 
 /* Exchange the two map planes and exchange each visibility byte's nibbles. */
-void func_00433e()
+void MapSwapPlayerBanks()
 {
     unsigned short row, column, saved_cell;
     unsigned char saved_mask;

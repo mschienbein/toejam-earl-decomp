@@ -10,7 +10,7 @@
 #include "ram_system.h"
 
 /* Select the next directional animation for earthling category 19. */
-char func_019d3e(earthling, object, next_state)
+char EarthlingSelectTerrainAnimationState(earthling, object, next_state)
 struct earthling_state *earthling;
 struct object_state *object;
 short next_state;
@@ -31,8 +31,8 @@ short next_state;
             next_state += 4;
     } else if (animation == 12) {
         if (earthling->value_0a >= 80 ||
-            func_00dd1e(object, &gPlayerInfo[0], 96, 48) ||
-            func_00dd1e(object, &gEarlPositionX, 96, 48))
+            EntityIsWithinRange(object, &gPlayerInfo[0], 96, 48) ||
+            EntityIsWithinRange(object, &gEarlPositionX, 96, 48))
             next_state += 8;
         else
             next_state += 4;
@@ -43,7 +43,7 @@ short next_state;
 }
 
 /* Update category 19's animation independently of its movement timer. */
-void func_019e12(earthling, object)
+void EarthlingUpdateTerrainAnimationState(earthling, object)
 struct earthling_state *earthling;
 struct object_state *object;
 {
@@ -65,8 +65,8 @@ struct object_state *object;
         }
     } else if (animation == 12) {
         if (earthling->value_0a < 80 &&
-            !func_00dd1e(object, &gPlayerInfo[0], 128, 64) &&
-            !func_00dd1e(object, &gEarlPositionX, 128, 64))
+            !EntityIsWithinRange(object, &gPlayerInfo[0], 128, 64) &&
+            !EntityIsWithinRange(object, &gEarlPositionX, 128, 64))
             next_state = earthling->state - 4;
     }
     if (next_state >= 0) {
@@ -82,7 +82,7 @@ struct object_state *object;
 /* Reconsider a live earthling's movement after its timer expires.
  * [INFERENCE] The first state byte indexes the 38-byte definition records;
  * target/turn/move names describe the observed helper calls and ranges. */
-void func_019f0e(earthling)
+void EarthlingThinkTimedMovement(earthling)
 struct earthling_state *earthling;
 {
     short next_state = -1, separation = 0;
@@ -91,7 +91,7 @@ struct earthling_state *earthling;
     unsigned char minimum, maximum;
 
     if (earthling->kind == 7 && earthling->state == 3) {
-        func_01b746(earthling);
+        EarthlingUpdateBouncingDamageState(earthling);
         return;
     }
     if (earthling->object) {
@@ -108,17 +108,17 @@ struct earthling_state *earthling;
         object->velocity_y = 0;
         if (!earthling->state_delay) {
             if (definition->target_chance >
-                PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                (ram_ff91e0 = 0) : ++ram_ff91e0] % 100) {
+                PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100) {
                 if (earthling->kind == 7)
                     separation = 85;
-                next_state = func_01aa20(object, definition->target_distance,
+                next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance,
                                         separation, earthling->kind);
                 if (next_state != -1) {
                     minimum = definition->target_time_min;
                     maximum = definition->target_time_max;
-                    earthling->timer = PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                        (ram_ff91e0 = 0) : ++ram_ff91e0] %
+                    earthling->timer = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                        (gRandomCacheIndex = 0) : ++gRandomCacheIndex] %
                         (maximum - minimum + 1) + minimum;
                 }
                 if ((earthling->kind == 6 || earthling->kind == 22) &&
@@ -136,21 +136,21 @@ struct earthling_state *earthling;
             next_state = -1;
         else if (next_state == -1 && earthling->state != 2) {
             if (definition->turn_chance >
-                PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                (ram_ff91e0 = 0) : ++ram_ff91e0] % 100) {
-                next_state = func_0196b0(earthling);
+                PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100) {
+                next_state = EarthlingSelectTurnState(earthling);
                 minimum = definition->turn_time_min;
                 maximum = definition->turn_time_max;
-                earthling->timer = PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                    (ram_ff91e0 = 0) : ++ram_ff91e0] %
+                earthling->timer = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                    (gRandomCacheIndex = 0) : ++gRandomCacheIndex] %
                     (maximum - minimum + 1) + minimum;
             } else {
-                next_state = (PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                    (ram_ff91e0 = 0) : ++ram_ff91e0] & 3) + 4;
+                next_state = (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                    (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) + 4;
                 minimum = definition->move_time_min;
                 maximum = definition->move_time_max;
-                earthling->timer = PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                    (ram_ff91e0 = 0) : ++ram_ff91e0] %
+                earthling->timer = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                    (gRandomCacheIndex = 0) : ++gRandomCacheIndex] %
                     (maximum - minimum + 1) + minimum;
             }
         }
@@ -171,7 +171,7 @@ struct earthling_state *earthling;
             }
         }
         if (earthling->kind == 19 && next_state != -1)
-            next_state = func_019d3e(earthling, object, next_state);
+            next_state = EarthlingSelectTerrainAnimationState(earthling, object, next_state);
         if (next_state != -1 && earthling->state != next_state) {
             SetEarthlingState(earthling, next_state);
             if (earthling->kind == 7 && earthling->value_0a &&
@@ -190,7 +190,7 @@ struct earthling_state *earthling;
     }
     if (earthling->kind == 19 &&
         (next_state == -1 || earthling->state != next_state))
-        func_019e12(earthling, object);
+        EarthlingUpdateTerrainAnimationState(earthling, object);
     if (earthling->kind == 7 && (earthling->state & 252) == 8)
-        func_01d288(earthling, object);
+        EarthlingUpdateControlRemapAttack(earthling, object);
 }

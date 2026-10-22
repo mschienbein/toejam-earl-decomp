@@ -13,7 +13,7 @@
 #include "sprite_calls.h"
 
 /* Place the three level-zero items at their fixed coordinates. */
-void func_023c6e(item)
+void InitializeLevelZeroFixedItems(item)
 struct level_item *item;
 {
     item->kind = 82;
@@ -33,7 +33,7 @@ struct level_item *item;
 }
 
 /* Supply the fixed level-zero positions for these earthling kinds. */
-void func_023cb4(kind, x, y)
+void GetLevelZeroEarthlingPosition(kind, x, y)
 short kind;
 short *x, *y;
 {
@@ -64,16 +64,16 @@ struct earthling_state *earthling;
     if (earthling->state == 1 &&
         !gPlayerInfo[earthling->object].frame_duration)
         SetEarthlingState(earthling, 0);
-    if (ram_ffe396[player_number] == 1 && !TOEJAM_SPEECH_COUNTER) {
+    if (gPlayerLemonadeRewardStates[player_number] == 1 && !gPcmEffectCooldownTicks) {
         OpenSelectedPresent(player_number, 17);
-        ram_ffe396[player_number] = 2;
+        gPlayerLemonadeRewardStates[player_number] = 2;
     }
     if (player->sprite_state == 118 && !player->frame_duration) {
         SetSprite(player, GetActivePresentSprite(player));
         GenerateSpeech(player_number, "Burp", 1);
         PlaySoundEffect((long)Sfx_Burp, 50, 0);
-        if (!ram_ffe396[player_number])
-            ram_ffe396[player_number] = 1;
+        if (!gPlayerLemonadeRewardStates[player_number])
+            gPlayerLemonadeRewardStates[player_number] = 1;
     } else if (player->sprite_state == 8 && player->y > earthling->y) {
         SetSprite(player, 118);
         SetEarthlingState(earthling, 1);

@@ -14,19 +14,19 @@ extern char EARTHLING_LOAD_FLAG_COPY;
 extern char EARTHLING_LEVEL[];
 
 /* Per-level spawn masks and bank processing phase. */
-extern unsigned long ram_ffe142[26];
-extern short ram_ffe1ae;
+extern unsigned long gEarthlingSpawnFailureMasks[26];
+extern short gEarthlingUpdateParity;
 
 /* Two six-byte special-earthling records and kind-dependent contact
- * state. ram_ffe23d keeps the scalar byte alias of ram_ffe23c[1]. */
-extern struct special_earthling_state ram_ffe226[2];
-extern char ram_ffe23a[];
-extern char ram_ffe23c[];
-extern char ram_ffe23d;
-extern char ram_ffe23e[];
+ * state. gPlayer2WisemanInteractionState keeps the scalar byte alias of gPlayerWisemanInteractionStates[1]. */
+extern struct special_earthling_state gMailboxLevelStates[2];
+extern char gPlayerWizardInteractionStates[];
+extern char gPlayerWisemanInteractionStates[];
+extern char gPlayer2WisemanInteractionState;
+extern char gPlayerOperaSingerInteractionStates[];
 
 /* Per-player mole/present interaction state keeps its incomplete bounds. */
-extern char ram_ffe24a[];
-extern char ram_ffe24c[];
+extern char gPlayerStolenPresentEntities[];
+extern char gPlayerMoleTheftCounts[];
 
 #endif

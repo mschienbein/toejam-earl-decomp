@@ -5,26 +5,26 @@
 #include "sprite_calls.h"
 
 /* Release the two ending-character objects. */
-void func_02899c()
+void EndingReleaseActivePlayerEntities()
 {
-    if (ram_ffe3aa)
-        func_00d970(ram_ffe3aa);
-    ram_ffe3aa = 0;
-    if (ram_ffe3ac)
-        func_00d970(ram_ffe3ac);
-    ram_ffe3ac = 0;
+    if (gEndingPlayer1Entity)
+        FreeEntity(gEndingPlayer1Entity);
+    gEndingPlayer1Entity = 0;
+    if (gEndingPlayer2Entity)
+        FreeEntity(gEndingPlayer2Entity);
+    gEndingPlayer2Entity = 0;
 }
 
 /* Either live handle enables the query, but both branches index the first.
  * Preserve the duplicate pointer selections: MCC68K shares their later frame
  * read, unlike a combined guard or duplicate return expressions. */
-short func_0289da()
+short EndingGetFirstPlayerAnimationFrame()
 {
     struct object_state *object;
-    if (ram_ffe3aa)
-        object = &gPlayerInfo[ram_ffe3aa];
-    else if (ram_ffe3ac)
-        object = &gPlayerInfo[ram_ffe3aa];
+    if (gEndingPlayer1Entity)
+        object = &gPlayerInfo[gEndingPlayer1Entity];
+    else if (gEndingPlayer2Entity)
+        object = &gPlayerInfo[gEndingPlayer1Entity];
     else
         return 0;
     return object->frame;

@@ -10,7 +10,7 @@
  * These casts do not imply a different record layout; historical spelling
  * is unknown [INFERENCE]. */
 /* Follow another entity, or use unsigned offsets from one of the cameras. */
-void func_00c170(entity)
+void UpdateAttachedEntityPosition(entity)
 struct object_state *entity;
 {
     struct object_state *parent;
@@ -34,7 +34,7 @@ struct object_state *entity;
 }
 
 /* Position every piece and optional shadow in each active viewport. */
-void func_00c242(first_entity)
+void PositionEntitySprites(first_entity)
 struct object_state *first_entity;
 {
     short shadow_width, sprite_number, screen_y, screen_x, piece_number;
@@ -51,7 +51,7 @@ struct object_state *first_entity;
         if (!(entity->draw_flags & 1))
             continue;
         if (entity->flags_4d & 8)
-            func_00c170(entity);
+            UpdateAttachedEntityPosition(entity);
         if (!entity->sprite_ready)
             continue;
         frame = entity->current_frame;
@@ -63,28 +63,28 @@ struct object_state *first_entity;
             for (piece_number = 0; piece_number < piece_count; ++piece_number) {
                 sprite_number = entity->primary_sprites[piece_number];
                 if (entity->flags_4d & 64)
-                    ram_ffb65a[sprite_number].y = 1;
+                    gHardwareSpriteTable[sprite_number].y = 1;
                 else {
                     piece = &((struct render_piece (*)[12])(frame + 1))[0][piece_number];
                     if (entity->tile & 0x800)
-                        ram_ffb65a[sprite_number].x = piece->flipped_x + screen_x;
+                        gHardwareSpriteTable[sprite_number].x = piece->flipped_x + screen_x;
                     else
-                        ram_ffb65a[sprite_number].x = piece->x + screen_x;
+                        gHardwareSpriteTable[sprite_number].x = piece->x + screen_x;
                     if (elevation > 224 || elevation < -224)
-                        ram_ffb65a[sprite_number].y = 0;
+                        gHardwareSpriteTable[sprite_number].y = 0;
                     else
-                        ram_ffb65a[sprite_number].y = piece->y + screen_y - elevation;
+                        gHardwareSpriteTable[sprite_number].y = piece->y + screen_y - elevation;
                 }
             }
             if ((sprite_number = entity->primary_shadow) && !(entity->flags_4d & 64)) {
-                if (!func_00d612(sprite_number)) {
-                    shadow_width = (ram_ffb65a[sprite_number].size & 12) + 4;
-                    ram_ffb65a[sprite_number].x = screen_x - shadow_width;
+                if (!IsSpriteSlotNonReclaimable(sprite_number)) {
+                    shadow_width = (gHardwareSpriteTable[sprite_number].size & 12) + 4;
+                    gHardwareSpriteTable[sprite_number].x = screen_x - shadow_width;
                     if (elevation < 0)
                         screen_y -= 2;
                     else
                         screen_y -= 4;
-                    ram_ffb65a[sprite_number].y = screen_y;
+                    gHardwareSpriteTable[sprite_number].y = screen_y;
                 } else
                     entity->primary_shadow = 0;
             }
@@ -95,28 +95,28 @@ struct object_state *first_entity;
             for (piece_number = 0; piece_number < piece_count; ++piece_number) {
                 sprite_number = entity->secondary_sprites[piece_number];
                 if (entity->flags_4d & 64)
-                    ram_ffb65a[sprite_number].y = 1;
+                    gHardwareSpriteTable[sprite_number].y = 1;
                 else {
                     piece = &((struct render_piece (*)[12])(frame + 1))[0][piece_number];
                     if (entity->tile & 0x800)
-                        ram_ffb65a[sprite_number].x = piece->flipped_x + screen_x;
+                        gHardwareSpriteTable[sprite_number].x = piece->flipped_x + screen_x;
                     else
-                        ram_ffb65a[sprite_number].x = piece->x + screen_x;
+                        gHardwareSpriteTable[sprite_number].x = piece->x + screen_x;
                     if (elevation > 224 || elevation < -224)
-                        ram_ffb65a[sprite_number].y = 0;
+                        gHardwareSpriteTable[sprite_number].y = 0;
                     else
-                        ram_ffb65a[sprite_number].y = piece->y + screen_y - elevation;
+                        gHardwareSpriteTable[sprite_number].y = piece->y + screen_y - elevation;
                 }
             }
             if ((sprite_number = entity->secondary_shadow) && !(entity->flags_4d & 64)) {
-                if (!func_00d612(sprite_number)) {
-                    shadow_width = (ram_ffb65a[sprite_number].size & 12) + 4;
-                    ram_ffb65a[sprite_number].x = screen_x - shadow_width;
+                if (!IsSpriteSlotNonReclaimable(sprite_number)) {
+                    shadow_width = (gHardwareSpriteTable[sprite_number].size & 12) + 4;
+                    gHardwareSpriteTable[sprite_number].x = screen_x - shadow_width;
                     if (elevation < 0)
                         screen_y -= 2;
                     else
                         screen_y -= 4;
-                    ram_ffb65a[sprite_number].y = screen_y;
+                    gHardwareSpriteTable[sprite_number].y = screen_y;
                 } else
                     entity->secondary_shadow = 0;
             }
@@ -125,14 +125,14 @@ struct object_state *first_entity;
 }
 
 /* Rebuild the hardware link order: pieces, shadows, then menu pieces. */
-void func_00c4fa()
+void BuildViewportSpriteLinks()
 {
     short piece_number, primary_count = 0, secondary_count = 0;
     short sprite_count, previous_sprite, sprite_number;
     short primary_sprites[54], secondary_sprites[54];
     struct object_state *entity;
 
-    for (entity = ram_ffd938; entity; entity = entity->next) {
+    for (entity = gEntityDrawListHead; entity; entity = entity->next) {
         if (entity->sprite_ready) {
             sprite_count = entity->current_frame->count;
             if (entity->draw_flags & 2)
@@ -143,7 +143,7 @@ void func_00c4fa()
                     secondary_sprites[secondary_count++] = entity->secondary_sprites[piece_number];
         }
     }
-    for (entity = ram_ffd938; entity; entity = entity->next) {
+    for (entity = gEntityDrawListHead; entity; entity = entity->next) {
         if (entity->sprite_ready && (entity->draw_flags & 64)) {
             if (entity->primary_shadow)
                 primary_sprites[primary_count++] = entity->primary_shadow;
@@ -151,7 +151,7 @@ void func_00c4fa()
                 secondary_sprites[secondary_count++] = entity->secondary_shadow;
         }
     }
-    for (entity = ram_ffd93c; entity; entity = entity->next) {
+    for (entity = gInventoryDrawListHead; entity; entity = entity->next) {
         if ((entity->draw_flags & 1) && entity->sprite_ready) {
             sprite_count = entity->current_frame->count;
             if (entity->draw_flags & 2)
@@ -162,27 +162,27 @@ void func_00c4fa()
                     secondary_sprites[secondary_count++] = entity->secondary_sprites[piece_number];
         }
     }
-    ram_ffb65a[23].link = 79;
+    gHardwareSpriteTable[23].link = 79;
     previous_sprite = 23;
     for (piece_number = 0; piece_number < primary_count; ++piece_number) {
         sprite_number = primary_sprites[piece_number];
-        ram_ffb65a[sprite_number].link = 79;
-        ram_ffb65a[previous_sprite].link = sprite_number;
+        gHardwareSpriteTable[sprite_number].link = 79;
+        gHardwareSpriteTable[previous_sprite].link = sprite_number;
         previous_sprite = sprite_number;
     }
-    ram_ffb65a[24].link = 79;
-    ram_ffb65a[previous_sprite].link = 24;
+    gHardwareSpriteTable[24].link = 79;
+    gHardwareSpriteTable[previous_sprite].link = 24;
     previous_sprite = 24;
     for (piece_number = 0; piece_number < secondary_count; ++piece_number) {
         sprite_number = secondary_sprites[piece_number];
-        ram_ffb65a[sprite_number].link = 79;
-        ram_ffb65a[previous_sprite].link = sprite_number;
+        gHardwareSpriteTable[sprite_number].link = 79;
+        gHardwareSpriteTable[previous_sprite].link = sprite_number;
         previous_sprite = sprite_number;
     }
 }
 
 /* Sort active records by descending Y, keeping flag-7 records after the rest. */
-void func_00c6b0()
+void SortEntitiesForSpriteDraw()
 {
     struct object_state *normal_head = 0, *normal_tail = 0;
     struct object_state *late_head = 0, *late_tail = 0;
@@ -250,8 +250,8 @@ void func_00c6b0()
         }
     }
     if (normal_head) {
-        ram_ffd938 = normal_head;
+        gEntityDrawListHead = normal_head;
         normal_tail->next = late_head;
     } else
-        ram_ffd938 = late_head;
+        gEntityDrawListHead = late_head;
 }

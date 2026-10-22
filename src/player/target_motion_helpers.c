@@ -4,7 +4,7 @@
 
 /* Follow the vertical delta only outside a two-unit dead zone, while always
  * moving horizontally and returning the corresponding facing state. */
-char func_01b02e(state, delta_x, delta_y)
+char EntitySteerWithVerticalDeadZone(state, delta_x, delta_y)
 struct object_state *state;
 short delta_x, delta_y;
 {
@@ -24,11 +24,11 @@ short delta_x, delta_y;
 }
 
 /* Trigger event 9 once when the target has either observed status bit. */
-void func_01b078(state, target)
+void EntityTriggerTargetStatusEventOnce(state, target)
 struct object_state *state, *target;
 {
     if (!state->flag_57 && (target->flags_52 & 0x40800L)) {
-        func_03e4f8(9);
+        AudioRequestChannelTemplateEffect(9);
         state->flag_57 = 1;
     }
 }

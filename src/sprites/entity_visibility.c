@@ -9,7 +9,7 @@
 #include "sprite_calls.h"
 
 /* Test the entity's level and bounds against the chosen camera rectangle. */
-short func_00bdd8(entity, viewport)
+short IsEntityVisibleInViewport(entity, viewport)
 struct object_state *entity;
 short viewport;
 {
@@ -42,7 +42,7 @@ short viewport;
 }
 
 /* Add or release a camera-specific sprite when visibility changes. */
-void func_00beb2(entity_number)
+void UpdateEntityViewportSprites(entity_number)
 int entity_number;
 {
     char add_primary = 0, add_secondary = 0;
@@ -50,44 +50,44 @@ int entity_number;
 
     entity = &gPlayerInfo[entity_number];
     if (entity->draw_flags & 1) {
-        if (func_00bdd8(entity, 0)) {
-            if (!func_01dee8(entity_number) && !(entity->draw_flags & 2))
+        if (IsEntityVisibleInViewport(entity, 0)) {
+            if (!IsSpeechBubbleEntity(entity_number) && !(entity->draw_flags & 2))
                 add_primary = 1;
         } else if (entity->draw_flags & 2)
-            OpeningPresents7(entity, 0);
-        if (func_00bdd8(entity, 1)) {
-            if (!func_01dee8(entity_number) && !(entity->draw_flags & 4))
+            ReleaseEntityViewportSprites(entity, 0);
+        if (IsEntityVisibleInViewport(entity, 1)) {
+            if (!IsSpeechBubbleEntity(entity_number) && !(entity->draw_flags & 4))
                 add_secondary = 1;
         } else if (entity->draw_flags & 4)
-            OpeningPresents7(entity, 1);
+            ReleaseEntityViewportSprites(entity, 1);
         if (add_primary) {
             if (entity_number == 0 && (entity->draw_flags & 4))
-                OpeningPresents7(entity, 1);
+                ReleaseEntityViewportSprites(entity, 1);
             if (entity_number != 1 || !(entity->draw_flags & 4)) {
                 entity->sprite_ready = 0;
-                func_00d776(entity, 0);
+                AllocateEntityViewportSprites(entity, 0);
             }
         }
         if (add_secondary) {
             if (entity_number == 1 && (entity->draw_flags & 2))
-                OpeningPresents7(entity, 0);
+                ReleaseEntityViewportSprites(entity, 0);
             if (entity_number != 0 || !(entity->draw_flags & 2)) {
                 entity->sprite_ready = 0;
-                func_00d776(entity, 1);
+                AllocateEntityViewportSprites(entity, 1);
             }
         }
     }
 }
 
-void func_00bfc6()
+void UpdateAllEntityViewportSprites()
 {
     short entity_number, entity_count;
 
     if (gLevel912C == 26) {
         entity_count = 40;
-        ram_ffd93c = 0;
+        gInventoryDrawListHead = 0;
     } else
         entity_count = 26;
     for (entity_number = 0; entity_number < entity_count; ++entity_number)
-        func_00beb2(entity_number);
+        UpdateEntityViewportSprites(entity_number);
 }

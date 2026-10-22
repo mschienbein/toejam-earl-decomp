@@ -13,10 +13,10 @@ extern int MenuWhatHandler();
 extern int MenuWhoHandler();
 extern void NewGameMainMenu();
 extern void RemoveMenuHeader();
-extern void func_023554();
-extern int func_023740();
-extern void func_023b08();
-extern void func_023b70();
-extern void func_023b8c();
+extern void ShowGameOverAndReset();
+extern int AreBothControllersConnected();
+extern void CreateMenuCursorEntity();
+extern void ReleaseMenuCursorEntity();
+extern void PositionMenuCursorEntity();
 
 #endif

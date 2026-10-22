@@ -29,11 +29,11 @@ extern unsigned char TileLookupAuxiliary[20];
 extern unsigned short ToejamMapIcon[16];
 /* Address-spelled views retain the lookup bank's current element types
  * and bounds, including its present-terrain and input-direction tables. */
-extern unsigned char dat_08bf5a[20];
-extern unsigned char dat_08bf6e[20];
-extern unsigned char dat_08bfc2[];
-extern char dat_08bfce[23];
-extern unsigned char dat_08bfe6[4][10];
+extern unsigned char MapBoundaryShapesPlain[20];
+extern unsigned char MapBoundaryShapesAlternate[20];
+extern unsigned char MapPathTurnDirections[];
+extern char LargeItemExcludedTerrainIds[23];
+extern unsigned char ControlRemapDirections[4][10];
 
 /* Additional selected final-batch storage and resource interfaces. */
 extern unsigned char MapGenerationRangePairs[8][8][2];

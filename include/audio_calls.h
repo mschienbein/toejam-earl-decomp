@@ -9,12 +9,12 @@ extern void MassiveRoutine();
 extern void PlaySound();
 extern void PlaySoundEffect();
 extern void RAMWritesRoutine1();
-extern void func_03e40e();
-extern void func_03e418();
-extern void func_03e43c();
-extern void func_03e446();
-extern void func_03e46a();
-extern void func_03e47e();
-extern void func_03e4f8();
+extern void MusicRequestTrackPointerReset();
+extern void MusicClearTrackPointers();
+extern void AudioRequestFmChannelRelease();
+extern void AudioReleaseAllFmChannels();
+extern void MusicSelectSongTemplateBank();
+extern void MusicLoadSongChannelTemplates();
+extern void AudioRequestChannelTemplateEffect();
 
 #endif

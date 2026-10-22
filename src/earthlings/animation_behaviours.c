@@ -7,11 +7,11 @@
 #include "ram_system.h"
 #include "ram_ui.h"
 
-#define NEXT_RANDOM PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0]
+#define NEXT_RANDOM PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
 /* Reverse blocked horizontal motion, probabilistically acquire a target,
  * otherwise continue a timed horizontal wander with a random vertical drift. */
-void func_01a3a4(earthling)
+void EarthlingThinkHorizontalWander(earthling)
 struct earthling_state *earthling;
 {
     short next_state = -1;
@@ -39,7 +39,7 @@ struct earthling_state *earthling;
             if (definition->target_chance > NEXT_RANDOM % 100) {
                 previous_velocity_x = object->velocity_x;
                 previous_velocity_y = object->velocity_y;
-                next_state = func_01aa20(object, definition->target_distance, 0,
+                next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance, 0,
                                         earthling->kind);
                 if (next_state != -1) {
                     if (earthling->state != 2 && (object->draw_flags & 6) &&
@@ -82,7 +82,7 @@ struct earthling_state *earthling;
 
 /* Clear the one-update delay, then reverse or step between the observed
  * facing states when the animation ends or the current sprite is blocked. */
-void func_01a722(earthling)
+void EarthlingAdvanceHorizontalTurnAnimation(earthling)
 struct earthling_state *earthling;
 {
     short next_state = -1;
@@ -96,7 +96,7 @@ struct earthling_state *earthling;
     }
     object = &gPlayerInfo[earthling->object];
     if (!object->sprite_state && earthling->state >= 6)
-        next_state = func_0196b0(earthling);
+        next_state = EarthlingSelectTurnState(earthling);
     else if (!object->frame_duration) {
         if (earthling->state == 2)
             next_state = 3;
@@ -124,7 +124,7 @@ struct earthling_state *earthling;
 
 /* Reverse a moving earthling when the two menu flags permit it, and restart
  * its animation whenever the selected state changes. */
-void func_01a7f0(earthling)
+void EarthlingThinkHorizontalReversal(earthling)
 struct earthling_state *earthling;
 {
     short next_state = -1;
@@ -138,7 +138,7 @@ struct earthling_state *earthling;
     }
     object = &gPlayerInfo[earthling->object];
     if (!object->sprite_state && earthling->state >= 2)
-        next_state = func_0196b0(earthling);
+        next_state = EarthlingSelectTurnState(earthling);
     else if (earthling->state <= 1 && P1_MENU_OPEN[0] != 3 && HBLANK_FLAG_1 != 3) {
         if (object->velocity_x > 0) {
             next_state = 2;
@@ -156,7 +156,7 @@ struct earthling_state *earthling;
 
 /* Acquire target mode 8 at timer expiry. State 3 waits for animation and
  * status-bit transitions; other states expire a signed byte phase timer. */
-void func_01a8a0(earthling)
+void EarthlingThinkTargetedResetCycle(earthling)
 struct earthling_state *earthling;
 {
     struct object_state *object;
@@ -170,13 +170,13 @@ struct earthling_state *earthling;
     definition = &EARTHLING_DATA[earthling->kind];
     if (earthling->state == 2) {
         if (!object->frame_duration)
-            func_0180fe(earthling);
+            EarthlingRestoreSavedPosition(earthling);
         return;
     }
     if (--earthling->timer < 0) {
         object->velocity_x = 0;
         object->velocity_y = 0;
-        next_state = func_01aa20(object, definition->target_distance, 0, 8);
+        next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance, 0, 8);
         if (next_state != -1) {
             minimum_time = definition->target_time_min;
             maximum_time = definition->target_time_max;

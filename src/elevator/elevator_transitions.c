@@ -15,8 +15,8 @@
  * remains unknown [INFERENCE]. */
 
 /* Report input or nearby players on this elevator's level, marking nearby
- * players in ram_ffda82 before the elevator changes state. */
-int func_013a3e(elevator, flag)
+ * players in gPlayerElevatorApproachInputGate before the elevator changes state. */
+int ElevatorCheckPlayerProximityAndInput(elevator, flag)
 struct elevator_record *elevator;
 char flag;
 {
@@ -35,7 +35,7 @@ char flag;
                 if (distance_y < 20 &&
                     ((elevator->state <= 1 && distance_y >= 10) ||
                      (elevator->state == 3 && distance_y > 0))) {
-                    ram_ffda82[player] = 1;
+                    gPlayerElevatorApproachInputGate[player] = 1;
                     occupied = 1;
                 }
             }
@@ -46,7 +46,7 @@ char flag;
 
 /* Raise the departure entity in four-pixel steps, wrapping at 28 and
  * shortening the interval after each completed cycle. */
-int func_013af8(elevator)
+int ElevatorStepDepartureHeightCycles(elevator)
 struct elevator_record *elevator;
 {
     struct object_state *entity;
@@ -83,7 +83,7 @@ void ProcessElevatorStep1()
         next_state = -1;
         if (state == 13) {
             if (ARRIVING_ELEV_LEVEL != elevator->level + 1 &&
-                ram_ffda66 != elevator->level + 1) {
+                gSecondaryArrivalElevatorLevel != elevator->level + 1) {
                 next_state = 10;
                 entity = gPlayerInfo[0].level == elevator->level ?
                     &gPlayerInfo[0] : &gPlayerInfo[1];
@@ -124,13 +124,13 @@ void ProcessElevatorStep1()
                 PlaySound(17, 50);
                 if ((gPlayerLives[0] < 0 || flag == ELEVATOR_FLAG[0]) &&
                     (gPlayer2Lives < 0 || flag == ELEVATOR_FLAG[1])) {
-                    func_03e43c();
-                    func_03e40e();
+                    AudioRequestFmChannelRelease();
+                    MusicRequestTrackPointerReset();
                 }
             } else if (distance_or_frame < 12 && !((distance_or_frame + 1) & 3))
                 PlaySound(7, 50);
         } else if (state == 5) {
-            if (elevator->entity && func_013af8(elevator)) {
+            if (elevator->entity && ElevatorStepDepartureHeightCycles(elevator)) {
                 next_state = 7;
                 PlaySound(3, 65);
             }
@@ -153,14 +153,14 @@ void ProcessElevatorStep1()
             if (state == 3)
                 next_state = 4;
             else if (state == 1) {
-                ram_ffda6c = 1;
+                gElevatorDepartureInProgress = 1;
                 next_state = 6;
                 if (flag == ELEVATOR_FLAG[0])
                     gPlayerInfo[0].flags_4d |= 64;
                 if (flag == ELEVATOR_FLAG[1])
                     gPlayerInfo[1].flags_4d |= 64;
             }
-        } else if (func_013a3e(elevator, flag)) {
+        } else if (ElevatorCheckPlayerProximityAndInput(elevator, flag)) {
             if (state != 3 && state != 2) {
                 next_state = 2;
                 PlaySound(24, 30);
@@ -178,9 +178,9 @@ void ProcessElevatorStep1()
             }
         }
         if (next_state != -1)
-            func_012694(elevator, next_state);
+            ElevatorSetState(elevator, next_state);
         if (next_state == 11)
-            func_013786(flag);
+            ElevatorAdvanceRidersToNextLevel(flag);
     }
 }
 
@@ -220,7 +220,7 @@ void ProcessElevatorStep2()
                 }
                 PlaySound(15, 50);
                 if (VBLANK_FLAG_8 == 6)
-                    VBLANK_FLAG_7 = (int)func_001262(gHighestLevel);
+                    VBLANK_FLAG_7 = (int)GetLevelMusicIndex(gHighestLevel);
             }
         } else if (state == 2) {
             if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration)
@@ -241,7 +241,7 @@ void ProcessElevatorStep2()
         else if (state == 9) {
             if (!elevator->entity || !gPlayerInfo[elevator->entity].frame_duration)
                 next_state = 11;
-        } else if (func_013a3e(elevator, flag)) {
+        } else if (ElevatorCheckPlayerProximityAndInput(elevator, flag)) {
             if (state != 3 && state != 2) {
                 next_state = 2;
                 PlaySound(24, 30);
@@ -259,7 +259,7 @@ void ProcessElevatorStep2()
             }
         }
         if (next_state != -1)
-            func_012694(elevator, next_state);
+            ElevatorSetState(elevator, next_state);
     }
 }
 

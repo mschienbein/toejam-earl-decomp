@@ -16,37 +16,37 @@
 #include "ui_calls.h"
 
 /* Level 26 uses a pause loop with a two-way option and a reset action. */
-void func_01db30(player_number)
+void RunFinalLevelPauseMenu(player_number)
 short player_number;
 {
     short reset_selected = 0;
 
-    func_01da9c(0);
+    DrawPauseChoicePanel(0);
     PlaySound(6, 99);
     WaitForNextVBlank(1);
     PlaySound(20, 99);
-    func_03e4f8(0);
-    func_03e43c();
-    func_03e40e();
+    AudioRequestChannelTemplateEffect(0);
+    AudioRequestFmChannelRelease();
+    MusicRequestTrackPointerReset();
     while (MovePadInputIntoD0(player_number) & 128)
         ;
     for (;;) {
         if (!reset_selected && (MovePadInputIntoD0(player_number) & 2)) {
-            func_01da9c(1);
+            DrawPauseChoicePanel(1);
             reset_selected = 1;
             continue;
         }
         if (reset_selected && (MovePadInputIntoD0(player_number) & 1)) {
-            func_01da9c(0);
+            DrawPauseChoicePanel(0);
             reset_selected = 0;
             continue;
         }
         if (MovePadInputIntoD0(player_number) & 192)
             break;
     }
-    func_01da9c(-1);
+    DrawPauseChoicePanel(-1);
     if (reset_selected)
-        func_00034e();
+        RestartFromResetEntry();
     VBLANK_FLAG_8 = -1;
     while (MovePadInputIntoD0(player_number) & 192)
         ;
@@ -66,12 +66,12 @@ short player_number;
     struct animation_descriptor *animation;
 
     if (gLevel912C == 26) {
-        func_01db30(player_number);
+        RunFinalLevelPauseMenu(player_number);
         return;
     }
     if (P1_MENU_OPEN[player_number])
         return;
-    if (object_number = func_01e736(0)) {
+    if (object_number = AllocateEntityWithEviction(0)) {
         object = &gPlayerInfo[object_number];
         object->x = TOEJAM_CAMERA_NEWX + 160;
         object->y = TOEJAM_CAMERA_NEWY + 225;
@@ -94,25 +94,25 @@ short player_number;
         object->sprite_count = 4;
         object->tile_count = 48;
         object->tile |= 0x8000;
-        animation = &dat_0af0b0;
+        animation = &PauseDisplayAnimation;
         object->sequence = animation->sequence;
         object->frames = animation->frames;
         object->frame_duration = 1;
         object->frame = -1;
-        func_00d776(object, viewport);
+        AllocateEntityViewportSprites(object, viewport);
         while (!(object->draw_flags & viewport_mask)) {
-            func_01e94e();
-            func_00d776(object, viewport);
+            EntityReleaseOneByPriority();
+            AllocateEntityViewportSprites(object, viewport);
         }
         do {
-            func_00cc82();
+            UpdateAndQueueEntitySprites();
         } while (!object->sprite_ready);
         PlaySound(6, 99);
         WaitForNextVBlank(1);
         PlaySound(20, 99);
-        func_03e4f8(0);
-        func_03e43c();
-        func_03e40e();
+        AudioRequestChannelTemplateEffect(0);
+        AudioRequestFmChannelRelease();
+        MusicRequestTrackPointerReset();
         while ((MovePadInputIntoD0(0) | MovePadInputIntoD0(1)) & 128)
             ;
         for (;;) {
@@ -137,23 +137,23 @@ short player_number;
                 if (first_input == 36 || second_input == 36) {
                     entry_number = 0;
                     do {
-                        if (ram_ffe212[entry_number])
+                        if (gShipPieceLevelAssignments[entry_number])
                             break;
                         ++entry_number;
                     } while (entry_number < 10);
                     minimum_entry = entry_number;
                     for (++entry_number; entry_number < 10; ++entry_number)
-                        if (ram_ffe212[entry_number] &&
-                            ram_ffe212[entry_number] < ram_ffe212[minimum_entry])
+                        if (gShipPieceLevelAssignments[entry_number] &&
+                            gShipPieceLevelAssignments[entry_number] < gShipPieceLevelAssignments[minimum_entry])
                             minimum_entry = entry_number;
                     entry_number = 0;
                     do {
                         if (entry_number != minimum_entry)
-                            ram_ffe212[entry_number] = 0;
+                            gShipPieceLevelAssignments[entry_number] = 0;
                         ++entry_number;
                     } while (entry_number < 10);
-                    if (ram_ffe212[minimum_entry] != gLevel912C)
-                        ram_ffe212[minimum_entry] = gLevel912C + 1;
+                    if (gShipPieceLevelAssignments[minimum_entry] != gLevel912C)
+                        gShipPieceLevelAssignments[minimum_entry] = gLevel912C + 1;
                     PlaySound(20, 99);
                     ++input_stage;
                 }
@@ -161,7 +161,7 @@ short player_number;
             }
         }
         VBLANK_FLAG_8 = -1;
-        func_00d970(object_number);
+        FreeEntity(object_number);
         while ((MovePadInputIntoD0(0) | MovePadInputIntoD0(1)) & 128)
             ;
     }

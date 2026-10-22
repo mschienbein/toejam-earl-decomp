@@ -11,15 +11,15 @@
 #include "sprite_calls.h"
 
 /* Create an object from one placement and one scene descriptor. */
-void func_023086(placement_number, descriptor_number)
+void FunkatronCreateSceneEntity(placement_number, descriptor_number)
 short placement_number, descriptor_number;
 {
     short object_number;
     struct object_state *object;
     struct scene_descriptor *descriptor;
 
-    if (object_number = func_00d904()) {
-        ram_ffe264[placement_number] = object_number;
+    if (object_number = AllocateEntity()) {
+        gFunkatronPlacementEntities[placement_number] = object_number;
         object = &gPlayerInfo[object_number];
         descriptor = &FunkatronSceneDescriptors[descriptor_number];
         object->frames = descriptor->frames;
@@ -45,7 +45,7 @@ short placement_number, descriptor_number;
 /* Zero-x placement records delimit descriptor groups. Each call visits one
  * quarter of the groups, creates visible objects, and handles proximity-based
  * animation and interactions with the first two player records. */
-void func_023154()
+void FunkatronUpdateSceneEntities()
 {
     short descriptor_number = 0;
     short placement_number, screen_x, maximum_y, half_width;
@@ -61,7 +61,7 @@ void func_023154()
             ++descriptor;
             continue;
         }
-        if (ram_ffe390 != (descriptor_number & 3))
+        if (gFunkatronUpdatePhase != (descriptor_number & 3))
             continue;
         if (descriptor_number == 28 && PLAYER_INDICATOR != 1)
             continue;
@@ -75,17 +75,17 @@ void func_023154()
         screen_x -= TOEJAM_CAMERA_NEWX;
         screen_y = FunkatronScenePlacements[placement_number].y;
         screen_y -= TOEJAM_CAMERA_NEWY;
-        object_number = ram_ffe264[placement_number];
+        object_number = gFunkatronPlacementEntities[placement_number];
         if (screen_x + half_width > 0 && screen_x < half_width + 320 &&
             screen_y + 5 > 0 && screen_y < maximum_y) {
             if (!object_number) {
-                func_023086(placement_number, descriptor_number);
-                object_number = ram_ffe264[placement_number];
+                FunkatronCreateSceneEntity(placement_number, descriptor_number);
+                object_number = gFunkatronPlacementEntities[placement_number];
             }
             if (descriptor_number >= 15 && object_number) {
                 object = &gPlayerInfo[object_number];
-                if (func_00dd1e(object, &gPlayerInfo[0], 80, 50) ||
-                    func_00dd1e(object, &gPlayerInfo[1], 80, 50)) {
+                if (EntityIsWithinRange(object, &gPlayerInfo[0], 80, 50) ||
+                    EntityIsWithinRange(object, &gPlayerInfo[1], 80, 50)) {
                     if (!object->sprite_state) {
                         object->sequence = descriptor->interaction_sequence;
                         object->frame = -1;
@@ -94,18 +94,18 @@ void func_023154()
                     player_number = 0;
                     if (!object->flag_57 &&
                         (interaction = FunkatronScenePlacements[placement_number].interaction)) {
-                        if (func_00dd1e(object, &gPlayerInfo[0], 30, 20) ||
-                            (func_00dd1e(object, &gPlayerInfo[1], 30, 20) &&
+                        if (EntityIsWithinRange(object, &gPlayerInfo[0], 30, 20) ||
+                            (EntityIsWithinRange(object, &gPlayerInfo[1], 30, 20) &&
                              (player_number = 1))) {
                             if (!((interaction == 31 && player_number == 0) ||
                                   (interaction == 53 && player_number == 0) ||
                                   (interaction == 54 && player_number == 1))) {
-                                if (func_01e38e(interaction, object->entity_number) >= 0)
+                                if (StartDialogue(interaction, object->entity_number) >= 0)
                                     object->flag_57 = 1;
                             }
                             if ((interaction == 31 && player_number == 1) ||
                                 (interaction == 54 && player_number == 0))
-                                func_01da0a();
+                                DrawPresentDisplayPanel();
                         }
                     }
                 } else if (object->sprite_state) {
@@ -115,9 +115,9 @@ void func_023154()
                 }
             }
         } else if (object_number) {
-            func_00d970(object_number);
-            ram_ffe264[placement_number] = 0;
+            FreeEntity(object_number);
+            gFunkatronPlacementEntities[placement_number] = 0;
         }
     }
-    ram_ffe390 = (ram_ffe390 + 1) & 3;
+    gFunkatronUpdatePhase = (gFunkatronUpdatePhase + 1) & 3;
 }

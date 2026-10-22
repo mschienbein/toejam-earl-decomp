@@ -9,7 +9,7 @@
 
 /* Ensure both primary sprites are resident, wipe paired rows inward, then
  * fill the 28-by-40 destination and write 0x1c to VDP register 18. */
-void func_002e6a()
+void AnimateSplitScreenWipe()
 {
     short pass, step, lower_row, upper_row, column;
     struct object_state *entity;
@@ -18,20 +18,20 @@ void func_002e6a()
     for (step = 0; step < 2; ++step, ++entity) {
         while (!(entity->draw_flags & 2)) {
             entity->sprite_ready = 0;
-            func_00d776(entity, 0);
+            AllocateEntityViewportSprites(entity, 0);
             if (!(entity->draw_flags & 2))
-                func_01e94e();
+                EntityReleaseOneByPriority();
         }
     }
     while (!gPlayerInfo[0].sprite_ready || !gPlayerInfo[1].sprite_ready) {
-        func_00cc82();
+        UpdateAndQueueEntitySprites();
         WaitForNextVBlank(1);
         SpriteLoadingStuff(0, 0);
     }
     WaitForNextVBlank(1);
-    func_00d07a();
-    upper_row = ram_ff803e & 31;
-    lower_row = (ram_ff803e + 29) & 31;
+    LinkPlayerSpritesForSplitWipe();
+    upper_row = gCamera1TileRowCursor & 31;
+    lower_row = (gCamera1TileRowCursor + 29) & 31;
     for (step = 0; step < 15; ++step) {
         WaitForNextVBlank(1);
         VDP_COMMAND = (upper_row << 23) + 0x60000002L;
@@ -51,7 +51,7 @@ void func_002e6a()
             VDP_COMMAND = (lower_row << 23) + 0x60000002L;
         }
     }
-    func_00cfba(1);
+    SelectSpriteChainStart(1);
     for (pass = 0; pass < 28; ++pass) {
         VDP_COMMAND = (pass << 23) + 0x50000003L;
         for (column = 0; column < 40; ++column)

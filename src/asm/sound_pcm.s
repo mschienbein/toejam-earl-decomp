@@ -3,7 +3,7 @@
 .text
 .include "sound.inc"
 
-| Retry entry owned by func_03f62a: release the bus so the Z80 can snapshot its PCM mailbox.
+| Retry entry owned by AudioSubmitPendingPcmSample: release the bus so the Z80 can snapshot its PCM mailbox.
 | Delay 24 DBRA iterations and fall through to the normal request entry.
 .globl loc_03f61c
 .type loc_03f61c, @function
@@ -16,9 +16,9 @@ loc_03f61c:
 
 | Submit gMusicUnknownE480's direct PCM pointer/count when the mailbox snapshot lock is clear.
 | An accepted request starts the speech timer and clears the pending pointer; timeout retains it.
-.globl func_03f62a
-.type func_03f62a, @function
-func_03f62a:
+.globl AudioSubmitPendingPcmSample
+.type AudioSubmitPendingPcmSample, @function
+AudioSubmitPendingPcmSample:
     move.w #Z80_BUS_TAKE,(Z80_BUS_REQUEST).l
     move.w #Z80_BUS_POLL_LIMIT,%d2
 .L_pcm_bus_wait:
@@ -54,7 +54,7 @@ func_03f62a:
     | Derive the speech timer as floor(sample_length / 138) + 5.
     divu.w #PCM_SPEECH_BYTES_PER_TICK,%d2
     addq.w #PCM_SPEECH_EXTRA_TICKS,%d2
-    move.w %d2,(TOEJAM_SPEECH_COUNTER).l
+    move.w %d2,(gPcmEffectCooldownTicks).l
     move.w #Z80_BUS_RELEASE,(Z80_BUS_REQUEST).l
     move.w #SOUND_REQUEST_NONE,(gMusicUnknownE47E).l
     clr.l (gMusicUnknownE480).l
@@ -65,18 +65,18 @@ func_03f62a:
     move.w #Z80_BUS_RELEASE,(Z80_BUS_REQUEST).l
     move.w #SOUND_REQUEST_NONE,(gMusicUnknownE47E).l
     rts
-.size func_03f62a, .-func_03f62a
+.size AudioSubmitPendingPcmSample, .-AudioSubmitPendingPcmSample
 
 | Submit an immediate PCM pointer only when speech/inhibit/PSG-active checks allow it.
-| Unlike func_03f62a, this entry preserves d0-d2/a0 and does not start the speech timer.
-.globl func_03f6c6
-.type func_03f6c6, @function
-func_03f6c6:
+| Unlike AudioSubmitPendingPcmSample, this entry preserves d0-d2/a0 and does not start the speech timer.
+.globl AudioTrySubmitSequencerPcmSample
+.type AudioTrySubmitSequencerPcmSample, @function
+AudioTrySubmitSequencerPcmSample:
     link %a6,#0
     movem.l %d0-%d2/%a0,-(%sp)
-    tst.w (TOEJAM_SPEECH_COUNTER).l
+    tst.w (gPcmEffectCooldownTicks).l
     bne.w .L_immediate_pcm_return
-    tst.w (ram_ffe476).l
+    tst.w (gMusicAlternateTemplateBankEnabled).l
     bne.w .L_immediate_pcm_return
     bra.s .L_immediate_pcm_request
 
@@ -128,4 +128,4 @@ func_03f6c6:
     movem.l (%sp)+,%d0-%d2/%a0
     unlk %a6
     rts
-.size func_03f6c6, .-func_03f6c6
+.size AudioTrySubmitSequencerPcmSample, .-AudioTrySubmitSequencerPcmSample

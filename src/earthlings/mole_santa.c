@@ -23,10 +23,10 @@
 /* ORIGINAL BUG: this consumer retains the observed int result view.
  * Both the shared short declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
-extern int func_00bdd8();
+extern int IsEntityVisibleInViewport();
 
 /* Allocate a six-slot effect and copy its position and level from the mole. */
-void func_02234c(earthling, mole)
+void EarthlingSpawnMoleEffect(earthling, mole)
 struct earthling_state *earthling;
 struct object_state *mole;
 {
@@ -35,13 +35,13 @@ struct object_state *mole;
     struct animation_descriptor *animation;
 
     for (slot = 0; slot < 6; ++slot) {
-        if (!ram_ffe244[slot])
+        if (!gMoleEffectEntities[slot])
             break;
     }
     if (slot == 6)
         return;
-    if (ram_ffe244[slot] = (int)func_00d904()) {
-        effect = &gPlayerInfo[ram_ffe244[slot]];
+    if (gMoleEffectEntities[slot] = (int)AllocateEntity()) {
+        effect = &gPlayerInfo[gMoleEffectEntities[slot]];
         effect->x = mole->x;
         effect->y = mole->y;
         effect->level = mole->level;
@@ -61,22 +61,22 @@ struct object_state *mole;
 }
 
 /* Release completed mole effects and presents whose height reaches zero. */
-void func_0223f6()
+void ReleaseFinishedMoleEffectsAndStolenPresents()
 {
     short slot, object_number;
 
     for (slot = 0; slot < 6; ++slot) {
-        if ((object_number = ram_ffe244[slot]) &&
+        if ((object_number = gMoleEffectEntities[slot]) &&
             !gPlayerInfo[object_number].frame_duration) {
-            func_00d970(object_number);
-            ram_ffe244[slot] = 0;
+            FreeEntity(object_number);
+            gMoleEffectEntities[slot] = 0;
         }
     }
     for (slot = 0; slot <= 1; ++slot) {
-        if ((object_number = ram_ffe24a[slot]) &&
+        if ((object_number = gPlayerStolenPresentEntities[slot]) &&
             gPlayerInfo[object_number].height <= 0) {
-            func_00d970(object_number);
-            ram_ffe24a[slot] = 0;
+            FreeEntity(object_number);
+            gPlayerStolenPresentEntities[slot] = 0;
         }
     }
 }
@@ -102,8 +102,8 @@ struct earthling_state *earthling;
         }
     } else if ((earthling->state & 252) == 4) {
         if (santa->height > 20 && !santa->velocity_x && !santa->velocity_y) {
-            next_state = (PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                (ram_ff91e0 = 0) : ++ram_ff91e0] & 3) + 4;
+            next_state = (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) + 4;
             switch (next_state) {
             case 5:
                 next_state = 4;
@@ -121,8 +121,8 @@ struct earthling_state *earthling;
                 break;
             }
             if (santa->velocity_y) {
-                if (PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                    (ram_ff91e0 = 0) : ++ram_ff91e0] & 1) {
+                if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                    (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1) {
                     santa->velocity_x = -256;
                     santa->acceleration_x = -16;
                 } else {
@@ -143,10 +143,10 @@ struct earthling_state *earthling;
             int flags;
             if (!((flags = santa->draw_flags) & (unsigned long)6)) {
                 do {
-                    func_01804e(earthling);
+                    EarthlingRelocateRecord(earthling);
                     santa->x = earthling->x;
                     santa->y = earthling->y;
-                } while (func_00bdd8(santa, 0) || func_00bdd8(santa, 1));
+                } while (IsEntityVisibleInViewport(santa, 0) || IsEntityVisibleInViewport(santa, 1));
                 if (!(gPlayerInfo[0].flags_52 & 0x07800000) &&
                     !(gPlayerInfo[1].flags_52 & 0x07800000))
                     PlaySound(6, 99);
@@ -154,17 +154,17 @@ struct earthling_state *earthling;
         }
     } else if (earthling->state == 1) {
         if (santa->frame > 2 && santa->frame < 5) {
-            if ((func_00dd1e(santa, toejam, 125, 75) &&
+            if ((EntityIsWithinRange(santa, toejam, 125, 75) &&
                  toejam->sprite_state && toejam->sprite_state != 4 &&
                  !(toejam->flags_52 & 0x20400000) && toejam->sprite_state != 76) ||
-                (func_00dd1e(santa, earl, 150, 75) &&
+                (EntityIsWithinRange(santa, earl, 150, 75) &&
                  earl->sprite_state && earl->sprite_state != 4 &&
                  !(earl->flags_52 & 0x20400000) && earl->sprite_state != 76))
                 next_state = 2;
         } else if (!santa->frame_duration)
             next_state = 0;
     } else if (!earthling->state) {
-        if (func_00dd1e(santa, toejam, 125, 75)) {
+        if (EntityIsWithinRange(santa, toejam, 125, 75)) {
             if (gPlayer1BurpsLeft[0])
                 next_state = 2;
             else if (toejam->flags_52 & 8) {
@@ -175,7 +175,7 @@ struct earthling_state *earthling;
                        toejam->sprite_state != 76)
                 next_state = 2;
         }
-        if (next_state != 2 && func_00dd1e(santa, earl, 125, 75)) {
+        if (next_state != 2 && EntityIsWithinRange(santa, earl, 125, 75)) {
             if (gPlayer2BurpsLeft)
                 next_state = 2;
             else if (earl->flags_52 & 8) {

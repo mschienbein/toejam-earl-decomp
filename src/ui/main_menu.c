@@ -31,7 +31,7 @@ short selection;
 {
 select_players:
     selection = MenuWhoHandler();
-    ram_ff801c = 0;
+    gControllerPortsSwapped = 0;
     switch (selection) {
     case 0:
         gPlayerLives[0] = 0;
@@ -41,7 +41,7 @@ select_players:
         gPlayerRank[1] = 0;
         gPlayerInfo[1].level = 0;
         PLAYER_INDICATOR = 2;
-        ram_ff801c = 0;
+        gControllerPortsSwapped = 0;
         break;
     case 1:
         gPlayerLives[0] = 0;
@@ -52,10 +52,10 @@ select_players:
         gPlayerInfo[1].level = 99;
         PLAYER_INDICATOR = 0;
         if (GetCtrl2Input()) {
-            ram_ff801c = 1;
+            gControllerPortsSwapped = 1;
             break;
         } else {
-            ram_ff801c = 0;
+            gControllerPortsSwapped = 0;
             break;
         }
     case 2:
@@ -67,10 +67,10 @@ select_players:
         gPlayerInfo[1].level = 0;
         PLAYER_INDICATOR = 1;
         if (GetCtrl1Input()) {
-            ram_ff801c = 1;
+            gControllerPortsSwapped = 1;
             break;
         } else {
-            ram_ff801c = 0;
+            gControllerPortsSwapped = 0;
             break;
         }
     }
@@ -85,7 +85,7 @@ select_game:
         IntroVideo();
         goto select_players;
     case 3:
-        ram_ff8030 = MenuControllerOptionsHandler();
+        gControllerButtonsAcSwapped = MenuControllerOptionsHandler();
         goto select_game;
     case 4:
         gWorldType = 1;
@@ -96,11 +96,11 @@ select_game:
 }
 
 /* Display the game-over text until a button or timeout, then reset. */
-void func_023554()
+void ShowGameOverAndReset()
 {
-    func_01d802(0);
+    DrawMenuWindowFrame(0);
     VDP_COMMAND = 0x57160003L;
-    func_009f8a("bogus ... game over");
+    TextWriteStringTiles("bogus ... game over");
     ForceTextBackgroundColorToBlack(1);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
@@ -109,19 +109,19 @@ void func_023554()
     for (;;) {
         do {
             WaitForNextVBlank(1);
-            func_008be4(8);
+            TextAnimateFontBanks(8);
         } while (TIME_COUNTER <= 600 &&
             !((MovePadInputIntoD0(0) | MovePadInputIntoD0(1)) & 0xf0));
         PlaySound(6, 99);
         PlaySound(0, 98);
-        func_03e43c();
-        func_03e40e();
+        AudioRequestFmChannelRelease();
+        MusicRequestTrackPointerReset();
         gMode2RegSoftcopy &= 0x3c;
         VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
         ClearColourRAM();
         ClearSRAM();
         ClearVideoRAM();
-        func_00034e();
+        RestartFromResetEntry();
     }
 }
 
@@ -162,7 +162,7 @@ int MenuJamOutHandler()
 }
 
 /* Check both controller ports with each direction setting. */
-int func_023740()
+int AreBothControllersConnected()
 {
     int controllers_present = 1;
     int delay;
@@ -212,13 +212,13 @@ register struct menu_item *items;
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
-    func_00046a();
-    func_01d802(0);
+    DrawStarfieldPlane();
+    DrawMenuWindowFrame(0);
     CopyPaletteToCRAMSlot(PaletteGameLine1, 0);
     CopyPaletteToCRAMSlot(PaletteGameLine4, 3);
     ForceTextBackgroundColorToBlack(1);
     MenuDrawTextItems(items, item_count);
-    func_00cc82();
+    UpdateAndQueueEntitySprites();
     WaitForNextVBlank(1);
     SpriteLoadingStuff(0, 0);
     gMode2RegSoftcopy |= 0x40;
@@ -226,27 +226,27 @@ register struct menu_item *items;
     SetVHBlankFlag2();
     while ((GetCtrl1Input() | GetCtrl2Input()) & 0xf0) {
         WaitForNextVBlank(1);
-        func_008be4(8);
+        TextAnimateFontBanks(8);
     }
-    func_023b08();
+    CreateMenuCursorEntity();
     selected_item = 0;
     selected = &items[0];
     for (;;) {
         VBLANK_FLAG_2 = 0;
-        func_00cc82();
+        UpdateAndQueueEntitySprites();
         WaitForNextVBlank(1);
         SpriteLoadingStuff(0, 0);
-        func_008be4(8);
-        func_00059e(0);
+        TextAnimateFontBanks(8);
+        SelectViewportSpriteChain(0);
         GetRandomNumber();
         input = (unsigned char)GetCtrl1Input() | GetCtrl2Input();
         if (input != previous_input) {
             if (input & 0xf0) {
-                if (items != MenuWhoItems || selected->selection || func_023740())
+                if (items != MenuWhoItems || selected->selection || AreBothControllersConnected())
                     break;
                 PlaySound(26, 50);
                 VDP_COMMAND = 0x5c040003L;
-                func_009f8a("need two controllers for two players");
+                TextWriteStringTiles("need two controllers for two players");
             } else if (input & 1) {
                 --selected_item;
                 PlaySound(7, 50);
@@ -261,12 +261,12 @@ register struct menu_item *items;
             previous_input = input;
         }
         selected = &items[selected_item];
-        func_023b8c(cursor_column, selected->y);
+        PositionMenuCursorEntity(cursor_column, selected->y);
     }
     ClearVHBlankFlag2();
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
-    func_023b70();
+    ReleaseMenuCursorEntity();
     ForceTextBackgroundColorToBlack(0);
     VDP_CONTROL_WORD = 0x9100;
     VDP_CONTROL_WORD = 0x9200;
@@ -281,15 +281,15 @@ short item_count;
     short item_number;
     for (item_number = 0; item_number < item_count; ++item, ++item_number) {
         VDP_COMMAND = 0x50000003L + (item->y << 23) + (item->x << 17);
-        func_009f8a(item->text);
+        TextWriteStringTiles(item->text);
     }
 }
 
 /* Allocate and initialize the animated menu cursor object. */
-void func_023b08()
+void CreateMenuCursorEntity()
 {
     struct object_state *cursor;
-    if (gMenuCursorObjId = (int)func_00d904()) {
+    if (gMenuCursorObjId = (int)AllocateEntity()) {
         cursor = &gPlayerInfo[gMenuCursorObjId];
         cursor->tile_count = 12;
         cursor->sprite_count = 1;
@@ -301,18 +301,18 @@ void func_023b08()
         cursor->frame_duration = 1;
         cursor->frame = -1;
         cursor->sprite_ready = 0;
-        func_00d776(cursor, 0);
+        AllocateEntityViewportSprites(cursor, 0);
     }
 }
 
-void func_023b70()
+void ReleaseMenuCursorEntity()
 {
     if (gMenuCursorObjId)
-        func_00d970(gMenuCursorObjId);
+        FreeEntity(gMenuCursorObjId);
 }
 
 /* Place the cursor at the selected tile coordinate with a six-pixel offset. */
-void func_023b8c(column, row)
+void PositionMenuCursorEntity(column, row)
 short column, row;
 {
     struct object_state *cursor;
@@ -329,7 +329,7 @@ short header_number;
 {
     struct object_state *header;
     CopyPaletteToCRAMSlot(MenuHeaderPalette, 1);
-    if (gMenuHeaderObjId = (int)func_00d904()) {
+    if (gMenuHeaderObjId = (int)AllocateEntity()) {
         header = &gPlayerInfo[gMenuHeaderObjId];
         header->tile_count = -128;
         header->sprite_count = 11;
@@ -341,12 +341,12 @@ short header_number;
         header->frame_duration = 1;
         header->frame = -1;
         header->sprite_ready = 0;
-        func_00d776(header, 0);
+        AllocateEntityViewportSprites(header, 0);
     }
 }
 
 void RemoveMenuHeader()
 {
     if (gMenuHeaderObjId)
-        func_00d970(gMenuHeaderObjId);
+        FreeEntity(gMenuHeaderObjId);
 }

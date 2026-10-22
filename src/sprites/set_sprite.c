@@ -15,7 +15,7 @@ char sprite_state;
     if (!entity->entity_number)
         definitions = PlayerAnimationDescriptors;
     else
-        definitions = rom_0ae9de;
+        definitions = Player2AnimationDescriptors;
     definition = &definitions[sprite_state];
     entity->sequence = definition->sequence;
     entity->frames = definition->frames;

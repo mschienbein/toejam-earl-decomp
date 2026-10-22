@@ -18,9 +18,9 @@ void ProcessMovement()
     unsigned char fraction_y, fraction_x;
     short next_y, next_x, next_z;
 
-    for (entity = ram_ffd938; entity; entity = entity->next) {
+    for (entity = gEntityDrawListHead; entity; entity = entity->next) {
         if ((entity->draw_flags & 1) && !(entity->draw_flags & 8) &&
-            !func_0193fa(entity->earthling)) {
+            !EarthlingIsUpdateBlocked(entity->earthling)) {
             if (!(entity->mode_15 & 1) &&
                 (entity->velocity_x || entity->acceleration_x)) {
                 entity->velocity_x += entity->acceleration_x;
@@ -69,24 +69,24 @@ void ProcessMovement()
                     next_y = 1735;
             }
             if (entity->entity_number <= 1 && !entity->mode_15) {
-                if (!func_025d80(entity, entity->x, entity->y, entity->height, 0)) {
+                if (!EntityFindVolumeCollisionAtPosition(entity, entity->x, entity->y, entity->height, 0)) {
                     if (((long)entity->flags_52 & 0x08000000) &&
-                        func_012028(entity, next_x, next_y))
+                        PlayerCheckTerrainEdgeHop(entity, next_x, next_y))
                         next_z = 10;
                     if (next_x != entity->x &&
-                        func_025d80(entity, next_x, entity->y, entity->height, 0)) {
+                        EntityFindVolumeCollisionAtPosition(entity, next_x, entity->y, entity->height, 0)) {
                         next_x = entity->x;
                         fraction_x = entity->fraction_x;
                         entity->draw_flags |= 16;
                     }
                     if (next_y != entity->y &&
-                        func_025d80(entity, next_x, next_y, entity->height, 0)) {
+                        EntityFindVolumeCollisionAtPosition(entity, next_x, next_y, entity->height, 0)) {
                         next_y = entity->y;
                         fraction_y = entity->fraction_y;
                         entity->draw_flags |= 32;
                     }
                     if (next_z < entity->height &&
-                        func_025d80(entity, next_x, next_y, next_z, 2)) {
+                        EntityFindVolumeCollisionAtPosition(entity, next_x, next_y, next_z, 2)) {
                         next_z = entity->height;
                         fraction_z = entity->fraction_height;
                         entity->draw_flags |= 32;
@@ -96,7 +96,7 @@ void ProcessMovement()
                             next_y += 4;
                         }
                     }
-                } else if (func_012d0c(entity, next_x, next_y)) {
+                } else if (ElevatorBlocksEntityMovement(entity, next_x, next_y)) {
                     next_y = entity->y;
                     fraction_y = entity->fraction_y;
                     entity->draw_flags |= 32;

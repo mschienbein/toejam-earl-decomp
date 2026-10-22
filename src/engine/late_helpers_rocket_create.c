@@ -7,12 +7,12 @@
 #include "sprite_calls.h"
 
 /* Initialize the rocketship and its separate exhaust object. */
-void func_028b80()
+void CutsceneAllocateRocketshipPair()
 {
     struct object_state *object;
 
-    ram_ffe3de = (int)func_00d904();
-    object = &gPlayerInfo[ram_ffe3de];
+    gCutsceneRocketshipEntity = (int)AllocateEntity();
+    object = &gPlayerInfo[gCutsceneRocketshipEntity];
     object->tile_count = 101;
     object->sprite_count = 8;
     object->tile = 0;
@@ -23,8 +23,8 @@ void func_028b80()
     object->frame_phase = 1;
     object->frame_duration = 1;
     object->frame = -1;
-    ram_ffe3e0 = (int)func_00d904();
-    object = &gPlayerInfo[ram_ffe3e0];
+    gCutsceneRocketshipExhaustEntity = (int)AllocateEntity();
+    object = &gPlayerInfo[gCutsceneRocketshipExhaustEntity];
     object->tile_count = 15;
     object->sprite_count = 2;
     object->tile = 0;

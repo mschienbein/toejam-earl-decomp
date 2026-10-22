@@ -20,15 +20,15 @@
  * remains unknown [INFERENCE]. */
 
 /* Clear CRAM and prepare the two logo tilemap planes. */
-void func_03a48a()
+void SegaLogoClearVideoPlanes()
 {
     ClearColourRAM();
     VDP_COMMAND = 0x7fe00001L;
     MoveDataToVRAM(VRAMClearingData, 16);
     VDP_COMMAND = 0x60000002L;
-    func_026fc2(0xe3ff, 2048);
+    FillVdpDataWords(0xe3ff, 2048);
     VDP_COMMAND = 0x60000003L;
-    func_026fc2(0x63ff, 2048);
+    FillVdpDataWords(0x63ff, 2048);
 }
 
 /* Cycle the logo palette, then move the animated character across the screen. */
@@ -38,17 +38,17 @@ void SEGAVideo()
     unsigned short palette_time, start_time, frame;
 
     SEGA_PAL_LOAD_FLAG = 0;
-    ram_ffe402 = 0;
+    gSegaVBlankSpriteUpdatesEnabled = 0;
     gVBlankFunc = SegaLogoVBlank;
-    func_03a48a();
+    SegaLogoClearVideoPlanes();
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank0, 0);
-    func_00046a();
+    DrawStarfieldPlane();
     VDP_COMMAND = 0x40000000L;
     MoveDataToVRAM(SplashSegaLogo, 784);
-    func_027004(0xa51c, SEGALogoTileMap, 12, 4, 64);
+    UploadVramWordRectangle(0xa51c, SEGALogoTileMap, 12, 4, 64);
     SEGA_PAL_TO_LOAD = SegaLogo_Pal;
     SEGA_PAL_LOAD_FLAG = 1;
-    ram_ffe402 = 1;
+    gSegaVBlankSpriteUpdatesEnabled = 1;
     frame = TIME_COUNTER;
     while (frame == TIME_COUNTER)
         ;
@@ -71,22 +71,22 @@ void SEGAVideo()
             SEGA_PAL_LOAD_FLAG = 1;
         }
     }
-    if (!ram_ffe404) {
+    if (!gSegaRocketPassShown) {
         frame = TIME_COUNTER;
         while (frame == TIME_COUNTER)
             ;
-        ram_ffe402 = 0;
+        gSegaVBlankSpriteUpdatesEnabled = 0;
         SEGA_PAL_LOAD_FLAG = 0;
-        func_03a70e();
-        func_028b80();
+        SegaLogoCreateTrademarkEntity();
+        CutsceneAllocateRocketshipPair();
         CopyPaletteToCRAMSlot(PaletteSpaceScreen_bank2, 2);
         character_x = 280;
         character_y = 150;
-        func_028c8a(0, character_x, character_y);
-        ram_ffe402 = 1;
+        CutsceneSetRocketshipPairPose(0, character_x, character_y);
+        gSegaVBlankSpriteUpdatesEnabled = 1;
         palette_time = TIME_COUNTER;
         while (character_x > -50) {
-            func_00cc82();
+            UpdateAndQueueEntitySprites();
             frame = TIME_COUNTER;
             while (frame == TIME_COUNTER)
                 ;
@@ -99,7 +99,7 @@ void SEGAVideo()
                 if (character_x == 190)
                     PlaySound(21, 99);
             }
-            func_028e36(--character_x, character_y);
+            CutscenePositionRocketshipPair(--character_x, character_y);
             if (TIME_COUNTER >= palette_time + 3) {
                 palette_time = TIME_COUNTER;
                 SEGA_PAL_TO_LOAD += 16;
@@ -110,9 +110,9 @@ void SEGAVideo()
                 SEGA_PAL_LOAD_FLAG = 1;
             }
         }
-        func_028c4c();
-        func_03a784();
-        ram_ffe404 = 1;
+        CutsceneReleaseRocketshipPair();
+        SegaLogoReleaseTrademarkEntity();
+        gSegaRocketPassShown = 1;
     }
     frame = TIME_COUNTER;
     while (frame == TIME_COUNTER)
@@ -121,12 +121,12 @@ void SEGAVideo()
 }
 
 /* Allocate and initialize the trademark sprite used below the logo. */
-void func_03a70e()
+void SegaLogoCreateTrademarkEntity()
 {
     struct object_state *trademark;
 
-    if (ram_ffe400 = (int)func_00d904()) {
-        trademark = &gPlayerInfo[ram_ffe400];
+    if (gSegaTrademarkEntity = (int)AllocateEntity()) {
+        trademark = &gPlayerInfo[gSegaTrademarkEntity];
         trademark->tile = 0x8000;
         trademark->current_frame = Spr_Trademark[0];
         trademark->frames = Spr_Trademark;
@@ -139,14 +139,14 @@ void func_03a70e()
         trademark->frame_duration = 1;
         trademark->frame = -1;
         trademark->frame_phase = 6;
-        func_00d776(trademark, 0);
+        AllocateEntityViewportSprites(trademark, 0);
     }
 }
 
 /* Release the trademark sprite when the logo sequence finishes. */
-void func_03a784()
+void SegaLogoReleaseTrademarkEntity()
 {
-    if (ram_ffe400)
-        func_00d970(ram_ffe400);
-    ram_ffe400 = 0;
+    if (gSegaTrademarkEntity)
+        FreeEntity(gSegaTrademarkEntity);
+    gSegaTrademarkEntity = 0;
 }

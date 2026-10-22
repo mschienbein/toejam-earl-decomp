@@ -9,7 +9,7 @@
 
 /* Animate the players toward the centers of the two half-height viewports,
  * keeping 26.6 intermediates; restore the world positions after the effect. */
-void func_00300a()
+void AnimatePlayersIntoSplitViews()
 {
     long distance, distance_divisor;
     short finished = 0;
@@ -55,7 +55,7 @@ void func_00300a()
     secondary_dy /= distance;
     while (!finished) {
         finished = 1;
-        func_00c242(ram_ffd938);
+        PositionEntitySprites(gEntityDrawListHead);
         WaitForNextVBlank(1);
         SpriteLoadingStuff(1, 0);
         distance = primary_target_x - primary_x;

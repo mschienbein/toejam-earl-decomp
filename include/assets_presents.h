@@ -17,7 +17,7 @@ extern char ProjectilePlacementTriples[][2][4][3];
 extern struct render_frame *Spr_GroundItem[17];
 extern struct render_frame *Spr_PresentSelector[1];
 /* Both current address-spelled views identify the same sequence storage. */
-extern char dat_0ae4a0[];
-extern char rom_0ae4a0[];
+extern char SingleFrameHoldAnimation[];
+extern char SingleFrameHoldAnimation[];
 
 #endif

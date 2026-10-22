@@ -5,11 +5,11 @@
  * remaining ROM-only declarations describe the observed ABI, not a uniquely
  * recovered historical C spelling. */
 extern void CutsceneTextLoad();
-extern void func_027bc2();
-extern void func_027c64();
-extern void func_027d52();
-extern void func_027e42();
-extern void func_027f5e();
-extern void func_028034();
+extern void CutsceneAppendRemappedFontTiles();
+extern void CutsceneQueueCenteredRemappedTextLine();
+extern void CutsceneQueueCenteredOriginalPaletteTextLine();
+extern void CutsceneReleaseTextEntities();
+extern void CutsceneLoadSecondTextLine();
+extern void CutsceneLoadOriginalPaletteTextLine();
 
 #endif

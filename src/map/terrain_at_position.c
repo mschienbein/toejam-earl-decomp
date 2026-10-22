@@ -12,7 +12,7 @@
  * zero or past the upper bound reads as terrain 0x80 on levels 1 and 26 and
  * 0x90 elsewhere ([INFERENCE] callers pass nonnegative coordinates; a
  * negative one would index the map). */
-unsigned char func_00d9dc(player, world_x, world_y)
+unsigned char GetMapTerrainAtWorldPosition(player, world_x, world_y)
 short player, world_x, world_y;
 {
     char special_level = 0;
@@ -41,8 +41,8 @@ short player, world_x, world_y;
     } else {
         --map_x;
         --map_y;
-        ram_ffda1c = map[map_y * 19 + map_x];
-        tile_number = func_001612(ram_ffda1d, tile_y, tile_x);
+        gTerrainQueryMetatileWord = map[map_y * 19 + map_x];
+        tile_number = GetLevelMetatileTile(gTerrainQueryMetatileLowByte, tile_y, tile_x);
         tile_number &= 0x1ff;
         return PlayerTilePropertyLookup[tile_number] & 0xf0;
     }
@@ -83,7 +83,7 @@ short player;
     center_x >>= 3;
     for (sample_y = center_y - 2; sample_y < center_y + 3; ++sample_y) {
         for (sample_x = center_x - 2; sample_x < center_x + 3; ++sample_x) {
-            if (func_015ff4(entity, sample_y, sample_x))
+            if (PresentFindDoorwayOwnerAtTile(entity, sample_y, sample_x))
                 terrain = 16;
             else {
                 tile_y = sample_y & 7;
@@ -102,10 +102,10 @@ short player;
                     map_cell = map[map_y * 19 + map_cell];
                     terrain = ((unsigned short)map_cell & 0x1f00) >> 8;
                     if (terrain)
-                        tile_number = func_001670(terrain, tile_y, tile_x);
+                        tile_number = GetOverlayMetatileTile(terrain, tile_y, tile_x);
                     if (!tile_number) {
                         terrain = map_cell;
-                        tile_number = func_001612(terrain, tile_y, tile_x);
+                        tile_number = GetLevelMetatileTile(terrain, tile_y, tile_x);
                     }
                     terrain = PlayerTilePropertyLookup[tile_number & 0x7ff];
                 }

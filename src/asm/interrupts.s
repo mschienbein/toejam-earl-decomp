@@ -64,10 +64,10 @@ Level4Isr:
 .size Level4Isr, .-Level4Isr
 
 | Software reset: mask interrupts, reload the cartridge's initial SP, and re-enter _start.
-.globl func_00034e
-.type func_00034e, @function
-func_00034e:
+.globl RestartFromResetEntry
+.type RestartFromResetEntry, @function
+RestartFromResetEntry:
     jsr (DisableAllInterrupts,%pc)
     movea.l (StartOfRom).w,%sp
     jmp (_start,%pc)
-.size func_00034e, .-func_00034e
+.size RestartFromResetEntry, .-RestartFromResetEntry

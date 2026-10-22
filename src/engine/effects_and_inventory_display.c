@@ -12,98 +12,98 @@
 #include "sprite_calls.h"
 
 /* Release occupied effect-object slots and clear the associated per-player state. */
-void func_01d436()
+void ClearTransientEntities()
 {
     short slot;
 
     for (slot = 0; slot < 12; ++slot) {
-        if (ram_ffe1c0[slot]) {
-            func_00d970(ram_ffe1c0[slot]);
-            ram_ffe1c0[slot] = 0;
+        if (gSharedProjectileEntities[slot]) {
+            FreeEntity(gSharedProjectileEntities[slot]);
+            gSharedProjectileEntities[slot] = 0;
         }
     }
     for (slot = 0; slot < 4; ++slot) {
-        if (ram_ffe1d8[slot]) {
-            func_00d970(ram_ffe1d8[slot]);
-            ram_ffe1d8[slot] = 0;
+        if (gControlRemapProjectileEntities[slot]) {
+            FreeEntity(gControlRemapProjectileEntities[slot]);
+            gControlRemapProjectileEntities[slot] = 0;
         }
     }
     for (slot = 0; slot < 6; ++slot) {
-        if (ram_ffe244[slot]) {
-            func_00d970(ram_ffe244[slot]);
-            ram_ffe244[slot] = 0;
+        if (gMoleEffectEntities[slot]) {
+            FreeEntity(gMoleEffectEntities[slot]);
+            gMoleEffectEntities[slot] = 0;
         }
     }
     for (slot = 0; slot < 4; ++slot) {
-        if (ram_ffe1ee[slot]) {
-            func_00d970(ram_ffe1ee[slot]);
-            ram_ffe1ee[slot] = 0;
+        if (gSpeechBubbleEntities[slot]) {
+            FreeEntity(gSpeechBubbleEntities[slot]);
+            gSpeechBubbleEntities[slot] = 0;
         }
     }
-    if (ram_ffe242) {
-        func_00d970(ram_ffe242);
-        ram_ffe242 = 0;
-        ram_ffe240 = 0;
+    if (gLifeRequestDisplayEntity) {
+        FreeEntity(gLifeRequestDisplayEntity);
+        gLifeRequestDisplayEntity = 0;
+        gLifeRequestPending = 0;
     }
     for (slot = 0; slot <= 1; ++slot) {
-        if (ram_ffe1e4[slot]) {
-            func_00d970(ram_ffe1e4[slot]);
-            ram_ffe1e4[slot] = 0;
+        if (gPlayerActiveTerrainEffectEntities[slot]) {
+            FreeEntity(gPlayerActiveTerrainEffectEntities[slot]);
+            gPlayerActiveTerrainEffectEntities[slot] = 0;
         }
-        if (ram_ffe1e6[slot]) {
-            func_00d970(ram_ffe1e6[slot]);
-            ram_ffe1e6[slot] = 0;
+        if (gPlayerOneShotTerrainEffectEntities[slot]) {
+            FreeEntity(gPlayerOneShotTerrainEffectEntities[slot]);
+            gPlayerOneShotTerrainEffectEntities[slot] = 0;
         }
-        if (ram_ffde56[slot]) {
-            func_00d970(ram_ffde56[slot]);
-            ram_ffde56[slot] = 0;
+        if (gPlayerTransientEffectEntities[slot]) {
+            FreeEntity(gPlayerTransientEffectEntities[slot]);
+            gPlayerTransientEffectEntities[slot] = 0;
         }
-        if (ram_ffde58[slot]) {
-            func_00d970(ram_ffde58[slot]);
-            ram_ffde58[slot] = 0;
+        if (gPlayerDecoyEntities[slot]) {
+            FreeEntity(gPlayerDecoyEntities[slot]);
+            gPlayerDecoyEntities[slot] = 0;
         }
-        if (ram_ffde5a[slot]) {
-            func_00d970(ram_ffde5a[slot]);
-            ram_ffde5a[slot] = 0;
+        if (gPlayerPromotionDisplayEntities[slot]) {
+            FreeEntity(gPlayerPromotionDisplayEntities[slot]);
+            gPlayerPromotionDisplayEntities[slot] = 0;
         }
-        if (ram_ffde5c[slot]) {
-            func_00d970(ram_ffde5c[slot]);
-            ram_ffde5c[slot] = 0;
+        if (gPlayerDoorwayEntities[slot]) {
+            FreeEntity(gPlayerDoorwayEntities[slot]);
+            gPlayerDoorwayEntities[slot] = 0;
         }
         if (gPlayer1RainCloudState[slot]) {
-            func_00d970(gPlayer1RainCloudState[slot]);
+            FreeEntity(gPlayer1RainCloudState[slot]);
             gPlayer1RainCloudState[slot] = 0;
         }
-        if (ram_ffe1be[slot]) {
-            func_00d970(ram_ffe1be[slot]);
-            ram_ffe1be[slot] = 0;
+        if (gTimedEffectEntities[slot]) {
+            FreeEntity(gTimedEffectEntities[slot]);
+            gTimedEffectEntities[slot] = 0;
         }
-        if (ram_ffe1dc[slot]) {
-            func_00d970(ram_ffe1dc[slot]);
-            ram_ffe1dc[slot] = 0;
+        if (gPlayerControlRemapEntities[slot]) {
+            FreeEntity(gPlayerControlRemapEntities[slot]);
+            gPlayerControlRemapEntities[slot] = 0;
         }
-        if (ram_ffda42[slot]) {
-            func_00d970(ram_ffda42[slot]);
-            ram_ffda42[slot] = 0;
+        if (gPlayerWakeEffectEntityHandles[slot]) {
+            FreeEntity(gPlayerWakeEffectEntityHandles[slot]);
+            gPlayerWakeEffectEntityHandles[slot] = 0;
         }
-        if (ram_ffde6c[slot]) {
-            func_00d970(ram_ffde6c[slot]);
-            ram_ffde6c[slot] = 0;
+        if (gPlayerBoomBoxEntities[slot]) {
+            FreeEntity(gPlayerBoomBoxEntities[slot]);
+            gPlayerBoomBoxEntities[slot] = 0;
         }
-        if (ram_ffe232[slot]) {
-            func_00d970(ram_ffe232[slot]);
-            ram_ffe232[slot] = 0;
-            ram_ffe236[slot] = 0;
-            ram_ffe234[slot] = 0;
+        if (gPlayerInteractionChoiceEntities[slot]) {
+            FreeEntity(gPlayerInteractionChoiceEntities[slot]);
+            gPlayerInteractionChoiceEntities[slot] = 0;
+            gPlayerInteractionChoiceActive[slot] = 0;
+            gPlayerInteractionResponses[slot] = 0;
         }
         gPlayer1TomatoRainTimer[slot] = 0;
     }
-    func_01528a();
-    func_023012();
+    PresentReleaseDroppedEntities();
+    TelephoneClearAll();
 }
 
 /* Fill a 40-by-28 plane with a randomized border and a selectable interior. */
-void func_01d802(filled)
+void DrawMenuWindowFrame(filled)
 short filled;
 {
     short row, column;
@@ -131,7 +131,7 @@ short filled;
 }
 
 /* Upload auxiliary tiles and draw a nested border. */
-void func_01d8ac()
+void DrawNestedWindowFrame()
 {
     short row, column;
     unsigned short tile;
@@ -172,12 +172,12 @@ void func_01d8ac()
 }
 
 /* Draw the present display once, translating its horizontal-flip flag to VDP format. */
-void func_01da0a()
+void DrawPresentDisplayPanel()
 {
     short row, column;
     unsigned short tile;
 
-    if (ram_ffe1ec)
+    if (gPresentDisplayPanelDrawn)
         return;
     ClearSkipVHBlankFlags();
     for (row = 0; row < 5; ++row) {
@@ -192,11 +192,11 @@ void func_01da0a()
         }
     }
     SetSkipVHBlankFlags();
-    ram_ffe1ec = 1;
+    gPresentDisplayPanelDrawn = 1;
 }
 
 /* Draw one six-by-eight tilemap, or clear it for a negative selection. */
-void func_01da9c(selection)
+void DrawPauseChoicePanel(selection)
 short selection;
 {
     short row, column;

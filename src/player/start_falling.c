@@ -11,7 +11,7 @@
 
 /* Start falling in the current facing direction, nudging away from a
  * neighboring supported tile before the vblank terrain-priority update. */
-void SetToejamFalling(player, player_number)
+void PlayerStartFalling(player, player_number)
 struct object_state *player;
 short player_number;
 {
@@ -33,7 +33,7 @@ short player_number;
     SetSprite(player, sprite);
     player->mode_15 = 0;
     player->tile &= 0x7fff;
-    ram_ffda32 = player_number;
+    gTerrainPriorityUpdatePlayer = player_number;
     WAIT_FOR_VBLANK_FLAG = 1;
     while (WAIT_FOR_VBLANK_FLAG)
         ;
@@ -42,7 +42,7 @@ short player_number;
 }
 
 /* Launch a short directional fall and remember that it has started. */
-void func_00f8de(player)
+void PlayerStartTeeteringFall(player)
 struct object_state *player;
 {
     short player_number;
@@ -54,7 +54,7 @@ struct object_state *player;
     player->acceleration_height = -80;
     player->mode_15 = 0;
     sprite = (player->sprite_state & 3) + 20;
-    ram_ffda30[player_number] = 1;
+    gPlayerLandingCounterSeed[player_number] = 1;
     player->velocity_x = 0;
     player->velocity_y = 0;
     if (sprite == 20)
@@ -70,7 +70,7 @@ struct object_state *player;
 
 /* Count the teetering frames and play the observed randomized speech sounds.
  * After thirty frames, start the short fall unless the shared flag delays it. */
-void func_00f96c(player)
+void PlayerUpdateTeetering(player)
 struct object_state *player;
 {
     short player_number;
@@ -79,17 +79,17 @@ struct object_state *player;
     player_number = player->entity_number;
     if (player->flags_52 & 16) {
         if (++TOEJAM_JUMP_COUNTER[player_number] > 30) {
-            if (ram_ffda6c)
+            if (gElevatorDepartureInProgress)
                 --TOEJAM_JUMP_COUNTER[player_number];
             else
-                func_00f8de(player);
+                PlayerStartTeeteringFall(player);
         } else if (TOEJAM_JUMP_COUNTER[player_number] == 1) {
-            if (PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0] & 1)
+            if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
                 PlaySoundEffect((long)Sfx_Teetering1, 86, 0);
             else
                 PlaySoundEffect((long)Sfx_Teetering2, 86, 0);
-        } else if (!TOEJAM_SPEECH_COUNTER) {
-            sound_choice = PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0] & 15;
+        } else if (!gPcmEffectCooldownTicks) {
+            sound_choice = PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 15;
             if (sound_choice == 0)
                 PlaySoundEffect((long)Sfx_Teetering1, 20, 0);
             else if (sound_choice == 1)

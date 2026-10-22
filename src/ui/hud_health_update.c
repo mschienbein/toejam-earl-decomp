@@ -7,9 +7,12 @@
 #include "ram_sprites.h"
 #include "ram_ui.h"
 #include "ui_calls.h"
+#include "hardware_calls.h"
+#include "assets_map.h"
+#include "assets_ui.h"
 
 /* Position the two health-bar sprites for the active HUD arrangement. */
-void func_00b0cc(player_number)
+void HudPositionHealthBarSprites(player_number)
 short player_number;
 {
     short x, sprite_number, y;
@@ -38,23 +41,23 @@ short player_number;
     }
     if (gPlayerLives[player_number] < 0)
         y = 1;
-    ram_ffb65a[sprite_number].x = x;
-    ram_ffb65a[sprite_number].y = y;
-    ram_ffb65a[sprite_number + 1].x = x + 32;
-    ram_ffb65a[sprite_number + 1].y = y;
+    gHardwareSpriteTable[sprite_number].x = x;
+    gHardwareSpriteTable[sprite_number].y = y;
+    gHardwareSpriteTable[sprite_number + 1].x = x + 32;
+    gHardwareSpriteTable[sprite_number + 1].y = y;
 }
 
 /* Move the displayed health one step toward the clamped health value and
  * rewrite the affected three rows of the health bar. */
-void func_00b18c(player_number)
+void HudAnimateHealthBar(player_number)
 short player_number;
 {
     short maximum_health, tile_offset, displayed_health, vram_base, vram_address, pixel_number;
     unsigned short pixel_pattern;
 
-    if (ram_ffa256[player_number] != gPlayerLives[player_number]) {
-        func_00b3e4(player_number);
-        func_00b590(player_number);
+    if (gHudDisplayedLives[player_number] != gPlayerLives[player_number]) {
+        HudLoadLivesSpriteTiles(player_number);
+        HudPositionLivesSprite(player_number);
     }
     /* (&gPlayerInfo[i])->field rather than gPlayerInfo[i].field: the two compile differently
      * here and only this spelling reproduces the ROM. */
@@ -72,13 +75,13 @@ short player_number;
         TOEJAMS_HEALTH[player_number] = maximum_health;
     if (TOEJAM_RESTORE_HEALTH[player_number] > maximum_health)
         TOEJAM_RESTORE_HEALTH[player_number] = maximum_health;
-    if (TOEJAMS_HEALTH[player_number] > TOEJAMS_MAX_HEALTH[player_number])
-        TOEJAMS_MAX_HEALTH[player_number]++;
-    else if (TOEJAMS_HEALTH[player_number] < TOEJAMS_MAX_HEALTH[player_number])
-        TOEJAMS_MAX_HEALTH[player_number]--;
+    if (TOEJAMS_HEALTH[player_number] > gHudDisplayedHealth[player_number])
+        gHudDisplayedHealth[player_number]++;
+    else if (TOEJAMS_HEALTH[player_number] < gHudDisplayedHealth[player_number])
+        gHudDisplayedHealth[player_number]--;
     else
         return;
-    displayed_health = TOEJAMS_MAX_HEALTH[player_number];
+    displayed_health = gHudDisplayedHealth[player_number];
     if (player_number == 0)
         vram_base = 0xf680;
     else
@@ -106,4 +109,59 @@ short player_number;
     VDP_DATA = pixel_pattern;
     VDP_DATA = pixel_pattern;
     VDP_CONTROL_WORD = 0x8f02;
+}
+
+/* Load four life-icon tiles, using the second icon image above four lives. */
+void HudLoadLivesSpriteTiles(player)
+short player;
+{
+    short sprite_number, remaining, lives;
+    long tile;
+    char *icons;
+    /* MATCHING QUALIFICATION: assigning the unoffset icon base inside the
+     * argument preserves the original D0-pointer/D1-offset arithmetic and
+     * argument scheduling. The assignment-only local is compiler coaxing;
+     * the historical source spelling is not claimed. Assigning the completed
+     * pointer instead adds an instruction, while a standalone assignment
+     * changes scheduling. */
+    char *icon_base;
+
+    if (gPlayerLives[player] < 0)
+        return;
+    if (player == 0) {
+        tile = 0x7bc;
+        sprite_number = 19;
+        icons = IconTilesA;
+    } else {
+        tile = 0x7dc;
+        sprite_number = 20;
+        icons = IconTilesB;
+    }
+    lives = gPlayerLives[player];
+    gHardwareSpriteTable[sprite_number].size = 12;
+    gHardwareSpriteTable[sprite_number].tile = (unsigned short)tile + 0xe000;
+    if (lives > 4) {
+        for (remaining = lives - 4; remaining > 0; remaining--) {
+            VDP_COMMAND = VRAM_WRITE(tile << 5);
+            MoveDataToVRAM((icon_base = icons) + 32, 16);
+            tile++;
+        }
+        for (remaining = 8 - lives; remaining > 0; remaining--) {
+            VDP_COMMAND = VRAM_WRITE(tile << 5);
+            MoveDataToVRAM(icons, 16);
+            tile++;
+        }
+    } else {
+        for (remaining = lives; remaining > 0; remaining--) {
+            VDP_COMMAND = VRAM_WRITE(tile << 5);
+            MoveDataToVRAM(icons, 16);
+            tile++;
+        }
+        for (remaining = 4 - lives; remaining > 0; remaining--) {
+            VDP_COMMAND = VRAM_WRITE(tile << 5);
+            MoveDataToVRAM(LevelTiles, 16);
+            tile++;
+        }
+    }
+    gHudDisplayedLives[player] = lives;
 }

@@ -16,35 +16,35 @@ extern char SPLIT_SCREEN;
 
 /* Scroll positions and pending row/column transfer state. Incomplete
  * outer bounds retain the existing views, not inferred allocations. */
-extern short ram_ff803e;
-extern short ram_ff8040;
-extern short ram_ff8042;
-extern short ram_ff8044;
-extern short ram_ff8046;
-extern short ram_ff804a;
-extern unsigned short ram_ff804e[2][45];
-extern char ram_ff8102[];
-extern char ram_ff8104[];
-extern char ram_ff8106[];
-extern char ram_ff8108[];
-extern unsigned short ram_ff810a[2][32];
-extern char ram_ff818a[];
-extern char ram_ff818c[];
-extern char ram_ff818e[];
-extern char ram_ff8190[];
-extern char ram_ff8192;
-extern char ram_ff8194;
-extern unsigned short ram_ff8196;
+extern short gCamera1TileRowCursor;
+extern short gCamera1TileColumnCursor;
+extern short gCamera2TileRowCursor;
+extern short gCamera2TileColumnCursor;
+extern short gCamera1PendingTileRow;
+extern short gCamera2PendingTileRow;
+extern unsigned short gCameraRowUploadWords[2][45];
+extern char gCameraRowUploadVramRow[];
+extern char gCameraRowUploadStartColumn[];
+extern char gCameraRowUploadPending[];
+extern char gCameraRowUploadWordCount[];
+extern unsigned short gCameraColumnUploadWords[2][32];
+extern char gCameraColumnUploadStartRow[];
+extern char gCameraColumnUploadVramColumn[];
+extern char gCameraColumnUploadPending[];
+extern char gCameraColumnUploadWordCount[];
+extern char gCamera1PendingTileDirections;
+extern char gCamera2PendingTileDirections;
+extern unsigned short gCameraTileAttributes;
 
-/* ram_ff8199 is the existing low-byte alias of the ram_ff8198 word
+/* gCameraColumnUploadHeightLowByte is the existing low-byte alias of the gCameraColumnUploadHeight word
  * on the big-endian target, not an independent scalar allocation. */
-extern short ram_ff8198;
-extern char ram_ff8199;
+extern short gCameraColumnUploadHeight;
+extern char gCameraColumnUploadHeightLowByte;
 
 /* Fixed-point follow positions shared with camera setup. */
-extern long ram_ff819a;
-extern long ram_ff819e;
-extern long ram_ff81a2;
-extern long ram_ff81a6;
+extern long gCamera1FollowXFixed;
+extern long gCamera1FollowYFixed;
+extern long gCamera2FollowXFixed;
+extern long gCamera2FollowYFixed;
 
 #endif

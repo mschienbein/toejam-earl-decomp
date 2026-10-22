@@ -2,7 +2,7 @@
 #include "ram_system.h"
 
 /* Request the six music pointer slots to be cleared by the driver. */
-void func_03e40e()
+void MusicRequestTrackPointerReset()
 {
     gMusicUnknownE47A = 1;
 }

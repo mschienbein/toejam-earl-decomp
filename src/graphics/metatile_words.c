@@ -3,19 +3,19 @@
 #include "ram_camera.h"
 
 /* Fill one 45-word transfer row and mark it ready. */
-void func_0015a8(camera)
+void ClearCameraTileRow(camera)
 short camera;
 {
     short column;
 
     for (column = 0; column < 45; column++)
-        ram_ff804e[camera][column] = ram_ff8196 | 0;
-    ram_ff8108[camera] = 45;
-    ram_ff8106[camera] = 1;
+        gCameraRowUploadWords[camera][column] = gCameraTileAttributes | 0;
+    gCameraRowUploadWordCount[camera] = 45;
+    gCameraRowUploadPending[camera] = 1;
 }
 
 /* Read a background metatile word; bit 7 requests a horizontal mirror. */
-unsigned short func_001612(metatile, row, column)
+unsigned short GetLevelMetatileTile(metatile, row, column)
 unsigned short metatile, row, column;
 {
     short tile;
@@ -29,7 +29,7 @@ unsigned short metatile, row, column;
 }
 
 /* Read an overlay word, retaining zero when mirroring an empty tile. */
-unsigned long func_001670(metatile, row, column)
+unsigned long GetOverlayMetatileTile(metatile, row, column)
 unsigned short metatile, row, column;
 {
     unsigned short tile;

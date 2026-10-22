@@ -3,7 +3,7 @@
 .text
 .include "sound.inc"
 
-| Retry entry owned by func_03f7aa: release the bus, delay 124 iterations, then try again.
+| Retry entry owned by AudioSubmitPendingIndexedCommand: release the bus, delay 124 iterations, then try again.
 .globl loc_03f79c
 .type loc_03f79c, @function
 loc_03f79c:
@@ -15,9 +15,9 @@ loc_03f79c:
 
 | Submit the pending PSG effect ID using command 1 once the PCM mailbox lock is clear.
 | Mark the request consumed even on bus timeout; an accepted command starts the 15-tick status timer.
-.globl func_03f7aa
-.type func_03f7aa, @function
-func_03f7aa:
+.globl AudioSubmitPendingIndexedCommand
+.type AudioSubmitPendingIndexedCommand, @function
+AudioSubmitPendingIndexedCommand:
     move.w #Z80_BUS_TAKE,(Z80_BUS_REQUEST).l
     move.w #Z80_BUS_POLL_LIMIT,%d2
 .L_psg_bus_wait:
@@ -42,4 +42,4 @@ func_03f7aa:
     move.w #Z80_BUS_RELEASE,(Z80_BUS_REQUEST).l
     move.w #SOUND_REQUEST_NONE,(gMusicUnknownE47E).l
     rts
-.size func_03f7aa, .-func_03f7aa
+.size AudioSubmitPendingIndexedCommand, .-AudioSubmitPendingIndexedCommand

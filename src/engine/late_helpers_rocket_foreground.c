@@ -7,14 +7,14 @@
 #include "sprite_calls.h"
 
 /* Set a foreground rocketship frame and detach the exhaust's active sprites. */
-void func_028d54(animation, x, y)
+void CutsceneSetForegroundRocketshipPose(animation, x, y)
 short animation, x, y;
 {
     struct object_state *object;
 
-    object = &gPlayerInfo[ram_ffe3de];
+    object = &gPlayerInfo[gCutsceneRocketshipEntity];
     if (object->draw_flags & 2)
-        OpeningPresents7(object, 0);
+        ReleaseEntityViewportSprites(object, 0);
     object->x = x;
     object->y = y;
     object->sprite_ready = 0;
@@ -22,8 +22,8 @@ short animation, x, y;
     object->sequence = (char *)&IntroHeldFrameStreams[animation];
     object->frame_duration = 1;
     object->frame = -1;
-    func_00d776(object, 0);
-    object = &gPlayerInfo[ram_ffe3e0];
+    AllocateEntityViewportSprites(object, 0);
+    object = &gPlayerInfo[gCutsceneRocketshipExhaustEntity];
     if (object->draw_flags & 2)
-        OpeningPresents7(object, 0);
+        ReleaseEntityViewportSprites(object, 0);
 }

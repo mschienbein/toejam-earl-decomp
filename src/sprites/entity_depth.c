@@ -6,7 +6,7 @@
 #include "sprite_calls.h"
 
 /* Update each active viewport sprite's size bits and tile from elevation. */
-void Process2FEntityBit0(entity)
+void UpdateEntityShadows(entity)
 struct object_state *entity;
 {
     char viewport_bit, sprite_number;
@@ -18,12 +18,12 @@ struct object_state *entity;
     viewport = 0;
     do {
         if (entity->draw_flags & viewport_bit) {
-            if (func_00d612(sprite_number))
+            if (IsSpriteSlotNonReclaimable(sprite_number))
                 sprite_number = 0;
             if (!sprite_number) {
-                sprite_number = func_00d586(viewport, 0);
+                sprite_number = AllocateSpriteSlot(viewport, 0);
                 if (sprite_number) {
-                    ram_ffb65a[sprite_number].size &= 0x8f;
+                    gHardwareSpriteTable[sprite_number].size &= 0x8f;
                     if (!viewport)
                         entity->primary_shadow = sprite_number;
                     else
@@ -33,10 +33,10 @@ struct object_state *entity;
             }
             if (sprite_number) {
                 if (entity->height < 0 && entity->sprite_state != -1) {
-                    ram_ffb65a[sprite_number].size = 12;
-                    ram_ffb65a[sprite_number].tile = 0x87f9;
+                    gHardwareSpriteTable[sprite_number].size = 12;
+                    gHardwareSpriteTable[sprite_number].tile = 0x87f9;
                 } else {
-                    unsigned char old_depth = ram_ffb65a[sprite_number].size & 0x70;
+                    unsigned char old_depth = gHardwareSpriteTable[sprite_number].size & 0x70;
 
                     if (entity->height >= 128 || entity->sprite_state == -1)
                         depth = 16;
@@ -44,10 +44,10 @@ struct object_state *entity;
                         depth = 127 - entity->height;
                     depth &= 0x70;
                     if (depth != old_depth) {
-                        ram_ffb65a[sprite_number].size = depth;
+                        gHardwareSpriteTable[sprite_number].size = depth;
                         depth >>= 4;
-                        ram_ffb65a[sprite_number].size |= (depth << 1) & 12;
-                        ram_ffb65a[sprite_number].tile = SpriteTileAllocationLookup[depth - 1] + 0xe7a0;
+                        gHardwareSpriteTable[sprite_number].size |= (depth << 1) & 12;
+                        gHardwareSpriteTable[sprite_number].tile = SpriteTileAllocationLookup[depth - 1] + 0xe7a0;
                     }
                 }
             }
@@ -69,9 +69,9 @@ void Process2FEntityFlag()
     do {
         if (entity->draw_flags & 1) {
             if (entity->draw_flags & 0x40)
-                Process2FEntityBit0(entity);
+                UpdateEntityShadows(entity);
             else
-                Process2FEntityBit6(entity);
+                ReleaseEntityShadows(entity);
         }
         ++entity_number;
         ++entity;

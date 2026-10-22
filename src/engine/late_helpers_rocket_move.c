@@ -4,16 +4,16 @@
 #include "ram_player.h"
 
 /* Move rocketship and exhaust left, wrapping each at x = -60. */
-void func_028df2(distance)
+void CutsceneMoveRocketshipPairLeft(distance)
 long distance;
 {
     struct object_state *object;
 
-    object = &gPlayerInfo[ram_ffe3de];
+    object = &gPlayerInfo[gCutsceneRocketshipEntity];
     object->x -= distance;
     if (object->x < -60)
         object->x = 320;
-    object = &gPlayerInfo[ram_ffe3e0];
+    object = &gPlayerInfo[gCutsceneRocketshipExhaustEntity];
     --object->x;
     if (object->x < -60)
         object->x = 320;

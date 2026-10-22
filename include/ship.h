@@ -6,21 +6,21 @@
  * recovered historical C spelling. */
 extern void ShipPieceAbility();
 extern void ShowShipPieces();
-extern void func_01f98e();
-extern void func_01faf4();
-extern void func_01fb40();
-extern void func_01fc58();
-extern void func_01fd58();
-extern void func_01fe68();
-extern void func_020182();
-extern void func_020310();
-extern void func_0204ce();
-extern void func_020840();
-extern void func_020d3e();
-extern void func_020e2a();
-extern int func_020e70();
+extern void AssignShipPieceLevels();
+extern void FillSpriteOpaquePixels();
+extern void AnimateShipScreenBackground();
+extern void RestoreGameplayGraphics();
+extern void AnimateTransitionBackground();
+extern void PlayShipCompletionSequence();
+extern void InitializeShipScreenTilemapAndPalettes();
+extern void ShowShipPieceName();
+extern void ShowMissingShipPieceSummary();
+extern void WaitForShipScreenAcknowledgement();
+extern void ShipUpdatePendingPieceIndicator();
+extern void ShowRandomUncollectedShipPiece();
+extern int EarthlingIsMailOrderMailbox();
 #ifndef TJE_LOCAL_FUNC_020EAA
-extern char func_020eaa();
+extern char EarthlingConfigureMailboxLevelBank();
 #endif
 
 #endif

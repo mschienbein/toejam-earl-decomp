@@ -16,8 +16,8 @@ extern unsigned short SEGALogoTileMap[];
 extern char SplashSegaLogo[];
 extern struct render_frame *Spr_Trademark[];
 extern char VRAMClearingData[];
-extern char dat_0384e6[];
-extern char dat_038521[];
-extern char dat_03855d[];
+extern char EndingPlayer1SoloAnimation[];
+extern char EndingPlayer2PairedAnimation[];
+extern char EndingPlayer1PairedAnimation[];
 
 #endif

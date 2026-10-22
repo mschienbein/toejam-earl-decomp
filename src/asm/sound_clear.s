@@ -4,9 +4,9 @@
 .include "sound.inc"
 
 | Clear six owner-table entries and their corresponding stream pointers; reset the request flag.
-.globl func_03e418
-.type func_03e418, @function
-func_03e418:
+.globl MusicClearTrackPointers
+.type MusicClearTrackPointers, @function
+MusicClearTrackPointers:
     lea (gMusicPointer1).l,%a0
     lea (gMusicChannel1Ptr1).l,%a1
     moveq #MUSIC_CHANNEL_COUNT_MINUS1,%d0
@@ -17,4 +17,4 @@ func_03e418:
     dbra %d0,.L_clear_music_channels
     clr.w (gMusicUnknownE47A).l
     rts
-.size func_03e418, .-func_03e418
+.size MusicClearTrackPointers, .-MusicClearTrackPointers

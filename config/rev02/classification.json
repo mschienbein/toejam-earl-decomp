@@ -12,11 +12,12 @@
     {
       "address": "0x000200",
       "name": "ErrorTrap",
-      "class": "sega_library",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 2,
       "instruction_bytes": 2,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Observed: unhandled exception vectors point to the two-byte self-branch at 0x000200; this establishes an exception-trap role, not a vendor library identity.",
         "[INFERENCE] Retain a probable stock Genesis startup/error-stub library role based on tje-disasm:src/main.S:37-44. A self-loop is non-unique; no external Sega library match was made. Library-origin confidence is low."
       ]
@@ -86,7 +87,7 @@
     },
     {
       "address": "0x00034E",
-      "name": "func_00034E",
+      "name": "RestartFromResetEntry",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 12,
@@ -134,12 +135,13 @@
     },
     {
       "address": "0x00046A",
-      "name": "func_00046A",
+      "name": "DrawStarfieldPlane",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 114,
       "instruction_bytes": 114,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 5 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly.",
         "tje-disasm uses VDP convenience macros in this unit (source lines 261, 293); these are modern disassembler notation, not evidence of the original source language."
@@ -208,7 +210,7 @@
     },
     {
       "address": "0x00059E",
-      "name": "func_00059E",
+      "name": "SelectViewportSpriteChain",
       "class": "compiled_c",
       "confidence": "high",
       "size": 78,
@@ -288,7 +290,7 @@
     },
     {
       "address": "0x000BE2",
-      "name": "func_000BE2",
+      "name": "ReloadActiveCameraViews",
       "class": "compiled_c",
       "confidence": "high",
       "size": 76,
@@ -301,7 +303,7 @@
     },
     {
       "address": "0x000C2E",
-      "name": "func_000C2E",
+      "name": "EnterSplitScreen",
       "class": "compiled_c",
       "confidence": "high",
       "size": 336,
@@ -315,7 +317,7 @@
     },
     {
       "address": "0x000D7E",
-      "name": "func_000D7E",
+      "name": "EnterSharedScreen",
       "class": "compiled_c",
       "confidence": "high",
       "size": 360,
@@ -328,7 +330,7 @@
     },
     {
       "address": "0x000EE6",
-      "name": "func_000EE6",
+      "name": "CenterSharedCameraOnPlayer",
       "class": "compiled_c",
       "confidence": "high",
       "size": 208,
@@ -341,7 +343,7 @@
     },
     {
       "address": "0x000FB6",
-      "name": "func_000FB6",
+      "name": "PlayersRequireSeparateViews",
       "class": "compiled_c",
       "confidence": "high",
       "size": 164,
@@ -353,7 +355,7 @@
     },
     {
       "address": "0x00105A",
-      "name": "func_00105A",
+      "name": "UpdateScreenSplitMode",
       "class": "compiled_c",
       "confidence": "high",
       "size": 368,
@@ -390,7 +392,7 @@
     },
     {
       "address": "0x001262",
-      "name": "func_001262",
+      "name": "GetLevelMusicIndex",
       "class": "compiled_c",
       "confidence": "high",
       "size": 36,
@@ -427,7 +429,7 @@
     },
     {
       "address": "0x0015A8",
-      "name": "func_0015A8",
+      "name": "ClearCameraTileRow",
       "class": "compiled_c",
       "confidence": "high",
       "size": 106,
@@ -438,7 +440,7 @@
     },
     {
       "address": "0x001612",
-      "name": "func_001612",
+      "name": "GetLevelMetatileTile",
       "class": "compiled_c",
       "confidence": "high",
       "size": 94,
@@ -449,7 +451,7 @@
     },
     {
       "address": "0x001670",
-      "name": "func_001670",
+      "name": "GetOverlayMetatileTile",
       "class": "compiled_c",
       "confidence": "high",
       "size": 98,
@@ -460,7 +462,7 @@
     },
     {
       "address": "0x0016D2",
-      "name": "func_0016D2",
+      "name": "BuildCameraTileRow",
       "class": "compiled_c",
       "confidence": "high",
       "size": 764,
@@ -486,7 +488,7 @@
     },
     {
       "address": "0x001B48",
-      "name": "func_001B48",
+      "name": "ClearCameraTileColumn",
       "class": "compiled_c",
       "confidence": "high",
       "size": 96,
@@ -497,7 +499,7 @@
     },
     {
       "address": "0x001BA8",
-      "name": "func_001BA8",
+      "name": "BuildCameraTileColumn",
       "class": "compiled_c",
       "confidence": "high",
       "size": 772,
@@ -524,7 +526,7 @@
     },
     {
       "address": "0x00200A",
-      "name": "func_00200A",
+      "name": "RedrawCameraTileRows",
       "class": "compiled_c",
       "confidence": "high",
       "size": 160,
@@ -536,7 +538,7 @@
     },
     {
       "address": "0x0020AA",
-      "name": "func_0020AA",
+      "name": "SetCameraViewOrigin",
       "class": "compiled_c",
       "confidence": "high",
       "size": 242,
@@ -548,7 +550,7 @@
     },
     {
       "address": "0x00219C",
-      "name": "func_00219C",
+      "name": "BuildPendingCameraTiles",
       "class": "compiled_c",
       "confidence": "high",
       "size": 206,
@@ -633,7 +635,7 @@
     },
     {
       "address": "0x002608",
-      "name": "func_002608",
+      "name": "SetCameraPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 114,
@@ -645,7 +647,7 @@
     },
     {
       "address": "0x00267A",
-      "name": "func_00267A",
+      "name": "GetPlayerCameraVelocity",
       "class": "compiled_c",
       "confidence": "high",
       "size": 636,
@@ -656,7 +658,7 @@
     },
     {
       "address": "0x0028F6",
-      "name": "func_0028F6",
+      "name": "UpdateCameraFollowing",
       "class": "compiled_c",
       "confidence": "high",
       "size": 1396,
@@ -668,7 +670,7 @@
     },
     {
       "address": "0x002E6A",
-      "name": "func_002E6A",
+      "name": "AnimateSplitScreenWipe",
       "class": "compiled_c",
       "confidence": "high",
       "size": 416,
@@ -683,7 +685,7 @@
     },
     {
       "address": "0x00300A",
-      "name": "func_00300A",
+      "name": "AnimatePlayersIntoSplitViews",
       "class": "compiled_c",
       "confidence": "high",
       "size": 832,
@@ -695,7 +697,7 @@
     },
     {
       "address": "0x00334A",
-      "name": "func_00334A",
+      "name": "MapRefineFilledShapeMasks",
       "class": "compiled_c",
       "confidence": "high",
       "size": 698,
@@ -706,7 +708,7 @@
     },
     {
       "address": "0x003604",
-      "name": "func_003604",
+      "name": "MapBuildFilledTerrainShapes",
       "class": "compiled_c",
       "confidence": "high",
       "size": 996,
@@ -718,7 +720,7 @@
     },
     {
       "address": "0x0039E8",
-      "name": "func_0039E8",
+      "name": "MapBuildDirectionalPathShapes",
       "class": "compiled_c",
       "confidence": "high",
       "size": 718,
@@ -730,7 +732,7 @@
     },
     {
       "address": "0x003CB6",
-      "name": "func_003CB6",
+      "name": "MapScatterTerrainFeatures",
       "class": "compiled_c",
       "confidence": "high",
       "size": 1214,
@@ -742,7 +744,7 @@
     },
     {
       "address": "0x004174",
-      "name": "func_004174",
+      "name": "MapChooseMetatileAlternatives",
       "class": "compiled_c",
       "confidence": "high",
       "size": 458,
@@ -753,7 +755,7 @@
     },
     {
       "address": "0x00433E",
-      "name": "func_00433E",
+      "name": "MapSwapPlayerBanks",
       "class": "compiled_c",
       "confidence": "high",
       "size": 208,
@@ -776,7 +778,7 @@
     },
     {
       "address": "0x0044E2",
-      "name": "func_0044E2",
+      "name": "MapSwapPlayerWithSavedBank",
       "class": "compiled_c",
       "confidence": "high",
       "size": 374,
@@ -799,7 +801,7 @@
     },
     {
       "address": "0x0046C6",
-      "name": "func_0046C6",
+      "name": "MapGenerateSeparatedAnchors",
       "class": "compiled_c",
       "confidence": "high",
       "size": 380,
@@ -811,7 +813,7 @@
     },
     {
       "address": "0x004842",
-      "name": "func_004842",
+      "name": "MapConnectAnchorPositions",
       "class": "compiled_c",
       "confidence": "high",
       "size": 472,
@@ -846,7 +848,7 @@
     },
     {
       "address": "0x004DFE",
-      "name": "func_004DFE",
+      "name": "MapLoadPlayerLevel",
       "class": "compiled_c",
       "confidence": "high",
       "size": 128,
@@ -893,7 +895,7 @@
     },
     {
       "address": "0x004F50",
-      "name": "func_004F50",
+      "name": "MapGetRandomGenerationParameter",
       "class": "compiled_c",
       "confidence": "high",
       "size": 158,
@@ -904,7 +906,7 @@
     },
     {
       "address": "0x004FEE",
-      "name": "func_004FEE",
+      "name": "MapCarveDirectionalPath",
       "class": "compiled_c",
       "confidence": "high",
       "size": 980,
@@ -915,7 +917,7 @@
     },
     {
       "address": "0x0053C2",
-      "name": "func_0053C2",
+      "name": "MapFindRegionGrowthOrigin",
       "class": "compiled_c",
       "confidence": "high",
       "size": 440,
@@ -926,7 +928,7 @@
     },
     {
       "address": "0x00557A",
-      "name": "func_00557A",
+      "name": "MapFindInteriorGrowthOrigin",
       "class": "compiled_c",
       "confidence": "high",
       "size": 508,
@@ -937,7 +939,7 @@
     },
     {
       "address": "0x005776",
-      "name": "func_005776",
+      "name": "MapGrowTerrainRegion",
       "class": "compiled_c",
       "confidence": "high",
       "size": 900,
@@ -949,7 +951,7 @@
     },
     {
       "address": "0x005AFA",
-      "name": "func_005AFA",
+      "name": "MapFillRectangleAndMergeRegions",
       "class": "compiled_c",
       "confidence": "high",
       "size": 260,
@@ -960,7 +962,7 @@
     },
     {
       "address": "0x005BFE",
-      "name": "func_005BFE",
+      "name": "MapExpandRegionsBesidePaths",
       "class": "compiled_c",
       "confidence": "high",
       "size": 1200,
@@ -972,7 +974,7 @@
     },
     {
       "address": "0x0060AE",
-      "name": "func_0060AE",
+      "name": "MapWidenHorizontalRegionEdges",
       "class": "compiled_c",
       "confidence": "high",
       "size": 540,
@@ -984,7 +986,7 @@
     },
     {
       "address": "0x0062CA",
-      "name": "func_0062CA",
+      "name": "MapWidenVerticalRegionEdges",
       "class": "compiled_c",
       "confidence": "high",
       "size": 544,
@@ -996,7 +998,7 @@
     },
     {
       "address": "0x0064EA",
-      "name": "func_0064EA",
+      "name": "MapStabilizeRegionConnections",
       "class": "compiled_c",
       "confidence": "high",
       "size": 112,
@@ -1009,7 +1011,7 @@
     },
     {
       "address": "0x00655A",
-      "name": "func_00655A",
+      "name": "MapSeedFilledTerrainRegions",
       "class": "compiled_c",
       "confidence": "high",
       "size": 450,
@@ -1021,7 +1023,7 @@
     },
     {
       "address": "0x00671C",
-      "name": "func_00671C",
+      "name": "MapBuildRegionEdgeShapes",
       "class": "compiled_c",
       "confidence": "high",
       "size": 1030,
@@ -1033,7 +1035,7 @@
     },
     {
       "address": "0x006B22",
-      "name": "func_006B22",
+      "name": "MapTransitionContainsMetatile",
       "class": "compiled_c",
       "confidence": "high",
       "size": 82,
@@ -1044,7 +1046,7 @@
     },
     {
       "address": "0x006B74",
-      "name": "func_006B74",
+      "name": "MapTraceTransitionChain",
       "class": "compiled_c",
       "confidence": "high",
       "size": 1652,
@@ -1056,7 +1058,7 @@
     },
     {
       "address": "0x0071E8",
-      "name": "func_0071E8",
+      "name": "MapAssignTransitionChain",
       "class": "compiled_c",
       "confidence": "high",
       "size": 264,
@@ -1069,7 +1071,7 @@
     },
     {
       "address": "0x0072F0",
-      "name": "func_0072F0",
+      "name": "MapFindRouteToSecondAnchor",
       "class": "compiled_c",
       "confidence": "high",
       "size": 1214,
@@ -1081,7 +1083,7 @@
     },
     {
       "address": "0x0077AE",
-      "name": "func_0077AE",
+      "name": "MapIsAnchorConnectionMissing",
       "class": "compiled_c",
       "confidence": "high",
       "size": 42,
@@ -1094,7 +1096,7 @@
     },
     {
       "address": "0x0077D8",
-      "name": "func_0077D8",
+      "name": "MapChooseBackgroundTileBucket",
       "class": "compiled_c",
       "confidence": "high",
       "size": 44,
@@ -1106,7 +1108,7 @@
     },
     {
       "address": "0x007804",
-      "name": "func_007804",
+      "name": "MapDrawFixedBackgroundDecorations",
       "class": "compiled_c",
       "confidence": "high",
       "size": 164,
@@ -1120,7 +1122,7 @@
     },
     {
       "address": "0x0078A8",
-      "name": "func_0078A8",
+      "name": "MapDrawBackgroundAndTerrain",
       "class": "compiled_c",
       "confidence": "high",
       "size": 636,
@@ -1132,7 +1134,7 @@
     },
     {
       "address": "0x007B24",
-      "name": "func_007B24",
+      "name": "MapCoverBlockContainsTerrain",
       "class": "compiled_c",
       "confidence": "high",
       "size": 194,
@@ -1182,7 +1184,7 @@
     },
     {
       "address": "0x00815C",
-      "name": "func_00815C",
+      "name": "MapAppendCoverBlockSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 214,
@@ -1193,7 +1195,7 @@
     },
     {
       "address": "0x008232",
-      "name": "func_008232",
+      "name": "MapInitializeScreenSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 292,
@@ -1205,7 +1207,7 @@
     },
     {
       "address": "0x008356",
-      "name": "func_008356",
+      "name": "PlayerHasOddElevatorState",
       "class": "compiled_c",
       "confidence": "high",
       "size": 58,
@@ -1256,7 +1258,7 @@
     },
     {
       "address": "0x00871A",
-      "name": "func_00871A",
+      "name": "MapUploadCoverAnimationFrame",
       "class": "compiled_c",
       "confidence": "high",
       "size": 284,
@@ -1295,7 +1297,7 @@
     },
     {
       "address": "0x008B98",
-      "name": "func_008B98",
+      "name": "TextCopyFontBanksToRam",
       "class": "compiled_c",
       "confidence": "high",
       "size": 42,
@@ -1331,7 +1333,7 @@
     },
     {
       "address": "0x008BE4",
-      "name": "func_008BE4",
+      "name": "TextAnimateFontBanks",
       "class": "compiled_c",
       "confidence": "high",
       "size": 120,
@@ -1343,7 +1345,7 @@
     },
     {
       "address": "0x008C5C",
-      "name": "func_008C5C",
+      "name": "WaitForVBlankWithGraphicsPaused",
       "class": "compiled_c",
       "confidence": "high",
       "size": 28,
@@ -1356,7 +1358,7 @@
     },
     {
       "address": "0x008C78",
-      "name": "func_008C78",
+      "name": "EntityClearViewportSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 128,
@@ -1368,7 +1370,7 @@
     },
     {
       "address": "0x008CF8",
-      "name": "func_008CF8",
+      "name": "InventoryServiceRedrawPhase",
       "class": "compiled_c",
       "confidence": "high",
       "size": 348,
@@ -1406,7 +1408,7 @@
     },
     {
       "address": "0x00903C",
-      "name": "func_00903C",
+      "name": "InventorySetCameraSuspension",
       "class": "compiled_c",
       "confidence": "high",
       "size": 136,
@@ -1417,7 +1419,7 @@
     },
     {
       "address": "0x0090C4",
-      "name": "func_0090C4",
+      "name": "InventoryRedrawSynchronously",
       "class": "compiled_c",
       "confidence": "high",
       "size": 34,
@@ -1428,7 +1430,7 @@
     },
     {
       "address": "0x0090E6",
-      "name": "func_0090E6",
+      "name": "InventoryRefreshContentsAndWait",
       "class": "compiled_c",
       "confidence": "high",
       "size": 30,
@@ -1512,7 +1514,7 @@
     },
     {
       "address": "0x0098F6",
-      "name": "func_0098F6",
+      "name": "InventoryOpenMailOrderMenu",
       "class": "compiled_c",
       "confidence": "high",
       "size": 62,
@@ -1524,7 +1526,7 @@
     },
     {
       "address": "0x009934",
-      "name": "func_009934",
+      "name": "InventoryOpenIdentificationMenu",
       "class": "compiled_c",
       "confidence": "high",
       "size": 62,
@@ -1536,7 +1538,7 @@
     },
     {
       "address": "0x009972",
-      "name": "func_009972",
+      "name": "InventoryGetSelectedPresent",
       "class": "compiled_c",
       "confidence": "high",
       "size": 80,
@@ -1559,7 +1561,7 @@
     },
     {
       "address": "0x009AFA",
-      "name": "func_009AFA",
+      "name": "InventoryDropSelectedPresent",
       "class": "compiled_c",
       "confidence": "high",
       "size": 252,
@@ -1571,7 +1573,7 @@
     },
     {
       "address": "0x009BF6",
-      "name": "func_009BF6",
+      "name": "InventoryBuySelectedMailOrderPresent",
       "class": "compiled_c",
       "confidence": "high",
       "size": 292,
@@ -1583,7 +1585,7 @@
     },
     {
       "address": "0x009D2E",
-      "name": "func_009D2E",
+      "name": "InventoryIdentifySelectedPresent",
       "class": "compiled_c",
       "confidence": "high",
       "size": 256,
@@ -1595,7 +1597,7 @@
     },
     {
       "address": "0x009E2E",
-      "name": "func_009E2E",
+      "name": "TextMapCharacterToGlyph",
       "class": "compiled_c",
       "confidence": "high",
       "size": 348,
@@ -1607,7 +1609,7 @@
     },
     {
       "address": "0x009F8A",
-      "name": "func_009F8A",
+      "name": "TextWriteStringTiles",
       "class": "compiled_c",
       "confidence": "high",
       "size": 52,
@@ -1620,7 +1622,7 @@
     },
     {
       "address": "0x009FBE",
-      "name": "func_009FBE",
+      "name": "TextWriteDecimalTiles",
       "class": "compiled_c",
       "confidence": "high",
       "size": 150,
@@ -1632,7 +1634,7 @@
     },
     {
       "address": "0x00A054",
-      "name": "func_00A054",
+      "name": "InventoryDrawBucks",
       "class": "compiled_c",
       "confidence": "high",
       "size": 150,
@@ -1645,7 +1647,7 @@
     },
     {
       "address": "0x00A0EA",
-      "name": "func_00A0EA",
+      "name": "InventoryDrawPlayerStats",
       "class": "compiled_c",
       "confidence": "high",
       "size": 214,
@@ -1659,7 +1661,7 @@
     },
     {
       "address": "0x00A1CC",
-      "name": "func_00A1CC",
+      "name": "InventoryUpdateSelectorEntity",
       "class": "compiled_c",
       "confidence": "high",
       "size": 276,
@@ -1670,7 +1672,7 @@
     },
     {
       "address": "0x00A2E0",
-      "name": "func_00A2E0",
+      "name": "InventoryInitializeDisplayEntities",
       "class": "compiled_c",
       "confidence": "high",
       "size": 192,
@@ -1682,7 +1684,7 @@
     },
     {
       "address": "0x00A3A0",
-      "name": "OpeningPresents4",
+      "name": "InventoryDeactivateDisplayEntities",
       "class": "compiled_c",
       "confidence": "high",
       "size": 106,
@@ -1707,7 +1709,7 @@
     },
     {
       "address": "0x00A614",
-      "name": "func_00A614",
+      "name": "InventoryDrawMailOrderOffers",
       "class": "compiled_c",
       "confidence": "high",
       "size": 316,
@@ -1720,7 +1722,7 @@
     },
     {
       "address": "0x00A77E",
-      "name": "func_00A77E",
+      "name": "InventoryDrawActionBanner",
       "class": "compiled_c",
       "confidence": "high",
       "size": 732,
@@ -1732,7 +1734,7 @@
     },
     {
       "address": "0x00AA5A",
-      "name": "func_00AA5A",
+      "name": "HudLoadLevelNumberSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 356,
@@ -1745,7 +1747,7 @@
     },
     {
       "address": "0x00ABBE",
-      "name": "func_00ABBE",
+      "name": "HudPositionLevelNumberSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 268,
@@ -1756,7 +1758,7 @@
     },
     {
       "address": "0x00ACCA",
-      "name": "func_00ACCA",
+      "name": "HudLoadActionIconSprite",
       "class": "compiled_c",
       "confidence": "high",
       "size": 192,
@@ -1768,7 +1770,7 @@
     },
     {
       "address": "0x00AD8A",
-      "name": "func_00AD8A",
+      "name": "HudPositionActionIconSprite",
       "class": "compiled_c",
       "confidence": "high",
       "size": 262,
@@ -1779,7 +1781,7 @@
     },
     {
       "address": "0x00AE90",
-      "name": "func_00AE90",
+      "name": "PlayerGetMaximumHealth",
       "class": "compiled_c",
       "confidence": "high",
       "size": 40,
@@ -1790,7 +1792,7 @@
     },
     {
       "address": "0x00AEB8",
-      "name": "func_00AEB8",
+      "name": "HudInitializeHealthBar",
       "class": "compiled_c",
       "confidence": "high",
       "size": 532,
@@ -1802,7 +1804,7 @@
     },
     {
       "address": "0x00B0CC",
-      "name": "func_00B0CC",
+      "name": "HudPositionHealthBarSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 192,
@@ -1813,7 +1815,7 @@
     },
     {
       "address": "0x00B18C",
-      "name": "func_00B18C",
+      "name": "HudAnimateHealthBar",
       "class": "compiled_c",
       "confidence": "high",
       "size": 600,
@@ -1827,7 +1829,7 @@
     },
     {
       "address": "0x00B3E4",
-      "name": "func_00B3E4",
+      "name": "HudLoadLivesSpriteTiles",
       "class": "compiled_c",
       "confidence": "high",
       "size": 428,
@@ -1840,7 +1842,7 @@
     },
     {
       "address": "0x00B590",
-      "name": "func_00B590",
+      "name": "HudPositionLivesSprite",
       "class": "compiled_c",
       "confidence": "high",
       "size": 186,
@@ -1851,7 +1853,7 @@
     },
     {
       "address": "0x00B64A",
-      "name": "func_00B64A",
+      "name": "HudDrawRankLabels",
       "class": "compiled_c",
       "confidence": "high",
       "size": 232,
@@ -1904,7 +1906,7 @@
     },
     {
       "address": "0x00B95C",
-      "name": "func_00B95C",
+      "name": "HudHidePlayerSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 326,
@@ -1917,7 +1919,7 @@
     },
     {
       "address": "0x00BAA2",
-      "name": "func_00BAA2",
+      "name": "PlayerResetRankAndResources",
       "class": "compiled_c",
       "confidence": "high",
       "size": 246,
@@ -1954,7 +1956,7 @@
     },
     {
       "address": "0x00BDD8",
-      "name": "func_00BDD8",
+      "name": "IsEntityVisibleInViewport",
       "class": "compiled_c",
       "confidence": "high",
       "size": 218,
@@ -1965,7 +1967,7 @@
     },
     {
       "address": "0x00BEB2",
-      "name": "func_00BEB2",
+      "name": "UpdateEntityViewportSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 276,
@@ -1977,7 +1979,7 @@
     },
     {
       "address": "0x00BFC6",
-      "name": "func_00BFC6",
+      "name": "UpdateAllEntityViewportSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 54,
@@ -1990,7 +1992,7 @@
     },
     {
       "address": "0x00BFFC",
-      "name": "Process2FEntityBit0",
+      "name": "UpdateEntityShadows",
       "class": "compiled_c",
       "confidence": "high",
       "size": 308,
@@ -2015,7 +2017,7 @@
     },
     {
       "address": "0x00C170",
-      "name": "func_00C170",
+      "name": "UpdateAttachedEntityPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 210,
@@ -2026,7 +2028,7 @@
     },
     {
       "address": "0x00C242",
-      "name": "func_00C242",
+      "name": "PositionEntitySprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 696,
@@ -2038,7 +2040,7 @@
     },
     {
       "address": "0x00C4FA",
-      "name": "func_00C4FA",
+      "name": "BuildViewportSpriteLinks",
       "class": "compiled_c",
       "confidence": "high",
       "size": 438,
@@ -2049,7 +2051,7 @@
     },
     {
       "address": "0x00C6B0",
-      "name": "func_00C6B0",
+      "name": "SortEntitiesForSpriteDraw",
       "class": "compiled_c",
       "confidence": "high",
       "size": 248,
@@ -2061,7 +2063,7 @@
     },
     {
       "address": "0x00C7A8",
-      "name": "func_00C7A8",
+      "name": "QueueSpritePieceTiles",
       "class": "compiled_c",
       "confidence": "high",
       "size": 178,
@@ -2073,7 +2075,7 @@
     },
     {
       "address": "0x00C85A",
-      "name": "func_00C85A",
+      "name": "ClipSpritePixelsBelowCutoff",
       "class": "compiled_c",
       "confidence": "high",
       "size": 146,
@@ -2084,7 +2086,7 @@
     },
     {
       "address": "0x00C8EC",
-      "name": "func_00C8EC",
+      "name": "ClearSpriteMaskPixels",
       "class": "compiled_c",
       "confidence": "high",
       "size": 52,
@@ -2095,7 +2097,7 @@
     },
     {
       "address": "0x00C920",
-      "name": "func_00C920",
+      "name": "PrepareEntitySpriteFrame",
       "class": "compiled_c",
       "confidence": "high",
       "size": 508,
@@ -2107,7 +2109,7 @@
     },
     {
       "address": "0x00CB1C",
-      "name": "ClearLOC_00FFB8DA",
+      "name": "AppendSpriteTilesToBuffer",
       "class": "compiled_c",
       "confidence": "high",
       "size": 56,
@@ -2118,19 +2120,20 @@
     },
     {
       "address": "0x00CB54",
-      "name": "func_00CB54",
+      "name": "ProcessEntityAnimationMotion",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 302,
       "instruction_bytes": 302,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x00CC82",
-      "name": "func_00CC82",
+      "name": "UpdateAndQueueEntitySprites",
       "class": "compiled_c",
       "confidence": "medium",
       "size": 512,
@@ -2165,7 +2168,7 @@
     },
     {
       "address": "0x00CFBA",
-      "name": "func_00CFBA",
+      "name": "SelectSpriteChainStart",
       "class": "compiled_c",
       "confidence": "high",
       "size": 64,
@@ -2178,7 +2181,7 @@
     },
     {
       "address": "0x00CFFA",
-      "name": "func_00CFFA",
+      "name": "TerminateSpriteChainAtHead",
       "class": "compiled_c",
       "confidence": "high",
       "size": 20,
@@ -2192,7 +2195,7 @@
     },
     {
       "address": "0x00D00E",
-      "name": "func_00D00E",
+      "name": "TerminatePrimarySpriteChain",
       "class": "compiled_c",
       "confidence": "high",
       "size": 20,
@@ -2206,7 +2209,7 @@
     },
     {
       "address": "0x00D022",
-      "name": "func_00D022",
+      "name": "SelectPrimaryViewportSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 44,
@@ -2220,7 +2223,7 @@
     },
     {
       "address": "0x00D04E",
-      "name": "func_00D04E",
+      "name": "SelectSecondaryViewportSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 44,
@@ -2234,7 +2237,7 @@
     },
     {
       "address": "0x00D07A",
-      "name": "func_00D07A",
+      "name": "LinkPlayerSpritesForSplitWipe",
       "class": "compiled_c",
       "confidence": "high",
       "size": 216,
@@ -2247,7 +2250,7 @@
     },
     {
       "address": "0x00D152",
-      "name": "func_00D152",
+      "name": "HideFlaggedPlayerSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 114,
@@ -2283,7 +2286,7 @@
     },
     {
       "address": "0x00D406",
-      "name": "func_00D406",
+      "name": "AllocateSpriteSlots",
       "class": "compiled_c",
       "confidence": "high",
       "size": 384,
@@ -2294,7 +2297,7 @@
     },
     {
       "address": "0x00D586",
-      "name": "func_00D586",
+      "name": "AllocateSpriteSlot",
       "class": "compiled_c",
       "confidence": "high",
       "size": 58,
@@ -2306,7 +2309,7 @@
     },
     {
       "address": "0x00D5C0",
-      "name": "func_00D5C0",
+      "name": "FreeSpriteSlots",
       "class": "compiled_c",
       "confidence": "high",
       "size": 58,
@@ -2317,7 +2320,7 @@
     },
     {
       "address": "0x00D5FA",
-      "name": "func_00D5FA",
+      "name": "FreeSpriteSlot",
       "class": "compiled_c",
       "confidence": "high",
       "size": 24,
@@ -2328,7 +2331,7 @@
     },
     {
       "address": "0x00D612",
-      "name": "func_00D612",
+      "name": "IsSpriteSlotNonReclaimable",
       "class": "compiled_c",
       "confidence": "high",
       "size": 30,
@@ -2339,7 +2342,7 @@
     },
     {
       "address": "0x00D630",
-      "name": "func_00D630",
+      "name": "AllocateSpriteTileRun",
       "class": "compiled_c",
       "confidence": "high",
       "size": 130,
@@ -2350,7 +2353,7 @@
     },
     {
       "address": "0x00D6B2",
-      "name": "func_00D6B2",
+      "name": "FreeSpriteTileRun",
       "class": "compiled_c",
       "confidence": "high",
       "size": 94,
@@ -2361,7 +2364,7 @@
     },
     {
       "address": "0x00D710",
-      "name": "Process2FEntityBit6",
+      "name": "ReleaseEntityShadows",
       "class": "compiled_c",
       "confidence": "high",
       "size": 102,
@@ -2373,7 +2376,7 @@
     },
     {
       "address": "0x00D776",
-      "name": "func_00D776",
+      "name": "AllocateEntityViewportSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 164,
@@ -2385,7 +2388,7 @@
     },
     {
       "address": "0x00D81A",
-      "name": "OpeningPresents7",
+      "name": "ReleaseEntityViewportSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 216,
@@ -2397,7 +2400,7 @@
     },
     {
       "address": "0x00D8F2",
-      "name": "func_00D8F2",
+      "name": "ResetEntityRuntimeState",
       "class": "compiled_c",
       "confidence": "high",
       "size": 18,
@@ -2408,7 +2411,7 @@
     },
     {
       "address": "0x00D904",
-      "name": "func_00D904",
+      "name": "AllocateEntity",
       "class": "compiled_c",
       "confidence": "high",
       "size": 108,
@@ -2421,7 +2424,7 @@
     },
     {
       "address": "0x00D970",
-      "name": "func_00D970",
+      "name": "FreeEntity",
       "class": "compiled_c",
       "confidence": "high",
       "size": 108,
@@ -2433,7 +2436,7 @@
     },
     {
       "address": "0x00D9DC",
-      "name": "func_00D9DC",
+      "name": "GetMapTerrainAtWorldPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 250,
@@ -2457,7 +2460,7 @@
     },
     {
       "address": "0x00DCC2",
-      "name": "func_00DCC2",
+      "name": "EntityIsNearPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 92,
@@ -2469,7 +2472,7 @@
     },
     {
       "address": "0x00DD1E",
-      "name": "func_00DD1E",
+      "name": "EntityIsWithinRange",
       "class": "compiled_c",
       "confidence": "high",
       "size": 100,
@@ -2481,7 +2484,7 @@
     },
     {
       "address": "0x00DD82",
-      "name": "func_00DD82",
+      "name": "PlayerProcessTerrainMotion",
       "class": "compiled_c",
       "confidence": "high",
       "size": 1016,
@@ -2493,7 +2496,7 @@
     },
     {
       "address": "0x00E17A",
-      "name": "func_00E17A",
+      "name": "PlayerApplyTerrainDestination",
       "class": "compiled_c",
       "confidence": "high",
       "size": 616,
@@ -2516,7 +2519,7 @@
     },
     {
       "address": "0x00E400",
-      "name": "func_00E400",
+      "name": "Player1ProcessTerrainMotion",
       "class": "compiled_c",
       "confidence": "high",
       "size": 16,
@@ -2528,7 +2531,7 @@
     },
     {
       "address": "0x00E410",
-      "name": "func_00E410",
+      "name": "Player2ProcessTerrainMotion",
       "class": "compiled_c",
       "confidence": "high",
       "size": 18,
@@ -2587,7 +2590,7 @@
     },
     {
       "address": "0x00F00C",
-      "name": "func_00F00C",
+      "name": "PlayerChooseDirectionalMovement",
       "class": "compiled_c",
       "confidence": "high",
       "size": 630,
@@ -2599,7 +2602,7 @@
     },
     {
       "address": "0x00F282",
-      "name": "func_00F282",
+      "name": "PlayerApplyDirectionalMovementAnimation",
       "class": "compiled_c",
       "confidence": "high",
       "size": 782,
@@ -2623,7 +2626,7 @@
     },
     {
       "address": "0x00F69E",
-      "name": "func_00F69E",
+      "name": "MapClearTilePriorityNearPlayer",
       "class": "compiled_c",
       "confidence": "high",
       "size": 350,
@@ -2636,7 +2639,7 @@
     },
     {
       "address": "0x00F7FC",
-      "name": "SetToejamFalling",
+      "name": "PlayerStartFalling",
       "class": "compiled_c",
       "confidence": "high",
       "size": 218,
@@ -2648,7 +2651,7 @@
     },
     {
       "address": "0x00F8DE",
-      "name": "func_00F8DE",
+      "name": "PlayerStartTeeteringFall",
       "class": "compiled_c",
       "confidence": "high",
       "size": 142,
@@ -2660,7 +2663,7 @@
     },
     {
       "address": "0x00F96C",
-      "name": "func_00F96C",
+      "name": "PlayerUpdateTeetering",
       "class": "compiled_c",
       "confidence": "high",
       "size": 292,
@@ -2698,7 +2701,7 @@
     },
     {
       "address": "0x010086",
-      "name": "func_010086",
+      "name": "PlayerUpdateJumpLandingAnimation",
       "class": "compiled_c",
       "confidence": "high",
       "size": 302,
@@ -2710,7 +2713,7 @@
     },
     {
       "address": "0x0101B4",
-      "name": "func_0101B4",
+      "name": "PlayerUpdatePresentCompletionAndTerrainPose",
       "class": "compiled_c",
       "confidence": "high",
       "size": 224,
@@ -2722,7 +2725,7 @@
     },
     {
       "address": "0x010294",
-      "name": "func_010294",
+      "name": "PlayerUpdateTerrainSinking",
       "class": "compiled_c",
       "confidence": "high",
       "size": 436,
@@ -2734,7 +2737,7 @@
     },
     {
       "address": "0x01044E",
-      "name": "func_01044E",
+      "name": "PlayerUpdateHurtRecoveryAndIdle",
       "class": "compiled_c",
       "confidence": "high",
       "size": 478,
@@ -2746,7 +2749,7 @@
     },
     {
       "address": "0x01062C",
-      "name": "func_01062C",
+      "name": "PlayerUpdateSpringShoeJump",
       "class": "compiled_c",
       "confidence": "high",
       "size": 390,
@@ -2758,7 +2761,7 @@
     },
     {
       "address": "0x0107B2",
-      "name": "func_0107B2",
+      "name": "PlayerResolveDescendingTerrain",
       "class": "compiled_c",
       "confidence": "high",
       "size": 438,
@@ -2770,7 +2773,7 @@
     },
     {
       "address": "0x010968",
-      "name": "func_010968",
+      "name": "PlayerAdvanceToNextLevel",
       "class": "compiled_c",
       "confidence": "high",
       "size": 334,
@@ -2782,7 +2785,7 @@
     },
     {
       "address": "0x010AB6",
-      "name": "func_010AB6",
+      "name": "PlayerRelocateToPartnerOrNextLevel",
       "class": "compiled_c",
       "confidence": "high",
       "size": 744,
@@ -2807,7 +2810,7 @@
     },
     {
       "address": "0x010EC2",
-      "name": "func_010EC2",
+      "name": "PlayerFinalizeLastLifeExit",
       "class": "compiled_c",
       "confidence": "high",
       "size": 314,
@@ -2820,7 +2823,7 @@
     },
     {
       "address": "0x010FFC",
-      "name": "func_010FFC",
+      "name": "PlayerUpdateDeathAnimation",
       "class": "compiled_c",
       "confidence": "high",
       "size": 470,
@@ -2857,7 +2860,7 @@
     },
     {
       "address": "0x011462",
-      "name": "func_011462",
+      "name": "PlayerUpdateRocketSkatesSprite",
       "class": "compiled_c",
       "confidence": "high",
       "size": 376,
@@ -2869,7 +2872,7 @@
     },
     {
       "address": "0x0115DA",
-      "name": "func_0115DA",
+      "name": "PlayerApplyRocketSkatesInput",
       "class": "compiled_c",
       "confidence": "high",
       "size": 706,
@@ -2881,7 +2884,7 @@
     },
     {
       "address": "0x01189C",
-      "name": "func_01189C",
+      "name": "PlayerUpdateRocketSkatesMotion",
       "class": "compiled_c",
       "confidence": "high",
       "size": 480,
@@ -2893,7 +2896,7 @@
     },
     {
       "address": "0x011A7C",
-      "name": "func_011A7C",
+      "name": "PlayerInitializePhasedJumpMotion",
       "class": "compiled_c",
       "confidence": "high",
       "size": 68,
@@ -2904,7 +2907,7 @@
     },
     {
       "address": "0x011AC0",
-      "name": "func_011AC0",
+      "name": "PlayerUpdatePhasedJumpMotion",
       "class": "compiled_c",
       "confidence": "high",
       "size": 792,
@@ -2916,7 +2919,7 @@
     },
     {
       "address": "0x011DD8",
-      "name": "func_011DD8",
+      "name": "PlayerApplyPhasedJumpInput",
       "class": "compiled_c",
       "confidence": "high",
       "size": 582,
@@ -2928,7 +2931,7 @@
     },
     {
       "address": "0x012028",
-      "name": "func_012028",
+      "name": "PlayerCheckTerrainEdgeHop",
       "class": "compiled_c",
       "confidence": "high",
       "size": 238,
@@ -2940,7 +2943,7 @@
     },
     {
       "address": "0x012116",
-      "name": "func_012116",
+      "name": "PlayerUpdateHealthSharingClap",
       "class": "compiled_c",
       "confidence": "high",
       "size": 494,
@@ -2977,7 +2980,7 @@
     },
     {
       "address": "0x012694",
-      "name": "func_012694",
+      "name": "ElevatorSetState",
       "class": "compiled_c",
       "confidence": "high",
       "size": 206,
@@ -2988,7 +2991,7 @@
     },
     {
       "address": "0x012762",
-      "name": "func_012762",
+      "name": "PlayerSetPositionFromSavedMapCell",
       "class": "compiled_c",
       "confidence": "high",
       "size": 58,
@@ -2999,7 +3002,7 @@
     },
     {
       "address": "0x01279C",
-      "name": "LOAD_ELEVATOR_1",
+      "name": "ElevatorInvalidateSecondaryRecords",
       "class": "compiled_c",
       "confidence": "high",
       "size": 32,
@@ -3036,7 +3039,7 @@
     },
     {
       "address": "0x012974",
-      "name": "func_012974",
+      "name": "ElevatorCreateEntityPair",
       "class": "compiled_c",
       "confidence": "high",
       "size": 226,
@@ -3048,7 +3051,7 @@
     },
     {
       "address": "0x012A56",
-      "name": "func_012A56",
+      "name": "ElevatorUpdateEntityVisibility",
       "class": "compiled_c",
       "confidence": "high",
       "size": 298,
@@ -3061,7 +3064,7 @@
     },
     {
       "address": "0x012B80",
-      "name": "func_012B80",
+      "name": "ElevatorBlocksPlayerMovement",
       "class": "compiled_c",
       "confidence": "high",
       "size": 396,
@@ -3073,7 +3076,7 @@
     },
     {
       "address": "0x012D0C",
-      "name": "func_012D0C",
+      "name": "ElevatorBlocksEntityMovement",
       "class": "compiled_c",
       "confidence": "high",
       "size": 172,
@@ -3085,7 +3088,7 @@
     },
     {
       "address": "0x012DB8",
-      "name": "func_012DB8",
+      "name": "ElevatorContainsPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 112,
@@ -3112,7 +3115,7 @@
     },
     {
       "address": "0x012F34",
-      "name": "func_012F34",
+      "name": "MapClearActiveLevelObjects",
       "class": "compiled_c",
       "confidence": "high",
       "size": 258,
@@ -3125,7 +3128,7 @@
     },
     {
       "address": "0x013036",
-      "name": "func_013036",
+      "name": "MapEnterFinalLevel",
       "class": "compiled_c",
       "confidence": "high",
       "size": 298,
@@ -3139,7 +3142,7 @@
     },
     {
       "address": "0x013160",
-      "name": "func_013160",
+      "name": "ElevatorLoadRideBackgroundTiles",
       "class": "compiled_c",
       "confidence": "high",
       "size": 174,
@@ -3152,7 +3155,7 @@
     },
     {
       "address": "0x01320E",
-      "name": "func_01320E",
+      "name": "ElevatorAlternateRideEntities",
       "class": "compiled_c",
       "confidence": "high",
       "size": 96,
@@ -3165,7 +3168,7 @@
     },
     {
       "address": "0x01326E",
-      "name": "func_01326E",
+      "name": "ElevatorPrepareRideDialogue",
       "class": "compiled_c",
       "confidence": "high",
       "size": 482,
@@ -3177,7 +3180,7 @@
     },
     {
       "address": "0x013450",
-      "name": "func_013450",
+      "name": "ElevatorUpdateRideDialogue",
       "class": "compiled_c",
       "confidence": "high",
       "size": 190,
@@ -3203,7 +3206,7 @@
     },
     {
       "address": "0x013570",
-      "name": "func_013570",
+      "name": "ElevatorBeginRideScene",
       "class": "compiled_c",
       "confidence": "high",
       "size": 414,
@@ -3217,7 +3220,7 @@
     },
     {
       "address": "0x01370E",
-      "name": "func_01370E",
+      "name": "ElevatorEndRideScene",
       "class": "compiled_c",
       "confidence": "high",
       "size": 120,
@@ -3232,7 +3235,7 @@
     },
     {
       "address": "0x013786",
-      "name": "func_013786",
+      "name": "ElevatorAdvanceRidersToNextLevel",
       "class": "compiled_c",
       "confidence": "high",
       "size": 638,
@@ -3256,7 +3259,7 @@
     },
     {
       "address": "0x013A3E",
-      "name": "func_013A3E",
+      "name": "ElevatorCheckPlayerProximityAndInput",
       "class": "compiled_c",
       "confidence": "high",
       "size": 186,
@@ -3268,7 +3271,7 @@
     },
     {
       "address": "0x013AF8",
-      "name": "func_013AF8",
+      "name": "ElevatorStepDepartureHeightCycles",
       "class": "compiled_c",
       "confidence": "high",
       "size": 114,
@@ -3356,7 +3359,7 @@
     },
     {
       "address": "0x0143E6",
-      "name": "func_0143E6",
+      "name": "MapReleaseLevelItemBank",
       "class": "compiled_c",
       "confidence": "high",
       "size": 192,
@@ -3368,7 +3371,7 @@
     },
     {
       "address": "0x0144A6",
-      "name": "func_0144A6",
+      "name": "ElevatorAllowsWorldPlacement",
       "class": "compiled_c",
       "confidence": "high",
       "size": 164,
@@ -3380,7 +3383,7 @@
     },
     {
       "address": "0x01454A",
-      "name": "func_01454A",
+      "name": "MapIsLargePlacementTerrainExcluded",
       "class": "compiled_c",
       "confidence": "high",
       "size": 48,
@@ -3391,7 +3394,7 @@
     },
     {
       "address": "0x01457A",
-      "name": "LoadLevel2AndUp",
+      "name": "MapFindItemPlacementPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 726,
@@ -3403,7 +3406,7 @@
     },
     {
       "address": "0x014850",
-      "name": "func_014850",
+      "name": "MapPlaceLargeLevelItems",
       "class": "compiled_c",
       "confidence": "high",
       "size": 698,
@@ -3451,7 +3454,7 @@
     },
     {
       "address": "0x01502E",
-      "name": "func_01502E",
+      "name": "EntityCreateLevelItem",
       "class": "compiled_c",
       "confidence": "high",
       "size": 282,
@@ -3463,7 +3466,7 @@
     },
     {
       "address": "0x015148",
-      "name": "func_015148",
+      "name": "EntityUpdateLevelItemVisibility",
       "class": "compiled_c",
       "confidence": "high",
       "size": 322,
@@ -3475,7 +3478,7 @@
     },
     {
       "address": "0x01528A",
-      "name": "func_01528A",
+      "name": "PresentReleaseDroppedEntities",
       "class": "compiled_c",
       "confidence": "high",
       "size": 56,
@@ -3524,7 +3527,7 @@
     },
     {
       "address": "0x015352",
-      "name": "func_015352",
+      "name": "PlayerCollectNearbyItems",
       "class": "compiled_c",
       "confidence": "high",
       "size": 656,
@@ -3536,7 +3539,7 @@
     },
     {
       "address": "0x0155EE",
-      "name": "func_0155EE",
+      "name": "PlayerCheckLevelItemHazards",
       "class": "compiled_c",
       "confidence": "high",
       "size": 188,
@@ -3548,7 +3551,7 @@
     },
     {
       "address": "0x0156AA",
-      "name": "func_0156AA",
+      "name": "PresentTryEndActivePowerup",
       "class": "compiled_c",
       "confidence": "high",
       "size": 426,
@@ -3573,7 +3576,7 @@
     },
     {
       "address": "0x0159A8",
-      "name": "func_0159A8",
+      "name": "PresentClearWorldEntityReadiness",
       "class": "compiled_c",
       "confidence": "high",
       "size": 144,
@@ -3585,7 +3588,7 @@
     },
     {
       "address": "0x015A38",
-      "name": "func_015A38",
+      "name": "MapUpdateItemsAndPresents",
       "class": "compiled_c",
       "confidence": "high",
       "size": 302,
@@ -3598,7 +3601,7 @@
     },
     {
       "address": "0x015B66",
-      "name": "func_015B66",
+      "name": "PresentStartTransientEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 190,
@@ -3622,7 +3625,7 @@
     },
     {
       "address": "0x015D52",
-      "name": "func_015D52",
+      "name": "PresentUpdateTransientEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 84,
@@ -3634,7 +3637,7 @@
     },
     {
       "address": "0x015DA6",
-      "name": "func_015DA6",
+      "name": "PresentRegisterDecoyHit",
       "class": "compiled_c",
       "confidence": "high",
       "size": 64,
@@ -3645,7 +3648,7 @@
     },
     {
       "address": "0x015DE6",
-      "name": "func_015DE6",
+      "name": "PresentUpdateDecoy",
       "class": "compiled_c",
       "confidence": "high",
       "size": 192,
@@ -3669,7 +3672,7 @@
     },
     {
       "address": "0x015FF4",
-      "name": "func_015FF4",
+      "name": "PresentFindDoorwayOwnerAtTile",
       "class": "compiled_c",
       "confidence": "high",
       "size": 164,
@@ -3680,7 +3683,7 @@
     },
     {
       "address": "0x016098",
-      "name": "func_016098",
+      "name": "PlayerTeleportThroughDoorway",
       "class": "compiled_c",
       "confidence": "high",
       "size": 274,
@@ -3693,7 +3696,7 @@
     },
     {
       "address": "0x0161AA",
-      "name": "func_0161AA",
+      "name": "PresentUpdateDoorway",
       "class": "compiled_c",
       "confidence": "high",
       "size": 580,
@@ -3729,7 +3732,7 @@
     },
     {
       "address": "0x0168E2",
-      "name": "func_0168E2",
+      "name": "PresentUpdateBurps",
       "class": "compiled_c",
       "confidence": "high",
       "size": 250,
@@ -3753,7 +3756,7 @@
     },
     {
       "address": "0x016ACA",
-      "name": "func_016ACA",
+      "name": "PresentUpdateRainCloud",
       "class": "compiled_c",
       "confidence": "high",
       "size": 458,
@@ -3777,7 +3780,7 @@
     },
     {
       "address": "0x016D94",
-      "name": "func_016D94",
+      "name": "PresentUpdateBoomBox",
       "class": "compiled_c",
       "confidence": "high",
       "size": 236,
@@ -3826,7 +3829,7 @@
     },
     {
       "address": "0x0174B6",
-      "name": "func_0174B6",
+      "name": "EarthlingReleaseLevelBank",
       "class": "compiled_c",
       "confidence": "high",
       "size": 360,
@@ -3850,7 +3853,7 @@
     },
     {
       "address": "0x01771A",
-      "name": "func_01771A",
+      "name": "EarthlingIsSpecialRecordNearby",
       "class": "compiled_c",
       "confidence": "high",
       "size": 178,
@@ -3874,7 +3877,7 @@
     },
     {
       "address": "0x017A94",
-      "name": "func_017A94",
+      "name": "MapGetShipPieceWorldPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 52,
@@ -3885,7 +3888,7 @@
     },
     {
       "address": "0x017AC8",
-      "name": "func_017AC8",
+      "name": "EarthlingRetainLevelBank",
       "class": "compiled_c",
       "confidence": "high",
       "size": 1102,
@@ -3898,11 +3901,12 @@
     {
       "address": "0x017F16",
       "name": "SetupInitialEarthlings",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 102,
       "instruction_bytes": 102,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -3921,7 +3925,7 @@
     },
     {
       "address": "0x01804E",
-      "name": "func_01804E",
+      "name": "EarthlingRelocateRecord",
       "class": "compiled_c",
       "confidence": "high",
       "size": 176,
@@ -3933,7 +3937,7 @@
     },
     {
       "address": "0x0180FE",
-      "name": "func_0180FE",
+      "name": "EarthlingRestoreSavedPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 78,
@@ -3945,7 +3949,7 @@
     },
     {
       "address": "0x01814C",
-      "name": "func_01814C",
+      "name": "EarthlingAllocateEntities",
       "class": "compiled_c",
       "confidence": "high",
       "size": 478,
@@ -3981,43 +3985,46 @@
     },
     {
       "address": "0x018834",
-      "name": "func_018834",
+      "name": "EarthlingDispatchAbilities",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 186,
       "instruction_bytes": 186,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x0188EE",
-      "name": "func_0188EE",
+      "name": "EarthlingDispatchPlayerContacts",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 382,
       "instruction_bytes": 382,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x018A6C",
-      "name": "func_018A6C",
+      "name": "EarthlingApplyNearbySleep",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 520,
       "instruction_bytes": 520,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x018C74",
-      "name": "func_018C74",
+      "name": "EarthlingWakeLevel",
       "class": "compiled_c",
       "confidence": "high",
       "size": 110,
@@ -4029,7 +4036,7 @@
     },
     {
       "address": "0x018CE2",
-      "name": "func_018CE2",
+      "name": "EarthlingResetStateTwoByDrawMask",
       "class": "compiled_c",
       "confidence": "high",
       "size": 194,
@@ -4041,7 +4048,7 @@
     },
     {
       "address": "0x018DA4",
-      "name": "func_018DA4",
+      "name": "EarthlingRemoveFromLevel",
       "class": "compiled_c",
       "confidence": "high",
       "size": 218,
@@ -4065,7 +4072,7 @@
     },
     {
       "address": "0x018F1E",
-      "name": "func_018F1E",
+      "name": "EarthlingDamageOnHazardTerrain",
       "class": "compiled_c",
       "confidence": "high",
       "size": 188,
@@ -4089,7 +4096,7 @@
     },
     {
       "address": "0x019086",
-      "name": "func_019086",
+      "name": "EarthlingClearMolePlayerContactFlags",
       "class": "compiled_c",
       "confidence": "high",
       "size": 138,
@@ -4101,18 +4108,19 @@
     {
       "address": "0x019110",
       "name": "ProcessEarthlings",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 92,
       "instruction_bytes": 92,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x01916C",
-      "name": "func_01916C",
+      "name": "EarthlingProbeDirectionalTerrain",
       "class": "compiled_c",
       "confidence": "high",
       "size": 102,
@@ -4124,7 +4132,7 @@
     },
     {
       "address": "0x0191D2",
-      "name": "func_0191D2",
+      "name": "EarthlingMoveOnAllowedTerrain",
       "class": "compiled_c",
       "confidence": "high",
       "size": 552,
@@ -4136,7 +4144,7 @@
     },
     {
       "address": "0x0193FA",
-      "name": "func_0193FA",
+      "name": "EarthlingIsUpdateBlocked",
       "class": "compiled_c",
       "confidence": "high",
       "size": 50,
@@ -4147,7 +4155,7 @@
     },
     {
       "address": "0x01942C",
-      "name": "func_01942C",
+      "name": "EntityUpdateTerrainDrawFlag",
       "class": "compiled_c",
       "confidence": "high",
       "size": 94,
@@ -4159,7 +4167,7 @@
     },
     {
       "address": "0x01948A",
-      "name": "func_01948A",
+      "name": "EarthlingMoveWithinMapBounds",
       "class": "compiled_c",
       "confidence": "high",
       "size": 550,
@@ -4171,7 +4179,7 @@
     },
     {
       "address": "0x0196B0",
-      "name": "func_0196B0",
+      "name": "EarthlingSelectTurnState",
       "class": "compiled_c",
       "confidence": "high",
       "size": 172,
@@ -4183,7 +4191,7 @@
     },
     {
       "address": "0x01975C",
-      "name": "func_01975C",
+      "name": "EarthlingProcessSpecialThinkStates",
       "class": "compiled_c",
       "confidence": "high",
       "size": 280,
@@ -4208,7 +4216,7 @@
     },
     {
       "address": "0x019D3E",
-      "name": "func_019D3E",
+      "name": "EarthlingSelectTerrainAnimationState",
       "class": "compiled_c",
       "confidence": "high",
       "size": 212,
@@ -4220,7 +4228,7 @@
     },
     {
       "address": "0x019E12",
-      "name": "func_019E12",
+      "name": "EarthlingUpdateTerrainAnimationState",
       "class": "compiled_c",
       "confidence": "high",
       "size": 252,
@@ -4232,7 +4240,7 @@
     },
     {
       "address": "0x019F0E",
-      "name": "func_019F0E",
+      "name": "EarthlingThinkTimedMovement",
       "class": "compiled_c",
       "confidence": "high",
       "size": 1174,
@@ -4245,7 +4253,7 @@
     },
     {
       "address": "0x01A3A4",
-      "name": "func_01A3A4",
+      "name": "EarthlingThinkHorizontalWander",
       "class": "compiled_c",
       "confidence": "high",
       "size": 894,
@@ -4257,7 +4265,7 @@
     },
     {
       "address": "0x01A722",
-      "name": "func_01A722",
+      "name": "EarthlingAdvanceHorizontalTurnAnimation",
       "class": "compiled_c",
       "confidence": "high",
       "size": 206,
@@ -4269,7 +4277,7 @@
     },
     {
       "address": "0x01A7F0",
-      "name": "func_01A7F0",
+      "name": "EarthlingThinkHorizontalReversal",
       "class": "compiled_c",
       "confidence": "high",
       "size": 176,
@@ -4281,7 +4289,7 @@
     },
     {
       "address": "0x01A8A0",
-      "name": "func_01A8A0",
+      "name": "EarthlingThinkTargetedResetCycle",
       "class": "compiled_c",
       "confidence": "high",
       "size": 384,
@@ -4293,7 +4301,7 @@
     },
     {
       "address": "0x01AA20",
-      "name": "func_01AA20",
+      "name": "EarthlingSteerTowardNearestTarget",
       "class": "compiled_c",
       "confidence": "high",
       "size": 1138,
@@ -4305,7 +4313,7 @@
     },
     {
       "address": "0x01AE92",
-      "name": "func_01AE92",
+      "name": "EarthlingCanTargetPlayerState",
       "class": "compiled_c",
       "confidence": "high",
       "size": 114,
@@ -4316,7 +4324,7 @@
     },
     {
       "address": "0x01AF04",
-      "name": "func_01AF04",
+      "name": "EntitySetVelocityTowardDelta",
       "class": "compiled_c",
       "confidence": "high",
       "size": 180,
@@ -4327,7 +4335,7 @@
     },
     {
       "address": "0x01AFB8",
-      "name": "func_01AFB8",
+      "name": "EntitySteerWithHorizontalDrift",
       "class": "compiled_c",
       "confidence": "high",
       "size": 118,
@@ -4339,7 +4347,7 @@
     },
     {
       "address": "0x01B02E",
-      "name": "func_01B02E",
+      "name": "EntitySteerWithVerticalDeadZone",
       "class": "compiled_c",
       "confidence": "high",
       "size": 74,
@@ -4350,7 +4358,7 @@
     },
     {
       "address": "0x01B078",
-      "name": "func_01B078",
+      "name": "EntityTriggerTargetStatusEventOnce",
       "class": "compiled_c",
       "confidence": "high",
       "size": 50,
@@ -4362,7 +4370,7 @@
     },
     {
       "address": "0x01B0AA",
-      "name": "func_01B0AA",
+      "name": "PlayerCanReceiveEarthlingEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 78,
@@ -4409,7 +4417,7 @@
     },
     {
       "address": "0x01B5CA",
-      "name": "func_01B5CA",
+      "name": "EarthlingStartHorizontalAttack",
       "class": "compiled_c",
       "confidence": "high",
       "size": 98,
@@ -4433,7 +4441,7 @@
     },
     {
       "address": "0x01B746",
-      "name": "func_01B746",
+      "name": "EarthlingUpdateBouncingDamageState",
       "class": "compiled_c",
       "confidence": "high",
       "size": 180,
@@ -4457,7 +4465,7 @@
     },
     {
       "address": "0x01B8BA",
-      "name": "func_01B8BA",
+      "name": "PlayerUpdateWhirlwindAndRecovery",
       "class": "compiled_c",
       "confidence": "high",
       "size": 668,
@@ -4469,7 +4477,7 @@
     },
     {
       "address": "0x01BB62",
-      "name": "func_01BB62",
+      "name": "EarthlingCheckDecoyAttackRange",
       "class": "compiled_c",
       "confidence": "high",
       "size": 164,
@@ -4505,18 +4513,19 @@
     },
     {
       "address": "0x01BDD0",
-      "name": "func_01BDD0",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EntityHasFreeTimedEffectSlot",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 24,
       "instruction_bytes": 24,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
       ]
     },
     {
       "address": "0x01BDE8",
-      "name": "func_01BDE8",
+      "name": "EntitySpawnTimedEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 190,
@@ -4528,7 +4537,7 @@
     },
     {
       "address": "0x01BEA6",
-      "name": "func_01BEA6",
+      "name": "EntityReleaseFinishedTimedEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 84,
@@ -4540,7 +4549,7 @@
     },
     {
       "address": "0x01BEFA",
-      "name": "func_01BEFA",
+      "name": "PlayerLaunchPresentProjectile",
       "class": "compiled_c",
       "confidence": "high",
       "size": 654,
@@ -4552,7 +4561,7 @@
     },
     {
       "address": "0x01C188",
-      "name": "func_01C188",
+      "name": "PlayerUpdatePresentShooting",
       "class": "compiled_c",
       "confidence": "high",
       "size": 282,
@@ -4564,7 +4573,7 @@
     },
     {
       "address": "0x01C2A2",
-      "name": "func_01C2A2",
+      "name": "EarthlingLaunchAimedProjectile",
       "class": "compiled_c",
       "confidence": "high",
       "size": 648,
@@ -4578,10 +4587,11 @@
       "address": "0x01C52A",
       "name": "ProcessTomatoRain",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 584,
       "instruction_bytes": 584,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 6 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -4610,19 +4620,20 @@
     },
     {
       "address": "0x01C928",
-      "name": "func_01C928",
+      "name": "PresentReleaseFirstSharedTomato",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 66,
       "instruction_bytes": 66,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x01C96A",
-      "name": "func_01C96A",
+      "name": "EarthlingLaunchControlRemapProjectile",
       "class": "compiled_c",
       "confidence": "high",
       "size": 250,
@@ -4634,7 +4645,7 @@
     },
     {
       "address": "0x01CA64",
-      "name": "func_01CA64",
+      "name": "EntityFindProjectileTargetHit",
       "class": "compiled_c",
       "confidence": "high",
       "size": 290,
@@ -4646,7 +4657,7 @@
     },
     {
       "address": "0x01CB86",
-      "name": "func_01CB86",
+      "name": "PlayerApplyControlRemapEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 220,
@@ -4658,7 +4669,7 @@
     },
     {
       "address": "0x01CC62",
-      "name": "func_01CC62",
+      "name": "PlayerRemapDirectionalInput",
       "class": "compiled_c",
       "confidence": "high",
       "size": 112,
@@ -4669,7 +4680,7 @@
     },
     {
       "address": "0x01CCD2",
-      "name": "func_01CCD2",
+      "name": "PlayerUpdateControlRemapEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 204,
@@ -4681,19 +4692,20 @@
     },
     {
       "address": "0x01CD9E",
-      "name": "func_01CD9E",
+      "name": "EarthlingUpdateControlRemapProjectiles",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 292,
       "instruction_bytes": 292,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x01CEC2",
-      "name": "func_01CEC2",
+      "name": "PresentCreateActiveTerrainEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 164,
@@ -4705,7 +4717,7 @@
     },
     {
       "address": "0x01CF66",
-      "name": "func_01CF66",
+      "name": "PresentRetireTerrainEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 132,
@@ -4717,7 +4729,7 @@
     },
     {
       "address": "0x01CFEA",
-      "name": "func_01CFEA",
+      "name": "PresentCreateTemporaryTerrainEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 154,
@@ -4729,7 +4741,7 @@
     },
     {
       "address": "0x01D084",
-      "name": "func_01D084",
+      "name": "PresentUpdateTerrainEffects",
       "class": "compiled_c",
       "confidence": "high",
       "size": 516,
@@ -4741,7 +4753,7 @@
     },
     {
       "address": "0x01D288",
-      "name": "func_01D288",
+      "name": "EarthlingUpdateControlRemapAttack",
       "class": "compiled_c",
       "confidence": "high",
       "size": 68,
@@ -4753,7 +4765,7 @@
     },
     {
       "address": "0x01D2CC",
-      "name": "func_01D2CC",
+      "name": "EarthlingUpdateAimedProjectileAttack",
       "class": "compiled_c",
       "confidence": "high",
       "size": 362,
@@ -4765,19 +4777,20 @@
     },
     {
       "address": "0x01D436",
-      "name": "func_01D436",
+      "name": "ClearTransientEntities",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 972,
       "instruction_bytes": 972,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c016-headers-waves-17-23).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 17 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x01D802",
-      "name": "func_01D802",
+      "name": "DrawMenuWindowFrame",
       "class": "compiled_c",
       "confidence": "high",
       "size": 170,
@@ -4790,12 +4803,13 @@
     },
     {
       "address": "0x01D8AC",
-      "name": "func_01D8AC",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "DrawNestedWindowFrame",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 350,
       "instruction_bytes": 350,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c016-headers-waves-17-23).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 4 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -4804,19 +4818,20 @@
     },
     {
       "address": "0x01DA0A",
-      "name": "func_01DA0A",
+      "name": "DrawPresentDisplayPanel",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 146,
       "instruction_bytes": 146,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c016-headers-waves-17-23).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly."
       ]
     },
     {
       "address": "0x01DA9C",
-      "name": "func_01DA9C",
+      "name": "DrawPauseChoicePanel",
       "class": "compiled_c",
       "confidence": "high",
       "size": 148,
@@ -4828,7 +4843,7 @@
     },
     {
       "address": "0x01DB30",
-      "name": "func_01DB30",
+      "name": "RunFinalLevelPauseMenu",
       "class": "compiled_c",
       "confidence": "high",
       "size": 234,
@@ -4852,7 +4867,7 @@
     },
     {
       "address": "0x01DEE8",
-      "name": "func_01DEE8",
+      "name": "IsSpeechBubbleEntity",
       "class": "compiled_c",
       "confidence": "high",
       "size": 50,
@@ -4863,7 +4878,7 @@
     },
     {
       "address": "0x01DF1A",
-      "name": "func_01DF1A",
+      "name": "QueueSpeechTextTiles",
       "class": "compiled_c",
       "confidence": "high",
       "size": 248,
@@ -4875,7 +4890,7 @@
     },
     {
       "address": "0x01E012",
-      "name": "func_01E012",
+      "name": "SetNextSpeechLifetime",
       "class": "compiled_c",
       "confidence": "high",
       "size": 12,
@@ -4898,19 +4913,20 @@
     },
     {
       "address": "0x01E2C4",
-      "name": "func_01E2C4",
+      "name": "ClearSpeechBubblesAndReplies",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 78,
       "instruction_bytes": 78,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x01E312",
-      "name": "func_01E312",
+      "name": "HasSpeakerSpeech",
       "class": "compiled_c",
       "confidence": "high",
       "size": 124,
@@ -4921,7 +4937,7 @@
     },
     {
       "address": "0x01E38E",
-      "name": "func_01E38E",
+      "name": "StartDialogue",
       "class": "compiled_c",
       "confidence": "high",
       "size": 342,
@@ -4933,19 +4949,20 @@
     },
     {
       "address": "0x01E4E4",
-      "name": "func_01E4E4",
+      "name": "UpdateSpeechAndDialogue",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 594,
       "instruction_bytes": 594,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c016-headers-waves-17-23).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 11 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x01E736",
-      "name": "func_01E736",
+      "name": "AllocateEntityWithEviction",
       "class": "compiled_c",
       "confidence": "high",
       "size": 536,
@@ -4957,19 +4974,20 @@
     },
     {
       "address": "0x01E94E",
-      "name": "func_01E94E",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EntityReleaseOneByPriority",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 30,
       "instruction_bytes": 30,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x01E96C",
-      "name": "func_01E96C",
+      "name": "MapReversePathDirection",
       "class": "compiled_c",
       "confidence": "high",
       "size": 52,
@@ -4980,7 +4998,7 @@
     },
     {
       "address": "0x01E9A0",
-      "name": "func_01E9A0",
+      "name": "MapFindPathShapeForMetatile",
       "class": "compiled_c",
       "confidence": "high",
       "size": 102,
@@ -4991,7 +5009,7 @@
     },
     {
       "address": "0x01EA06",
-      "name": "func_01EA06",
+      "name": "MapGetBankPathDirections",
       "class": "compiled_c",
       "confidence": "high",
       "size": 96,
@@ -5002,7 +5020,7 @@
     },
     {
       "address": "0x01EA66",
-      "name": "func_01EA66",
+      "name": "MapConsumePathCellDirections",
       "class": "compiled_c",
       "confidence": "high",
       "size": 886,
@@ -5014,7 +5032,7 @@
     },
     {
       "address": "0x01EDDC",
-      "name": "func_01EDDC",
+      "name": "MapQueueVisibleMetatileRow",
       "class": "compiled_c",
       "confidence": "high",
       "size": 378,
@@ -5026,7 +5044,7 @@
     },
     {
       "address": "0x01EF56",
-      "name": "func_01EF56",
+      "name": "MapQueueVisibleMetatileColumn",
       "class": "compiled_c",
       "confidence": "high",
       "size": 366,
@@ -5038,7 +5056,7 @@
     },
     {
       "address": "0x01F0C4",
-      "name": "func_01F0C4",
+      "name": "EntityStartLandPathAnimation",
       "class": "compiled_c",
       "confidence": "high",
       "size": 236,
@@ -5050,7 +5068,7 @@
     },
     {
       "address": "0x01F1B0",
-      "name": "func_01F1B0",
+      "name": "MapAnimateMetatilePathChange",
       "class": "compiled_c",
       "confidence": "high",
       "size": 616,
@@ -5062,7 +5080,7 @@
     },
     {
       "address": "0x01F418",
-      "name": "func_01F418",
+      "name": "EntityReserveLandPathAnimations",
       "class": "compiled_c",
       "confidence": "high",
       "size": 224,
@@ -5074,7 +5092,7 @@
     },
     {
       "address": "0x01F4F8",
-      "name": "func_01F4F8",
+      "name": "MapAnimateMarkedLandPaths",
       "class": "compiled_c",
       "confidence": "high",
       "size": 410,
@@ -5086,7 +5104,7 @@
     },
     {
       "address": "0x01F692",
-      "name": "IsToejamNearEdge",
+      "name": "PlayerIsNearTerrainEdge",
       "class": "compiled_c",
       "confidence": "high",
       "size": 62,
@@ -5099,28 +5117,30 @@
       "address": "0x01F6D0",
       "name": "ProcessLand",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 702,
       "instruction_bytes": 702,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 8 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x01F98E",
-      "name": "func_01F98E",
+      "name": "AssignShipPieceLevels",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 358,
       "instruction_bytes": 358,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c016-headers-waves-17-23).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
       ]
     },
     {
       "address": "0x01FAF4",
-      "name": "func_01FAF4",
+      "name": "FillSpriteOpaquePixels",
       "class": "compiled_c",
       "confidence": "high",
       "size": 76,
@@ -5131,7 +5151,7 @@
     },
     {
       "address": "0x01FB40",
-      "name": "func_01FB40",
+      "name": "AnimateShipScreenBackground",
       "class": "compiled_c",
       "confidence": "high",
       "size": 280,
@@ -5143,12 +5163,13 @@
     },
     {
       "address": "0x01FC58",
-      "name": "func_01FC58",
+      "name": "RestoreGameplayGraphics",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 256,
       "instruction_bytes": 256,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 7 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -5157,7 +5178,7 @@
     },
     {
       "address": "0x01FD58",
-      "name": "func_01FD58",
+      "name": "AnimateTransitionBackground",
       "class": "compiled_c",
       "confidence": "high",
       "size": 272,
@@ -5169,7 +5190,7 @@
     },
     {
       "address": "0x01FE68",
-      "name": "func_01FE68",
+      "name": "PlayShipCompletionSequence",
       "class": "compiled_c",
       "confidence": "high",
       "size": 794,
@@ -5183,7 +5204,7 @@
     },
     {
       "address": "0x020182",
-      "name": "func_020182",
+      "name": "InitializeShipScreenTilemapAndPalettes",
       "class": "compiled_c",
       "confidence": "high",
       "size": 398,
@@ -5197,7 +5218,7 @@
     },
     {
       "address": "0x020310",
-      "name": "func_020310",
+      "name": "ShowShipPieceName",
       "class": "compiled_c",
       "confidence": "high",
       "size": 222,
@@ -5210,7 +5231,7 @@
     },
     {
       "address": "0x0204CE",
-      "name": "func_0204CE",
+      "name": "ShowMissingShipPieceSummary",
       "class": "compiled_c",
       "confidence": "high",
       "size": 282,
@@ -5224,7 +5245,7 @@
     },
     {
       "address": "0x0206B8",
-      "name": "func_0206B8",
+      "name": "AnimateShipScreenPalette",
       "class": "compiled_c",
       "confidence": "high",
       "size": 392,
@@ -5236,7 +5257,7 @@
     },
     {
       "address": "0x020840",
-      "name": "func_020840",
+      "name": "WaitForShipScreenAcknowledgement",
       "class": "compiled_c",
       "confidence": "high",
       "size": 164,
@@ -5273,31 +5294,33 @@
     },
     {
       "address": "0x020D3E",
-      "name": "func_020D3E",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "ShipUpdatePendingPieceIndicator",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 236,
       "instruction_bytes": 236,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x020E2A",
-      "name": "func_020E2A",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "ShowRandomUncollectedShipPiece",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 70,
       "instruction_bytes": 70,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x020E70",
-      "name": "func_020E70",
+      "name": "EarthlingIsMailOrderMailbox",
       "class": "compiled_c",
       "confidence": "high",
       "size": 58,
@@ -5308,7 +5331,7 @@
     },
     {
       "address": "0x020EAA",
-      "name": "func_020EAA",
+      "name": "EarthlingConfigureMailboxLevelBank",
       "class": "compiled_c",
       "confidence": "high",
       "size": 194,
@@ -5319,7 +5342,7 @@
     },
     {
       "address": "0x020F6C",
-      "name": "func_020F6C",
+      "name": "PlayerCreateInteractionChoiceDisplay",
       "class": "compiled_c",
       "confidence": "high",
       "size": 198,
@@ -5333,10 +5356,11 @@
       "address": "0x021032",
       "name": "CheckAButton",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 370,
       "instruction_bytes": 370,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -5402,7 +5426,7 @@
     },
     {
       "address": "0x021C60",
-      "name": "func_021C60",
+      "name": "PlayerCreateLifeRequestDisplay",
       "class": "compiled_c",
       "confidence": "high",
       "size": 210,
@@ -5414,7 +5438,7 @@
     },
     {
       "address": "0x021D32",
-      "name": "func_021D32",
+      "name": "PlayerProcessLifeRequest",
       "class": "compiled_c",
       "confidence": "high",
       "size": 606,
@@ -5450,7 +5474,7 @@
     },
     {
       "address": "0x02234C",
-      "name": "func_02234C",
+      "name": "EarthlingSpawnMoleEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 170,
@@ -5461,12 +5485,13 @@
     },
     {
       "address": "0x0223F6",
-      "name": "func_0223F6",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "ReleaseFinishedMoleEffectsAndStolenPresents",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 146,
       "instruction_bytes": 146,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -5498,7 +5523,7 @@
     },
     {
       "address": "0x02297C",
-      "name": "func_02297C",
+      "name": "TelephonePlaceOutsidePlayerViews",
       "class": "compiled_c",
       "confidence": "high",
       "size": 322,
@@ -5522,7 +5547,7 @@
     },
     {
       "address": "0x022BF6",
-      "name": "func_022BF6",
+      "name": "TelephoneCreateDisplayEntity",
       "class": "compiled_c",
       "confidence": "high",
       "size": 130,
@@ -5534,7 +5559,7 @@
     },
     {
       "address": "0x022C78",
-      "name": "func_022C78",
+      "name": "TelephoneStartRing",
       "class": "compiled_c",
       "confidence": "high",
       "size": 112,
@@ -5558,19 +5583,20 @@
     },
     {
       "address": "0x023012",
-      "name": "func_023012",
+      "name": "TelephoneClearAll",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 116,
       "instruction_bytes": 116,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c016-headers-waves-17-23).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x023086",
-      "name": "func_023086",
+      "name": "FunkatronCreateSceneEntity",
       "class": "compiled_c",
       "confidence": "high",
       "size": 206,
@@ -5581,7 +5607,7 @@
     },
     {
       "address": "0x023154",
-      "name": "func_023154",
+      "name": "FunkatronUpdateSceneEntities",
       "class": "compiled_c",
       "confidence": "high",
       "size": 724,
@@ -5594,11 +5620,12 @@
     {
       "address": "0x023428",
       "name": "NoOp",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 2,
       "instruction_bytes": 2,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c016-headers-waves-17-23).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
       ]
     },
@@ -5616,12 +5643,13 @@
     },
     {
       "address": "0x023554",
-      "name": "func_023554",
+      "name": "ShowGameOverAndReset",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 242,
       "instruction_bytes": 242,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 6 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 3 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -5631,11 +5659,12 @@
     {
       "address": "0x02365A",
       "name": "MenuWhoHandler",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 56,
       "instruction_bytes": 56,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -5643,11 +5672,12 @@
     {
       "address": "0x023692",
       "name": "MenuControllerOptionsHandler",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 58,
       "instruction_bytes": 58,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -5655,11 +5685,12 @@
     {
       "address": "0x0236CC",
       "name": "MenuWhatHandler",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 58,
       "instruction_bytes": 58,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -5667,23 +5698,25 @@
     {
       "address": "0x023706",
       "name": "MenuJamOutHandler",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 58,
       "instruction_bytes": 58,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x023740",
-      "name": "func_023740",
+      "name": "AreBothControllersConnected",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 188,
       "instruction_bytes": 188,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 14 direct hardware-port reference instructions and 4 backward control-flow edges; hardware access alone is not proof of assembly."
       ]
@@ -5717,31 +5750,33 @@
     },
     {
       "address": "0x023B08",
-      "name": "func_023B08",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "CreateMenuCursorEntity",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 104,
       "instruction_bytes": 104,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x023B70",
-      "name": "func_023B70",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "ReleaseMenuCursorEntity",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 28,
       "instruction_bytes": 28,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x023B8C",
-      "name": "func_023B8C",
+      "name": "PositionMenuCursorEntity",
       "class": "compiled_c",
       "confidence": "high",
       "size": 58,
@@ -5765,18 +5800,19 @@
     {
       "address": "0x023C52",
       "name": "RemoveMenuHeader",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 28,
       "instruction_bytes": 28,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x023C6E",
-      "name": "func_023C6E",
+      "name": "InitializeLevelZeroFixedItems",
       "class": "compiled_c",
       "confidence": "high",
       "size": 70,
@@ -5787,7 +5823,7 @@
     },
     {
       "address": "0x023CB4",
-      "name": "func_023CB4",
+      "name": "GetLevelZeroEarthlingPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 64,
@@ -5898,7 +5934,7 @@
     },
     {
       "address": "0x025BCE",
-      "name": "func_025BCE",
+      "name": "EntityFindNarrowCollisionAtPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 214,
@@ -5909,7 +5945,7 @@
     },
     {
       "address": "0x025CA4",
-      "name": "func_025CA4",
+      "name": "EntityFindMenuAwareCollisionAtPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 220,
@@ -5920,7 +5956,7 @@
     },
     {
       "address": "0x025D80",
-      "name": "func_025D80",
+      "name": "EntityFindVolumeCollisionAtPosition",
       "class": "compiled_c",
       "confidence": "high",
       "size": 242,
@@ -5931,7 +5967,7 @@
     },
     {
       "address": "0x025E72",
-      "name": "func_025E72",
+      "name": "ProjectileFindCollisionExcludingOwner",
       "class": "compiled_c",
       "confidence": "high",
       "size": 208,
@@ -5942,7 +5978,7 @@
     },
     {
       "address": "0x025F42",
-      "name": "func_025F42",
+      "name": "EntityFindHorizontalCollisionAtX",
       "class": "compiled_c",
       "confidence": "high",
       "size": 184,
@@ -6006,7 +6042,7 @@
     },
     {
       "address": "0x026F98",
-      "name": "func_026F98",
+      "name": "CopyLongwordRunToVramTile",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 42,
@@ -6024,7 +6060,7 @@
     },
     {
       "address": "0x026FC2",
-      "name": "func_026FC2",
+      "name": "FillVdpDataWords",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 22,
@@ -6043,7 +6079,7 @@
     },
     {
       "address": "0x026FD8",
-      "name": "func_026FD8",
+      "name": "FillVdpDataBytes",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 22,
@@ -6079,7 +6115,7 @@
     },
     {
       "address": "0x027004",
-      "name": "func_027004",
+      "name": "UploadVramWordRectangle",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 78,
@@ -6437,7 +6473,7 @@
     },
     {
       "address": "0x0272A0",
-      "name": "func_0272A0",
+      "name": "AnimateTitleTransitionBackground",
       "class": "compiled_c",
       "confidence": "high",
       "size": 270,
@@ -6451,12 +6487,13 @@
     },
     {
       "address": "0x0273AE",
-      "name": "func_0273AE",
+      "name": "InitializeTitleTransitionTilemap",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 140,
       "instruction_bytes": 140,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 2 direct hardware-port reference instructions and 4 backward control-flow edges; hardware access alone is not proof of assembly."
@@ -6464,12 +6501,13 @@
     },
     {
       "address": "0x02743A",
-      "name": "func_02743A",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "ClearUpperVramTilemap",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 66,
       "instruction_bytes": 66,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 2 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly."
@@ -6477,12 +6515,13 @@
     },
     {
       "address": "0x02747C",
-      "name": "func_02747C",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "ClearLowerVramTilemap",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 66,
       "instruction_bytes": 66,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 2 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly."
@@ -6490,12 +6529,13 @@
     },
     {
       "address": "0x0274BE",
-      "name": "func_0274BE",
+      "name": "TitleDrawSelectedLogo",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 296,
       "instruction_bytes": 296,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 6 direct hardware-port reference instructions and 4 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -6504,7 +6544,7 @@
     },
     {
       "address": "0x0275E6",
-      "name": "func_0275E6",
+      "name": "CutsceneDrawRandomizedScreenBorder",
       "class": "compiled_c",
       "confidence": "high",
       "size": 270,
@@ -6517,7 +6557,7 @@
     },
     {
       "address": "0x0276F4",
-      "name": "func_0276F4",
+      "name": "CutsceneDrawRandomizedRectangleBorder",
       "class": "compiled_c",
       "confidence": "high",
       "size": 196,
@@ -6530,7 +6570,7 @@
     },
     {
       "address": "0x0277B8",
-      "name": "func_0277B8",
+      "name": "CutsceneDrawMetatileBlock",
       "class": "compiled_c",
       "confidence": "high",
       "size": 118,
@@ -6543,43 +6583,46 @@
     },
     {
       "address": "0x02782E",
-      "name": "func_02782E",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingDrawNineMetatileBackground",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 128,
       "instruction_bytes": 128,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x0278AE",
-      "name": "func_0278AE",
+      "name": "EndingFillRepeatedMetatileBackground",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 58,
       "instruction_bytes": 58,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x0278E8",
-      "name": "func_0278E8",
+      "name": "CutsceneReleaseFlaggedEntityRange",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 54,
       "instruction_bytes": 54,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x02791E",
-      "name": "func_02791E",
+      "name": "CutsceneStepFrameAndMusicCadence",
       "class": "compiled_c",
       "confidence": "high",
       "size": 242,
@@ -6593,10 +6636,11 @@
       "address": "0x027A10",
       "name": "TitleScreenVideo",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 308,
       "instruction_bytes": 308,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 4 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -6607,10 +6651,11 @@
       "address": "0x027B44",
       "name": "SEGAAndIntroVideoRoutine",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 126,
       "instruction_bytes": 126,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 1 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -6619,7 +6664,7 @@
     },
     {
       "address": "0x027BC2",
-      "name": "func_027BC2",
+      "name": "CutsceneAppendRemappedFontTiles",
       "class": "compiled_c",
       "confidence": "high",
       "size": 162,
@@ -6630,7 +6675,7 @@
     },
     {
       "address": "0x027C64",
-      "name": "func_027C64",
+      "name": "CutsceneQueueCenteredRemappedTextLine",
       "class": "compiled_c",
       "confidence": "high",
       "size": 238,
@@ -6642,7 +6687,7 @@
     },
     {
       "address": "0x027D52",
-      "name": "func_027D52",
+      "name": "CutsceneQueueCenteredOriginalPaletteTextLine",
       "class": "compiled_c",
       "confidence": "high",
       "size": 240,
@@ -6654,12 +6699,13 @@
     },
     {
       "address": "0x027E42",
-      "name": "func_027E42",
+      "name": "CutsceneReleaseTextEntities",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 66,
       "instruction_bytes": 66,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -6678,7 +6724,7 @@
     },
     {
       "address": "0x027F5E",
-      "name": "func_027F5E",
+      "name": "CutsceneLoadSecondTextLine",
       "class": "compiled_c",
       "confidence": "high",
       "size": 214,
@@ -6690,7 +6736,7 @@
     },
     {
       "address": "0x028034",
-      "name": "func_028034",
+      "name": "CutsceneLoadOriginalPaletteTextLine",
       "class": "compiled_c",
       "confidence": "high",
       "size": 208,
@@ -6702,30 +6748,32 @@
     },
     {
       "address": "0x028104",
-      "name": "func_028104",
+      "name": "IntroAllocateLargePlayerParts",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 164,
       "instruction_bytes": 164,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
       ]
     },
     {
       "address": "0x0281A8",
-      "name": "func_0281A8",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroReleaseLargePlayerParts",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 60,
       "instruction_bytes": 60,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x0281E4",
-      "name": "func_0281E4",
+      "name": "IntroPositionLargePlayerPart",
       "class": "compiled_c",
       "confidence": "high",
       "size": 154,
@@ -6737,7 +6785,7 @@
     },
     {
       "address": "0x02827E",
-      "name": "func_02827E",
+      "name": "IntroSetLargePlayerPartSequence",
       "class": "compiled_c",
       "confidence": "high",
       "size": 66,
@@ -6748,7 +6796,7 @@
     },
     {
       "address": "0x0282C0",
-      "name": "func_0282C0",
+      "name": "IntroReleaseLargePlayerPartSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 60,
@@ -6760,19 +6808,20 @@
     },
     {
       "address": "0x0282FC",
-      "name": "func_0282FC",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroPositionLargePlayerParts",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 112,
       "instruction_bytes": 112,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x02836C",
-      "name": "func_02836C",
+      "name": "IntroReleaseLargePlayerSpritesAndRefresh",
       "class": "compiled_c",
       "confidence": "high",
       "size": 92,
@@ -6785,30 +6834,32 @@
     },
     {
       "address": "0x0283C8",
-      "name": "func_0283C8",
+      "name": "IntroAllocateDrivingParts",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 164,
       "instruction_bytes": 164,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
       ]
     },
     {
       "address": "0x02846C",
-      "name": "func_02846C",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroReleaseDrivingParts",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 60,
       "instruction_bytes": 60,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x0284A8",
-      "name": "func_0284A8",
+      "name": "IntroPositionDrivingPart",
       "class": "compiled_c",
       "confidence": "high",
       "size": 176,
@@ -6820,7 +6871,7 @@
     },
     {
       "address": "0x028558",
-      "name": "func_028558",
+      "name": "IntroSetDrivingPartSequence",
       "class": "compiled_c",
       "confidence": "high",
       "size": 66,
@@ -6831,7 +6882,7 @@
     },
     {
       "address": "0x02859A",
-      "name": "func_02859A",
+      "name": "IntroReleaseDrivingPartSprites",
       "class": "compiled_c",
       "confidence": "high",
       "size": 64,
@@ -6843,31 +6894,33 @@
     },
     {
       "address": "0x0285DA",
-      "name": "func_0285DA",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroCreateAsteroidEntity",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 118,
       "instruction_bytes": 118,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x028650",
-      "name": "func_028650",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroReleaseAsteroidEntity",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 32,
       "instruction_bytes": 32,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x028670",
-      "name": "func_028670",
+      "name": "IntroCreateCollisionSceneEntities",
       "class": "compiled_c",
       "confidence": "medium",
       "size": 336,
@@ -6879,19 +6932,20 @@
     },
     {
       "address": "0x0287C0",
-      "name": "func_0287C0",
+      "name": "IntroReleaseCollisionSceneEntities",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 132,
       "instruction_bytes": 132,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x028844",
-      "name": "func_028844",
+      "name": "EndingCreateActivePlayerEntities",
       "class": "compiled_c",
       "confidence": "high",
       "size": 344,
@@ -6903,88 +6957,95 @@
     },
     {
       "address": "0x02899C",
-      "name": "func_02899C",
+      "name": "EndingReleaseActivePlayerEntities",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 62,
       "instruction_bytes": 62,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x0289DA",
-      "name": "func_0289DA",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingGetFirstPlayerAnimationFrame",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 50,
       "instruction_bytes": 50,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
       ]
     },
     {
       "address": "0x028A0C",
-      "name": "func_028A0C",
+      "name": "IntroCreateHiddenFrameEntities",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 228,
       "instruction_bytes": 228,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x028AF0",
-      "name": "func_028AF0",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroRevealFrameEntities",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 48,
       "instruction_bytes": 48,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
       ]
     },
     {
       "address": "0x028B20",
-      "name": "func_028B20",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroReleaseFrameEntitiesAndRefresh",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 96,
       "instruction_bytes": 96,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x028B80",
-      "name": "func_028B80",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "CutsceneAllocateRocketshipPair",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 204,
       "instruction_bytes": 204,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
       ]
     },
     {
       "address": "0x028C4C",
-      "name": "func_028C4C",
+      "name": "CutsceneReleaseRocketshipPair",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 62,
       "instruction_bytes": 62,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x028C8A",
-      "name": "func_028C8A",
+      "name": "CutsceneSetRocketshipPairPose",
       "class": "compiled_c",
       "confidence": "high",
       "size": 202,
@@ -6996,7 +7057,7 @@
     },
     {
       "address": "0x028D54",
-      "name": "func_028D54",
+      "name": "CutsceneSetForegroundRocketshipPose",
       "class": "compiled_c",
       "confidence": "high",
       "size": 158,
@@ -7008,7 +7069,7 @@
     },
     {
       "address": "0x028DF2",
-      "name": "func_028DF2",
+      "name": "CutsceneMoveRocketshipPairLeft",
       "class": "compiled_c",
       "confidence": "high",
       "size": 68,
@@ -7019,7 +7080,7 @@
     },
     {
       "address": "0x028E36",
-      "name": "func_028E36",
+      "name": "CutscenePositionRocketshipPair",
       "class": "compiled_c",
       "confidence": "high",
       "size": 62,
@@ -7030,19 +7091,20 @@
     },
     {
       "address": "0x028E74",
-      "name": "func_028E74",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingCreatePoseComposite",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 124,
       "instruction_bytes": 124,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x028EF0",
-      "name": "func_028EF0",
+      "name": "EndingSetPoseComposite",
       "class": "compiled_c",
       "confidence": "high",
       "size": 114,
@@ -7053,31 +7115,33 @@
     },
     {
       "address": "0x028F62",
-      "name": "func_028F62",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingReleasePoseComposite",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 32,
       "instruction_bytes": 32,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x028F82",
-      "name": "func_028F82",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingCreateSixPieceComposite",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 120,
       "instruction_bytes": 120,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x028FFA",
-      "name": "func_028FFA",
+      "name": "EndingPositionSixPieceComposite",
       "class": "compiled_c",
       "confidence": "high",
       "size": 60,
@@ -7088,31 +7152,33 @@
     },
     {
       "address": "0x029036",
-      "name": "func_029036",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingReleaseSixPieceComposite",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 32,
       "instruction_bytes": 32,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x029056",
-      "name": "func_029056",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingCreateRightOffsetComposite",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 124,
       "instruction_bytes": 124,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x0290D2",
-      "name": "func_0290D2",
+      "name": "EndingPositionRightOffsetComposite",
       "class": "compiled_c",
       "confidence": "high",
       "size": 54,
@@ -7123,43 +7189,46 @@
     },
     {
       "address": "0x029108",
-      "name": "func_029108",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingReleaseRightOffsetComposite",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 32,
       "instruction_bytes": 32,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x029128",
-      "name": "func_029128",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroCreateFallingRocketship",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 118,
       "instruction_bytes": 118,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x02919E",
-      "name": "func_02919E",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroReleaseFallingRocketship",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 32,
       "instruction_bytes": 32,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x0291BE",
-      "name": "func_0291BE",
+      "name": "IntroPositionFallingRocketship",
       "class": "compiled_c",
       "confidence": "high",
       "size": 46,
@@ -7170,7 +7239,7 @@
     },
     {
       "address": "0x0291EC",
-      "name": "func_0291EC",
+      "name": "EndingCreateElevatedThreePieceComposite",
       "class": "compiled_c",
       "confidence": "high",
       "size": 152,
@@ -7182,54 +7251,58 @@
     },
     {
       "address": "0x029284",
-      "name": "func_029284",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingReleaseElevatedThreePieceComposite",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 32,
       "instruction_bytes": 32,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x0292A4",
-      "name": "func_0292A4",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingRestartElevatedCompositeSequence",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 58,
       "instruction_bytes": 58,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
       ]
     },
     {
       "address": "0x0292DE",
-      "name": "func_0292DE",
+      "name": "CutsceneCreateDriftingEntities",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 310,
       "instruction_bytes": 310,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x029414",
-      "name": "func_029414",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "CutsceneReleaseDriftingEntities",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 60,
       "instruction_bytes": 60,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x029450",
-      "name": "func_029450",
+      "name": "CutsceneUpdateDriftingEntities",
       "class": "compiled_c",
       "confidence": "high",
       "size": 192,
@@ -7240,30 +7313,32 @@
     },
     {
       "address": "0x029510",
-      "name": "func_029510",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroAllocateFlyingEntitySlots",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 66,
       "instruction_bytes": 66,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
       ]
     },
     {
       "address": "0x029552",
-      "name": "func_029552",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroReleaseFlyingEntitySlots",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 60,
       "instruction_bytes": 60,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x02958E",
-      "name": "func_02958E",
+      "name": "IntroUpdateRightwardFlyingEntity",
       "class": "compiled_c",
       "confidence": "high",
       "size": 260,
@@ -7275,7 +7350,7 @@
     },
     {
       "address": "0x029692",
-      "name": "func_029692",
+      "name": "IntroUpdateFlyingEntityMotion",
       "class": "compiled_c",
       "confidence": "high",
       "size": 542,
@@ -7287,7 +7362,7 @@
     },
     {
       "address": "0x0298B0",
-      "name": "func_0298B0",
+      "name": "IntroCreateRocketshipImpact",
       "class": "compiled_c",
       "confidence": "high",
       "size": 128,
@@ -7299,19 +7374,20 @@
     },
     {
       "address": "0x029930",
-      "name": "func_029930",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "IntroReleaseRocketshipImpact",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 28,
       "instruction_bytes": 28,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x02994C",
-      "name": "func_02994C",
+      "name": "CutsceneCreatePlanetEntity",
       "class": "compiled_c",
       "confidence": "high",
       "size": 128,
@@ -7323,19 +7399,20 @@
     },
     {
       "address": "0x0299CC",
-      "name": "func_0299CC",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "CutsceneReleasePlanetEntity",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 28,
       "instruction_bytes": 28,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x0299E8",
-      "name": "func_0299E8",
+      "name": "EndingCreateStationaryComposite",
       "class": "compiled_c",
       "confidence": "high",
       "size": 128,
@@ -7347,12 +7424,13 @@
     },
     {
       "address": "0x029A68",
-      "name": "func_029A68",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "EndingReleaseStationaryComposite",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 28,
       "instruction_bytes": 28,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -7361,10 +7439,11 @@
       "address": "0x029A84",
       "name": "IntroVideo",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 544,
       "instruction_bytes": 544,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 20 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7373,7 +7452,7 @@
     },
     {
       "address": "0x029CA4",
-      "name": "func_029CA4",
+      "name": "IntroBeginLargePlayerScene",
       "class": "compiled_c",
       "confidence": "high",
       "size": 68,
@@ -7388,10 +7467,11 @@
       "address": "0x029CE8",
       "name": "IntroPart1",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 1388,
       "instruction_bytes": 1310,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 22 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -7400,10 +7480,11 @@
       "address": "0x02A358",
       "name": "IntroPart2",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 460,
       "instruction_bytes": 440,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 6 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -7412,10 +7493,11 @@
       "address": "0x02A5E8",
       "name": "IntroPart3",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 562,
       "instruction_bytes": 546,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 10 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 1 direct hardware-port reference instructions and 4 backward control-flow edges; hardware access alone is not proof of assembly."
@@ -7425,10 +7507,11 @@
       "address": "0x02A84A",
       "name": "IntroPart4",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 568,
       "instruction_bytes": 558,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 7 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 4 direct hardware-port reference instructions and 4 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7439,10 +7522,11 @@
       "address": "0x02AAFE",
       "name": "IntroPart5",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 726,
       "instruction_bytes": 704,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 12 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 7 direct hardware-port reference instructions and 3 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7453,10 +7537,11 @@
       "address": "0x02ADD4",
       "name": "IntroPart6",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 556,
       "instruction_bytes": 536,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 11 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 6 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7467,10 +7552,11 @@
       "address": "0x02B000",
       "name": "IntroPart7",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 760,
       "instruction_bytes": 746,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 11 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 15 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7481,10 +7567,11 @@
       "address": "0x02B2F8",
       "name": "IntroPart8",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 396,
       "instruction_bytes": 396,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 6 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 3 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7495,10 +7582,11 @@
       "address": "0x02B484",
       "name": "IntroPart9",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 340,
       "instruction_bytes": 340,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 6 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7509,10 +7597,11 @@
       "address": "0x02B5D8",
       "name": "IntroPart10",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 404,
       "instruction_bytes": 392,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 7 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 2 direct hardware-port reference instructions and 4 backward control-flow edges; hardware access alone is not proof of assembly."
@@ -7522,10 +7611,11 @@
       "address": "0x02B78C",
       "name": "IntroPart11",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 1366,
       "instruction_bytes": 1302,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 20 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 2 direct hardware-port reference instructions and 10 backward control-flow edges; hardware access alone is not proof of assembly."
@@ -7533,12 +7623,13 @@
     },
     {
       "address": "0x037470",
-      "name": "func_037470",
+      "name": "PlayEndingSequence",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 344,
       "instruction_bytes": 344,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 12 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7547,12 +7638,13 @@
     },
     {
       "address": "0x0375C8",
-      "name": "func_0375C8",
+      "name": "EndingPlayDialogueAndDeparture",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 1034,
       "instruction_bytes": 1008,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 16 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 6 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7561,12 +7653,13 @@
     },
     {
       "address": "0x037A02",
-      "name": "func_037A02",
+      "name": "EndingPlayUpwardRocketshipDeparture",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 492,
       "instruction_bytes": 484,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 8 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 2 direct hardware-port reference instructions and 3 backward control-flow edges; hardware access alone is not proof of assembly."
@@ -7574,12 +7667,13 @@
     },
     {
       "address": "0x037C00",
-      "name": "func_037C00",
+      "name": "EndingPlayScrollingCredits",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 776,
       "instruction_bytes": 740,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 8 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 4 direct hardware-port reference instructions and 13 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7588,12 +7682,13 @@
     },
     {
       "address": "0x0380C0",
-      "name": "func_0380C0",
+      "name": "EndingPlayDescendingRocketshipScene",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 394,
       "instruction_bytes": 386,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 7 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 2 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly."
@@ -7601,7 +7696,7 @@
     },
     {
       "address": "0x03824A",
-      "name": "func_03824A",
+      "name": "EndingPlayBouncingRocketshipScene",
       "class": "compiled_c",
       "confidence": "high",
       "size": 614,
@@ -7616,23 +7711,25 @@
     {
       "address": "0x03A43E",
       "name": "SegaLogoVBlank",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 76,
       "instruction_bytes": 76,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x03A48A",
-      "name": "func_03A48A",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "SegaLogoClearVideoPlanes",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 90,
       "instruction_bytes": 90,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 3 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7643,10 +7740,11 @@
       "address": "0x03A4E4",
       "name": "SEGAVideo",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 554,
       "instruction_bytes": 554,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 7 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 2 direct hardware-port reference instructions and 6 backward control-flow edges; hardware access alone is not proof of assembly.",
@@ -7655,24 +7753,26 @@
     },
     {
       "address": "0x03A70E",
-      "name": "func_03A70E",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "SegaLogoCreateTrademarkEntity",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 118,
       "instruction_bytes": 118,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x03A784",
-      "name": "func_03A784",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "SegaLogoReleaseTrademarkEntity",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 32,
       "instruction_bytes": 32,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -7695,40 +7795,43 @@
       "address": "0x03AC1C",
       "name": "JamOutVBlank",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 678,
       "instruction_bytes": 678,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 13 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x03AEC2",
-      "name": "func_03AEC2",
+      "name": "JamOutRandomSampleVBlank",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 952,
       "instruction_bytes": 952,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 7 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x03B27A",
-      "name": "func_03B27A",
+      "name": "JamOutUpdateLeadAnimations",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 292,
       "instruction_bytes": 292,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
       ]
     },
     {
       "address": "0x03B39E",
-      "name": "func_03B39E",
+      "name": "JamOutUpdateLayoutsAndScroll",
       "class": "compiled_c",
       "confidence": "high",
       "size": 294,
@@ -7741,18 +7844,19 @@
     },
     {
       "address": "0x03B4C4",
-      "name": "func_03B4C4",
+      "name": "JamOutSynchronizeEntityCopies",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 160,
       "instruction_bytes": 160,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
       ]
     },
     {
       "address": "0x03B564",
-      "name": "func_03B564",
+      "name": "JamOutCreateCharacterCopies",
       "class": "compiled_c",
       "confidence": "high",
       "size": 366,
@@ -7764,19 +7868,20 @@
     },
     {
       "address": "0x03B6D2",
-      "name": "func_03B6D2",
+      "name": "JamOutReleaseCharacterCopies",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 108,
       "instruction_bytes": 108,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x03B73E",
-      "name": "func_03B73E",
+      "name": "JamOutPositionToejamCopy",
       "class": "compiled_c",
       "confidence": "high",
       "size": 68,
@@ -7787,7 +7892,7 @@
     },
     {
       "address": "0x03B782",
-      "name": "func_03B782",
+      "name": "JamOutPositionEarlCopy",
       "class": "compiled_c",
       "confidence": "high",
       "size": 68,
@@ -7798,7 +7903,7 @@
     },
     {
       "address": "0x03B7C6",
-      "name": "func_03B7C6",
+      "name": "JamOutHideToejamCopy",
       "class": "compiled_c",
       "confidence": "high",
       "size": 56,
@@ -7809,7 +7914,7 @@
     },
     {
       "address": "0x03B7FE",
-      "name": "func_03B7FE",
+      "name": "JamOutHideEarlCopy",
       "class": "compiled_c",
       "confidence": "high",
       "size": 56,
@@ -7820,7 +7925,7 @@
     },
     {
       "address": "0x03B836",
-      "name": "func_03B836",
+      "name": "JamOutSetToejamSequence",
       "class": "compiled_c",
       "confidence": "high",
       "size": 74,
@@ -7831,7 +7936,7 @@
     },
     {
       "address": "0x03B880",
-      "name": "func_03B880",
+      "name": "JamOutSetEarlSequence",
       "class": "compiled_c",
       "confidence": "high",
       "size": 74,
@@ -7842,12 +7947,13 @@
     },
     {
       "address": "0x03B8CA",
-      "name": "func_03B8CA",
+      "name": "JamOutShowLeadPairLayout",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 190,
       "instruction_bytes": 190,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 2 direct hardware-port reference instructions and 3 backward control-flow edges; hardware access alone is not proof of assembly."
@@ -7855,7 +7961,7 @@
     },
     {
       "address": "0x03B988",
-      "name": "func_03B988",
+      "name": "JamOutDrawPackedBackgroundBlock",
       "class": "compiled_c",
       "confidence": "high",
       "size": 140,
@@ -7867,24 +7973,26 @@
     },
     {
       "address": "0x03BA14",
-      "name": "func_03BA14",
+      "name": "JamOutShowFourPairLayout",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 210,
       "instruction_bytes": 210,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
     },
     {
       "address": "0x03BAE6",
-      "name": "func_03BAE6",
+      "name": "JamOutShowNinePairLayout",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 286,
       "instruction_bytes": 286,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
       ]
@@ -7892,28 +8000,29 @@
     {
       "address": "0x03E3F4",
       "name": "RAMWritesRoutine1",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "handwritten_asm",
+      "confidence": "high",
       "size": 26,
       "instruction_bytes": 26,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "HardCases5 classification referral (backend counter/shared-entry probes, 396-case compiler matrix) and ClassReview2 (independent, PASS_WITH_QUALIFICATIONS): traits MCC68K 3.3K does not emit in context; bounded to the pinned compiler/profile, not a universal impossibility proof."
       ]
     },
     {
       "address": "0x03E40E",
-      "name": "func_03E40E",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "MusicRequestTrackPointerReset",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 10,
       "instruction_bytes": 10,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
       ]
     },
     {
       "address": "0x03E418",
-      "name": "func_03E418",
+      "name": "MusicClearTrackPointers",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 36,
@@ -7930,18 +8039,19 @@
     },
     {
       "address": "0x03E43C",
-      "name": "func_03E43C",
-      "class": "unknown",
-      "confidence": "low",
+      "name": "AudioRequestFmChannelRelease",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 10,
       "instruction_bytes": 10,
       "evidence": [
+        "Credited C: matches MCC68K 3.3K output in both revisions (checkpoint c019-waves-24-29-asm-z80-r2).",
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
       ]
     },
     {
       "address": "0x03E446",
-      "name": "func_03E446",
+      "name": "AudioReleaseAllFmChannels",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 36,
@@ -7958,29 +8068,29 @@
     },
     {
       "address": "0x03E46A",
-      "name": "func_03E46A",
-      "class": "compiled_c",
+      "name": "MusicSelectSongTemplateBank",
+      "class": "handwritten_asm",
       "confidence": "high",
       "size": 20,
       "instruction_bytes": 20,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on 1 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "HardCases5 classification referral (backend counter/shared-entry probes, 396-case compiler matrix) and ClassReview2 (independent, PASS_WITH_QUALIFICATIONS): traits MCC68K 3.3K does not emit in context; bounded to the pinned compiler/profile, not a universal impossibility proof."
       ]
     },
     {
       "address": "0x03E47E",
-      "name": "func_03E47E",
-      "class": "compiled_c",
+      "name": "MusicLoadSongChannelTemplates",
+      "class": "handwritten_asm",
       "confidence": "high",
       "size": 44,
       "instruction_bytes": 44,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on 1 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "HardCases5 classification referral (backend counter/shared-entry probes, 396-case compiler matrix) and ClassReview2 (independent, PASS_WITH_QUALIFICATIONS): traits MCC68K 3.3K does not emit in context; bounded to the pinned compiler/profile, not a universal impossibility proof."
       ]
     },
     {
       "address": "0x03E4AA",
-      "name": "func_03E4AA",
+      "name": "MusicProcessTemplateRestartHook",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 78,
@@ -7996,7 +8106,7 @@
     },
     {
       "address": "0x03E4F8",
-      "name": "func_03E4F8",
+      "name": "AudioRequestChannelTemplateEffect",
       "class": "compiled_c",
       "confidence": "high",
       "size": 12,
@@ -8007,7 +8117,7 @@
     },
     {
       "address": "0x03E504",
-      "name": "func_03E504",
+      "name": "AudioLoadPendingChannelTemplateEffect",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 150,
@@ -8041,7 +8151,7 @@
     },
     {
       "address": "0x03EC74",
-      "name": "func_03EC74",
+      "name": "AudioWriteFmChannelReleaseMask",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 102,
@@ -8120,7 +8230,7 @@
     },
     {
       "address": "0x03F62A",
-      "name": "func_03F62A",
+      "name": "AudioSubmitPendingPcmSample",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 156,
@@ -8136,7 +8246,7 @@
     },
     {
       "address": "0x03F6C6",
-      "name": "func_03F6C6",
+      "name": "AudioTrySubmitSequencerPcmSample",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 170,
@@ -8167,7 +8277,7 @@
     },
     {
       "address": "0x03F7AA",
-      "name": "func_03F7AA",
+      "name": "AudioSubmitPendingIndexedCommand",
       "class": "handwritten_asm",
       "confidence": "high",
       "size": 84,
@@ -8184,29 +8294,19 @@
   ],
   "summary": {
     "compiled_c": {
-      "functions": 554,
-      "catalogue_extent_bytes": 171682,
-      "instruction_bytes": 171208
+      "functions": 603,
+      "catalogue_extent_bytes": 175412,
+      "instruction_bytes": 174938
     },
     "handwritten_asm": {
-      "functions": 33,
-      "catalogue_extent_bytes": 4890,
-      "instruction_bytes": 4890
+      "functions": 36,
+      "catalogue_extent_bytes": 4980,
+      "instruction_bytes": 4980
     },
     "runtime_helper": {
       "functions": 6,
       "catalogue_extent_bytes": 342,
       "instruction_bytes": 342
-    },
-    "sega_library": {
-      "functions": 1,
-      "catalogue_extent_bytes": 2,
-      "instruction_bytes": 2
-    },
-    "unknown": {
-      "functions": 51,
-      "catalogue_extent_bytes": 3818,
-      "instruction_bytes": 3818
     }
   },
   "fragments": [

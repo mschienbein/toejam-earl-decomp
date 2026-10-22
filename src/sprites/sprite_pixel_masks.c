@@ -3,7 +3,7 @@
 #include "sprite_calls.h"
 
 /* Remove the packed rows below the supplied vertical cutoff. */
-short func_00c85a(piece, cutoff)
+short ClipSpritePixelsBelowCutoff(piece, cutoff)
 struct render_piece *piece;
 short cutoff;
 {
@@ -18,8 +18,8 @@ short cutoff;
         return 0;
     first_hidden = -row;
     for (row = 0; row < piece->width; ++row) {
-        pixels = (long *)&ram_ffb8da[(row * row_width * 4 +
-                 SPRITE_STATE_TABLE) + first_hidden * 4];
+        pixels = (long *)&gSpriteTileUploadBuffer[(row * row_width * 4 +
+                 gSpriteTileBufferOffset) + first_hidden * 4];
         *pixels++ &= 0x0f000ff0L;
         for (column = first_hidden + 1; column < row_width; ++column)
             *pixels++ = 0;
@@ -28,13 +28,13 @@ short cutoff;
 }
 
 /* Discard pixels whose packed byte is an all-ones nibble mask. */
-void func_00c8ec(byte_count)
+void ClearSpriteMaskPixels(byte_count)
 unsigned short byte_count;
 {
     char *pixels;
     char packed_pixels;
 
-    pixels = &ram_ffb8da[SPRITE_STATE_TABLE];
+    pixels = &gSpriteTileUploadBuffer[gSpriteTileBufferOffset];
     while (byte_count > 0) {
         packed_pixels = *pixels;
         if (packed_pixels == -1 || packed_pixels == (char)240 || packed_pixels == 15)

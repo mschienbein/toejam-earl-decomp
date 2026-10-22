@@ -41,7 +41,7 @@ short force_black;
 }
 
 /* Copy both 1,888-byte font banks into consecutive RAM buffers. */
-void func_008b98()
+void TextCopyFontBanksToRam()
 {
     long *source = ImageTextChars1;
     long *destination = (long *)TEXT_SPRITE_DATA_START;
@@ -67,7 +67,7 @@ void ClearVHBlankFlag2()
 }
 
 /* Alternate the two RAM font banks on every rate-th animation tick. */
-int func_008be4(rate)
+int TextAnimateFontBanks(rate)
 short rate;
 {
     if (!VHBLANK_FLAG_2) {
@@ -84,7 +84,7 @@ short rate;
 }
 
 /* Bracket a single vertical blank with the graphics update flag. */
-void func_008c5c()
+void WaitForVBlankWithGraphicsPaused()
 {
     VBLANK_FLAG_3 = 1;
     WaitForNextVBlank(1);
@@ -92,7 +92,7 @@ void func_008c5c()
 }
 
 /* Hide active sprite links belonging to the requested viewport. */
-void func_008c78(viewport)
+void EntityClearViewportSprites(viewport)
 long viewport;
 {
     short object_number;
@@ -108,22 +108,22 @@ long viewport;
     object = gPlayerInfo;
     for (object_number = 0; object_number < 26; object_number++, object++) {
         if ((object->draw_flags & 1) && (object->draw_flags & viewport_mask))
-            OpeningPresents7(object, viewport);
+            ReleaseEntityViewportSprites(object, viewport);
     }
-    func_00c242(ram_ffd938);
-    func_00c4fa();
+    PositionEntitySprites(gEntityDrawListHead);
+    BuildViewportSpriteLinks();
     VBLANK_FLAG_2 = 1;
     WaitForNextVBlank(1);
 }
 
 /* Advance the four-part background upload and then draw menu contents. */
-void func_008cf8()
+void InventoryServiceRedrawPhase()
 {
     short column, row, row_end;
     unsigned short tile;
 
     if (VBLANK_FLAG_4 >= 3) {
-        if (!ram_ff9378) {
+        if (!gInventoryRedrawPlayer) {
             if (VBLANK_FLAG_4 == 4) {
                 row = 0;
                 row_end = 7;
@@ -154,15 +154,15 @@ void func_008cf8()
         }
     } else if (VBLANK_FLAG_4 == 2) {
         ForceTextBackgroundColorToBlack(1);
-        func_00a0ea(ram_ff9378);
-        func_00a77e(ram_ff9378, ram_ff9362[ram_ff9378], 1);
+        InventoryDrawPlayerStats(gInventoryRedrawPlayer);
+        InventoryDrawActionBanner(gInventoryRedrawPlayer, gInventoryBannerMode[gInventoryRedrawPlayer], 1);
         DrawHUD();
-    } else if (P1_MENU_OPEN[ram_ff9378] == 2)
-        func_00a614(ram_ff9378);
+    } else if (P1_MENU_OPEN[gInventoryRedrawPlayer] == 2)
+        InventoryDrawMailOrderOffers(gInventoryRedrawPlayer);
     else {
-        LoadPresentsIntoInventory(ram_ff9378);
-        if (P1_MENU_OPEN[ram_ff9378] == 3)
-            func_00a054(ram_ff9378);
+        LoadPresentsIntoInventory(gInventoryRedrawPlayer);
+        if (P1_MENU_OPEN[gInventoryRedrawPlayer] == 3)
+            InventoryDrawBucks(gInventoryRedrawPlayer);
     }
     VBLANK_FLAG_4--;
 }
@@ -201,22 +201,22 @@ short player_number, menu_kind;
         viewport = 1;
     player = &gPlayerInfo[player_number];
     if (SPLIT_SCREEN) {
-        func_008c78(viewport);
+        EntityClearViewportSprites(viewport);
         player->flags_4d |= 16;
         player->frame_duration = 0;
     }
     if (menu_kind == 1)
-        ram_ff9362[player_number] = 0;
+        gInventoryBannerMode[player_number] = 0;
     else if (menu_kind == 2) {
-        ram_ff9362[player_number] = 2;
+        gInventoryBannerMode[player_number] = 2;
         SetMailOrderPresents(player_number, player->level);
     } else
-        ram_ff9362[player_number] = 3;
+        gInventoryBannerMode[player_number] = 3;
 #if REVISION >= 2
     P1_IDLE_COUNTER[player_number] = 0;
 #endif
-    func_00a2e0(player_number);
-    ram_ff9378 = player_number;
+    InventoryInitializeDisplayEntities(player_number);
+    gInventoryRedrawPlayer = player_number;
     VBLANK_FLAG_4 = 4;
     while (VBLANK_FLAG_4) {
         if (!P1_MENU_OPEN[player_number] && VBLANK_FLAG_4 <= 2)
@@ -230,52 +230,52 @@ short player_number, menu_kind;
 }
 
 /* Save and replace the open inventory cameras, or restore their positions. */
-void func_00903c(suspend)
+void InventorySetCameraSuspension(suspend)
 int suspend;
 {
     if (!SPLIT_SCREEN)
         return;
     if (P1_MENU_OPEN[0]) {
         if (suspend) {
-            ram_ff936e = TOEJAM_CAMERA_NEWX;
-            ram_ff9370 = TOEJAM_CAMERA_NEWY;
+            gInventorySavedCamera1X = TOEJAM_CAMERA_NEWX;
+            gInventorySavedCamera1Y = TOEJAM_CAMERA_NEWY;
             TOEJAM_CAMERA_NEWX = 0;
             TOEJAM_CAMERA_NEWY = 0;
         } else {
-            TOEJAM_CAMERA_NEWX = ram_ff936e;
-            TOEJAM_CAMERA_NEWY = ram_ff9370;
+            TOEJAM_CAMERA_NEWX = gInventorySavedCamera1X;
+            TOEJAM_CAMERA_NEWY = gInventorySavedCamera1Y;
         }
     }
     if (HBLANK_FLAG_1) {
         if (suspend) {
-            ram_ff9372 = EARL_CAMERA_NEWX;
-            ram_ff9374 = EARL_CAMERA_NEWY;
+            gInventorySavedCamera2X = EARL_CAMERA_NEWX;
+            gInventorySavedCamera2Y = EARL_CAMERA_NEWY;
             EARL_CAMERA_NEWX = 0;
             EARL_CAMERA_NEWY = 112;
         } else {
-            EARL_CAMERA_NEWX = ram_ff9372;
-            EARL_CAMERA_NEWY = ram_ff9374;
+            EARL_CAMERA_NEWX = gInventorySavedCamera2X;
+            EARL_CAMERA_NEWY = gInventorySavedCamera2Y;
         }
     }
 }
 
 /* Request redraw mode four and service it until the VBlank flag clears. */
-void func_0090c4(player_number)
+void InventoryRedrawSynchronously(player_number)
 int player_number;
 {
-    ram_ff9378 = player_number;
+    gInventoryRedrawPlayer = player_number;
     VBLANK_FLAG_4 = 4;
     while (VBLANK_FLAG_4)
-        func_008cf8();
+        InventoryServiceRedrawPhase();
 }
 
 /* Wait for the outstanding redraw, request mode one, and wait again. */
-void func_0090e6(player_number)
+void InventoryRefreshContentsAndWait(player_number)
 short player_number;
 {
     while (VBLANK_FLAG_4)
         ;
-    ram_ff9378 = player_number;
+    gInventoryRedrawPlayer = player_number;
     VBLANK_FLAG_4 = 1;
     while (VBLANK_FLAG_4)
         ;
@@ -288,25 +288,25 @@ short player_number;
     struct object_state *object;
 
     if (P1_MENU_OPEN[player_number]) {
-        OpeningPresents4(player_number);
+        InventoryDeactivateDisplayEntities(player_number);
         if (SPLIT_SCREEN) {
             P1_MENU_OPEN[player_number] = 0;
-            if (!P1_MENU_OPEN[player_number ^ 1] && !func_000fb6())
-                func_00105a(1);
+            if (!P1_MENU_OPEN[player_number ^ 1] && !PlayersRequireSeparateViews())
+                UpdateScreenSplitMode(1);
             else
                 VBLANK_FLAG_5 = 1;
             object = &gPlayerInfo[player_number];
             object->flags_4d &= ~16;
             if (object->frame_phase)
                 object->frame_duration = 1;
-            func_00beb2(player_number);
+            UpdateEntityViewportSprites(player_number);
         } else {
             if (!P1_MENU_OPEN[player_number ^ 1]) {
                 EARL_CAMERA_NEWX = TOEJAM_CAMERA_NEWX;
                 EARL_CAMERA_NEWY = TOEJAM_CAMERA_NEWY;
             }
             P1_MENU_OPEN[player_number] = 0;
-            func_008c5c();
+            WaitForVBlankWithGraphicsPaused();
             ClearSkipVHBlankFlags();
             DrawHUD();
             if (!P1_MENU_OPEN[player_number ^ 1])
@@ -314,7 +314,7 @@ short player_number;
             SetSkipVHBlankFlags();
         }
         ClearVHBlankFlag2();
-    } else if (!ELEVATOR_FLAG[player_number] || !ram_ffda6c)
+    } else if (!ELEVATOR_FLAG[player_number] || !gElevatorDepartureInProgress)
         DrawInventory(player_number, 1);
 }
 
@@ -332,7 +332,7 @@ short *opening;
         player_number = 1;
     present = OpenPresent(player_number);
     if (present && gPlayerLives[player_number ^ 1] >= 0) {
-        if (!func_000fb6()) {
+        if (!PlayersRequireSeparateViews()) {
             --present;
             if (P1_MENU_OPEN[player_number ^ 1])
                 ToggleInventory(player_number ^ 1);
@@ -343,7 +343,7 @@ short *opening;
                     GenerateSpeech(player_number ^ 1, "Thanks a lot", 1);
             }
         } else if (P1_MENU_OPEN[player_number ^ 1])
-            func_0090e6(player_number ^ 1);
+            InventoryRefreshContentsAndWait(player_number ^ 1);
     }
 }
 
@@ -366,30 +366,30 @@ int player_number;
     short frame, close_other = 0;
 
     SetupPresentIdentities();
-    func_0090e6(player_number);
+    InventoryRefreshContentsAndWait(player_number);
     if (gPlayerLives[player_number ^ 1] >= 0) {
         if (!P1_MENU_OPEN[player_number ^ 1]) {
             DrawInventory(player_number ^ 1, 1);
-            func_00a1cc(player_number ^ 1);
+            InventoryUpdateSelectorEntity(player_number ^ 1);
             close_other = 1;
         } else
-            func_0090e6(player_number ^ 1);
+            InventoryRefreshContentsAndWait(player_number ^ 1);
     }
-    ram_ffafa7 |= 64;
-    ram_ffb327 |= 64;
-    ram_ff9386 = 1;
+    gPlayer1InventorySelectorFlags |= 64;
+    gPlayer2InventorySelectorFlags |= 64;
+    gInventoryLabelsSuppressed = 1;
     PlaySoundEffect((long)Sfx_Randomize, 96, 1);
     for (frame = 0; frame < 60; ++frame) {
         RandomizeInventory();
-        func_0090e6(player_number);
-        func_00cc82();
-        func_0090e6(player_number ^ 1);
-        func_00cc82();
+        InventoryRefreshContentsAndWait(player_number);
+        UpdateAndQueueEntitySprites();
+        InventoryRefreshContentsAndWait(player_number ^ 1);
+        UpdateAndQueueEntitySprites();
         WaitForNextVBlank(frame / 5);
         PlaySound(7, 50);
     }
-    ram_ff9386 = 0;
-    func_0159a8();
+    gInventoryLabelsSuppressed = 0;
+    PresentClearWorldEntityReadiness();
     if (close_other)
         ToggleInventory(player_number ^ 1);
 }
@@ -417,26 +417,26 @@ void ProcessInventory()
             if (P1_MENU_OPEN[player_number] == 1 &&
                 !(P1_PREV_PROCESSED_INPUT[player_number] & 32) &&
                 (P1_PROCESSED_INPUT[player_number] & 32)) {
-                ram_ff9362[player_number] ^= 1;
-                func_00a77e(player_number, ram_ff9362[player_number], 0);
+                gInventoryBannerMode[player_number] ^= 1;
+                InventoryDrawActionBanner(player_number, gInventoryBannerMode[player_number], 0);
                 PlaySound(7, 50);
             } else if (!(P1_PREV_PROCESSED_INPUT[player_number] & 64) &&
                        (P1_PROCESSED_INPUT[player_number] & 64)) {
                 if (P1_MENU_OPEN[player_number] == 2) {
                     ToggleInventory(player_number);
-                    func_009bf6(player_number);
+                    InventoryBuySelectedMailOrderPresent(player_number);
                 } else if (P1_MENU_OPEN[player_number] == 3) {
-                    if (func_009d2e(player_number)) {
-                        func_0090e6(player_number);
+                    if (InventoryIdentifySelectedPresent(player_number)) {
+                        InventoryRefreshContentsAndWait(player_number);
                         if (P1_MENU_OPEN[player_number ^ 1])
-                            func_0090e6(player_number ^ 1);
+                            InventoryRefreshContentsAndWait(player_number ^ 1);
                     }
-                } else if (ram_ff9362[player_number] == 1) {
-                    func_009afa(player_number);
-                    func_0090e6(player_number);
+                } else if (gInventoryBannerMode[player_number] == 1) {
+                    InventoryDropSelectedPresent(player_number);
+                    InventoryRefreshContentsAndWait(player_number);
                 } else {
                     P1_PREV_PROCESSED_INPUT[player_number] |= 64;
-                    if (func_009972(player_number) == 18)
+                    if (InventoryGetSelectedPresent(player_number) == 18)
                         RandomizePresents(player_number);
                     else {
                         ToggleInventory(player_number);
@@ -451,7 +451,7 @@ void ProcessInventory()
                     else if (P1_MENU_OPEN[player_number] != 2 &&
                              P1_MENU_SCROLL[player_number] > 0) {
                         --P1_MENU_SCROLL[player_number];
-                        func_0090e6(player_number);
+                        InventoryRefreshContentsAndWait(player_number);
                     }
                 } else if (P1_PROCESSED_INPUT[player_number] & 2) {
                     if (P1_MENU_SEL_ROW[player_number] < 2)
@@ -461,25 +461,25 @@ void ProcessInventory()
                              gPlayerInventory[player_number]
                                  [(P1_MENU_SCROLL[player_number] + 3) * 2] != -1) {
                         ++P1_MENU_SCROLL[player_number];
-                        func_0090e6(player_number);
+                        InventoryRefreshContentsAndWait(player_number);
                     }
                 } else if (P1_MENU_OPEN[player_number] != 2)
                     P1_MENU_SEL_COL[player_number] ^= 1;
                 PlaySound(7, 50);
             }
             if (P1_MENU_OPEN[player_number])
-                func_00a1cc(player_number);
+                InventoryUpdateSelectorEntity(player_number);
             if (opening[player_number])
                 break;
         }
     }
     CheckIfOpenForBoth(opening);
-    if (ram_ff936c) {
-        player_number = ram_ff936c - 1;
+    if (gPendingUnfallPlayer) {
+        player_number = gPendingUnfallPlayer - 1;
         if (P1_MENU_OPEN[player_number ^ 1])
             ToggleInventory(player_number ^ 1);
-        func_010ab6(player_number);
-        ram_ff936c = 0;
+        PlayerRelocateToPartnerOrNextLevel(player_number);
+        gPendingUnfallPlayer = 0;
     }
 }
 
@@ -493,7 +493,7 @@ void CheckBButton()
     if ((P1_MENU_OPEN[0] || P1_MENU_OPEN[1]) && !SPLIT_SCREEN) {
         while (P1_MENU_OPEN[0] || P1_MENU_OPEN[1]) {
             if (++frame % 3 == 0)
-                func_00cc82();
+                UpdateAndQueueEntitySprites();
             else
                 WaitForNextVBlank(1);
             GetPlayerInput();
@@ -503,7 +503,7 @@ void CheckBButton()
 }
 
 /* Open inventory mode two with the present-action button already held. */
-void func_0098f6(player_number)
+void InventoryOpenMailOrderMenu(player_number)
 short player_number;
 {
     DrawInventory(player_number, 2);
@@ -514,7 +514,7 @@ short player_number;
 
 /* Draw the inventory, set both processed-input bytes to the present-action
  * bit (0x40), then run CheckBButton. */
-void func_009934(player)
+void InventoryOpenIdentificationMenu(player)
 short player;
 {
     DrawInventory(player, 3);
@@ -524,7 +524,7 @@ short player;
 }
 
 /* Return the present byte at the current scrolled inventory selection. */
-char func_009972(player)
+char InventoryGetSelectedPresent(player)
 int player;
 {
     char slot;
@@ -560,7 +560,7 @@ short player;
 }
 
 /* Reject dropping in the elevator; otherwise remove and drop the selection. */
-void func_009afa(player)
+void InventoryDropSelectedPresent(player)
 short player;
 {
     char slot, present;
@@ -582,7 +582,7 @@ short player;
 }
 
 /* Buy the selected mailbox item when both inventory space and bucks allow it. */
-void func_009bf6(player)
+void InventoryBuySelectedMailOrderPresent(player)
 short player;
 {
     char slot, selection;
@@ -597,14 +597,14 @@ short player;
     } else {
         PlaySound(26, 50);
         if (slot == 16)
-            func_01e38e(25, player);
+            StartDialogue(25, player);
         else
             GenerateSpeech(player, "Need Bucks", 1);
     }
 }
 
 /* Resolve and identify the selected present, charging two bucks only on change. */
-int func_009d2e(player)
+int InventoryIdentifySelectedPresent(player)
 short player;
 {
     int changed = 0;
@@ -638,7 +638,7 @@ short player;
  * mark cycles through 59 words to choose one of four replacement glyphs.
  * MCC68K 3.3K has no volatile keyword; these explicit MMIO writes are retained
  * by its matching default optimization profile. */
-char func_009e2e(character)
+char TextMapCharacterToGlyph(character)
 char character;
 {
     if (character >= 'a' && character <= 'z')
@@ -649,8 +649,8 @@ char character;
         character += 36 - '0';
     else switch (character) {
     case '?':
-        character = (PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                     (ram_ff91e0 = 0) : ++ram_ff91e0] & 3) + 27;
+        character = (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                     (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) + 27;
         break;
     case '.': character = 31; break;
     case ',': character = 32; break;
@@ -687,19 +687,19 @@ char character;
 }
 
 /* Emit glyph tile words for a zero-terminated character string. */
-void func_009f8a(text)
+void TextWriteStringTiles(text)
 char *text;
 {
     char glyph;
 
     while (*text) {
-        glyph = func_009e2e(*text++);
+        glyph = TextMapCharacterToGlyph(*text++);
         VDP_DATA = 0x85b4 + glyph;
     }
 }
 
 /* Suppress leading zeroes, retaining one digit and a preceding minus sign. */
-void func_009fbe(value)
+void TextWriteDecimalTiles(value)
 short value;
 {
     short count, divisor, position, started, digit;
@@ -724,11 +724,11 @@ short value;
             started = 1;
     }
     text[count] = 0;
-    func_009f8a(text);
+    TextWriteStringTiles(text);
 }
 
 /* Render a three-character currency field, padding short values with blanks. */
-void func_00a054(player_number)
+void InventoryDrawBucks(player_number)
 short player_number;
 {
     short column = 6;
@@ -736,48 +736,48 @@ short player_number;
         VDP_COMMAND = 0x56000003L + (column << 17);
         if (gPlayerBucks[0] < 100)
             VDP_DATA = 0x85b4;
-        func_009fbe(gPlayerBucks[0]);
+        TextWriteDecimalTiles(gPlayerBucks[0]);
         if (gPlayerBucks[0] < 10)
             VDP_DATA = 0x85b4;
     } else {
         VDP_COMMAND = 0x5c800003L + (column << 17);
         if (gPlayerBucks[1] < 100)
             VDP_DATA = 0x85b4;
-        func_009fbe(gPlayerBucks[1]);
+        TextWriteDecimalTiles(gPlayerBucks[1]);
         if (gPlayerBucks[1] < 10)
             VDP_DATA = 0x85b4;
     }
 }
 
 /* Render currency, points and the player's rank glyph sequence. */
-void func_00a0ea(player_number)
+void InventoryDrawPlayerStats(player_number)
 short player_number;
 {
     short column = 32;
-    func_00a054(player_number);
+    InventoryDrawBucks(player_number);
     if (player_number == 0) {
         if (gPlayerPoints[0] > 99)
             --column;
         VDP_COMMAND = 0x56000003L + (column << 17);
-        func_009fbe(gPlayerPoints[0]);
+        TextWriteDecimalTiles(gPlayerPoints[0]);
         if (gPlayerPoints[0] > 999)
-            func_009f8a(" pts");
+            TextWriteStringTiles(" pts");
         VDP_COMMAND = 0x55a80003L;
-        func_009f8a(RankCharsTable[gPlayerRank[0]]);
+        TextWriteStringTiles(RankCharsTable[gPlayerRank[0]]);
     } else {
         if (gPlayerPoints[1] > 99)
             --column;
         VDP_COMMAND = 0x5c800003L + (column << 17);
-        func_009fbe(gPlayerPoints[1]);
+        TextWriteDecimalTiles(gPlayerPoints[1]);
         if (gPlayerPoints[1] > 999)
-            func_009f8a(" pts");
+            TextWriteStringTiles(" pts");
         VDP_COMMAND = 0x5c280003L;
-        func_009f8a(RankCharsTable[gPlayer2Rank]);
+        TextWriteStringTiles(RankCharsTable[gPlayer2Rank]);
     }
 }
 
 /* Retreat over empty inventory slots and position or hide the selector. */
-void func_00a1cc(player_number)
+void InventoryUpdateSelectorEntity(player_number)
 short player_number;
 {
     char exhausted = 0;
@@ -801,9 +801,9 @@ short player_number;
         }
     }
     if (player_number == 0)
-        selector = &ram_ffaf5a;
+        selector = &gPlayer1InventorySelectorEntity;
     else
-        selector = &ram_ffb2da;
+        selector = &gPlayer2InventorySelectorEntity;
     if (!exhausted) {
         selector->x = P1_MENU_SEL_COL[player_number] * 160 + 7;
         selector->y = P1_MENU_SEL_ROW[player_number] * 16 + 63;
@@ -815,7 +815,7 @@ short player_number;
 }
 
 /* Activate seven inventory objects, waiting for their selected draw flag. */
-void func_00a2e0(player_number)
+void InventoryInitializeDisplayEntities(player_number)
 short player_number;
 {
     short group, first_object, object_number;
@@ -839,9 +839,9 @@ short player_number;
     for (object_number = first_object; object_number < first_object + 7;
          ++object_number, ++object) {
         object->draw_flags = 1;
-        for (func_00d776(object, group); !(object->draw_flags & ready_mask);
-             func_00d776(object, group))
-            func_01e94e();
+        for (AllocateEntityViewportSprites(object, group); !(object->draw_flags & ready_mask);
+             AllocateEntityViewportSprites(object, group))
+            EntityReleaseOneByPriority();
         object->sprite_ready = 0;
         object->flags_4d |= 64;
     }
@@ -849,7 +849,7 @@ short player_number;
 }
 
 /* Remove each inventory object from its draw group and clear player flag 8. */
-void OpeningPresents4(player_number)
+void InventoryDeactivateDisplayEntities(player_number)
 short player_number;
 {
     short group, first_object, object_number;
@@ -865,7 +865,7 @@ short player_number;
     for (object_number = first_object; object_number < first_object + 7;
          ++object_number) {
         object = &gPlayerInfo[object_number];
-        OpeningPresents7(object, group);
+        ReleaseEntityViewportSprites(object, group);
         object->draw_flags = 0;
     }
     gPlayerInfo[player_number].draw_flags &= ~8;
@@ -881,10 +881,10 @@ short player_number;
 
     if (player_number == 0) {
         base_row = 5;
-        object = ram_ffafda;
+        object = gPlayer1InventoryItemEntities;
     } else {
         base_row = 18;
-        object = ram_ffb35a;
+        object = gPlayer2InventoryItemEntities;
     }
     for (row = 0; row < 3; ++row) {
         for (column = 0; column < 2; ++column, ++object) {
@@ -899,7 +899,7 @@ short player_number;
                 object->flags_4d &= ~64;
                 object->frame = 0;
             }
-            if (!ram_ff9386) {
+            if (!gInventoryLabelsSuppressed) {
                 VDP_COMMAND = (((row * 2 + base_row) << 23) + 0x50000003L) +
                               ((column * 20 + 5) << 17);
                 if (present_number != -1) {
@@ -913,13 +913,13 @@ short player_number;
                     } else {
                         for (character = 0; character < 5; ++character)
                             VDP_DATA = 0x85b4 + (char)((PREGEN_RANDOMS[
-                                ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0] & 3) + 27);
+                                gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) + 27);
                         for (; character < 13; ++character)
                             VDP_DATA = 0x85b4;
                     }
                 } else {
                     object->flags_4d |= 64;
-                    func_009f8a("             ");
+                    TextWriteStringTiles("             ");
                 }
             }
         }
@@ -927,7 +927,7 @@ short player_number;
 }
 
 /* Refresh three mailbox offers with present sprites, labels and prices. */
-void func_00a614(player_number)
+void InventoryDrawMailOrderOffers(player_number)
 short player_number;
 {
     short row, base_row;
@@ -936,10 +936,10 @@ short player_number;
 
     if (player_number == 0) {
         base_row = 5;
-        object = ram_ffafda;
+        object = gPlayer1InventoryItemEntities;
     } else {
         base_row = 18;
-        object = ram_ffb35a;
+        object = gPlayer2InventoryItemEntities;
     }
     for (row = 0; row < 3; ++row, ++object) {
         present_number = gPlayer1MailboxItems[player_number][row];
@@ -950,23 +950,23 @@ short player_number;
         object->x = 21;
         object->flags_4d &= ~64;
         object->frame = 0;
-        if (!ram_ff9386) {
+        if (!gInventoryLabelsSuppressed) {
             VDP_COMMAND = ((row * 2 + base_row) << 23) + 0x500a0003L;
             if (gPresentInfo[present_number].identified) {
                 if (present_number == 12 && gPlayerLives[player_number ^ 1] < 0)
-                    func_009f8a("un-fall .....");
+                    TextWriteStringTiles("un-fall .....");
                 else
-                    func_009f8a(InventoryNameStringTable[present_number]);
+                    TextWriteStringTiles(InventoryNameStringTable[present_number]);
             } else
-                func_009f8a("????? .......");
-            func_009f8a("...............  ");
-            func_009fbe(gPlayer1MailboxPrices[player_number][row]);
+                TextWriteStringTiles("????? .......");
+            TextWriteStringTiles("...............  ");
+            TextWriteDecimalTiles(gPlayer1MailboxPrices[player_number][row]);
         }
     }
 }
 
 /* Draw one of four compact inventory banners and remember its selection. */
-void func_00a77e(player_number, menu, already_blanked)
+void InventoryDrawActionBanner(player_number, menu, already_blanked)
 short player_number, menu, already_blanked;
 {
     short row, column, base_row, character;
@@ -974,7 +974,7 @@ short player_number, menu, already_blanked;
 
     base_row = player_number == 0 ? 1 : 14;
     if (!already_blanked) {
-        func_008c5c();
+        WaitForVBlankWithGraphicsPaused();
         ClearSkipVHBlankFlags();
         for (row = 0; row < 3; ++row) {
             VDP_COMMAND = ((base_row + row) << 23) + 0x501c0003L;
@@ -1033,5 +1033,5 @@ short player_number, menu, already_blanked;
     }
     if (!already_blanked)
         SetSkipVHBlankFlags();
-    ram_ff9362[player_number] = menu;
+    gInventoryBannerMode[player_number] = menu;
 }

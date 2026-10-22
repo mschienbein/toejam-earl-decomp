@@ -13,7 +13,7 @@ extern int GetCtrl1Input();
 extern int GetCtrl2Input();
 extern void MoveDataToVRAM();
 extern void VDPWritesRoutine1();
-extern void func_00034e();
-extern void func_00046a();
+extern void RestartFromResetEntry();
+extern void DrawStarfieldPlane();
 
 #endif

@@ -15,8 +15,8 @@ extern char gPlayerRank[];
 extern char gPlayer2Rank;
 extern char TOEJAMS_HEALTH[];
 extern char EARLS_HEALTH;
-extern char TOEJAMS_MAX_HEALTH[];
-extern char ram_ffa256[];
+extern char gHudDisplayedHealth[];
+extern char gHudDisplayedLives[];
 extern char TOEJAM_RESTORE_HEALTH[];
 extern char EARL_RESTORE_HEALTH;
 extern char PLAYER_INDICATOR;
@@ -38,29 +38,29 @@ extern unsigned char LAND_UNDER_EARL;
 
 /* Per-player movement, falling and sleep state. Incomplete outer
  * bounds are retained where no finite allocation is established.
- * ram_ffda23 is the existing scalar alias of TOEJAM_FALL_STATE[1]. */
-extern char ram_ffda1e[];
+ * gPlayer2FallState is the existing scalar alias of TOEJAM_FALL_STATE[1]. */
+extern char gPlayerPreDeathSpriteState[];
 extern char TOEJAM_JUMP_COUNTER[];
 extern char TOEJAM_FALL_STATE[];
-extern char ram_ffda23;
-extern char ram_ffda24[];
-extern char ram_ffda26[];
-extern char ram_ffda28[];
-extern char ram_ffda2c[];
-extern char ram_ffda30[];
-extern short ram_ffda32;
-extern char ram_ffda36[];
-extern char ram_ffda38[];
-extern char ram_ffda3a[];
-extern char ram_ffda3e[];
-extern char ram_ffda40[];
-extern char ram_ffda42[];
+extern char gPlayer2FallState;
+extern char gPlayerTerrainSinking[];
+extern char gPlayerPhasedJumpPhase[];
+extern char gPlayerPhasedJumpPhaseTicks[];
+extern char gPlayerPendingHurtDamage[];
+extern char gPlayerLandingCounterSeed[];
+extern short gTerrainPriorityUpdatePlayer;
+extern char gPlayerPhasedJumpArmed[];
+extern char gPlayerPhasedJumpSpeechUsed[];
+extern char gPlayerRocketTurnDelay[];
+extern char gPlayerBookSleepDelay[];
+extern char gPlayerWakeEffectsLeft[];
+extern char gPlayerWakeEffectEntityHandles[];
 extern short P1_IDLE_COUNTER[];
 
 /* Hula contact/dance state retains its existing byte-array views. */
 extern char HULA_DANCE[];
 extern char HULA_DANCE_TIMER[];
-extern char ram_ffe1b4;
+extern char gHulaSpeechCooldown;
 
 /* Additional selected final-batch storage and resource interfaces. */
 extern char TOEJAM_SPRITE;

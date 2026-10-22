@@ -20,22 +20,22 @@ short player;
 
     saved_random = StackBasedRandom(gLevelSeeds[gLevel912A]);
     if (gLevel912A > 1)
-        position_count = func_0046c6();
+        position_count = MapGenerateSeparatedAnchors();
     if (!player) {
         if (gLevel912C == gLevel912A)
             loaded = 1;
         else {
             if (gLevel912E == gLevel912A) {
                 if (gLevel912C)
-                    func_0044e2(0);
+                    MapSwapPlayerWithSavedBank(0);
                 CopyLevelBetweenPlayers(1);
                 loaded = 1;
             } else if (gLevel9130 == gLevel912A) {
-                func_0044e2(0);
+                MapSwapPlayerWithSavedBank(0);
                 loaded = 1;
             } else {
                 if (gLevel912C > 1)
-                    func_0044e2(0);
+                    MapSwapPlayerWithSavedBank(0);
             }
             gLevel912C = gLevel912A;
         }
@@ -45,16 +45,16 @@ short player;
         else {
             if (gLevel912C == gLevel912A) {
                 if (gLevel912C)
-                    func_0044e2(1);
+                    MapSwapPlayerWithSavedBank(1);
                 CopyLevelBetweenPlayers(0);
                 loaded = 1;
             } else if (gLevel9130 == gLevel912A) {
-                func_0044e2(1);
+                MapSwapPlayerWithSavedBank(1);
                 loaded = 1;
             } else {
                 if (gLevel912E > 1)
-                    func_0044e2(1);
-                func_00433e();
+                    MapSwapPlayerWithSavedBank(1);
+                MapSwapPlayerBanks();
             }
             gLevel912E = gLevel912A;
         }
@@ -73,7 +73,7 @@ short player;
                     gMapDataA[row][column] = Level1MapData[row][column];
         }
         if (player == 1)
-            func_00433e();
+            MapSwapPlayerBanks();
         loaded = 1;
     }
     if (loaded) {
@@ -89,25 +89,25 @@ short player;
             gMapDataA[row][column] = 0;
             gMapDataD[row][column] &= 0xf0;
         }
-    func_004842(position_count);
-    filled_cells = func_004f50(3);
+    MapConnectAnchorPositions(position_count);
+    filled_cells = MapGetRandomGenerationParameter(3);
     filled_cells = filled_cells * 19 * 26;
     filled_cells /= 100;
     for (row = 0; row < position_count; ++row)
-        func_005776(4096, row, (row + 1) * (filled_cells / position_count),
+        MapGrowTerrainRegion(4096, row, (row + 1) * (filled_cells / position_count),
                     ELEVATOR_POS_TABLE[row].y, ELEVATOR_POS_TABLE[row].x);
-    func_0064ea();
-    if (func_0077ae())
+    MapStabilizeRegionConnections();
+    if (MapIsAnchorConnectionMissing())
         return 1;
-    func_00655a();
-    func_00671c(position_count);
-    func_003604();
-    func_0039e8();
-    func_003cb6();
-    func_0071e8();
-    func_004174();
+    MapSeedFilledTerrainRegions();
+    MapBuildRegionEdgeShapes(position_count);
+    MapBuildFilledTerrainShapes();
+    MapBuildDirectionalPathShapes();
+    MapScatterTerrainFeatures();
+    MapAssignTransitionChain();
+    MapChooseMetatileAlternatives();
     if (player == 1)
-        func_00433e();
+        MapSwapPlayerBanks();
     StackBasedRandom(saved_random);
     return 0;
 }
@@ -130,7 +130,7 @@ short level;
 
 /* Load the final map directly, or retry ordinary generation with a fresh
  * seed until ChangeLevel accepts the generated map. */
-void func_004dfe(player, level)
+void MapLoadPlayerLevel(player, level)
 short player, level;
 {
     if (level >= 26) {

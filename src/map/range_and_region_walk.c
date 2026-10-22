@@ -50,14 +50,14 @@ void PreGenerateRandoms()
     saved_state = gRNGState;
     for (random_index = 0; random_index < 59; ++random_index)
         PREGEN_RANDOMS[random_index] = GetRandomNumber();
-    ram_ff91e0 = 0;
+    gRandomCacheIndex = 0;
     gRNGState = saved_state;
 }
 
 /* Draw uniformly from the observed inclusive per-level min/max pair.
  * Keep the full-width selected value until the unsigned-word result, then
  * preserve the existing wide public return interface. */
-unsigned long func_004f50(range_index)
+unsigned long MapGetRandomGenerationParameter(range_index)
 short range_index;
 {
     char range_row;
@@ -83,7 +83,7 @@ short range_index;
 /* Walk between two map cells, adding reciprocal direction bits and 0x2000
  * to the word map. A level-dependent draw also copies direction bits to the
  * byte map; turns are selected from the observed lookup table. */
-void func_004fee(start_row, start_column, target_row, target_column,
+void MapCarveDirectionalPath(start_row, start_column, target_row, target_column,
                  random_steps, turn_chance)
 short start_row, start_column, target_row, target_column;
 short random_steps, turn_chance;
@@ -106,7 +106,7 @@ short random_steps, turn_chance;
         if (direction_steps <= 0 || !turn_chance) {
             direction_steps = GetRandomNumber() % 3 + 2;
             if (turn_chance > GetRandomNumber() % 100)
-                next_direction = dat_08bfc2[GetRandomNumber() % 3 + 1 + direction];
+                next_direction = MapPathTurnDirections[GetRandomNumber() % 3 + 1 + direction];
             else if (GetRandomNumber() % 100 < 50) {
                 if (target_row - row > 0)
                     next_direction = 4;
@@ -130,10 +130,10 @@ short random_steps, turn_chance;
         if (!turn_chance || GetRandomNumber() % 100 < 80)
             direction = next_direction;
         else
-            direction = dat_08bfc2[GetRandomNumber() % 3 + 1 + next_direction];
+            direction = MapPathTurnDirections[GetRandomNumber() % 3 + 1 + next_direction];
         if (previous_direction == direction) {
             if (repeated_steps >= direction_steps)
-                direction = dat_08bfc2[GetRandomNumber() % 3 + 1 + direction];
+                direction = MapPathTurnDirections[GetRandomNumber() % 3 + 1 + direction];
             else
                 ++repeated_steps;
         } else
@@ -176,7 +176,7 @@ short random_steps, turn_chance;
 
 /* Advance a 2x2 region origin. Different 0x1000 regions may stop the scan
  * after two overlapping cells, according to the supplied percentage. */
-short func_0053c2(row_position, column_position, direction, region, join_chance)
+short MapFindRegionGrowthOrigin(row_position, column_position, direction, region, join_chance)
 short *row_position, *column_position;
 short direction, region, join_chance;
 {
@@ -228,7 +228,7 @@ short direction, region, join_chance;
 /* Advance a 2x2 region while its surrounding 4x4 neighbourhood contains
  * only this region or the corresponding 0x1000 base. Avoid all three
  * coordinate pairs in the elevator-position table. */
-short func_00557a(row_position, column_position, direction, region)
+short MapFindInteriorGrowthOrigin(row_position, column_position, direction, region)
 short *row_position, *column_position;
 short direction, region;
 {

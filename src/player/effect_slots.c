@@ -12,30 +12,30 @@
  * remains unknown [INFERENCE]. */
 
 /* Report whether either of the two effect slots is available. */
-int func_01bdd0()
+int EntityHasFreeTimedEffectSlot()
 {
-    if (!ram_ffe1be[0] || !ram_ffe1be[1])
+    if (!gTimedEffectEntities[0] || !gTimedEffectEntities[1])
         return 1;
     else
         return 0;
 }
 
 /* Claim the first available effect slot and start its animation. */
-int func_01bde8(x, y, level)
+int EntitySpawnTimedEffect(x, y, level)
 short x, y, level;
 {
     short effect_slot;
     struct object_state *effect;
     struct timed_animation *animation;
 
-    if (!ram_ffe1be[0])
+    if (!gTimedEffectEntities[0])
         effect_slot = 0;
-    else if (!ram_ffe1be[1])
+    else if (!gTimedEffectEntities[1])
         effect_slot = 1;
     else
         return 1;
-    if (ram_ffe1be[effect_slot] = (int)func_00d904()) {
-        effect = &gPlayerInfo[ram_ffe1be[effect_slot]];
+    if (gTimedEffectEntities[effect_slot] = (int)AllocateEntity()) {
+        effect = &gPlayerInfo[gTimedEffectEntities[effect_slot]];
         effect->x = x;
         effect->y = y;
         effect->height = 5;
@@ -45,7 +45,7 @@ short x, y, level;
         effect->sprite_count = 1;
         effect->tile_count = 16;
         effect->tile |= 0x8000;
-        animation = &dat_0af036;
+        animation = &TimedEntityEffectAnimation;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = animation->period;
@@ -58,12 +58,12 @@ short x, y, level;
 }
 
 /* Release a slot after its object's animation has stopped. */
-void func_01bea6(effect_slot)
+void EntityReleaseFinishedTimedEffect(effect_slot)
 short effect_slot;
 {
-    if (ram_ffe1be[effect_slot] &&
-        !gPlayerInfo[ram_ffe1be[effect_slot]].frame_duration) {
-        func_00d970(ram_ffe1be[effect_slot]);
-        ram_ffe1be[effect_slot] = 0;
+    if (gTimedEffectEntities[effect_slot] &&
+        !gPlayerInfo[gTimedEffectEntities[effect_slot]].frame_duration) {
+        FreeEntity(gTimedEffectEntities[effect_slot]);
+        gTimedEffectEntities[effect_slot] = 0;
     }
 }

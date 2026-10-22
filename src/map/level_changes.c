@@ -33,7 +33,7 @@ short player;
 
 /* Exchange a player's map with the saved map, preserving the other
  * player's visibility nibble in the active mask plane. */
-void func_0044e2(player)
+void MapSwapPlayerWithSavedBank(player)
 short player;
 {
     unsigned short row, column, saved_cell;
@@ -54,11 +54,11 @@ short player;
             *saved_map++ = saved_cell;
             mask = gMapDataD[row][column];
             if (!player) {
-                gMapDataD[row][column] = (mask & 0xf0) | (ram_ff8f2c[row][column] & 15);
-                ram_ff8f2c[row][column] = mask;
+                gMapDataD[row][column] = (mask & 0xf0) | (gSavedMapPathDirections[row][column] & 15);
+                gSavedMapPathDirections[row][column] = mask;
             } else {
-                gMapDataD[row][column] = (ram_ff8f2c[row][column] << 4) | (mask & 15);
-                ram_ff8f2c[row][column] = mask >> 4;
+                gMapDataD[row][column] = (gSavedMapPathDirections[row][column] << 4) | (mask & 15);
+                gSavedMapPathDirections[row][column] = mask >> 4;
             }
         }
 }
@@ -81,7 +81,7 @@ void GenerateLevelSeeds()
 
 /* Generate separated positions inside the level-dependent coordinate
  * bounds and return the requested position count. */
-int func_0046c6()
+int MapGenerateSeparatedAnchors()
 {
     short previous, position, min_y, min_x, count, max_y, max_x;
 
@@ -100,7 +100,7 @@ int func_0046c6()
         min_y = 2;
         max_y = 23;
     }
-    count = func_004f50(6);
+    count = MapGetRandomGenerationParameter(6);
     for (position = 0; position < count; ++position) {
         ELEVATOR_POS_TABLE[position].x =
             GetRandomNumber() % (max_x - min_x + 1) + min_x;

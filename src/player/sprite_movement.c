@@ -8,7 +8,7 @@
 #include "sprite_calls.h"
 
 /* Select movement speeds, directional sprite, and animation mode. */
-void func_00f00c(player, player_number, input, land)
+void PlayerChooseDirectionalMovement(player, player_number, input, land)
 struct object_state *player;
 short player_number, input;
 unsigned short land;
@@ -22,23 +22,23 @@ unsigned short land;
     if (land == 48) {
         speed_x = 400;
         speed_y = 300;
-        if (ram_ffda24[player_number]) {
+        if (gPlayerTerrainSinking[player_number]) {
             player->height = 0;
             player->draw_flags &= ~64;
         }
     }
     velocity_x = player->height;
-    if (ram_ffda24[player_number] && velocity_x < 0) {
+    if (gPlayerTerrainSinking[player_number] && velocity_x < 0) {
         if (velocity_x < -16)
             velocity_x = -16;
         speed_x += velocity_x * 10;
         speed_y += velocity_x * 8;
     }
-    if (ram_ffda82[player_number]) {
+    if (gPlayerElevatorApproachInputGate[player_number]) {
         if (input & 1)
             input = 1;
         else
-            ram_ffda82[player_number] = 0;
+            gPlayerElevatorApproachInputGate[player_number] = 0;
     }
     if (!(player->flags_52 & 0x8000L)) {
         velocity_x = player->velocity_x;
@@ -106,11 +106,11 @@ unsigned short land;
         else
             velocity_y = speed_x;
     }
-    func_00f282(player, player_number, input, sprite, velocity_x, velocity_y, animation_mode);
+    PlayerApplyDirectionalMovementAnimation(player, player_number, input, sprite, velocity_x, velocity_y, animation_mode);
 }
 
 /* Apply movement, select the active animation family, and preserve its phase. */
-void func_00f282(player, player_number, input, sprite, velocity_x, velocity_y, mode)
+void PlayerApplyDirectionalMovementAnimation(player, player_number, input, sprite, velocity_x, velocity_y, mode)
 struct object_state *player;
 short player_number, input, sprite, velocity_x, velocity_y, mode;
 {

@@ -15,17 +15,17 @@ short force, tiles_only;
     if (!VBLANK_FLAG_2 && !force && !tiles_only)
         return;
     if (!tiles_only) {
-        VDPWritesRoutine1(ram_ffb65a, 0xf800, 320);
-        ram_ffd932 = ram_ffb65a[23].link;
-        ram_ffd934 = ram_ffb65a[24].link;
+        VDPWritesRoutine1(gHardwareSpriteTable, 0xf800, 320);
+        gPrimaryViewportUploadedLink = gHardwareSpriteTable[23].link;
+        gSecondaryViewportUploadedLink = gHardwareSpriteTable[24].link;
     }
-    tile_source = (unsigned short *)ram_ffb8da;
-    for (queue_index = 0; queue_index < ram_ffd92e; queue_index += 2) {
-        word_count = ram_ffd8dc[queue_index + 1] << 4;
-        VDPWritesRoutine1(tile_source, ram_ffd8dc[queue_index] << 5, word_count);
+    tile_source = (unsigned short *)gSpriteTileUploadBuffer;
+    for (queue_index = 0; queue_index < gSpriteTileUploadQueueWordCount; queue_index += 2) {
+        word_count = gSpriteTileUploadRuns[queue_index + 1] << 4;
+        VDPWritesRoutine1(tile_source, gSpriteTileUploadRuns[queue_index] << 5, word_count);
         tile_source += word_count;
     }
-    SPRITE_STATE_TABLE = 0;
-    ram_ffd92e = 0;
+    gSpriteTileBufferOffset = 0;
+    gSpriteTileUploadQueueWordCount = 0;
     VBLANK_FLAG_2 = 0;
 }

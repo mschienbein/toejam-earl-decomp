@@ -10,7 +10,7 @@
 
 /* Choose a direction from velocity, then select standing, jumping, or
  * braking sprites according to the terrain and the active movement flags. */
-void func_011462(state, player, terrain)
+void PlayerUpdateRocketSkatesSprite(state, player, terrain)
 struct object_state *state;
 short player;
 unsigned short terrain;
@@ -51,7 +51,7 @@ unsigned short terrain;
             StopPlayer(state);
             state->acceleration_height = -32;
             sprite = (state->sprite_state & 3) + 20;
-            ram_ffda30[player] = 2;
+            gPlayerLandingCounterSeed[player] = 2;
         }
     } else if (direction != (state->sprite_state & (unsigned long)3))
         /* The unsigned long mask reproduces the ROM's register order; a plain 3 keeps the size
@@ -63,7 +63,7 @@ unsigned short terrain;
 
 /* Resolve directional input against the current facing, accelerate on one
  * axis, and retain the original asymmetric x-then-y speed clamping. */
-void func_0115da(state, player, changed_direction, input)
+void PlayerApplyRocketSkatesInput(state, player, changed_direction, input)
 struct object_state *state;
 short player;
 char changed_direction;
@@ -105,22 +105,22 @@ unsigned char input;
                 right = 1;
         } else if (up && direction == 1) {
             up = 0;
-            ram_ffda3a[player] = 3;
+            gPlayerRocketTurnDelay[player] = 3;
             if (!(left | right))
                 right = 1;
         } else if (down && direction == 0) {
             down = 0;
-            ram_ffda3a[player] = 3;
+            gPlayerRocketTurnDelay[player] = 3;
             if (!(left | right))
                 left = 1;
         } else if (left && direction == 3) {
             left = 0;
-            ram_ffda3a[player] = 3;
+            gPlayerRocketTurnDelay[player] = 3;
             if (!(up | down))
                 up = 1;
         } else if (right && direction == 2) {
             right = 0;
-            ram_ffda3a[player] = 3;
+            gPlayerRocketTurnDelay[player] = 3;
             if (!(up | down))
                 down = 1;
         }
@@ -169,7 +169,7 @@ clamp_speed:
 
 /* Handle the active rocket-movement flags, direction-change delay, and
  * collision-flag-driven random turns before updating acceleration and sprite. */
-void func_01189c(state, terrain)
+void PlayerUpdateRocketSkatesMotion(state, terrain)
 struct object_state *state;
 unsigned short terrain;
 {
@@ -190,18 +190,18 @@ unsigned short terrain;
     }
     if ((P1_PROCESSED_INPUT[player] & 15) != (P1_PREV_PROCESSED_INPUT[player] & 15)) {
         changed_direction = 1;
-        ram_ffda3a[player] = 0;
-    } else if (ram_ffda3a[player] && ram_ffda3a[player]--)
+        gPlayerRocketTurnDelay[player] = 0;
+    } else if (gPlayerRocketTurnDelay[player] && gPlayerRocketTurnDelay[player]--)
         return;
-    if (ram_ffe1dc[player])
-        input = func_01cc62(player);
+    if (gPlayerControlRemapEntities[player])
+        input = PlayerRemapDirectionalInput(player);
     else
         input = P1_PROCESSED_INPUT[player];
     if (state->velocity_y && (state->draw_flags & 32)) {
         input &= 0xfc;
         changed_direction = 1;
         if (!(input & 12)) {
-            if (PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0] & 1)
+            if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
                 input |= 1;
             else
                 input |= 2;
@@ -211,12 +211,12 @@ unsigned short terrain;
         input &= 0xf3;
         changed_direction = 1;
         if (!(input & 3)) {
-            if (PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0] & 1)
+            if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
                 input |= 4;
             else
                 input |= 8;
         }
     }
-    func_0115da(state, player, changed_direction, input);
-    func_011462(state, player, terrain);
+    PlayerApplyRocketSkatesInput(state, player, changed_direction, input);
+    PlayerUpdateRocketSkatesSprite(state, player, terrain);
 }

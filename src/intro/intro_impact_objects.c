@@ -12,13 +12,13 @@
  * remains unknown [INFERENCE]. */
 
 /* Allocate the rocketship impact object at the supplied position. */
-void func_0298b0(x, y)
+void IntroCreateRocketshipImpact(x, y)
 short x, y;
 {
     struct object_state *object;
 
-    if (ram_ffe3f2 = (int)func_00d904()) {
-        object = &gPlayerInfo[ram_ffe3f2];
+    if (gIntroRocketshipImpactEntity = (int)AllocateEntity()) {
+        object = &gPlayerInfo[gIntroRocketshipImpactEntity];
         object->tile = 0;
         object->current_frame = Spr_IntroRocketshipImpact[0];
         object->frames = Spr_IntroRocketshipImpact;
@@ -31,25 +31,25 @@ short x, y;
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;
-        func_00d776(object, 0);
+        AllocateEntityViewportSprites(object, 0);
     }
 }
 
 /* Release the impact slot without clearing its stored index. */
-void func_029930()
+void IntroReleaseRocketshipImpact()
 {
-    if (ram_ffe3f2)
-        func_00d970(ram_ffe3f2);
+    if (gIntroRocketshipImpactEntity)
+        FreeEntity(gIntroRocketshipImpactEntity);
 }
 
 /* Allocate the planet object at the supplied position. */
-void func_02994c(x, y)
+void CutsceneCreatePlanetEntity(x, y)
 short x, y;
 {
     struct object_state *object;
 
-    if (ram_ffe3f4 = (int)func_00d904()) {
-        object = &gPlayerInfo[ram_ffe3f4];
+    if (gCutscenePlanetEntity = (int)AllocateEntity()) {
+        object = &gPlayerInfo[gCutscenePlanetEntity];
         object->tile = 0;
         object->current_frame = &Spr_PlanetFrame00;
         object->frames = Spr_Planet;
@@ -62,25 +62,25 @@ short x, y;
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;
-        func_00d776(object, 0);
+        AllocateEntityViewportSprites(object, 0);
     }
 }
 
 /* Release the planet slot without clearing its stored index. */
-void func_0299cc()
+void CutsceneReleasePlanetEntity()
 {
-    if (ram_ffe3f4)
-        func_00d970(ram_ffe3f4);
+    if (gCutscenePlanetEntity)
+        FreeEntity(gCutscenePlanetEntity);
 }
 
 /* Allocate the ending composite at the supplied position. */
-void func_0299e8(x, y)
+void EndingCreateStationaryComposite(x, y)
 short x, y;
 {
     struct object_state *object;
 
-    if (ram_ffe3f6 = (int)func_00d904()) {
-        object = &gPlayerInfo[ram_ffe3f6];
+    if (gEndingStationaryCompositeEntity = (int)AllocateEntity()) {
+        object = &gPlayerInfo[gEndingStationaryCompositeEntity];
         object->tile = 0;
         /* ORIGINAL BUG: current_frame receives the frame-table address,
          * not its first frame; dereferencing the table does not match. */
@@ -95,13 +95,13 @@ short x, y;
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;
-        func_00d776(object, 0);
+        AllocateEntityViewportSprites(object, 0);
     }
 }
 
 /* Release the ending composite slot without clearing its stored index. */
-void func_029a68()
+void EndingReleaseStationaryComposite()
 {
-    if (ram_ffe3f6)
-        func_00d970(ram_ffe3f6);
+    if (gEndingStationaryCompositeEntity)
+        FreeEntity(gEndingStationaryCompositeEntity);
 }

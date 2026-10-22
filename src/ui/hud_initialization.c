@@ -14,7 +14,7 @@
 #include "ui_calls.h"
 
 /* Upload the two level digits and set the pair of hardware sprite tiles. */
-void func_00aa5a(player_number)
+void HudLoadLevelNumberSprites(player_number)
 short player_number;
 {
     char level_number, units_digit, tens_digit;
@@ -35,18 +35,18 @@ short player_number;
     VDP_COMMAND = VRAM_WRITE(tile_number << 5);
     MoveDataToVRAM(ImageLevelNumbers[units_digit], 64);
     attributes = (LevelNumberPalettes[units_digit] << 13) + 0x8000;
-    ram_ffb65a[sprite_number].size = 5;
-    ram_ffb65a[sprite_number].tile = tile_number + attributes;
+    gHardwareSpriteTable[sprite_number].size = 5;
+    gHardwareSpriteTable[sprite_number].tile = tile_number + attributes;
     tile_number += 4;
     VDP_COMMAND = VRAM_WRITE(tile_number << 5);
     MoveDataToVRAM(ImageLevelNumbers[tens_digit], 64);
     attributes = (LevelNumberPalettes[tens_digit] << 13) + 0x8000;
-    ram_ffb65a[sprite_number + 1].size = 5;
-    ram_ffb65a[sprite_number + 1].tile = tile_number + attributes;
+    gHardwareSpriteTable[sprite_number + 1].size = 5;
+    gHardwareSpriteTable[sprite_number + 1].tile = tile_number + attributes;
 }
 
 /* Position the level-number sprites for menus, split-screen, or the HUD. */
-void func_00abbe(player_number)
+void HudPositionLevelNumberSprites(player_number)
 short player_number;
 {
     short sprite_number, x, tens_digit, y;
@@ -75,25 +75,25 @@ short player_number;
         x = 410;
     } else {
         if (gPlayerLives[0] >= 0) {
-            ram_ffb65a[13].y = 1;
-            ram_ffb65a[14].y = 1;
+            gHardwareSpriteTable[13].y = 1;
+            gHardwareSpriteTable[14].y = 1;
         }
         y = 321;
         x = 276;
     }
     if (tens_digit) {
-        ram_ffb65a[sprite_number].x = x + 8;
-        ram_ffb65a[sprite_number + 1].x = x;
-        ram_ffb65a[sprite_number + 1].y = y;
+        gHardwareSpriteTable[sprite_number].x = x + 8;
+        gHardwareSpriteTable[sprite_number + 1].x = x;
+        gHardwareSpriteTable[sprite_number + 1].y = y;
     } else {
-        ram_ffb65a[sprite_number].x = x + 4;
-        ram_ffb65a[sprite_number + 1].y = 1;
+        gHardwareSpriteTable[sprite_number].x = x + 4;
+        gHardwareSpriteTable[sprite_number + 1].y = 1;
     }
-    ram_ffb65a[sprite_number].y = y;
+    gHardwareSpriteTable[sprite_number].y = y;
 }
 
 /* Select the player's default or active-powerup icon and upload its tiles. */
-void func_00acca(player_number)
+void HudLoadActionIconSprite(player_number)
 short player_number;
 {
     short sprite_number, tile_number, powerup;
@@ -115,15 +115,15 @@ short player_number;
     if (GetSkipVBlankFlag())
         while (VBLANK_FLAG_2)
             ;
-    func_00c7a8(icon, tile_number);
+    QueueSpritePieceTiles(icon, tile_number);
     attributes = ((icon->format & 3) << 13) + 0x8000;
-    ram_ffb65a[sprite_number].size = 5;
-    ram_ffb65a[sprite_number].tile = tile_number + attributes;
+    gHardwareSpriteTable[sprite_number].size = 5;
+    gHardwareSpriteTable[sprite_number].tile = tile_number + attributes;
     VBLANK_FLAG_2 = 1;
 }
 
 /* Position the action icon, including the icon's signed origin offsets. */
-void func_00ad8a(player_number)
+void HudPositionActionIconSprite(player_number)
 short player_number;
 {
     short x, icon_number, y;
@@ -162,12 +162,12 @@ short player_number;
             x = 306;
         y = 321;
     }
-    ram_ffb65a[icon_number].x = icon->x + x;
-    ram_ffb65a[icon_number].y = icon->y + y;
+    gHardwareSpriteTable[icon_number].x = icon->x + x;
+    gHardwareSpriteTable[icon_number].y = icon->y + y;
 }
 
 /* ToeJam starts at 23 health units and Earl at 31, plus four per rank. */
-int func_00ae90(player_number)
+int PlayerGetMaximumHealth(player_number)
 short player_number;
 {
     int maximum_health;

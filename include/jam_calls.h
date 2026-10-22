@@ -6,21 +6,21 @@
  * recovered historical C spelling. */
 extern void JamOutVBlank();
 extern void StartJamOut();
-extern void func_03aec2();
-extern void func_03b27a();
-extern void func_03b39e();
-extern void func_03b4c4();
-extern void func_03b564();
-extern void func_03b6d2();
-extern void func_03b73e();
-extern void func_03b782();
-extern void func_03b7c6();
-extern void func_03b7fe();
-extern void func_03b836();
-extern void func_03b880();
-extern void func_03b8ca();
-extern void func_03b988();
-extern void func_03ba14();
-extern void func_03bae6();
+extern void JamOutRandomSampleVBlank();
+extern void JamOutUpdateLeadAnimations();
+extern void JamOutUpdateLayoutsAndScroll();
+extern void JamOutSynchronizeEntityCopies();
+extern void JamOutCreateCharacterCopies();
+extern void JamOutReleaseCharacterCopies();
+extern void JamOutPositionToejamCopy();
+extern void JamOutPositionEarlCopy();
+extern void JamOutHideToejamCopy();
+extern void JamOutHideEarlCopy();
+extern void JamOutSetToejamSequence();
+extern void JamOutSetEarlSequence();
+extern void JamOutShowLeadPairLayout();
+extern void JamOutDrawPackedBackgroundBlock();
+extern void JamOutShowFourPairLayout();
+extern void JamOutShowNinePairLayout();
 
 #endif

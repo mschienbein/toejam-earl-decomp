@@ -29,10 +29,10 @@
 /* Compatible incomplete-array compiler view. The actual complete shared
  * declaration changes the observed instructions; historical source spelling
  * is unknown [INFERENCE]. */
-extern char ram_ffb8da[];
+extern char gSpriteTileUploadBuffer[];
 
 /* Expand each nonzero packed pixel nibble to palette index fifteen. */
-void func_01faf4(tile_count)
+void FillSpriteOpaquePixels(tile_count)
 short tile_count;
 {
     unsigned char packed_pixels;
@@ -40,7 +40,7 @@ short tile_count;
     unsigned char *pixels;
 
     tile_count <<= 5;
-    pixels = (unsigned char *)&ram_ffb8da[SPRITE_STATE_TABLE];
+    pixels = (unsigned char *)&gSpriteTileUploadBuffer[gSpriteTileBufferOffset];
     for (byte_number = 0; byte_number < tile_count; ++byte_number) {
         packed_pixels = *pixels;
         if (packed_pixels & 15)
@@ -52,7 +52,7 @@ short tile_count;
 }
 
 /* Advance the ship background every twelve calls, or force its first frame. */
-void func_01fb40(force_frame)
+void AnimateShipScreenBackground(force_frame)
 char force_frame;
 {
     short frame_number = 0, part_number;
@@ -62,13 +62,13 @@ char force_frame;
 
     if (force_frame) {
         frame_number = 1;
-        ram_ffe21e = 12;
-    } else if (--ram_ffe21e <= 0) {
-        if (gShipPieceLevels[0] == 1)
+        gShipBackgroundAnimationTimer = 12;
+    } else if (--gShipBackgroundAnimationTimer <= 0) {
+        if (gShipScreenState[0] == 1)
             frame_number = 2;
         else
             frame_number = 1;
-        ram_ffe21e = 12;
+        gShipBackgroundAnimationTimer = 12;
     }
     if (frame_number) {
         /* Only pointer-word slot one is known to hold a frame table; the
@@ -84,22 +84,22 @@ char force_frame;
                 SpriteUnpackInterleavedRLE(part, 16);
             else
                 SpriteUnpackRLE(part, 16);
-            SPRITE_STATE_TABLE += 512;
+            gSpriteTileBufferOffset += 512;
         }
-        ram_ffd8dc[ram_ffd92e++] = 1;
-        ram_ffd8dc[ram_ffd92e++] = 128;
+        gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 1;
+        gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 128;
         WaitForNextVBlank(1);
-        func_008be4(8);
+        TextAnimateFontBanks(8);
         SpriteLoadingStuff(1, 1);
-        gShipPieceLevels[0] = frame_number;
+        gShipScreenState[0] = frame_number;
     } else {
         WaitForNextVBlank(1);
-        func_008be4(8);
+        TextAnimateFontBanks(8);
     }
 }
 
 /* Restore game tiles, HUD sprites, and all four game palettes. */
-void func_01fc58()
+void RestoreGameplayGraphics()
 {
     VDP_CONTROL_WORD = 0x9100;
     VDP_CONTROL_WORD = 0x9200;
@@ -112,7 +112,7 @@ void func_01fc58()
     VDP_COMMAND = 0x79a00000L;
     MoveDataToVRAM(InventoryLabelIdentify, InventoryLabelIdentifySize << 4);
     DrawHUD();
-    VDPWritesRoutine1(ram_ffb65a, 0xf800L, 320);
+    VDPWritesRoutine1(gHardwareSpriteTable, 0xf800L, 320);
     CopyPaletteToCRAMSlot(PaletteGameLine1, 0);
     CopyPaletteToCRAMSlot(PaletteGameLine2, 1);
     CopyPaletteToCRAMSlot(PaletteGameLine3, 2);
@@ -122,7 +122,7 @@ void func_01fc58()
 }
 
 /* Advance the two-frame transition background every twelve calls. */
-void func_01fd58(background_number)
+void AnimateTransitionBackground(background_number)
 short background_number;
 {
     short part_number, frame_number;
@@ -131,12 +131,12 @@ short background_number;
     char packing;
 
     frame_number = 0;
-    if (--ram_ffe21e <= 0) {
-        if (gShipPieceLevels[0] == 1)
+    if (--gShipBackgroundAnimationTimer <= 0) {
+        if (gShipScreenState[0] == 1)
             frame_number = 2;
         else
             frame_number = 1;
-        ram_ffe21e = 12;
+        gShipBackgroundAnimationTimer = 12;
     }
     if (frame_number) {
         frame = Spr_TransitionBackground[background_number * 2 + frame_number - 1];
@@ -149,22 +149,22 @@ short background_number;
                 SpriteUnpackInterleavedRLE(part, 16);
             else
                 SpriteUnpackRLE(part, 16);
-            SPRITE_STATE_TABLE += 512;
+            gSpriteTileBufferOffset += 512;
         }
-        ram_ffd8dc[ram_ffd92e++] = 1;
-        ram_ffd8dc[ram_ffd92e++] = 64;
+        gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 1;
+        gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 64;
         WaitForNextVBlank(1);
-        func_008be4(8);
+        TextAnimateFontBanks(8);
         SpriteLoadingStuff(1, 1);
-        gShipPieceLevels[0] = frame_number;
+        gShipScreenState[0] = frame_number;
     } else {
         WaitForNextVBlank(1);
-        func_008be4(8);
+        TextAnimateFontBanks(8);
     }
 }
 
 /* Run the 480-tick ship completion sequence and restore the game scene. */
-void func_01fe68(player_number)
+void PlayShipCompletionSequence(player_number)
 short player_number;
 {
     short repeat, column, row, page;
@@ -201,56 +201,56 @@ short player_number;
         }
     }
     TIME_COUNTER = 0;
-    ram_ffe21e = 0;
-    gShipPieceLevels[0] = 1;
-    func_01fd58(20);
+    gShipBackgroundAnimationTimer = 0;
+    gShipScreenState[0] = 1;
+    AnimateTransitionBackground(20);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     PlaySound(6, 99);
-    func_03e4f8(0);
+    AudioRequestChannelTemplateEffect(0);
     WaitForNextVBlank(1);
     VBLANK_FLAG_8 = 6;
     VBLANK_FLAG_7 = 6;
-    func_03e43c();
-    func_03e40e();
+    AudioRequestFmChannelRelease();
+    MusicRequestTrackPointerReset();
     PlaySoundEffect((long)Sfx_JamClap, 90, 0);
     while (TIME_COUNTER < 480) {
-        func_01fd58(20);
+        AnimateTransitionBackground(20);
         if ((sound_stage == 1 && TIME_COUNTER > 20) ||
-            (sound_stage == 2 && !TOEJAM_SPEECH_COUNTER) ||
+            (sound_stage == 2 && !gPcmEffectCooldownTicks) ||
             (sound_stage == 3 && TIME_COUNTER > 60)) {
             PlaySoundEffect((long)Sfx_JamClap, 90, 0);
             ++sound_stage;
-        } else if (sound_stage == 4 && !TOEJAM_SPEECH_COUNTER) {
+        } else if (sound_stage == 4 && !gPcmEffectCooldownTicks) {
             PlaySoundEffect((long)Sfx_Hallelujah, 92, 1);
             ++sound_stage;
-        } else if (sound_stage == 5 && !TOEJAM_SPEECH_COUNTER) {
+        } else if (sound_stage == 5 && !gPcmEffectCooldownTicks) {
             PlaySoundEffect((long)Sfx_Jammin, 90, 0);
             ++sound_stage;
-        } else if (sound_stage == 6 && !TOEJAM_SPEECH_COUNTER)
+        } else if (sound_stage == 6 && !gPcmEffectCooldownTicks)
             VBLANK_FLAG_7 = 0;
     }
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
-    func_01fc58();
+    RestoreGameplayGraphics();
     if (P1_MENU_OPEN[player_number ^ 1]) {
-        OpeningPresents4(player_number ^ 1);
+        InventoryDeactivateDisplayEntities(player_number ^ 1);
         P1_MENU_OPEN[player_number ^ 1] = 0;
     }
-    func_00cfba(0);
+    SelectSpriteChainStart(0);
     SPLIT_SCREEN = 0;
-    func_00b95c(2);
+    HudHidePlayerSprites(2);
     gPlayer1Powerup[0] = -1;
     gPlayer2Powerup = -1;
     VDP_CONTROL_WORD = 0x9100;
     VDP_CONTROL_WORD = 0x9200;
-    func_012f34();
-    func_037470();
-    func_013036();
+    MapClearActiveLevelObjects();
+    PlayEndingSequence();
+    MapEnterFinalLevel();
 }
 
 /* Fill the ship-screen plane and random star border, then install palettes. */
-void func_020182()
+void InitializeShipScreenTilemapAndPalettes()
 {
     short first_tile, column, row, page;
     register short repeat;
@@ -295,11 +295,11 @@ void func_020182()
     CopyPaletteToCRAMSlot(PaletteAllBlack, 3);
     VDP_CONTROL_WORD = 0x8c81;
     SetVHBlankFlag2();
-    func_01fb40(1);
+    AnimateShipScreenBackground(1);
 }
 
 /* Center the selected piece's name and animate the background for 90 ticks. */
-void func_020310(piece_number)
+void ShowShipPieceName(piece_number)
 short piece_number;
 {
     short character_count;
@@ -321,13 +321,13 @@ short piece_number;
     for (character_count = 0; piece_name[character_count]; ++character_count)
         ;
     VDP_COMMAND = 0x5c000003L + ((20 - character_count / 2) << 17);
-    func_009f8a(piece_name);
+    TextWriteStringTiles(piece_name);
     for (character_count = 0; character_count < 90; ++character_count)
-        func_01fb40(0);
+        AnimateShipScreenBackground(0);
 }
 
 /* Report a missing piece on this player's level and count all missing pieces. */
-void func_0204ce(player_number)
+void ShowMissingShipPieceSummary(player_number)
 int player_number;
 {
     short piece_number, missing_pieces = 0, piece_on_level = 0;
@@ -335,36 +335,36 @@ int player_number;
 
     player = &gPlayerInfo[player_number];
     for (piece_number = 0; piece_number < 10; ++piece_number) {
-        if (ram_ffe212[piece_number]) {
+        if (gShipPieceLevelAssignments[piece_number]) {
             ++missing_pieces;
-            if (ram_ffe212[piece_number] == player->level)
+            if (gShipPieceLevelAssignments[piece_number] == player->level)
                 piece_on_level = 1;
         }
     }
     if (piece_on_level) {
         if (gPlayerInfo[player_number ^ 1].level == player->level) {
             VDP_COMMAND = 0x518a0003L;
-            func_009f8a("Rocketship piece on this level");
+            TextWriteStringTiles("Rocketship piece on this level");
         } else if (player_number == 0) {
             VDP_COMMAND = 0x51860003L;
-            func_009f8a("Rocketship piece on toejam's level");
+            TextWriteStringTiles("Rocketship piece on toejam's level");
         } else {
             VDP_COMMAND = 0x51880003L;
-            func_009f8a("Rocketship piece on earl's level");
+            TextWriteStringTiles("Rocketship piece on earl's level");
         }
     } else {
         if (gPlayerInfo[player_number ^ 1].level == player->level) {
             VDP_COMMAND = 0x51900003L;
-            func_009f8a("no pieces on this level");
+            TextWriteStringTiles("no pieces on this level");
         } else if (player_number == 0) {
             VDP_COMMAND = 0x518c0003L;
-            func_009f8a("no pieces on toejam's level");
+            TextWriteStringTiles("no pieces on toejam's level");
         } else {
             VDP_COMMAND = 0x518e0003L;
-            func_009f8a("no pieces on earl's level");
+            TextWriteStringTiles("no pieces on earl's level");
         }
     }
     VDP_COMMAND = 0x5c0e0003L;
-    func_009fbe(missing_pieces);
-    func_009f8a(" missing rocketship pieces");
+    TextWriteDecimalTiles(missing_pieces);
+    TextWriteStringTiles(" missing rocketship pieces");
 }

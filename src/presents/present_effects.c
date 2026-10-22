@@ -31,17 +31,17 @@
  * remains unknown [INFERENCE]. */
 
 /* Create or restart the player's short-lived effect at the given position. */
-int func_015b66(player_number, x, y, height, level)
+int PresentStartTransientEffect(player_number, x, y, height, level)
 short player_number, x, y, height;
 char level;
 {
     struct object_state *effect;
     struct timed_animation *animation;
 
-    if (!ram_ffde56[player_number])
-        ram_ffde56[player_number] = (int)func_00d904();
-    if (ram_ffde56[player_number]) {
-        effect = &gPlayerInfo[ram_ffde56[player_number]];
+    if (!gPlayerTransientEffectEntities[player_number])
+        gPlayerTransientEffectEntities[player_number] = (int)AllocateEntity();
+    if (gPlayerTransientEffectEntities[player_number]) {
+        effect = &gPlayerInfo[gPlayerTransientEffectEntities[player_number]];
         effect->x = x;
         effect->y = y;
         effect->height = height;
@@ -51,7 +51,7 @@ char level;
         effect->sprite_count = 1;
         effect->tile_count = 16;
         effect->tile |= 0x8000;
-        animation = &dat_0aefec;
+        animation = &TransientEffectAnimation;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = animation->period;
@@ -70,45 +70,45 @@ short player_number;
     struct object_state *decoy, *player;
     struct timed_animation *animation;
 
-    if (!ram_ffde58[player_number])
-        ram_ffde58[player_number] = (int)func_01e736(0);
-    if (ram_ffde58[player_number]) {
-        decoy = &gPlayerInfo[ram_ffde58[player_number]];
+    if (!gPlayerDecoyEntities[player_number])
+        gPlayerDecoyEntities[player_number] = (int)AllocateEntityWithEviction(0);
+    if (gPlayerDecoyEntities[player_number]) {
+        decoy = &gPlayerInfo[gPlayerDecoyEntities[player_number]];
         player = &gPlayerInfo[player_number];
         decoy->x = player->x;
         decoy->y = player->y + 1;
         decoy->level = player->level;
-        while (func_012db8(decoy->x, decoy->y, decoy->level))
+        while (ElevatorContainsPosition(decoy->x, decoy->y, decoy->level))
             decoy->x += 8;
         decoy->width = 16;
         decoy->height_pixels = 32;
         decoy->sprite_count = 2;
         decoy->tile_count = 24;
         decoy->tile |= 0x8000;
-        animation = &dat_0aefa6[player_number];
+        animation = &PlayerDecoyAnimations[player_number];
         decoy->sequence = animation->sequence;
         decoy->frames = animation->frames;
         decoy->frame_phase = animation->period;
         decoy->frame_duration = 1;
         decoy->flags_4d |= 1;
-        ram_ffde5e[player_number] = 0;
-        if (!func_015b66(player_number, decoy->x, decoy->y + 1, 5, decoy->level))
+        gPlayerDecoyHitCounts[player_number] = 0;
+        if (!PresentStartTransientEffect(player_number, decoy->x, decoy->y + 1, 5, decoy->level))
             decoy->flags_4d |= 64;
     }
 }
 
 /* Release an expired effect; return zero while its first three frames play. */
-int func_015d52(player_number)
+int PresentUpdateTransientEffect(player_number)
 int player_number;
 {
     char object_number;
     struct object_state *effect;
 
-    if (object_number = ram_ffde56[player_number]) {
+    if (object_number = gPlayerTransientEffectEntities[player_number]) {
         effect = &gPlayerInfo[object_number];
         if (!effect->frame_duration) {
-            func_00d970(object_number);
-            ram_ffde56[player_number] = 0;
+            FreeEntity(object_number);
+            gPlayerTransientEffectEntities[player_number] = 0;
         } else if (effect->frame <= 2)
             return 0;
     }
@@ -116,14 +116,14 @@ int player_number;
 }
 
 /* Count a hit against whichever player's active decoy owns this object. */
-short func_015da6(object_number)
+short PresentRegisterDecoyHit(object_number)
 short object_number;
 {
     short player_number;
 
     for (player_number = 0; player_number <= 1; ++player_number) {
-        if (ram_ffde58[player_number] == object_number) {
-            ++ram_ffde5e[player_number];
+        if (gPlayerDecoyEntities[player_number] == object_number) {
+            ++gPlayerDecoyHitCounts[player_number];
             return 1;
         }
     }
@@ -131,25 +131,25 @@ short object_number;
 }
 
 /* Reveal a decoy after its effect, and remove it on level change or three hits. */
-void func_015de6(player_number)
+void PresentUpdateDecoy(player_number)
 short player_number;
 {
     char object_number;
     struct object_state *decoy;
 
-    if (object_number = ram_ffde58[player_number]) {
-        if (!func_015d52(player_number))
+    if (object_number = gPlayerDecoyEntities[player_number]) {
+        if (!PresentUpdateTransientEffect(player_number))
             return;
         decoy = &gPlayerInfo[object_number];
         decoy->flags_4d &= ~64;
         if (gPlayerInfo[player_number].level != decoy->level) {
-            func_00d970(object_number);
-            ram_ffde58[player_number] = 0;
+            FreeEntity(object_number);
+            gPlayerDecoyEntities[player_number] = 0;
         }
-        if (ram_ffde5e[player_number] >= 3) {
-            func_00d970(object_number);
-            func_01bde8(decoy->x, decoy->y, decoy->level);
-            ram_ffde58[player_number] = 0;
+        if (gPlayerDecoyHitCounts[player_number] >= 3) {
+            FreeEntity(object_number);
+            EntitySpawnTimedEffect(decoy->x, decoy->y, decoy->level);
+            gPlayerDecoyEntities[player_number] = 0;
         }
     }
 }
@@ -161,10 +161,10 @@ short player_number;
     struct object_state *doorway, *player;
     struct timed_animation *animation;
 
-    if (!ram_ffde5c[player_number])
-        ram_ffde5c[player_number] = (int)func_01e736(0);
-    if (ram_ffde5c[player_number]) {
-        doorway = &gPlayerInfo[ram_ffde5c[player_number]];
+    if (!gPlayerDoorwayEntities[player_number])
+        gPlayerDoorwayEntities[player_number] = (int)AllocateEntityWithEviction(0);
+    if (gPlayerDoorwayEntities[player_number]) {
+        doorway = &gPlayerInfo[gPlayerDoorwayEntities[player_number]];
         player = &gPlayerInfo[player_number];
         doorway->x = player->x & 0xfff8;
         if (GetRandomNumber() & 1)
@@ -175,14 +175,14 @@ short player_number;
         doorway->x += 16;
         doorway->y -= 14;
         doorway->level = player->level;
-        while (func_012db8(doorway->x, doorway->y, doorway->level))
+        while (ElevatorContainsPosition(doorway->x, doorway->y, doorway->level))
             doorway->x += 8;
         doorway->width = 24;
         doorway->height_pixels = 48;
         doorway->sprite_count = 2;
         doorway->tile_count = 28;
         doorway->tile |= 0x8000;
-        animation = &dat_0aefd8[0];
+        animation = &DoorwayAnimations[0];
         doorway->sequence = animation->sequence;
         doorway->frames = animation->frames;
         doorway->frame_phase = animation->period;
@@ -190,13 +190,13 @@ short player_number;
         doorway->frame = -1;
         doorway->sprite_state = 0;
         doorway->flags_4d |= 1;
-        if (!func_015b66(player_number, doorway->x, doorway->y + 1, 5, doorway->level))
+        if (!PresentStartTransientEffect(player_number, doorway->x, doorway->y + 1, 5, doorway->level))
             doorway->flags_4d |= 64;
     }
 }
 
 /* Return a one-based doorway owner when its three-by-four tile area overlaps. */
-int func_015ff4(player, row, column)
+int PresentFindDoorwayOwnerAtTile(player, row, column)
 struct object_state *player;
 short row, column;
 {
@@ -205,7 +205,7 @@ short row, column;
     struct object_state *doorway;
 
     for (player_number = 0; player_number <= 1; ++player_number) {
-        if (object_number = ram_ffde5c[player_number]) {
+        if (object_number = gPlayerDoorwayEntities[player_number]) {
             doorway = &gPlayerInfo[object_number];
             if (player->level == doorway->level &&
                 (doorway->sprite_state || player->y >= doorway->y)) {
@@ -221,7 +221,7 @@ short row, column;
 }
 
 /* Choose a terrain-safe destination and redraw if it is outside the camera. */
-void func_016098(player_number, player)
+void PlayerTeleportThroughDoorway(player_number, player)
 short player_number;
 struct object_state *player;
 {
@@ -235,63 +235,63 @@ struct object_state *player;
     }
     do {
         SetPositionOnNewLevel(player_number);
-    } while (func_025bce(player, player->x, player->y, 2));
+    } while (EntityFindNarrowCollisionAtPosition(player, player->x, player->y, 2));
     if (!SPLIT_SCREEN && player->x > camera_x + 20 &&
         player->x < camera_x + 320 - 20 && player->y > camera_y + 40 &&
         player->y < camera_y + 224 - 40)
         return;
-    func_008c5c();
+    WaitForVBlankWithGraphicsPaused();
     ClearSkipVHBlankFlags();
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
-    func_00105a(1);
+    UpdateScreenSplitMode(1);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     SetSkipVHBlankFlags();
 }
 
 /* Reveal the doorway, track a player aligned with it, and teleport on entry. */
-void func_0161aa(doorway_owner)
+void PresentUpdateDoorway(doorway_owner)
 short doorway_owner;
 {
     char object_number, active;
     struct object_state *object, *player;
     struct timed_animation *animation;
 
-    if (object_number = ram_ffde5c[doorway_owner]) {
-        if (!func_015d52(doorway_owner))
+    if (object_number = gPlayerDoorwayEntities[doorway_owner]) {
+        if (!PresentUpdateTransientEffect(doorway_owner))
             return;
         object = &gPlayerInfo[object_number];
         if (object->flags_4d & 64)
             object->flags_4d &= ~64;
         if (!(object->draw_flags & 6) && !P1_MENU_OPEN[0] && !HBLANK_FLAG_1) {
-            func_00d970(object_number);
-            ram_ffde5c[doorway_owner] = 0;
+            FreeEntity(object_number);
+            gPlayerDoorwayEntities[doorway_owner] = 0;
         } else {
-            if (ram_ffde60[doorway_owner] & 4) {
-                object_number = (ram_ffde60[doorway_owner] & 3) - 1;
+            if (gDoorwayPlayerContactFlags[doorway_owner] & 4) {
+                object_number = (gDoorwayPlayerContactFlags[doorway_owner] & 3) - 1;
                 player = &gPlayerInfo[object_number];
                 if (player->y < object->y) {
-                    func_016098(object_number, player);
-                    func_015b66(object_number, player->x, player->y + 1,
+                    PlayerTeleportThroughDoorway(object_number, player);
+                    PresentStartTransientEffect(object_number, player->x, player->y + 1,
                                 5, player->level);
                 }
             }
             active = 0;
-            ram_ffde60[doorway_owner] = 0;
+            gDoorwayPlayerContactFlags[doorway_owner] = 0;
             for (object_number = 0; object_number <= 1; ++object_number) {
                 player = &gPlayerInfo[object_number];
-                if (func_015ff4(player, (short)((long)player->y >> 3),
+                if (PresentFindDoorwayOwnerAtTile(player, (short)((long)player->y >> 3),
                                (short)((long)player->x >> 3)) == doorway_owner + 1) {
-                    ram_ffde60[doorway_owner] = object_number + 1;
+                    gDoorwayPlayerContactFlags[doorway_owner] = object_number + 1;
                     if (player->x > object->x - 6 && player->x < object->x + 6) {
                         active = 1;
-                        ram_ffde60[doorway_owner] |= 4;
+                        gDoorwayPlayerContactFlags[doorway_owner] |= 4;
                     }
                 }
             }
             if (active != object->sprite_state) {
-                animation = &dat_0aefd8[active];
+                animation = &DoorwayAnimations[active];
                 object->sequence = animation->sequence;
                 object->frames = animation->frames;
                 object->frame_phase = animation->period;
@@ -302,10 +302,10 @@ short doorway_owner;
                     object->flags_4d &= ~1;
                 else {
                     object->flags_4d |= 1;
-                    if (ram_ffde60[doorway_owner]) {
-                        object_number = (ram_ffde60[doorway_owner] & 3) - 1;
+                    if (gDoorwayPlayerContactFlags[doorway_owner]) {
+                        object_number = (gDoorwayPlayerContactFlags[doorway_owner] & 3) - 1;
                         player = &gPlayerInfo[object_number];
-                        if ((ram_ffde60[doorway_owner] & 3) == object_number + 1 &&
+                        if ((gDoorwayPlayerContactFlags[doorway_owner] & 3) == object_number + 1 &&
                             player->y - object->y < 8)
                             player->y = object->y + 8;
                     }
@@ -323,9 +323,9 @@ unsigned short terrain;
     struct object_state *display, *player;
     struct timed_animation *animation;
 
-    if (!ram_ffde5a[player_number] &&
-        (ram_ffde5a[player_number] = (int)func_01e736(0))) {
-        display = &gPlayerInfo[ram_ffde5a[player_number]];
+    if (!gPlayerPromotionDisplayEntities[player_number] &&
+        (gPlayerPromotionDisplayEntities[player_number] = (int)AllocateEntityWithEviction(0))) {
+        display = &gPlayerInfo[gPlayerPromotionDisplayEntities[player_number]];
         player = &gPlayerInfo[player_number];
         display->flags_4d |= 8;
         display->parent = player_number;
@@ -334,7 +334,7 @@ unsigned short terrain;
         display->width = 32;
         display->height_pixels = 32;
         if (promotion == 11) {
-            animation = dat_0aefce;
+            animation = RankPromotionDisplayAnimation;
             display->flag_58 = 8;
             display->sprite_count = 2;
             display->tile_count = 32;
@@ -342,9 +342,9 @@ unsigned short terrain;
             display->sprite_count = 1;
             display->tile_count = 16;
             if (promotion == 16)
-                animation = dat_0aefba;
+                animation = HealthDrainDisplayAnimation;
             else
-                animation = dat_0aefc4;
+                animation = ExtraLifeDisplayAnimation;
             display->flag_58 = 6;
             display->offset_height = 1;
         }
@@ -394,20 +394,20 @@ unsigned short terrain;
     struct object_state *display;
 
     player_number = player->entity_number;
-    if (!ram_ffde5a[player_number])
+    if (!gPlayerPromotionDisplayEntities[player_number])
         return;
-    display = &gPlayerInfo[ram_ffde5a[player_number]];
+    display = &gPlayerInfo[gPlayerPromotionDisplayEntities[player_number]];
     display->level = player->level;
     if (display->frame_duration) {
         if (display->sprite_state == 16) {
             if (TOEJAMS_HEALTH[player_number] > 1)
                 --TOEJAMS_HEALTH[player_number];
             PlaySound(18, 40);
-        } else if (display->sprite_state == 17 && TOEJAM_SPEECH_COUNTER < 4)
+        } else if (display->sprite_state == 17 && gPcmEffectCooldownTicks < 4)
             PlaySoundEffect((long)Sfx_ExtraLifeGlitz, 87, 0);
         else if (display->sprite_state == 11 &&
-                 (PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                  (ram_ff91e0 = 0) : ++ram_ff91e0] & 2)) {
+                 (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                  (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 2)) {
             phase = display->frame % 14;
             if (phase == 12 || (phase > 1 && phase < 11 && phase != 7))
                 PlaySoundEffect((long)Sfx_JamSnareDrum, 90, 0);
@@ -430,28 +430,28 @@ unsigned short terrain;
         }
         if (player->sprite_state == 71 || player->sprite_state == 70)
             SetSprite(player, GetActivePresentSprite(player));
-        func_00d970(ram_ffde5a[player_number]);
-        ram_ffde5a[player_number] = 0;
+        FreeEntity(gPlayerPromotionDisplayEntities[player_number]);
+        gPlayerPromotionDisplayEntities[player_number] = 0;
         if (promotion_complete && (gPlayerRank[player_number] - 2) % 3 == 0)
             PerformPromotion(player_number, 17, terrain);
     }
 }
 
 /* Advance the delayed burps, displaying speech and resetting the random delay. */
-void func_0168e2(player_number)
+void PresentUpdateBurps(player_number)
 short player_number;
 {
     if (gPlayer1BurpsLeft[player_number]) {
         if (gPlayer1BurpTimer[player_number] == -1) {
-            func_01e38e(24, player_number);
-            func_03e4f8(14);
+            StartDialogue(24, player_number);
+            AudioRequestChannelTemplateEffect(14);
             gPlayer1BurpTimer[player_number] = 50;
         } else if (--gPlayer1BurpTimer[player_number] < 0) {
-            func_018ce2(gPlayerInfo[player_number].draw_flags & 6);
+            EarthlingResetStateTwoByDrawMask(gPlayerInfo[player_number].draw_flags & 6);
             GenerateSpeech(player_number, "Burp", 1);
             --gPlayer1BurpsLeft[player_number];
             gPlayer1BurpTimer[player_number] = 20 + GetRandomNumber() % 81;
-            if (!TOEJAM_SPEECH_COUNTER)
+            if (!gPcmEffectCooldownTicks)
                 PlaySoundEffect((long)Sfx_Burp, 50, 0);
         }
     }
@@ -465,7 +465,7 @@ short player_number;
     struct timed_animation *animation;
 
     if (!gPlayer1RainCloudState[player_number]) {
-        if (gPlayer1RainCloudState[player_number] = (int)func_01e736(0)) {
+        if (gPlayer1RainCloudState[player_number] = (int)AllocateEntityWithEviction(0)) {
             cloud = &gPlayerInfo[gPlayer1RainCloudState[player_number]];
             player = &gPlayerInfo[player_number];
             cloud->level = player->level;
@@ -478,7 +478,7 @@ short player_number;
             cloud->height_pixels = 32;
             cloud->sprite_count = 1;
             cloud->tile_count = 16;
-            animation = dat_0af05a;
+            animation = PlayerRainCloudAnimations;
             cloud->sequence = animation->sequence;
             cloud->frames = animation->frames;
             cloud->frame_phase = animation->period;
@@ -490,11 +490,11 @@ short player_number;
 }
 
 /* Advance the cloud animation, applying its strike to eligible player sprites. */
-void func_016aca(player_number)
+void PresentUpdateRainCloud(player_number)
 short player_number;
 {
     struct timed_animation *animation = 0;
-    struct timed_animation *animations = dat_0af05a;
+    struct timed_animation *animations = PlayerRainCloudAnimations;
     struct object_state *cloud, *player;
     short cloud_number;
 
@@ -512,7 +512,7 @@ short player_number;
     } else if (--gPlayer1RainCloudTimer[player_number] <= 0 ||
                gPlayerLives[player_number] < 0 ||
                player->sprite_state == 5 || player->sprite_state == 6) {
-        func_00d970(cloud_number);
+        FreeEntity(cloud_number);
         gPlayer1RainCloudState[player_number] = 0;
     } else if (cloud->sprite_state) {
         if (!cloud->frame_duration) {
@@ -522,7 +522,7 @@ short player_number;
                 (player->sprite_state == 0 || player->sprite_state == 4 ||
                  (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
                  (player->flags_52 & 0x0834d06c))) {
-                ram_ffda2c[player_number] = 2;
+                gPlayerPendingHurtDamage[player_number] = 2;
                 SetSprite(player, 68);
                 player->mode_15 = 3;
                 player->velocity_height = 0;
@@ -551,10 +551,10 @@ short player_number;
     struct object_state *box, *player;
     struct animation_descriptor *animation;
 
-    if (!ram_ffde6c[player_number])
-        ram_ffde6c[player_number] = (int)func_01e736(0);
-    if (ram_ffde6c[player_number]) {
-        box = &gPlayerInfo[ram_ffde6c[player_number]];
+    if (!gPlayerBoomBoxEntities[player_number])
+        gPlayerBoomBoxEntities[player_number] = (int)AllocateEntityWithEviction(0);
+    if (gPlayerBoomBoxEntities[player_number]) {
+        box = &gPlayerInfo[gPlayerBoomBoxEntities[player_number]];
         player = &gPlayerInfo[player_number];
         box->x = player->x;
         box->y = player->y + 4;
@@ -570,29 +570,29 @@ short player_number;
         box->frame_phase = 2;
         box->frame_duration = 1;
         box->flags_4d |= 1;
-        func_015b66(player_number, box->x, box->y + 1, 1, box->level);
-        ram_ffde6e[player_number] = 300;
+        PresentStartTransientEffect(player_number, box->x, box->y + 1, 1, box->level);
+        gPlayerBoomBoxTimers[player_number] = 300;
         VBLANK_FLAG_7 = 14;
-        ram_ffe474 = 1;
+        gBoomBoxMusicTemplateHold = 1;
     }
 }
 
 /* Remove an expired boom box and restore music once neither player has one. */
-void func_016d94(player_number)
+void PresentUpdateBoomBox(player_number)
 short player_number;
 {
     struct object_state *box;
 
-    if (ram_ffde6c[player_number]) {
-        box = &gPlayerInfo[ram_ffde6c[player_number]];
-        if (--ram_ffde6e[player_number] <= 0) {
-            func_018c74(box->level);
-            func_015b66(player_number, box->x, box->y + 1, 1, box->level);
-            func_00d970(ram_ffde6c[player_number]);
-            ram_ffde6c[player_number] = 0;
-            if (!ram_ffde6c[player_number ^ 1]) {
-                VBLANK_FLAG_7 = (int)func_001262(gHighestLevel);
-                ram_ffe474 = 0;
+    if (gPlayerBoomBoxEntities[player_number]) {
+        box = &gPlayerInfo[gPlayerBoomBoxEntities[player_number]];
+        if (--gPlayerBoomBoxTimers[player_number] <= 0) {
+            EarthlingWakeLevel(box->level);
+            PresentStartTransientEffect(player_number, box->x, box->y + 1, 1, box->level);
+            FreeEntity(gPlayerBoomBoxEntities[player_number]);
+            gPlayerBoomBoxEntities[player_number] = 0;
+            if (!gPlayerBoomBoxEntities[player_number ^ 1]) {
+                VBLANK_FLAG_7 = (int)GetLevelMusicIndex(gHighestLevel);
+                gBoomBoxMusicTemplateHold = 0;
             }
         } else if (gMusicUnknownE488) {
             box->frame = -1;
@@ -608,13 +608,13 @@ void ProcessPresents()
     short player_number;
 
     for (player_number = 0; player_number <= 1; ++player_number) {
-        func_015de6(player_number);
-        func_016d94(player_number);
-        func_0161aa(player_number);
-        func_0168e2(player_number);
-        func_016aca(player_number);
-        func_015d52(player_number);
-        func_01bea6(player_number);
+        PresentUpdateDecoy(player_number);
+        PresentUpdateBoomBox(player_number);
+        PresentUpdateDoorway(player_number);
+        PresentUpdateBurps(player_number);
+        PresentUpdateRainCloud(player_number);
+        PresentUpdateTransientEffect(player_number);
+        EntityReleaseFinishedTimedEffect(player_number);
         CheckForTelephone(player_number);
         CheckTomatoRainTimer(player_number);
     }
@@ -663,9 +663,9 @@ short player_number, present_number;
             player->mode_15 = 0;
         }
     } else if (present_number == 12) {
-        if (ram_ff936c)
+        if (gPendingUnfallPlayer)
             return 1;
-        ram_ff936c = player_number + 1;
+        gPendingUnfallPlayer = player_number + 1;
     } else if (present_number == 13)
         PresentIsRainCloud(player_number);
     else if (present_number == 14)
@@ -676,10 +676,10 @@ short player_number, present_number;
         OpenTelephone(player_number);
     } else if (present_number == 20) {
         ++gPlayerBucks[player_number];
-        func_01e38e(29, player_number);
+        StartDialogue(29, player_number);
     } else if (present_number == 21) {
         gPlayerBucks[player_number] += 5;
-        func_01e38e(30, player_number);
+        StartDialogue(30, player_number);
     } else if (present_number == 23)
         OpenEarthlingPresent(player, terrain);
     else if (present_number == 24) {
@@ -707,20 +707,20 @@ unsigned short terrain;
     if (present_number < 8 && present_number != 5 && player->height > 0) {
         if (!gPlayer1Powerup[player_number] && (player->flags_52 & 0x8000) &&
             present_number != 0)
-            func_0156aa(player_number);
+            PresentTryEndActivePowerup(player_number);
         else if (gPlayer1Powerup[player_number] == 1 &&
                  !TOEJAM_FALL_STATE[player_number] &&
                  (player->flags_52 & 32) && present_number != 1) {
             StopPlayer(player);
             player->acceleration_height = -32;
-            ram_ffda30[player_number] = 2;
+            gPlayerLandingCounterSeed[player_number] = 2;
         }
     }
     gPlayerPoints[player_number] += 2;
     if (present_number >= 8)
         return;
     gPlayer1Powerup[player_number] = present_number;
-    func_00acca(player_number);
+    HudLoadActionIconSprite(player_number);
     gPlayer1PowerupTimer[player_number] = 1000;
     sprite = -1;
     switch (present_number) {
@@ -737,20 +737,20 @@ unsigned short terrain;
         break;
     case 0:
         gPlayer1PowerupTimer[player_number] >>= 1;
-        func_011a7c(player_number);
+        PlayerInitializePhasedJumpMotion(player_number);
         break;
     case 3:
-        func_01e38e(26, player_number);
+        StartDialogue(26, player_number);
         break;
     case 4:
-        func_01e38e(27, player_number);
+        StartDialogue(27, player_number);
         break;
     case 6:
         GenerateSpeech(player_number, "rosebushes!", 1);
         break;
     case 7:
         gPlayer1PowerupTimer[player_number] = 750;
-        func_01e38e(28, player_number);
+        StartDialogue(28, player_number);
         break;
     }
     if (present_number != 5)

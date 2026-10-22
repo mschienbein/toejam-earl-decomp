@@ -5,11 +5,11 @@
  * remaining ROM-only declarations describe the observed ABI, not a uniquely
  * recovered historical C spelling. */
 extern short GenerateSpeech();
-extern void func_01df1a();
-extern void func_01e012();
-extern void func_01e2c4();
-extern int func_01e312();
-extern int func_01e38e();
-extern void func_01e4e4();
+extern void QueueSpeechTextTiles();
+extern void SetNextSpeechLifetime();
+extern void ClearSpeechBubblesAndReplies();
+extern int HasSpeakerSpeech();
+extern int StartDialogue();
+extern void UpdateSpeechAndDialogue();
 
 #endif

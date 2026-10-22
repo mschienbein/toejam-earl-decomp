@@ -2,26 +2,26 @@
 #define TJE_RAM_SPEECH_H
 
 /* Speech cooldown and four parallel bubble handle/lifetime slots. */
-extern short TOEJAM_SPEECH_COUNTER;
-extern char ram_ffe1ee[4];
-extern char ram_ffe1f2[4];
-extern char ram_ffe1f6;
+extern short gPcmEffectCooldownTicks;
+extern char gSpeechBubbleEntities[4];
+extern char gSpeechBubbleLifetimes[4];
+extern char gReunionDialoguePending;
 
 /* Two delayed-reply timers, text pointers and speaker bytes. */
-extern short ram_ffe1f8[2];
-extern char *ram_ffe1fc[2];
-extern char ram_ffe204[2];
+extern short gDelayedSpeechReplyTimers[2];
+extern char *gDelayedSpeechReplyTexts[2];
+extern char gDelayedSpeechReplySpeakers[2];
 
-/* Existing canonical alias for ram_ffe1f8[1], the second reply timer. */
-extern short gPlayer1TomatoRainThrottle;
+/* Existing canonical alias for gDelayedSpeechReplyTimers[1], the second reply timer. */
+extern short gSecondSpeechReplyTimer;
 
-/* Existing scalar byte alias of ram_ffe204[1], the second reply speaker. */
-extern char ram_ffe205;
+/* Existing scalar byte alias of gDelayedSpeechReplySpeakers[1], the second reply speaker. */
+extern char gSecondDelayedSpeechReplySpeaker;
 
 /* Word lifetime override consumed by the next allocated bubble. */
-extern short ram_ffe206;
+extern short gNextSpeechLifetimeOverride;
 
-/* Low byte of the word lifetime override ram_ffe206 on this big-endian target. */
-extern char ram_ffe207;
+/* Low byte of the word lifetime override gNextSpeechLifetimeOverride on this big-endian target. */
+extern char gNextSpeechLifetimeOverrideLowByte;
 
 #endif

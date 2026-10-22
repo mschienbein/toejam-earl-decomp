@@ -19,7 +19,7 @@
  * uses with correct shared return declarations; exact historical spelling
  * remains unknown [INFERENCE]. */
 
-#define NEXT_RANDOM PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0]
+#define NEXT_RANDOM PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
 /* Flatten an eligible player, apply direct damage, and play the squish sound. */
 void Player_Squish(player_number, earthling)
@@ -30,11 +30,11 @@ struct earthling_state *earthling;
 
     player = &gPlayerInfo[player_number];
     if ((earthling->kind != 19 || (earthling->state & 0xfc) == 4) &&
-        func_01b0aa(player, player_number)) {
+        PlayerCanReceiveEarthlingEffect(player, player_number)) {
         player->mode_15 = 3;
         SetSprite(player, 2);
         player->draw_flags |= 128;
-        if (ram_ffda24[player_number])
+        if (gPlayerTerrainSinking[player_number])
             player->height = -3;
         else
             player->height = 0;
@@ -58,7 +58,7 @@ struct earthling_state *earthling;
     player = &gPlayerInfo[player_number];
     if (!player->level)
         return;
-    if (func_01b0aa(player, player_number) &&
+    if (PlayerCanReceiveEarthlingEffect(player, player_number) &&
         !(player->flags_52 & 0x20000010) &&
         (dancer = &gPlayerInfo[earthling->object],
          distance_x = abs(dancer->x - player->x),
@@ -70,17 +70,17 @@ struct earthling_state *earthling;
                 distance = distance_x;
             else
                 distance = distance_y;
-            if ((PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                (ram_ff91e0 = 0) : ++ram_ff91e0] & 3) == 3) {
+            if ((PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) == 3) {
                 sprite = 89;
                 HULA_DANCE[player_number] = 28;
                 if (distance_x < 20 && distance_y < 15) {
-                    if (!ram_ffe1b4) {
+                    if (!gHulaSpeechCooldown) {
                         GenerateSpeech(player_number, "Hubba hubba", 1);
                         PlaySoundEffect((long)Sfx_Aloha, 50, 1);
-                        ram_ffe1b4 = 128;
+                        gHulaSpeechCooldown = 128;
                     } else
-                        --ram_ffe1b4;
+                        --gHulaSpeechCooldown;
                 }
             }
             HULA_DANCE_TIMER[player_number] = (distance >> 5) + 4;
@@ -96,7 +96,7 @@ struct earthling_state *earthling;
 }
 
 /* Begin a horizontal earthling attack when its target is over 65 pixels away. */
-int func_01b5ca(earthling, target)
+int EarthlingStartHorizontalAttack(earthling, target)
 struct earthling_state *earthling;
 struct object_state *target;
 {
@@ -126,7 +126,7 @@ struct earthling_state *earthling;
     /* Keep the promoted exclusion-array index separate from the bounded
      * object-table index; this reproduces the observed scratch allocation. */
     exclusion_index = player_number;
-    if (!ram_ffe236[exclusion_index] && earthling->state != 3)
+    if (!gPlayerInteractionChoiceActive[exclusion_index] && earthling->state != 3)
         player = &gPlayerInfo[player_number];
     else
         return;
@@ -136,7 +136,7 @@ struct earthling_state *earthling;
         return;
     if ((earthling->state & 0xfc) != 8 && player->height < 40 &&
         abs(player->y - earthling->y) <= 8)
-        func_01b5ca(earthling, player);
+        EarthlingStartHorizontalAttack(earthling, player);
     if (player->height > 10 && player->height < 75) {
         delta_x = player->x - earthling->x;
         if (abs(delta_x) < 25) {
@@ -152,7 +152,7 @@ struct earthling_state *earthling;
 
 /* Bounce a falling earthling at ground level, or damage it after its animation
  * ends or its terrain query exceeds 0x50. */
-void func_01b746(earthling)
+void EarthlingUpdateBouncingDamageState(earthling)
 struct earthling_state *earthling;
 {
     struct object_state *object;
@@ -160,7 +160,7 @@ struct earthling_state *earthling;
 
     object = &gPlayerInfo[earthling->object];
     if (!earthling->object) {
-        func_018da4(earthling);
+        EarthlingRemoveFromLevel(earthling);
         return;
     }
     if (!object->frame_duration)
@@ -177,7 +177,7 @@ struct earthling_state *earthling;
             map_number = 0;
         else if (object->level == gLevel912E)
             map_number = 1;
-        if ((unsigned short)func_00d9dc(map_number, object->x, object->y) > 0x50)
+        if ((unsigned short)GetMapTerrainAtWorldPosition(map_number, object->x, object->y) > 0x50)
             DamageEarthling(earthling);
     }
 }
@@ -193,7 +193,7 @@ struct earthling_state *earthling;
     if (earthling->state != 4)
         return;
     player = &gPlayerInfo[player_number];
-    if (!func_01b0aa(player, player_number) &&
+    if (!PlayerCanReceiveEarthlingEffect(player, player_number) &&
         !(player->flags_52 & 0x40000) && player->sprite_state != 77)
         return;
     SetSprite(player, 79);
@@ -208,15 +208,15 @@ struct earthling_state *earthling;
     player->acceleration_y = 0;
     player->acceleration_height = 0;
     player->draw_flags |= 64;
-    ram_ffe1b6[player_number] = 225;
-    func_00d970(earthling->object);
+    gPlayerWhirlwindTimers[player_number] = 225;
+    FreeEntity(earthling->object);
     earthling->object = 0;
     earthling->kind = -1;
 }
 
 /* Sprite 78 counts down to restoring the active present or a terrain pose.
  * Sprite 79 wanders in timed directions until its movement timer expires. */
-void func_01b8ba(player, terrain)
+void PlayerUpdateWhirlwindAndRecovery(player, terrain)
 struct object_state *player;
 unsigned short terrain;
 {
@@ -226,7 +226,7 @@ unsigned short terrain;
 
     player_number = player->entity_number;
     if (player->sprite_state == 78) {
-        if (--ram_ffe1bc[player_number] <= 0) {
+        if (--gPlayerWhirlwindRecoveryTimers[player_number] <= 0) {
             if (gPlayer1Powerup[player_number] == 5)
                 sprite_or_direction = GetActivePresentSprite(player);
             else if (!gPlayer1Powerup[player_number]) {
@@ -235,7 +235,7 @@ unsigned short terrain;
                 player->mode_15 = 0;
             } else if (terrain >= 128) {
                 if (terrain == 144)
-                    SetToejamFalling(player, player_number);
+                    PlayerStartFalling(player, player_number);
                 else
                     sprite_or_direction = 65;
             } else {
@@ -246,17 +246,17 @@ unsigned short terrain;
             }
             if (sprite_or_direction != -1)
                 SetSprite(player, sprite_or_direction);
-        } else if (!(ram_ffe1bc[player_number] & 15))
+        } else if (!(gPlayerWhirlwindRecoveryTimers[player_number] & 15))
             ++player->frame_phase;
     } else if (player->sprite_state == 79) {
-        if (--ram_ffe1b6[player_number] <= 0) {
+        if (--gPlayerWhirlwindTimers[player_number] <= 0) {
             player->velocity_x = 0;
             player->velocity_y = 0;
             SetSprite(player, 78);
-            ram_ffe1bc[player_number] = 48;
+            gPlayerWhirlwindRecoveryTimers[player_number] = 48;
             player->draw_flags &= ~64;
         } else {
-            if (--ram_ffe1ba[player_number] <= 0) {
+            if (--gPlayerWhirlwindDirectionTimers[player_number] <= 0) {
                 sprite_or_direction = NEXT_RANDOM & 7;
                 if (sprite_or_direction < 2 || sprite_or_direction > 7)
                     player->velocity_y = -256;
@@ -272,16 +272,16 @@ unsigned short terrain;
                     quarter_velocity = player->velocity_y >> 2;
                     player->velocity_y = quarter_velocity * 3;
                 }
-                ram_ffe1ba[player_number] = 20 + NEXT_RANDOM % 6;
+                gPlayerWhirlwindDirectionTimers[player_number] = 20 + NEXT_RANDOM % 6;
             }
-            func_01942c(player);
+            EntityUpdateTerrainDrawFlag(player);
         }
     }
 }
 
 /* Test active decoy objects against the earthling definition's contact ranges,
  * stopping when an interaction consumes one of those contacts. */
-void func_01bb62(earthling, definition)
+void EarthlingCheckDecoyAttackRange(earthling, definition)
 struct earthling_state *earthling;
 struct earthling_definition *definition;
 {
@@ -292,11 +292,11 @@ struct earthling_definition *definition;
         return;
     object = &gPlayerInfo[earthling->object];
     for (player_number = 0; player_number <= 1; ++player_number) {
-        if (ram_ffde58[player_number]) {
-            decoy = &gPlayerInfo[ram_ffde58[player_number]];
-            if (func_00dd1e(object, decoy, definition->contact_distance_x,
+        if (gPlayerDecoyEntities[player_number]) {
+            decoy = &gPlayerInfo[gPlayerDecoyEntities[player_number]];
+            if (EntityIsWithinRange(object, decoy, definition->contact_distance_x,
                            definition->contact_distance_y) &&
-                func_01b5ca(earthling, decoy))
+                EarthlingStartHorizontalAttack(earthling, decoy))
                 return;
         }
     }
@@ -319,7 +319,7 @@ struct earthling_state *earthling;
         Player_Youch(player_number, earthling);
     if (NEXT_RANDOM % 100 < 92 || (earthling->state & 252) == 8 ||
         (distance_y < 50 && distance_x < 75) ||
-        !func_01b0aa(player, player_number))
+        !PlayerCanReceiveEarthlingEffect(player, player_number))
         return;
     if (distance_x < distance_y) {
         if (player->y < earthling->y)

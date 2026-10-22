@@ -4,7 +4,7 @@
 #include "sprite_calls.h"
 
 /* Move the selected active sprite list to hardware Y coordinate one. */
-void func_00d152(player)
+void HideFlaggedPlayerSprites(player)
 short player;
 {
     struct object_state *entity;

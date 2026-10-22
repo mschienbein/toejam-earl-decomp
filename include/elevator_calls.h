@@ -3,7 +3,7 @@
 
 /* K&R return interfaces for elevator routines. */
 extern void ElevatorRideVBlank();
-extern void LOAD_ELEVATOR_1();
+extern void ElevatorInvalidateSecondaryRecords();
 extern void LoadFinalLevelMap();
 extern int ProcessElevator();
 extern void ProcessElevatorStep1();
@@ -11,23 +11,23 @@ extern void ProcessElevatorStep2();
 extern void ProcessElevators();
 extern char SetupElevator();
 extern void SetupInitialElevator();
-extern void func_012694();
-extern void func_012762();
-extern void func_012974();
-extern void func_012a56();
-extern int func_012b80();
-extern int func_012d0c();
-extern int func_012db8();
-extern void func_012f34();
-extern void func_013036();
-extern void func_013160();
-extern void func_01320e();
-extern void func_01326e();
-extern void func_013450();
-extern void func_013570();
-extern void func_01370e();
-extern void func_013786();
-extern int func_013a3e();
-extern int func_013af8();
+extern void ElevatorSetState();
+extern void PlayerSetPositionFromSavedMapCell();
+extern void ElevatorCreateEntityPair();
+extern void ElevatorUpdateEntityVisibility();
+extern int ElevatorBlocksPlayerMovement();
+extern int ElevatorBlocksEntityMovement();
+extern int ElevatorContainsPosition();
+extern void MapClearActiveLevelObjects();
+extern void MapEnterFinalLevel();
+extern void ElevatorLoadRideBackgroundTiles();
+extern void ElevatorAlternateRideEntities();
+extern void ElevatorPrepareRideDialogue();
+extern void ElevatorUpdateRideDialogue();
+extern void ElevatorBeginRideScene();
+extern void ElevatorEndRideScene();
+extern void ElevatorAdvanceRidersToNextLevel();
+extern int ElevatorCheckPlayerProximityAndInput();
+extern int ElevatorStepDepartureHeightCycles();
 
 #endif

@@ -8,9 +8,9 @@
 
 /* Consider two object-index slots first, then the two player records. Squared
  * quarter-coordinate distances choose the nearer eligible target. Modes 12
- * and 7 select steering helpers; mode 14 may call func_01b078 first and then
+ * and 7 select steering helpers; mode 14 may call EntityTriggerTargetStatusEventOnce first and then
  * steers the ordinary way. */
-char func_01aa20(state, maximum_distance, separation, mode)
+char EarthlingSteerTowardNearestTarget(state, maximum_distance, separation, mode)
 struct object_state *state;
 unsigned short maximum_distance;
 short separation;
@@ -29,8 +29,8 @@ char mode;
         maximum_distance = 0x400;
     else
         maximum_distance <<= 8;
-    if (ram_ffde58[0]) {
-        target = &gPlayerInfo[ram_ffde58[0]];
+    if (gPlayerDecoyEntities[0]) {
+        target = &gPlayerInfo[gPlayerDecoyEntities[0]];
         if (state->level == target->level) {
             delta_x[0] = (target->x - state->x) >> 2;
             if (state->x < target->x)
@@ -46,8 +46,8 @@ char mode;
         else
             maximum_distance = distance[0];
     }
-    if (ram_ffde58[1]) {
-        target = &gPlayerInfo[ram_ffde58[1]];
+    if (gPlayerDecoyEntities[1]) {
+        target = &gPlayerInfo[gPlayerDecoyEntities[1]];
         if (state->level == target->level) {
             delta_x[1] = (target->x - state->x) >> 2;
             if (state->x < target->x)
@@ -66,10 +66,10 @@ char mode;
     if (distance[0] == 0x7fff && distance[1] == 0x7fff) {
         special_target = 0;
         if (state->level == gPlayerInfo[0].level && !ELEVATOR_FLAG[0] &&
-            (mode != 7 || !ram_ffe1dc[0])) {
+            (mode != 7 || !gPlayerControlRemapEntities[0])) {
             target = &gPlayerInfo[0];
             if ((mode != 18 || (gPlayerInventory[0][0] != -1 && !state->flag_57)) &&
-                func_01ae92(state, target)) {
+                EarthlingCanTargetPlayerState(state, target)) {
                 delta_x[0] = (target->x - state->x) >> 2;
                 if (state->x < target->x)
                     delta_x[0] -= separation;
@@ -81,10 +81,10 @@ char mode;
             }
         }
         if (state->level == gPlayerInfo[1].level && !ELEVATOR_FLAG[1] &&
-            (mode != 7 || !ram_ffe1dc[1])) {
+            (mode != 7 || !gPlayerControlRemapEntities[1])) {
             target = &gPlayerInfo[1];
             if ((mode != 18 || (gPlayerInventory[1][0] != -1 && !state->flag_58)) &&
-                func_01ae92(state, target)) {
+                EarthlingCanTargetPlayerState(state, target)) {
                 delta_x[1] = (target->x - state->x) >> 2;
                 if (state->x < target->x)
                     delta_x[1] -= separation;
@@ -103,22 +103,22 @@ char mode;
     else
         selected_player = 1;
     if (mode == 12)
-        return func_01b02e(state, delta_x[selected_player], delta_y[selected_player]);
+        return EntitySteerWithVerticalDeadZone(state, delta_x[selected_player], delta_y[selected_player]);
     if (mode == 7) {
         if (special_target)
-            target = &gPlayerInfo[ram_ffde58[selected_player]];
+            target = &gPlayerInfo[gPlayerDecoyEntities[selected_player]];
         else
             target = &gPlayerInfo[selected_player];
-        return func_01afb8(state, target, delta_x[selected_player], delta_y[selected_player]);
+        return EntitySteerWithHorizontalDrift(state, target, delta_x[selected_player], delta_y[selected_player]);
     }
     if (mode == 14 && !special_target)
-        func_01b078(state, target);
-    return func_01af04(state, delta_x[selected_player], delta_y[selected_player]);
+        EntityTriggerTargetStatusEventOnce(state, target);
+    return EntitySetVelocityTowardDelta(state, delta_x[selected_player], delta_y[selected_player]);
 }
 
 /* Return true for the observed sprite categories and status masks. Sprite 2
  * on the first record bypasses the first group of eligibility tests. */
-int func_01ae92(state, target)
+int EarthlingCanTargetPlayerState(state, target)
 struct object_state *state, *target;
 {
     if ((state->sprite_state != 2 &&

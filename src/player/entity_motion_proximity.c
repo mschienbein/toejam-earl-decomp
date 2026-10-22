@@ -3,7 +3,7 @@
 #include "random.h"
 
 /* Require the same level and absolute x/y differences below 16 and 5. */
-int func_00dcc2(entity, x, y, level)
+int EntityIsNearPosition(entity, x, y, level)
 struct object_state *entity;
 short x, y;
 char level;
@@ -16,7 +16,7 @@ char level;
 }
 
 /* Require the same level and distances below the caller's exclusive limits. */
-int func_00dd1e(entity, other, distance_x, distance_y)
+int EntityIsWithinRange(entity, other, distance_x, distance_y)
 struct object_state *entity, *other;
 short distance_x, distance_y;
 {

@@ -18,7 +18,7 @@
 /* ORIGINAL BUG: this consumer retains the observed int result view.
  * Both the shared unsigned char declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
-extern int func_00d9dc();
+extern int GetMapTerrainAtWorldPosition();
 /* Reserve the two fixed identities, then assign the other present sprites
  * to random unused identities, scanning forward through collisions. */
 void SetupPresentIdentities()
@@ -79,7 +79,7 @@ void SetupInitialInventory()
 }
 
 /* Release a loaded item bank after its last player leaves this level. */
-void func_0143e6(level)
+void MapReleaseLevelItemBank(level)
 short level;
 {
     short bank, item_number;
@@ -94,7 +94,7 @@ short level;
                     object = gObjectTable[bank][item_number].object;
                     gObjectTable[bank][item_number].kind = -1;
                     if (object) {
-                        func_00d970(object);
+                        FreeEntity(object);
                         gObjectTable[bank][item_number].object = 0;
                     }
                 }
@@ -105,7 +105,7 @@ short level;
 
 /* Level 1 always permits placement. On other levels reject positions within
  * 30 X units and 20 Y units of either converted elevator coordinate. */
-int func_0144a6(world_x, world_y, level)
+int ElevatorAllowsWorldPlacement(world_x, world_y, level)
 short world_x, world_y, level;
 {
     short elevator_number, elevator_x, elevator_y;
@@ -128,20 +128,20 @@ short world_x, world_y, level;
 }
 
 /* Test the low seven terrain bits against a 23-entry terrain table. */
-int func_01454a(terrain)
+int MapIsLargePlacementTerrainExcluded(terrain)
 short terrain;
 {
     short entry;
 
     terrain &= 0x7f;
     for (entry = 0; entry < 23; ++entry)
-        if (dat_08bfce[entry] == terrain)
+        if (LargeItemExcludedTerrainIds[entry] == terrain)
             return 1;
     return 0;
 }
 
 /* Try ten random eligible metatiles, then scan cyclically from a random tile. */
-void LoadLevel2AndUp(output_x, output_y, level, large)
+void MapFindItemPlacementPosition(output_x, output_y, level, large)
 short *output_x, *output_y;
 short level, large;
 {
@@ -169,7 +169,7 @@ short level, large;
         random = GetRandomNumber();
         column = random % 19;
         metatile = map[row * 19 + column];
-        if ((metatile & 0x2000) || (large && func_01454a(metatile))) {
+        if ((metatile & 0x2000) || (large && MapIsLargePlacementTerrainExcluded(metatile))) {
             /* ORIGINAL BUG: rejected marked tiles do not consume an attempt. */
             --search_counter;
             continue;
@@ -177,7 +177,7 @@ short level, large;
         if (TerrainValidation(metatile, width, height, &position_x, &position_y, 3)) {
             position_y += (row + 1) * 64;
             position_x += (column + 1) * 128;
-            if (func_0144a6(position_x, position_y, level)) {
+            if (ElevatorAllowsWorldPlacement(position_x, position_y, level)) {
                 *output_x = position_x;
                 *output_y = position_y;
                 return;
@@ -193,14 +193,14 @@ short level, large;
         column = start_column;
         do {
             metatile = map[row * 19 + column];
-            if ((metatile & 0x2000) || (large && func_01454a(metatile))) {
+            if ((metatile & 0x2000) || (large && MapIsLargePlacementTerrainExcluded(metatile))) {
                 column = (column + 1) % 19;
                 continue;
             }
             if (TerrainValidation(metatile, width, height, &position_x, &position_y, 3)) {
                 position_y += (row + 1) * 64;
                 position_x += (column + 1) * 128;
-                if (func_0144a6(position_x, position_y, level)) {
+                if (ElevatorAllowsWorldPlacement(position_x, position_y, level)) {
                     *output_x = position_x;
                     *output_y = position_y;
                     return;
@@ -213,8 +213,8 @@ short level, large;
 }
 
 /* Place four special objects after the first 28 item slots, avoiding nearby
- * items, elevators and positions rejected by func_01771a. */
-void func_014850(items, level)
+ * items, elevators and positions rejected by EarthlingIsSpecialRecordNearby. */
+void MapPlaceLargeLevelItems(items, level)
 struct level_item *items;
 short level;
 {
@@ -228,7 +228,7 @@ short level;
         map_index = 1;
     for (slot = 28; slot < 32; ++slot) {
         for (attempts = 0; attempts < 10; ++attempts) {
-            LoadLevel2AndUp(&position_x, &position_y, level, 1);
+            MapFindItemPlacementPosition(&position_x, &position_y, level, 1);
             blocked = 0;
             for (item_number = 28; item_number < slot; ++item_number) {
                 current_x = items[item_number].x;
@@ -269,7 +269,7 @@ short level;
             }
             if (blocked)
                 continue;
-            if (func_01771a(position_x, position_y, level))
+            if (EarthlingIsSpecialRecordNearby(position_x, position_y, level))
                 blocked = 1;
             if (!blocked)
                 break;
@@ -277,7 +277,7 @@ short level;
         if (attempts == 10)
             items[slot].kind = -1;
         else {
-            if (func_00d9dc(map_index, position_x, position_y) == 32) {
+            if (GetMapTerrainAtWorldPosition(map_index, position_x, position_y) == 32) {
                 if (GetRandomNumber() & 1)
                     items[slot].kind = 82;
                 else
@@ -351,7 +351,7 @@ short level;
             position_x = Level1PresentLocations[slot].x;
             position_y = Level1PresentLocations[slot].y;
         } else
-            LoadLevel2AndUp(&position_x, &position_y, level, 0);
+            MapFindItemPlacementPosition(&position_x, &position_y, level, 0);
         if (level == 1)
             goto get_present;
         if (GetRandomNumber() % 100 < 50) {
@@ -369,7 +369,7 @@ get_present:
             } else
                 kind = 80;
         }
-        if (!(ram_ffdde8[level] & ((unsigned long)0x80000000 >> slot))) {
+        if (!(gCollectedLevelItemBits[level] & ((unsigned long)0x80000000 >> slot))) {
             gObjectTable[bank][slot].kind = kind;
             gObjectTable[bank][slot].level = level;
             gObjectTable[bank][slot].x = position_x;
@@ -379,9 +379,9 @@ get_present:
         }
     }
     if (!level)
-        func_023c6e(&gObjectTable[bank][28]);
+        InitializeLevelZeroFixedItems(&gObjectTable[bank][28]);
     else if (level != 1)
-        func_014850(gObjectTable[bank], level);
+        MapPlaceLargeLevelItems(gObjectTable[bank], level);
     ++LEVEL_PLAYERS_FLAG_1[bank];
     LEVEL_LOADED_1[bank] = level;
     StackBasedRandom(saved_seed);

@@ -29,15 +29,15 @@
 /* Interaction choices use one display object and one result byte per player. */
 
 /* Allocate the two-choice display, copying the player's current level. */
-void func_020f6c(player_number)
+void PlayerCreateInteractionChoiceDisplay(player_number)
 short player_number;
 {
     struct object_state *display;
     struct animation_descriptor *animation;
 
-    ram_ffe234[player_number] = 0;
-    if (ram_ffe232[player_number] = (int)func_01e736(0)) {
-        display = &gPlayerInfo[ram_ffe232[player_number]];
+    gPlayerInteractionResponses[player_number] = 0;
+    if (gPlayerInteractionChoiceEntities[player_number] = (int)AllocateEntityWithEviction(0)) {
+        display = &gPlayerInfo[gPlayerInteractionChoiceEntities[player_number]];
         display->level = (&gPlayerInfo[player_number])->level;
         display->flags_4d |= 8;
         display->parent = player_number;
@@ -53,7 +53,7 @@ short player_number;
         display->frames = animation->frames;
         display->frame = -1;
         display->frame_duration = 1;
-        ram_ffe236[player_number] = 1;
+        gPlayerInteractionChoiceActive[player_number] = 1;
     }
 }
 
@@ -65,25 +65,25 @@ void CheckAButton()
     char choice, cancel;
 
     for (player_number = 0; player_number <= 1; ++player_number) {
-        if (ram_ffe236[player_number]) {
-            display = &gPlayerInfo[ram_ffe232[player_number]];
+        if (gPlayerInteractionChoiceActive[player_number]) {
+            display = &gPlayerInfo[gPlayerInteractionChoiceEntities[player_number]];
             choice = display->sprite_state;
             cancel = (&gPlayerInfo[player_number])->sprite_state == 5 ||
                      (&gPlayerInfo[player_number])->sprite_state == 6;
             if (cancel || ((P1_PROCESSED_INPUT[player_number] & 64) &&
                            !(P1_PREV_PROCESSED_INPUT[player_number] & 64))) {
                 if (cancel)
-                    ram_ffe234[player_number] = 0;
+                    gPlayerInteractionResponses[player_number] = 0;
                 else if (display->sprite_state == 1)
-                    ram_ffe234[player_number] = 1;
+                    gPlayerInteractionResponses[player_number] = 1;
                 else
-                    ram_ffe234[player_number] = 2;
-                func_00d970(ram_ffe232[player_number]);
-                ram_ffe232[player_number] = 0;
-                ram_ffe236[player_number] = 0;
+                    gPlayerInteractionResponses[player_number] = 2;
+                FreeEntity(gPlayerInteractionChoiceEntities[player_number]);
+                gPlayerInteractionChoiceEntities[player_number] = 0;
+                gPlayerInteractionChoiceActive[player_number] = 0;
                 P1_PREV_PROCESSED_INPUT[player_number] = 64;
                 P1_PROCESSED_INPUT[player_number] = 64;
-                ram_ffe238[player_number] = 1;
+                gPlayerChoiceActionReleaseLatches[player_number] = 1;
             } else {
                 if (P1_PROCESSED_INPUT[player_number] & 1)
                     choice = 0;
@@ -108,41 +108,41 @@ struct earthling_state *earthling;
     struct special_earthling_state *mailbox;
     struct object_state *player, *object;
 
-    if (ram_ffe236[player_number])
+    if (gPlayerInteractionChoiceActive[player_number])
         return;
-    if (ram_ffe226[0].level == earthling->level)
-        mailbox = ram_ffe226;
+    if (gMailboxLevelStates[0].level == earthling->level)
+        mailbox = gMailboxLevelStates;
     else
-        mailbox = &ram_ffe226[1];
+        mailbox = &gMailboxLevelStates[1];
     player = &gPlayerInfo[player_number];
     object = &gPlayerInfo[earthling->object];
     if (mailbox->mode != 1) {
         if ((!player->sprite_state || player->sprite_state == 4 ||
              (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
              (player->sprite_state == 57 && !player->velocity_y)) &&
-            func_00dd1e(object, player, 30, 15)) {
+            EntityIsWithinRange(object, player, 30, 15)) {
             if (!mailbox->contact[player_number]) {
                 GenerateSpeech(earthling->object, "Mail Order?", 0);
-                func_020f6c(player_number);
+                PlayerCreateInteractionChoiceDisplay(player_number);
                 mailbox->contact[player_number] = 1;
             } else if (mailbox->contact[player_number] == 1) {
-                if (ram_ffe234[player_number] == 2)
-                    func_0098f6(player_number);
+                if (gPlayerInteractionResponses[player_number] == 2)
+                    InventoryOpenMailOrderMenu(player_number);
                 mailbox->contact[player_number] = 2;
-                ram_ffe234[player_number] = 0;
+                gPlayerInteractionResponses[player_number] = 0;
             }
         } else
             mailbox->contact[player_number] = 0;
         return;
     }
     if ((earthling->state & 252) == 4) {
-        if (func_00dd1e(object, player, 20, 10))
+        if (EntityIsWithinRange(object, player, 20, 10))
             Player_Youch(player_number, earthling);
         if (!--mailbox->timer) {
             SetEarthlingState(earthling, 0);
             object->frame = -1;
             mailbox->timer = 175;
-        } else if (!TOEJAM_SPEECH_COUNTER) {
+        } else if (!gPcmEffectCooldownTicks) {
             PlaySoundEffect((long)Sfx_MailboxRoar, 50, 0);
             earthling->value_0a = 1;
         }
@@ -150,7 +150,7 @@ struct earthling_state *earthling;
         if (mailbox->timer)
             --mailbox->timer;
         else if (player->sprite_state != 5 && player->sprite_state != 6 &&
-                 func_00dd1e(object, player, 100, 40))
+                 EntityIsWithinRange(object, player, 100, 40))
             SetEarthlingState(earthling, 3);
         else if ((GetRandomNumber() & 255) == 1)
             SetEarthlingState(earthling, 1);
@@ -183,50 +183,50 @@ struct earthling_state *earthling;
            (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
            player->sprite_state == 71 ||
            (player->sprite_state == 57 && !player->velocity_y)) &&
-          func_00dd1e(object, player, 35, 15))) {
-        ram_ffe23a[player_number] = 0;
+          EntityIsWithinRange(object, player, 35, 15))) {
+        gPlayerWizardInteractionStates[player_number] = 0;
         return;
     }
-    if (ram_ffe23a[player_number] == 2)
+    if (gPlayerWizardInteractionStates[player_number] == 2)
         return;
     earthling->state_delay = 1;
-    if (ram_ffe236[player_number] ||
+    if (gPlayerInteractionChoiceActive[player_number] ||
         (gPlayerInfo[0].level == gPlayerInfo[1].level &&
-         ram_ffe23a[player_number ^ 1] && ram_ffe23a[player_number ^ 1] != 2))
+         gPlayerWizardInteractionStates[player_number ^ 1] && gPlayerWizardInteractionStates[player_number ^ 1] != 2))
         return;
-    if (!ram_ffe23a[player_number]) {
+    if (!gPlayerWizardInteractionStates[player_number]) {
         if ((earthling->state == 4 || earthling->state == 5) &&
             !object->frame_duration)
             earthling->state += 2;
         if (earthling->state >= 6)
-            next_state = func_0196b0(earthling);
+            next_state = EarthlingSelectTurnState(earthling);
         else if (earthling->state <= 1 && object->frame > 4) {
             GenerateSpeech(earthling->object, "Got a buck?", 0);
-            func_020f6c(player_number);
-            ram_ffe23a[player_number] = 1;
+            PlayerCreateInteractionChoiceDisplay(player_number);
+            gPlayerWizardInteractionStates[player_number] = 1;
         }
     } else if (!object->frame_duration) {
-        if (ram_ffe23a[player_number] == 1) {
-            if (ram_ffe234[player_number] == 2) {
+        if (gPlayerWizardInteractionStates[player_number] == 1) {
+            if (gPlayerInteractionResponses[player_number] == 2) {
                 if (gPlayerBucks[player_number] > 0) {
                     next_state = 2;
-                    ram_ffe23a[player_number] = 3;
+                    gPlayerWizardInteractionStates[player_number] = 3;
                     --gPlayerBucks[player_number];
                     SetSprite(player, 71);
                     PlaySoundEffect((long)Sfx_Hallelujah, 92, 1);
                 } else
                     PlaySound(26, 50);
             } else {
-                ram_ffe23a[player_number] = 2;
+                gPlayerWizardInteractionStates[player_number] = 2;
                 next_state = 5;
                 object->velocity_x = 320;
             }
-            ram_ffe234[player_number] = 0;
-        } else if (ram_ffe23a[player_number] == 3) {
-            if (TOEJAMS_HEALTH[player_number] < func_00ae90(player_number))
+            gPlayerInteractionResponses[player_number] = 0;
+        } else if (gPlayerWizardInteractionStates[player_number] == 3) {
+            if (TOEJAMS_HEALTH[player_number] < PlayerGetMaximumHealth(player_number))
                 ++TOEJAMS_HEALTH[player_number];
             else {
-                ram_ffe23a[player_number] = 2;
+                gPlayerWizardInteractionStates[player_number] = 2;
                 next_state = 3;
                 SetSprite(player, GetActivePresentSprite(player));
             }
@@ -254,34 +254,34 @@ struct earthling_state *earthling;
     if (!((!player->sprite_state || player->sprite_state == 4 ||
            (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
            (player->sprite_state == 57 && !player->velocity_y)) &&
-          func_00dd1e(object, player, 35, 15))) {
-        ram_ffe23c[player_number] = 0;
+          EntityIsWithinRange(object, player, 35, 15))) {
+        gPlayerWisemanInteractionStates[player_number] = 0;
         return;
     }
-    if (ram_ffe23c[player_number] == 2)
+    if (gPlayerWisemanInteractionStates[player_number] == 2)
         return;
     earthling->state_delay = 1;
-    if (ram_ffe236[player_number] ||
+    if (gPlayerInteractionChoiceActive[player_number] ||
         (gPlayerInfo[0].level == gPlayerInfo[1].level &&
-         ram_ffe23c[player_number ^ 1] && ram_ffe23c[player_number ^ 1] != 2))
+         gPlayerWisemanInteractionStates[player_number ^ 1] && gPlayerWisemanInteractionStates[player_number ^ 1] != 2))
         return;
-    if (!ram_ffe23c[player_number]) {
+    if (!gPlayerWisemanInteractionStates[player_number]) {
         if (earthling->state >= 2)
-            next_state = func_0196b0(earthling);
+            next_state = EarthlingSelectTurnState(earthling);
         else if (earthling->state <= 1) {
             GenerateSpeech(earthling->object, "Got 2 bucks?", 0);
-            func_020f6c(player_number);
-            ram_ffe23c[player_number] = 1;
+            PlayerCreateInteractionChoiceDisplay(player_number);
+            gPlayerWisemanInteractionStates[player_number] = 1;
         }
-    } else if (ram_ffe23c[player_number] == 1) {
-        if (ram_ffe234[player_number] == 2) {
+    } else if (gPlayerWisemanInteractionStates[player_number] == 1) {
+        if (gPlayerInteractionResponses[player_number] == 2) {
             PlaySoundEffect((long)Sfx_WisemanThink, 64, 1);
-            func_009934(player_number);
+            InventoryOpenIdentificationMenu(player_number);
         }
-        ram_ffe23c[player_number] = 3;
-        ram_ffe234[player_number] = 0;
-    } else if (ram_ffe23c[player_number] == 3 && !P1_MENU_OPEN[player_number]) {
-        ram_ffe23c[player_number] = 2;
+        gPlayerWisemanInteractionStates[player_number] = 3;
+        gPlayerInteractionResponses[player_number] = 0;
+    } else if (gPlayerWisemanInteractionStates[player_number] == 3 && !P1_MENU_OPEN[player_number]) {
+        gPlayerWisemanInteractionStates[player_number] = 2;
         next_state = 2;
         object->velocity_x = -320;
     }
@@ -305,30 +305,30 @@ struct earthling_state *earthling;
            (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
            player->sprite_state == 69 ||
            (player->sprite_state == 57 && !player->velocity_y)) &&
-          func_00dd1e(object, player, 35, 15))) {
-        ram_ffe23e[player_number] = 0;
+          EntityIsWithinRange(object, player, 35, 15))) {
+        gPlayerOperaSingerInteractionStates[player_number] = 0;
         return;
     }
-    if (ram_ffe23e[player_number] == 2)
+    if (gPlayerOperaSingerInteractionStates[player_number] == 2)
         return;
     earthling->state_delay = 1;
-    if (ram_ffe236[player_number] ||
+    if (gPlayerInteractionChoiceActive[player_number] ||
         (gPlayerInfo[0].level == gPlayerInfo[1].level &&
-         ram_ffe23e[player_number ^ 1] && ram_ffe23e[player_number ^ 1] != 2))
+         gPlayerOperaSingerInteractionStates[player_number ^ 1] && gPlayerOperaSingerInteractionStates[player_number ^ 1] != 2))
         return;
-    if (!ram_ffe23e[player_number]) {
+    if (!gPlayerOperaSingerInteractionStates[player_number]) {
         if (earthling->state >= 4)
             next_state = 0;
         else if (earthling->state <= 1) {
             GenerateSpeech(earthling->object, "Got 3 bucks?", 0);
-            func_020f6c(player_number);
-            ram_ffe23e[player_number] = 1;
+            PlayerCreateInteractionChoiceDisplay(player_number);
+            gPlayerOperaSingerInteractionStates[player_number] = 1;
         }
-    } else if (ram_ffe23e[player_number] == 1) {
-        if (ram_ffe234[player_number] == 2) {
+    } else if (gPlayerOperaSingerInteractionStates[player_number] == 1) {
+        if (gPlayerInteractionResponses[player_number] == 2) {
             if (gPlayerBucks[player_number] >= 3) {
                 next_state = 3;
-                ram_ffe23e[player_number] = 3;
+                gPlayerOperaSingerInteractionStates[player_number] = 3;
                 gPlayerBucks[player_number] -= 3;
                 SetSprite(player, 69);
                 player_number ^= 1;
@@ -342,14 +342,14 @@ struct earthling_state *earthling;
             } else
                 PlaySound(26, 50);
         } else {
-            ram_ffe23e[player_number] = 2;
+            gPlayerOperaSingerInteractionStates[player_number] = 2;
             next_state = 0;
         }
         /* The index is the other player after a successful paid response. */
-        ram_ffe234[player_number] = 0;
-    } else if (ram_ffe23e[player_number] == 3) {
+        gPlayerInteractionResponses[player_number] = 0;
+    } else if (gPlayerOperaSingerInteractionStates[player_number] == 3) {
         if (!object->frame_duration) {
-            ram_ffe23e[player_number] = 2;
+            gPlayerOperaSingerInteractionStates[player_number] = 2;
             next_state = 0;
             SetSprite(player, GetActivePresentSprite(player));
             player_number ^= 1;
@@ -377,20 +377,20 @@ struct earthling_state *earthling;
         if (earthling->state == 2)
             return 1;
     } else if (earthling->kind == 11 && earthling->state <= 1 &&
-               (ram_ffe23c[0] == 3 || ram_ffe23d == 3))
+               (gPlayerWisemanInteractionStates[0] == 3 || gPlayer2WisemanInteractionState == 3))
         return 1;
     return 0;
 }
 
 /* Place a player animation at camera offset (80,224), retaining draw mask 2. */
-int func_021c60(player_number)
+int PlayerCreateLifeRequestDisplay(player_number)
 short player_number;
 {
     struct object_state *object;
     struct timed_animation *animation;
 
-    if (ram_ffe242 = (int)func_00d904()) {
-        object = &gPlayerInfo[ram_ffe242];
+    if (gLifeRequestDisplayEntity = (int)AllocateEntity()) {
+        object = &gPlayerInfo[gLifeRequestDisplayEntity];
         object->x = TOEJAM_CAMERA_NEWX + 80;
         object->y = TOEJAM_CAMERA_NEWY + 224;
         object->height = 112;
@@ -403,22 +403,22 @@ short player_number;
         if (!player_number)
             animation = &PlayerAnimationDescriptors[5];
         else
-            animation = &rom_0ae9de[5];
+            animation = &Player2AnimationDescriptors[5];
         object->sequence = animation->sequence;
         object->frames = animation->frames;
         object->frame_phase = animation->period;
         object->frame_duration = 1;
         object->frame = -1;
-        func_00beb2(ram_ffe242);
+        UpdateEntityViewportSprites(gLifeRequestDisplayEntity);
         if (object->draw_flags & 2)
             return 0;
-        func_00d970(ram_ffe242);
+        FreeEntity(gLifeRequestDisplayEntity);
     }
     return 1;
 }
 
 /* An eliminated player may ask the other player for a life. */
-void func_021d32(player_number)
+void PlayerProcessLifeRequest(player_number)
 short player_number;
 {
     short other_player;
@@ -428,32 +428,32 @@ short player_number;
         return;
     other_player = player_number ^ 1;
     player = &gPlayerInfo[other_player];
-    if (!ram_ffe242 && gPlayerLives[other_player] > 0 &&
-        !ram_ffe236[other_player] && !ELEVATOR_FLAG[other_player] &&
+    if (!gLifeRequestDisplayEntity && gPlayerLives[other_player] > 0 &&
+        !gPlayerInteractionChoiceActive[other_player] && !ELEVATOR_FLAG[other_player] &&
         (!player->sprite_state || player->sprite_state == 4 ||
          (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
          (player->flags_52 & 0x400c)) &&
         !(player->flags_52 & 0x20000000) &&
         (MovePadInputIntoD0(player_number) & 112) &&
-        !func_021c60(player_number)) {
+        !PlayerCreateLifeRequestDisplay(player_number)) {
         SetSprite(player, GetActivePresentSprite(player));
-        player = &gPlayerInfo[ram_ffe242];
+        player = &gPlayerInfo[gLifeRequestDisplayEntity];
         player->height += 30;
-        func_01e012(64);
+        SetNextSpeechLifetime(64);
         if (PLAYER_INDICATOR != 2)
-            GenerateSpeech(ram_ffe242, "Can I play?", 0);
+            GenerateSpeech(gLifeRequestDisplayEntity, "Can I play?", 0);
         else
-            GenerateSpeech(ram_ffe242, "Got a life?", 0);
+            GenerateSpeech(gLifeRequestDisplayEntity, "Got a life?", 0);
         player->height -= 30;
-        func_020f6c(other_player);
-        ram_ffe240 = 1;
+        PlayerCreateInteractionChoiceDisplay(other_player);
+        gLifeRequestPending = 1;
     }
-    if (ram_ffe240) {
-        if (!ram_ffe234[other_player])
+    if (gLifeRequestPending) {
+        if (!gPlayerInteractionResponses[other_player])
             return;
-        func_00d970(ram_ffe242);
-        ram_ffe242 = 0;
-        if (ram_ffe234[other_player] == 2) {
+        FreeEntity(gLifeRequestDisplayEntity);
+        gLifeRequestDisplayEntity = 0;
+        if (gPlayerInteractionResponses[other_player] == 2) {
             while (VBLANK_FLAG_2)
                 ;
             ClearSkipVHBlankFlags();
@@ -461,7 +461,7 @@ short player_number;
             VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
             if (PLAYER_INDICATOR == 2) {
                 --gPlayerLives[other_player];
-                func_00b3e4(other_player);
+                HudLoadLivesSpriteTiles(other_player);
             }
             CopyLevelBetweenPlayers(0);
             gLevel912E = gLevel912C;
@@ -469,14 +469,14 @@ short player_number;
             player->draw_flags = 1;
             player->flags_4d = 1;
             player->sprite_state = 0;
-            func_00baa2(player_number);
+            PlayerResetRankAndResources(player_number);
             StopPlayer(player);
             player->mode_15 = 0;
             PLAYER_INDICATOR = 2;
             SPLIT_SCREEN = 1;
-            func_010ab6(player_number);
+            PlayerRelocateToPartnerOrNextLevel(player_number);
         }
-        ram_ffe240 = 0;
-        ram_ffe234[other_player] = 0;
+        gLifeRequestPending = 0;
+        gPlayerInteractionResponses[other_player] = 0;
     }
 }

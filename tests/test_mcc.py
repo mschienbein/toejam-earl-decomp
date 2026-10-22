@@ -153,11 +153,11 @@ class MatchTest(unittest.TestCase):
     def test_two_known_functions_match_byte_for_byte(self):
         reports = self.run_c("pair.c", "void DelayRoutine1(n)\nshort n;\n{\n    while (n)\n        --n;\n}\n")
         self.assertEqual([r["status"] for r in reports], ["MATCH"])
-        reports = self.run_c("mod.c", "short func_001262(v)\nshort v;\n{\n    return (v - 1) % 6;\n}\n")
+        reports = self.run_c("mod.c", "short GetLevelMusicIndex(v)\nshort v;\n{\n    return (v - 1) % 6;\n}\n")
         self.assertEqual([r["status"] for r in reports], ["MATCH"])
 
     def test_a_wrong_constant_is_reported_as_a_difference(self):
-        reports = self.run_c("bad.c", "short func_001262(v)\nshort v;\n{\n    return (v - 2) % 6;\n}\n")
+        reports = self.run_c("bad.c", "short GetLevelMusicIndex(v)\nshort v;\n{\n    return (v - 2) % 6;\n}\n")
         self.assertEqual(reports[0]["status"], "DIFF")
         self.assertIn("subq.l #$1", reports[0]["diff"])
 
@@ -171,7 +171,7 @@ class MatchTest(unittest.TestCase):
 
     def test_a_function_at_the_wrong_place_is_refused(self):
         with self.assertRaisesRegex(self.match.MatchError, "contiguous run"):
-            self.run_c("order.c", "short func_001262(v)\nshort v;\n{\n    return v;\n}\n"
+            self.run_c("order.c", "short GetLevelMusicIndex(v)\nshort v;\n{\n    return v;\n}\n"
                                   "void DelayRoutine1(n)\nshort n;\n{\n    while (n) --n;\n}\n")
 
 

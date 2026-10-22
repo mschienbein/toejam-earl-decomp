@@ -30,15 +30,15 @@
 /* ORIGINAL BUG: this consumer retains the observed int result view.
  * Both the shared unsigned char declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
-extern int func_00d9dc();
+extern int GetMapTerrainAtWorldPosition();
 
 /* ORIGINAL BUG: this consumer retains the observed int result view.
  * Both the shared short declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
-extern int func_015da6();
+extern int PresentRegisterDecoyHit();
 /* Launch a tomato from an earthling toward a velocity-adjusted target.
  * The distance estimate controls the vertical acceleration. */
-void func_01c2a2(target, earthling)
+void EarthlingLaunchAimedProjectile(target, earthling)
 struct object_state *target;
 struct earthling_state *earthling;
 {
@@ -48,13 +48,13 @@ struct earthling_state *earthling;
 
     slot = 4;
     do {
-        if (!ram_ffe1c0[slot])
+        if (!gSharedProjectileEntities[slot])
             break;
         ++slot;
     } while (slot < 12);
     if (slot == 12)
         return;
-    if (ram_ffe1c0[slot] = (int)func_00d904()) {
+    if (gSharedProjectileEntities[slot] = (int)AllocateEntity()) {
         distance_x = target->x - earthling->x;
         distance_y = target->y - earthling->y;
         distance_x += target->velocity_x >> 3;
@@ -77,8 +77,8 @@ struct earthling_state *earthling;
         }
         if (distance_y < 0)
             speed_y = -speed_y;
-        ram_ffe1cc[slot] = earthling->object;
-        projectile = &gPlayerInfo[ram_ffe1c0[slot]];
+        gSharedProjectileOwners[slot] = earthling->object;
+        projectile = &gPlayerInfo[gSharedProjectileEntities[slot]];
         projectile->x = earthling->x;
         projectile->y = earthling->y;
         if (earthling->state == 8)
@@ -124,7 +124,7 @@ struct earthling_state *earthling;
         projectile->frame_phase = 0;
         projectile->draw_flags |= 64;
         projectile->sprite_state = -1;
-        if (!TOEJAM_SPEECH_COUNTER)
+        if (!gPcmEffectCooldownTicks)
             PlaySoundEffect((long)Sfx_ChickenCannonFire, 40, 0);
     }
 }
@@ -138,11 +138,11 @@ void ProcessTomatoRain()
     struct timed_animation *animation;
 
     for (slot = 0; slot < 12; ++slot) {
-        if (object_number = ram_ffe1c0[slot]) {
+        if (object_number = gSharedProjectileEntities[slot]) {
             projectile = &gPlayerInfo[object_number];
             if (projectile->height < 10 && !(projectile->draw_flags & 6)) {
-                func_00d970(object_number);
-                ram_ffe1c0[slot] = 0;
+                FreeEntity(object_number);
+                gSharedProjectileEntities[slot] = 0;
             } else if (projectile->sprite_state == -1) {
                 if (projectile->height <= 0) {
                     if (projectile->tile & 0x8000) {
@@ -150,7 +150,7 @@ void ProcessTomatoRain()
                         object_number = 0;
                         if (projectile->draw_flags & 4)
                             object_number = 1;
-                        object_number = func_00d9dc(object_number, projectile->x, projectile->y);
+                        object_number = GetMapTerrainAtWorldPosition(object_number, projectile->x, projectile->y);
                         if (object_number == 144) {
                             projectile->tile &= 0x7fff;
                             projectile->sprite_ready = 0;
@@ -162,9 +162,9 @@ void ProcessTomatoRain()
                             projectile->velocity_height = 0;
                             projectile->acceleration_height = 0;
                             if (object_number != 128)
-                                animation = &dat_0af022;
+                                animation = &TomatoGroundImpactAnimation;
                             else
-                                animation = &dat_0af02c;
+                                animation = &TomatoTerrain128ImpactAnimation;
                             projectile->sequence = animation->sequence;
                             projectile->frames = animation->frames;
                             projectile->frame_phase = animation->period;
@@ -172,42 +172,42 @@ void ProcessTomatoRain()
                             projectile->frame = -1;
                             projectile->frame_duration = 1;
                             if (!gMusicUnknownE472)
-                                func_03e4f8(15);
+                                AudioRequestChannelTemplateEffect(15);
                         }
                     }
                 } else if (projectile->height <= 25) {
-                    object_number = func_025e72(projectile, ram_ffe1cc[slot]);
+                    object_number = ProjectileFindCollisionExcludingOwner(projectile, gSharedProjectileOwners[slot]);
                     if (object_number) {
                         if (--object_number <= 1 && !ELEVATOR_FLAG[object_number] &&
-                            !P1_MENU_OPEN[object_number] && !ram_ffe236[object_number]) {
-                            if (ram_ffe1cc[slot] <= 1)
+                            !P1_MENU_OPEN[object_number] && !gPlayerInteractionChoiceActive[object_number]) {
+                            if (gSharedProjectileOwners[slot] <= 1)
                                 TOEJAMS_HEALTH[object_number] -= 4;
                             else
                                 TOEJAMS_HEALTH[object_number] -= 6;
-                        } else if (!func_015da6(object_number))
+                        } else if (!PresentRegisterDecoyHit(object_number))
                             DamageEarthling(gPlayerInfo[object_number].earthling);
                         projectile->velocity_x = 0;
                         projectile->velocity_y = 0;
                         projectile->velocity_height = 0;
                         projectile->acceleration_height = 0;
                         projectile->draw_flags &= ~64;
-                        animation = &dat_0af018;
+                        animation = &TomatoTargetImpactAnimation;
                         projectile->sequence = animation->sequence;
                         projectile->frames = animation->frames;
                         projectile->frame_phase = animation->period;
                         projectile->frame = -1;
                         projectile->frame_duration = 1;
                         projectile->sprite_state = 0;
-                        func_03e4f8(2);
+                        AudioRequestChannelTemplateEffect(2);
                     }
                 }
             } else if (!projectile->frame_duration && projectile->sprite_state != 21) {
-                func_00d970(object_number);
-                ram_ffe1c0[slot] = 0;
+                FreeEntity(object_number);
+                gSharedProjectileEntities[slot] = 0;
             }
         }
     }
-    func_01cd9e();
+    EarthlingUpdateControlRemapProjectiles();
 }
 
 /* Choose a counter in [50, 80] and clear its companion byte. */
@@ -232,16 +232,16 @@ int player_number;
     TOMATO_RAIN_TIMER[player_number] = GetRandomNumber() % 5 + 4;
     slot = 4;
     do {
-        if (!ram_ffe1c0[slot])
+        if (!gSharedProjectileEntities[slot])
             break;
         ++slot;
     } while (slot < 12);
     if (slot == 12)
         return;
-    if (ram_ffe1c0[slot] = (int)func_00d904()) {
-        ram_ffe1cc[slot] = -1;
+    if (gSharedProjectileEntities[slot] = (int)AllocateEntity()) {
+        gSharedProjectileOwners[slot] = -1;
         player = &gPlayerInfo[player_number];
-        projectile = &gPlayerInfo[ram_ffe1c0[slot]];
+        projectile = &gPlayerInfo[gSharedProjectileEntities[slot]];
         projectile->x = GetRandomNumber() % 201 + -100 + player->x;
         projectile->y = GetRandomNumber() % 101 + -50 + player->y;
         projectile->height = 224;
@@ -264,14 +264,14 @@ int player_number;
 }
 
 /* Release the first occupied rain/earthling tomato handle, if one exists. */
-int func_01c928()
+int PresentReleaseFirstSharedTomato()
 {
     short slot;
 
     for (slot = 4; slot < 12; ++slot) {
-        if (ram_ffe1c0[slot]) {
-            func_00d970(ram_ffe1c0[slot]);
-            ram_ffe1c0[slot] = 0;
+        if (gSharedProjectileEntities[slot]) {
+            FreeEntity(gSharedProjectileEntities[slot]);
+            gSharedProjectileEntities[slot] = 0;
             return 1;
         }
     }
@@ -279,7 +279,7 @@ int func_01c928()
 }
 
 /* Allocate one of four projectiles and launch it left or right from the earthling. */
-void func_01c96a(earthling, source)
+void EarthlingLaunchControlRemapProjectile(earthling, source)
 struct earthling_state *earthling;
 struct object_state *source;
 {
@@ -289,25 +289,25 @@ struct object_state *source;
 
     slot = 0;
     do {
-        if (!ram_ffe1d8[slot])
+        if (!gControlRemapProjectileEntities[slot])
             break;
         ++slot;
     } while (slot < 4);
     if (slot == 4)
         return;
-    if (ram_ffe1d8[slot] = (int)func_00d904()) {
-        projectile = &gPlayerInfo[ram_ffe1d8[slot]];
+    if (gControlRemapProjectileEntities[slot] = (int)AllocateEntity()) {
+        projectile = &gPlayerInfo[gControlRemapProjectileEntities[slot]];
         projectile->x = source->x;
         projectile->y = source->y - 5;
         projectile->height = source->height;
         if (earthling->state == 10) {
             projectile->x -= 22;
             projectile->velocity_x = -896;
-            animation = &dat_0aeffe;
+            animation = &ControlRemapProjectileLeftAnimation;
         } else {
             projectile->x += 22;
             projectile->velocity_x = 896;
-            animation = &dat_0af006;
+            animation = &ControlRemapProjectileRightAnimation;
         }
         projectile->acceleration_height = -32;
         projectile->level = source->level;
@@ -323,12 +323,12 @@ struct object_state *source;
         projectile->frame_duration = 1;
         projectile->draw_flags |= 64;
         projectile->sprite_state = -1;
-        func_03e4f8(4);
+        AudioRequestChannelTemplateEffect(4);
     }
 }
 
 /* Return one plus the first active player's or decoy's object index in range. */
-short func_01ca64(projectile)
+short EntityFindProjectileTargetHit(projectile)
 struct object_state *projectile;
 {
     short pass, index, reach;
@@ -338,9 +338,9 @@ struct object_state *projectile;
     for (pass = 0; pass < 2; ++pass) {
         for (index = 0; index <= 1; ++index, ++target) {
             if (pass) {
-                if (!ram_ffde58[index])
+                if (!gPlayerDecoyEntities[index])
                     continue;
-                target = &gPlayerInfo[ram_ffde58[index]];
+                target = &gPlayerInfo[gPlayerDecoyEntities[index]];
             }
             if (!(target->draw_flags & 1) || !(target->flags_4d & 1) ||
                 projectile->level != target->level)
@@ -352,7 +352,7 @@ struct object_state *projectile;
                 if (!pass)
                     return index + 1;
                 else
-                    return ram_ffde58[index] + 1;
+                    return gPlayerDecoyEntities[index] + 1;
             }
         }
     }
@@ -360,15 +360,15 @@ struct object_state *projectile;
 }
 
 /* Allocate the player's control-effect object and refresh its timer and mapping. */
-void func_01cb86(player_number)
+void PlayerApplyControlRemapEffect(player_number)
 short player_number;
 {
     struct object_state *effect, *player;
     struct timed_animation *animation;
 
-    if (!ram_ffe1dc[player_number]) {
-        if (ram_ffe1dc[player_number] = (int)func_01e736(0)) {
-            effect = &gPlayerInfo[ram_ffe1dc[player_number]];
+    if (!gPlayerControlRemapEntities[player_number]) {
+        if (gPlayerControlRemapEntities[player_number] = (int)AllocateEntityWithEviction(0)) {
+            effect = &gPlayerInfo[gPlayerControlRemapEntities[player_number]];
             player = &gPlayerInfo[player_number];
             effect->flags_4d |= 8;
             effect->parent = player_number;
@@ -386,15 +386,15 @@ short player_number;
             effect->frame_duration = 1;
         }
     }
-    if (ram_ffe1dc[player_number]) {
-        ram_ffe1de[player_number] = 240;
-        ram_ffe1e2[player_number] = GetRandomNumber() & 3;
+    if (gPlayerControlRemapEntities[player_number]) {
+        gPlayerControlRemapTimers[player_number] = 240;
+        gPlayerControlRemapIndices[player_number] = GetRandomNumber() & 3;
     }
 }
 
 /* Keep action bits and remap a nonzero direction nibble through the selected row.
  * Callers use the shared unsigned-char return declaration. */
-unsigned char func_01cc62(player_number)
+unsigned char PlayerRemapDirectionalInput(player_number)
 short player_number;
 {
     unsigned char input, direction;
@@ -402,26 +402,26 @@ short player_number;
     input = P1_PROCESSED_INPUT[player_number];
     if (!(input & 15))
         return input;
-    direction = dat_08bfe6[ram_ffe1e2[player_number]][(input & 15) - 1];
+    direction = ControlRemapDirections[gPlayerControlRemapIndices[player_number]][(input & 15) - 1];
     return (input & 240) | direction;
 }
 
 /* Expire the control-effect object, or occasionally play its animation sound. */
-void func_01ccd2(player)
+void PlayerUpdateControlRemapEffect(player)
 struct object_state *player;
 {
     short player_number;
     struct object_state *effect;
 
     player_number = player->entity_number;
-    if (!ram_ffe1dc[player_number])
+    if (!gPlayerControlRemapEntities[player_number])
         return;
-    effect = &gPlayerInfo[ram_ffe1dc[player_number]];
+    effect = &gPlayerInfo[gPlayerControlRemapEntities[player_number]];
     effect->level = player->level;
-    if (--ram_ffe1de[player_number] <= 0 || gPlayerLives[player_number] < 0 ||
+    if (--gPlayerControlRemapTimers[player_number] <= 0 || gPlayerLives[player_number] < 0 ||
         player->sprite_state == 5 || player->sprite_state == 6) {
-        func_00d970(ram_ffe1dc[player_number]);
-        ram_ffe1dc[player_number] = 0;
+        FreeEntity(gPlayerControlRemapEntities[player_number]);
+        gPlayerControlRemapEntities[player_number] = 0;
     } else if (!ELEVATOR_FLAG[player_number] && (effect->frame_duration & 2) &&
                ((short)GetRandomNumber() & 1)) {
         PlaySound(2, 20);
@@ -429,18 +429,18 @@ struct object_state *player;
 }
 
 /* Update four projectiles, applying player/decoy hits or removing landed objects. */
-void func_01cd9e()
+void EarthlingUpdateControlRemapProjectiles()
 {
     short slot, object_number, hit;
     struct object_state *projectile;
 
     for (slot = 0; slot < 4; ++slot) {
-        if (object_number = ram_ffe1d8[slot]) {
+        if (object_number = gControlRemapProjectileEntities[slot]) {
             projectile = &gPlayerInfo[object_number];
             if (!(projectile->draw_flags & 6)) {
                 if (projectile->height < 5) {
-                    func_00d970(object_number);
-                    ram_ffe1d8[slot] = 0;
+                    FreeEntity(object_number);
+                    gControlRemapProjectileEntities[slot] = 0;
                 }
             } else if (projectile->sprite_state == -1) {
                 if (projectile->height <= 0) {
@@ -449,23 +449,23 @@ void func_01cd9e()
                         hit = 0;
                         if (projectile->draw_flags & 4)
                             hit = 1;
-                        hit = func_00d9dc(hit, projectile->x, projectile->y);
+                        hit = GetMapTerrainAtWorldPosition(hit, projectile->x, projectile->y);
                         if (hit == 0x90) {
                             projectile->tile &= ~0x8000;
                             projectile->sprite_ready = 0;
                         } else {
-                            func_00d970(object_number);
-                            ram_ffe1d8[slot] = 0;
+                            FreeEntity(object_number);
+                            gControlRemapProjectileEntities[slot] = 0;
                         }
                     }
                 } else if (projectile->height <= 25) {
-                    if (hit = func_01ca64(projectile)) {
+                    if (hit = EntityFindProjectileTargetHit(projectile)) {
                         if (--hit <= 1 && !ELEVATOR_FLAG[hit] && !P1_MENU_OPEN[hit])
-                            func_01cb86(hit);
+                            PlayerApplyControlRemapEffect(hit);
                         else
-                            func_015da6(hit);
-                        func_00d970(object_number);
-                        ram_ffe1d8[slot] = 0;
+                            PresentRegisterDecoyHit(hit);
+                        FreeEntity(object_number);
+                        gControlRemapProjectileEntities[slot] = 0;
                     }
                 }
             }
@@ -474,7 +474,7 @@ void func_01cd9e()
 }
 
 /* Place an active terrain effect one pixel behind the supplied player. */
-void func_01cec2(player, player_number)
+void PresentCreateActiveTerrainEffect(player, player_number)
 struct object_state *player;
 short player_number;
 {
@@ -482,8 +482,8 @@ short player_number;
     struct object_state *effect;
     struct timed_animation *animation;
 
-    if (object_number = (int)func_01e736(0)) {
-        ram_ffe1e4[player_number] = object_number;
+    if (object_number = (int)AllocateEntityWithEviction(0)) {
+        gPlayerActiveTerrainEffectEntities[player_number] = object_number;
         effect = &gPlayerInfo[object_number];
         effect->x = player->x;
         effect->y = player->y - 1;
@@ -500,25 +500,25 @@ short player_number;
         effect->frame = -1;
         effect->frame_duration = 1;
         effect->flags_4d |= 1;
-        func_03e4f8(13);
+        AudioRequestChannelTemplateEffect(13);
     }
 }
 
 /* Replace the previous retiring effect and switch the current one to its final animation. */
-void func_01cf66(player_number)
+void PresentRetireTerrainEffect(player_number)
 short player_number;
 {
     char object_number;
     struct object_state *effect;
     struct timed_animation *animation;
 
-    if (object_number = ram_ffe1e6[player_number])
-        func_00d970(object_number);
-    object_number = ram_ffe1e4[player_number];
-    ram_ffe1e6[player_number] = object_number;
-    ram_ffe1e4[player_number] = 0;
+    if (object_number = gPlayerOneShotTerrainEffectEntities[player_number])
+        FreeEntity(object_number);
+    object_number = gPlayerActiveTerrainEffectEntities[player_number];
+    gPlayerOneShotTerrainEffectEntities[player_number] = object_number;
+    gPlayerActiveTerrainEffectEntities[player_number] = 0;
     effect = &gPlayerInfo[object_number];
-    animation = &dat_0af080;
+    animation = &RetiringTerrainEffectAnimation;
     effect->sequence = animation->sequence;
     effect->frames = animation->frames;
     effect->frame_phase = animation->period;
@@ -527,7 +527,7 @@ short player_number;
 }
 
 /* Allocate a temporary terrain-effect object at the player position. */
-void func_01cfea(player, player_number)
+void PresentCreateTemporaryTerrainEffect(player, player_number)
 struct object_state *player;
 short player_number;
 {
@@ -535,8 +535,8 @@ short player_number;
     struct object_state *effect;
     struct timed_animation *animation;
 
-    if (object_number = (int)func_00d904()) {
-        ram_ffe1e6[player_number] = object_number;
+    if (object_number = (int)AllocateEntity()) {
+        gPlayerOneShotTerrainEffectEntities[player_number] = object_number;
         effect = &gPlayerInfo[object_number];
         effect->x = player->x;
         effect->y = player->y;
@@ -546,19 +546,19 @@ short player_number;
         effect->height_pixels = 20;
         effect->sprite_count = 1;
         effect->tile_count = 16;
-        animation = &dat_0af08a;
+        animation = &TemporaryTerrainEffectAnimation;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = animation->period;
         effect->frame = -1;
         effect->frame_duration = 1;
         effect->flags_4d |= 1;
-        func_03e4f8(13);
+        AudioRequestChannelTemplateEffect(13);
     }
 }
 
 /* Spawn terrain effects on a fresh action press and apply nearby effect damage. */
-void func_01d084(player, terrain)
+void PresentUpdateTerrainEffects(player, terrain)
 struct object_state *player;
 unsigned short terrain;
 {
@@ -570,42 +570,42 @@ unsigned short terrain;
     player_number = player->entity_number;
     if (gPlayer1Powerup[player_number] != 6 || ELEVATOR_FLAG[player_number] ||
         player->sprite_state == 5 || player->sprite_state == 6) {
-        if (ram_ffe1e4[player_number])
-            func_01cf66(player_number);
+        if (gPlayerActiveTerrainEffectEntities[player_number])
+            PresentRetireTerrainEffect(player_number);
     } else if (!(P1_PREV_PROCESSED_INPUT[player_number] & 64) &&
                (P1_PROCESSED_INPUT[player_number] & 64)) {
         if (terrain == 0x10 || terrain == 0x50) {
-            if (ram_ffe1e4[player_number])
-                func_01cf66(player_number);
-            func_01cec2(player, player_number);
-        } else if (terrain < 0x80 && !ram_ffe1e6[player_number]) {
-            func_01cfea(player, player_number);
+            if (gPlayerActiveTerrainEffectEntities[player_number])
+                PresentRetireTerrainEffect(player_number);
+            PresentCreateActiveTerrainEffect(player, player_number);
+        } else if (terrain < 0x80 && !gPlayerOneShotTerrainEffectEntities[player_number]) {
+            PresentCreateTemporaryTerrainEffect(player, player_number);
         }
-    } else if (object_number = ram_ffe1e4[player_number]) {
+    } else if (object_number = gPlayerActiveTerrainEffectEntities[player_number]) {
         effect = &gPlayerInfo[object_number];
         if (!effect->frame_duration && (effect->draw_flags & 6)) {
             source.kind = 1;
             source.x = effect->x;
             source.y = effect->y;
             source.object = object_number;
-            if (!ELEVATOR_FLAG[player_number] && func_00dd1e(effect, player, 25, 10))
+            if (!ELEVATOR_FLAG[player_number] && EntityIsWithinRange(effect, player, 25, 10))
                 Player_Youch(player_number, &source);
             if (!ELEVATOR_FLAG[player_number ^ 1] &&
-                func_00dd1e(effect, &gPlayerInfo[player_number ^ 1], 25, 10))
+                EntityIsWithinRange(effect, &gPlayerInfo[player_number ^ 1], 25, 10))
                 Player_Youch(player_number ^ 1, &source);
         }
     }
-    if (object_number = ram_ffe1e6[player_number]) {
+    if (object_number = gPlayerOneShotTerrainEffectEntities[player_number]) {
         effect = &gPlayerInfo[object_number];
         if (!effect->frame_duration) {
-            func_00d970(object_number);
-            ram_ffe1e6[player_number] = 0;
+            FreeEntity(object_number);
+            gPlayerOneShotTerrainEffectEntities[player_number] = 0;
         }
     }
 }
 
 /* Shoot at frame two; on animation completion restore the matching facing state. */
-void func_01d288(earthling, object)
+void EarthlingUpdateControlRemapAttack(earthling, object)
 struct earthling_state *earthling;
 struct object_state *object;
 {
@@ -613,7 +613,7 @@ struct object_state *object;
 
     if (object->frame == 2) {
         ++object->frame;
-        func_01c96a(earthling, object);
+        EarthlingLaunchControlRemapProjectile(earthling, object);
     } else if (!object->frame_duration) {
         if (earthling->state == 10)
             next_state = 0;
@@ -624,7 +624,7 @@ struct object_state *object;
 }
 
 /* During the early firing frames, pick an eligible player or active decoy ahead. */
-void func_01d2cc(earthling, object)
+void EarthlingUpdateAimedProjectileAttack(earthling, object)
 struct earthling_state *earthling;
 struct object_state *object;
 {
@@ -636,7 +636,7 @@ struct object_state *object;
         ++object->frame;
         player_number = GetRandomNumber() & 1;
         for (attempt = 0; attempt < 2; player_number ^= 1, ++attempt) {
-            decoy = ram_ffde58[player_number];
+            decoy = gPlayerDecoyEntities[player_number];
             target = decoy && (gPlayerInfo[decoy].draw_flags & 6) ?
                      &gPlayerInfo[decoy] : &gPlayerInfo[player_number];
             if (gPlayerLives[player_number] < 0)
@@ -656,7 +656,7 @@ struct object_state *object;
             }
         }
         if (attempt != 2)
-            func_01c2a2(target, earthling);
+            EarthlingLaunchAimedProjectile(target, earthling);
     } else if (!object->frame_duration) {
         SetEarthlingState(earthling, 0);
         PlaySoundEffect((long)Sfx_ChickenCluck, 50, 0);

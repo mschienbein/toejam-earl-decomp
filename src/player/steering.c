@@ -2,7 +2,7 @@
 #include "player.h"
 #include "random.h"
 
-char func_01af04(state, delta_x, delta_y)
+char EntitySetVelocityTowardDelta(state, delta_x, delta_y)
 struct object_state *state;
 short delta_x, delta_y;
 {
@@ -38,7 +38,7 @@ short delta_x, delta_y;
     return direction;
 }
 
-char func_01afb8(state, target, delta_x, delta_y)
+char EntitySteerWithHorizontalDrift(state, target, delta_x, delta_y)
 struct object_state *state, *target;
 short delta_x, delta_y;
 {
@@ -49,7 +49,7 @@ short delta_x, delta_y;
     /* QUALIFICATION: retain the discarded facing result in a named local.
      * MCC68K then flushes argument cleanup before the following velocity test;
      * ignoring the return emits the same two instructions in reverse order. */
-    facing = func_01af04(state, delta_x, delta_y);
+    facing = EntitySetVelocityTowardDelta(state, delta_x, delta_y);
     if (!state->velocity_x && state->velocity_y) {
         if (previous_x)
             state->velocity_x = previous_x;

@@ -34,27 +34,27 @@ short song;
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
     PlaySoundEffect((long)Sfx_Jammin, 90, 0);
-    ram_ffe456 = song;
+    gJamSelectedSong = song;
     gVBlankFunc = JamOutVBlank;
-    ram_ffe476 = 1;
+    gMusicAlternateTemplateBankEnabled = 1;
     VDP_COMMAND = 0x46600001L;
     MoveDataToVRAM(CrashScreen, CrashScreenSize << 4);
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank1, 1);
     CopyPaletteToCRAMSlot(PaletteGameLine4, 3);
-    ram_ffd936 = 1;
-    func_03b564();
+    gSharedTileSpriteCopiesEnabled = 1;
+    JamOutCreateCharacterCopies();
     VDP_CONTROL_WORD = 0x8c89;
-    ram_ff8196 = 0;
-    func_03b39e(1);
+    gCameraTileAttributes = 0;
+    JamOutUpdateLayoutsAndScroll(1);
     start_hold = 0;
     if (song == 7) {
-        ram_ffe466 = (int)GetRandomNumber() % 42;
-        ram_ffe468 = (int)GetRandomNumber() % 42;
-        ram_ffe46a = (int)GetRandomNumber() % 42;
-        ram_ffe460 = (int)GetRandomNumber() % 42;
-        ram_ffe462 = (int)GetRandomNumber() % 42;
-        ram_ffe464 = (int)GetRandomNumber() % 42;
-        gVBlankFunc = func_03aec2;
+        gJamAudioRoute1ButtonASampleIndex = (int)GetRandomNumber() % 42;
+        gJamAudioRoute1ButtonBSampleIndex = (int)GetRandomNumber() % 42;
+        gJamAudioRoute1ButtonCSampleIndex = (int)GetRandomNumber() % 42;
+        gJamAudioRoute2ButtonASampleIndex = (int)GetRandomNumber() % 42;
+        gJamAudioRoute2ButtonBSampleIndex = (int)GetRandomNumber() % 42;
+        gJamAudioRoute2ButtonCSampleIndex = (int)GetRandomNumber() % 42;
+        gVBlankFunc = JamOutRandomSampleVBlank;
     }
     if (song) {
         --song;
@@ -62,83 +62,83 @@ short song;
         VBLANK_FLAG_8 = !song;
         VBLANK_FLAG_7 = song;
     } else {
-        func_03e43c();
-        func_03e40e();
+        AudioRequestFmChannelRelease();
+        MusicRequestTrackPointerReset();
     }
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
     CutsceneTextLoad("press and hold start to exit", 160, 30);
     while (start_hold < 51) {
-        func_02791e(3, 0);
-        func_03b39e(0);
-        func_03b27a();
+        CutsceneStepFrameAndMusicCadence(3, 0);
+        JamOutUpdateLayoutsAndScroll(0);
+        JamOutUpdateLeadAnimations();
         if ((GetCtrl1Input() | GetCtrl2Input()) & 128)
             ++start_hold;
         else
             start_hold = 0;
-        if (ram_ffe44e) {
-            if (ram_ffe44e & 64) {
+        if (gJamPlayer1PendingAnimationInput) {
+            if (gJamPlayer1PendingAnimationInput & 64) {
                 if ((int)GetRandomNumber() & 1)
-                    func_03b836(JamOutCharacterAnimations, 6);
+                    JamOutSetToejamSequence(JamOutCharacterAnimations, 6);
                 else
-                    func_03b836(dat_093831, 6);
+                    JamOutSetToejamSequence(JamBassDrumAlternateSequence, 6);
             }
-            if (ram_ffe44e & 16) {
+            if (gJamPlayer1PendingAnimationInput & 16) {
                 if ((int)GetRandomNumber() & 1)
-                    func_03b836(dat_09383a, 6);
+                    JamOutSetToejamSequence(JamSnareDrumSecondSequence, 6);
                 else
-                    func_03b836(dat_093837, 6);
+                    JamOutSetToejamSequence(JamSnareDrumFirstSequence, 6);
             }
-            if (ram_ffe44e & 32) {
-                func_03b836(dat_09383d, 3);
-                ram_ffe452 = 1;
+            if (gJamPlayer1PendingAnimationInput & 32) {
+                JamOutSetToejamSequence(JamClapSequence, 3);
+                gJamToejamAnimationLocked = 1;
             }
-            if ((ram_ffe44e & 15) || (ram_ffe44e & 128)) {
-                func_03b836(dat_093842, 2);
-                ram_ffe452 = 1;
+            if ((gJamPlayer1PendingAnimationInput & 15) || (gJamPlayer1PendingAnimationInput & 128)) {
+                JamOutSetToejamSequence(JamVocalOrScratchSequence, 2);
+                gJamToejamAnimationLocked = 1;
             }
-            ram_ffe44e = 0;
+            gJamPlayer1PendingAnimationInput = 0;
         }
-        if (ram_ffe450) {
-            if (ram_ffe450 & 64) {
+        if (gJamPlayer2PendingAnimationInput) {
+            if (gJamPlayer2PendingAnimationInput & 64) {
                 if ((int)GetRandomNumber() & 1)
-                    func_03b880(JamOutCharacterAnimations, 6);
+                    JamOutSetEarlSequence(JamOutCharacterAnimations, 6);
                 else
-                    func_03b880(dat_093831, 6);
+                    JamOutSetEarlSequence(JamBassDrumAlternateSequence, 6);
             }
-            if (ram_ffe450 & 16) {
+            if (gJamPlayer2PendingAnimationInput & 16) {
                 if ((int)GetRandomNumber() & 1)
-                    func_03b880(dat_09383a, 6);
+                    JamOutSetEarlSequence(JamSnareDrumSecondSequence, 6);
                 else
-                    func_03b880(dat_093837, 6);
+                    JamOutSetEarlSequence(JamSnareDrumFirstSequence, 6);
             }
-            if (ram_ffe450 & 32) {
-                func_03b880(dat_09383d, 3);
-                ram_ffe454 = 1;
+            if (gJamPlayer2PendingAnimationInput & 32) {
+                JamOutSetEarlSequence(JamClapSequence, 3);
+                gJamEarlAnimationLocked = 1;
             }
-            if ((ram_ffe450 & 15) || (ram_ffe450 & 128)) {
-                func_03b880(dat_093842, 2);
-                ram_ffe454 = 1;
+            if ((gJamPlayer2PendingAnimationInput & 15) || (gJamPlayer2PendingAnimationInput & 128)) {
+                JamOutSetEarlSequence(JamVocalOrScratchSequence, 2);
+                gJamEarlAnimationLocked = 1;
             }
-            ram_ffe450 = 0;
+            gJamPlayer2PendingAnimationInput = 0;
         }
     }
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
     gVBlankFunc = 0;
-    ram_ffe476 = 0;
-    func_027e42();
-    func_02743a();
-    func_03b39e(1);
-    func_02747c();
+    gMusicAlternateTemplateBankEnabled = 0;
+    CutsceneReleaseTextEntities();
+    ClearUpperVramTilemap();
+    JamOutUpdateLayoutsAndScroll(1);
+    ClearLowerVramTilemap();
     WaitForNextVBlank(1);
     VBLANK_FLAG_8 = 1;
     VBLANK_FLAG_7 = 0;
-    func_03b6d2();
-    ram_ffd936 = 0;
-    func_0278e8();
+    JamOutReleaseCharacterCopies();
+    gSharedTileSpriteCopiesEnabled = 0;
+    CutsceneReleaseFlaggedEntityRange();
 }
 
 /* Alternate controller polling and route each player's new input to samples
@@ -147,69 +147,69 @@ void JamOutVBlank()
 {
     unsigned short saved_input;
     if (VBLANK_FLAG_8 != VBLANK_FLAG_7) {
-        func_03e46a(VBLANK_FLAG_7);
+        MusicSelectSongTemplateBank(VBLANK_FLAG_7);
         VBLANK_FLAG_8 = VBLANK_FLAG_7;
     } else
         MassiveRoutine();
     ++TIME_COUNTER;
     if (INPUT_READING_FLAG_LO & 1) {
-        P1_PROCESSED_INPUT[0] = ram_ff801c ? GetCtrl2Input() : GetCtrl1Input();
-        if (P1_PROCESSED_INPUT[0] != ram_ffe442) {
-            ram_ffe458 = ram_ffe44e = P1_PROCESSED_INPUT[0];
-            ram_ffe442 = P1_PROCESSED_INPUT[0];
+        P1_PROCESSED_INPUT[0] = gControllerPortsSwapped ? GetCtrl2Input() : GetCtrl1Input();
+        if (P1_PROCESSED_INPUT[0] != gJamPlayer1PreviousInput) {
+            gJamAudioRoute1PendingInput = gJamPlayer1PendingAnimationInput = P1_PROCESSED_INPUT[0];
+            gJamPlayer1PreviousInput = P1_PROCESSED_INPUT[0];
         }
     } else {
-        P1_PROCESSED_INPUT[1] = ram_ff801c ? GetCtrl1Input() : GetCtrl2Input();
-        if (P1_PROCESSED_INPUT[1] != ram_ffe44a) {
-            ram_ffe45a = ram_ffe450 = P1_PROCESSED_INPUT[1];
-            ram_ffe44a = P1_PROCESSED_INPUT[1];
+        P1_PROCESSED_INPUT[1] = gControllerPortsSwapped ? GetCtrl1Input() : GetCtrl2Input();
+        if (P1_PROCESSED_INPUT[1] != gJamPlayer2PreviousInput) {
+            gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = P1_PROCESSED_INPUT[1];
+            gJamPlayer2PreviousInput = P1_PROCESSED_INPUT[1];
         }
     }
     if (PLAYER_INDICATOR == 1) {
-        saved_input = ram_ffe458;
-        ram_ffe458 = ram_ffe45a;
-        ram_ffe45a = saved_input;
+        saved_input = gJamAudioRoute1PendingInput;
+        gJamAudioRoute1PendingInput = gJamAudioRoute2PendingInput;
+        gJamAudioRoute2PendingInput = saved_input;
         ++TIME_COUNTER;
     }
     if (INPUT_READING_FLAG_LO & 1) {
-        if (ram_ffe458) {
-            if (ram_ffe458 & 64) {
-                if (!ram_ffe456)
+        if (gJamAudioRoute1PendingInput) {
+            if (gJamAudioRoute1PendingInput & 64) {
+                if (!gJamSelectedSong)
                     gMusicUnknownE488 = 1;
                 PlaySoundEffect((long)Sfx_JamBassDrum, 90, 0);
             }
-            if (ram_ffe458 & 16)
+            if (gJamAudioRoute1PendingInput & 16)
                 PlaySoundEffect((long)Sfx_JamSnareDrum, 90, 0);
-            if (ram_ffe458 & 32)
+            if (gJamAudioRoute1PendingInput & 32)
                 PlaySoundEffect((long)Sfx_JamClap, 90, 0);
-            if (ram_ffe458 & 15) {
-                if (ram_ffe458 & 1)
+            if (gJamAudioRoute1PendingInput & 15) {
+                if (gJamAudioRoute1PendingInput & 1)
                     PlaySoundEffect((long)Sfx_JamToejam, 90, 0);
-                if (ram_ffe458 & 2)
+                if (gJamAudioRoute1PendingInput & 2)
                     PlaySoundEffect((long)Sfx_JamBigEarl, 90, 0);
-                if (ram_ffe458 & 4)
+                if (gJamAudioRoute1PendingInput & 4)
                     PlaySoundEffect((long)Sfx_JamRap, 90, 0);
-                if (ram_ffe458 & 8)
+                if (gJamAudioRoute1PendingInput & 8)
                     PlaySoundEffect((long)Sfx_Jammin, 90, 0);
             }
-            if (ram_ffe458 & 128)
+            if (gJamAudioRoute1PendingInput & 128)
                 PlaySoundEffect((long)Sfx_JamRecordScratch, 90, 0);
-            ram_ffe458 = 0;
+            gJamAudioRoute1PendingInput = 0;
         }
     } else {
-        if (ram_ffe45a) {
-            if (ram_ffe45a & 64) {
-                func_03e4f8(22);
-                if (!ram_ffe456)
+        if (gJamAudioRoute2PendingInput) {
+            if (gJamAudioRoute2PendingInput & 64) {
+                AudioRequestChannelTemplateEffect(22);
+                if (!gJamSelectedSong)
                     gMusicUnknownE488 = 1;
             }
-            if (ram_ffe45a & 16)
-                func_03e4f8(20);
-            if (ram_ffe45a & 32)
-                func_03e4f8(19);
-            if ((ram_ffe45a & 15) || (ram_ffe45a & 128))
-                func_03e4f8(21);
-            ram_ffe45a = 0;
+            if (gJamAudioRoute2PendingInput & 16)
+                AudioRequestChannelTemplateEffect(20);
+            if (gJamAudioRoute2PendingInput & 32)
+                AudioRequestChannelTemplateEffect(19);
+            if ((gJamAudioRoute2PendingInput & 15) || (gJamAudioRoute2PendingInput & 128))
+                AudioRequestChannelTemplateEffect(21);
+            gJamAudioRoute2PendingInput = 0;
         }
     }
     if (PLAYER_INDICATOR == 1)
@@ -217,194 +217,194 @@ void JamOutVBlank()
 }
 
 /* Poll both controllers, select sample groups, and cycle song/template modes. */
-void func_03aec2()
+void JamOutRandomSampleVBlank()
 {
     unsigned short saved_input;
     if (VBLANK_FLAG_8 != VBLANK_FLAG_7) {
-        func_03e46a(VBLANK_FLAG_7);
+        MusicSelectSongTemplateBank(VBLANK_FLAG_7);
         VBLANK_FLAG_8 = VBLANK_FLAG_7;
     } else
         MassiveRoutine();
     ++TIME_COUNTER;
-    P1_PROCESSED_INPUT[0] = ram_ff801c ? GetCtrl2Input() : GetCtrl1Input();
-    if (P1_PROCESSED_INPUT[0] != ram_ffe442) {
-        ram_ffe458 = ram_ffe44e = P1_PROCESSED_INPUT[0];
-        ram_ffe442 = P1_PROCESSED_INPUT[0];
+    P1_PROCESSED_INPUT[0] = gControllerPortsSwapped ? GetCtrl2Input() : GetCtrl1Input();
+    if (P1_PROCESSED_INPUT[0] != gJamPlayer1PreviousInput) {
+        gJamAudioRoute1PendingInput = gJamPlayer1PendingAnimationInput = P1_PROCESSED_INPUT[0];
+        gJamPlayer1PreviousInput = P1_PROCESSED_INPUT[0];
     }
-    P1_PROCESSED_INPUT[1] = ram_ff801c ? GetCtrl1Input() : GetCtrl2Input();
-    if (P1_PROCESSED_INPUT[1] != ram_ffe44a) {
-        ram_ffe45a = ram_ffe450 = P1_PROCESSED_INPUT[1];
-        ram_ffe44a = P1_PROCESSED_INPUT[1];
+    P1_PROCESSED_INPUT[1] = gControllerPortsSwapped ? GetCtrl1Input() : GetCtrl2Input();
+    if (P1_PROCESSED_INPUT[1] != gJamPlayer2PreviousInput) {
+        gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = P1_PROCESSED_INPUT[1];
+        gJamPlayer2PreviousInput = P1_PROCESSED_INPUT[1];
     }
     if (PLAYER_INDICATOR == 1) {
-        saved_input = ram_ffe458;
-        ram_ffe458 = ram_ffe45a;
-        ram_ffe45a = saved_input;
+        saved_input = gJamAudioRoute1PendingInput;
+        gJamAudioRoute1PendingInput = gJamAudioRoute2PendingInput;
+        gJamAudioRoute2PendingInput = saved_input;
         ++TIME_COUNTER;
     }
-    if (ram_ffe458) {
-        if (ram_ffe458 & 128) {
-            if (ram_ffe45c == 7) {
-                func_03e43c();
-                func_03e40e();
-                ram_ffe45c = 0;
+    if (gJamAudioRoute1PendingInput) {
+        if (gJamAudioRoute1PendingInput & 128) {
+            if (gJamSongCycleIndex == 7) {
+                AudioRequestFmChannelRelease();
+                MusicRequestTrackPointerReset();
+                gJamSongCycleIndex = 0;
             } else
-                VBLANK_FLAG_7 = ram_ffe45c++;
+                VBLANK_FLAG_7 = gJamSongCycleIndex++;
         }
-        if (ram_ffe458 & 64) {
-            if (!ram_ffe45c)
+        if (gJamAudioRoute1PendingInput & 64) {
+            if (!gJamSongCycleIndex)
                 gMusicUnknownE488 = 1;
-            PlaySoundEffect(PCMPlaybackPointers[ram_ffe466], 90, 0);
+            PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute1ButtonASampleIndex], 90, 0);
         }
-        if (ram_ffe458 & 16)
-            PlaySoundEffect(PCMPlaybackPointers[ram_ffe468], 90, 0);
-        if (ram_ffe458 & 32)
-            PlaySoundEffect(PCMPlaybackPointers[ram_ffe46a], 90, 0);
-        if (ram_ffe458 & 15) {
-            ram_ffe466 = (int)GetRandomNumber() % 42;
-            ram_ffe468 = (int)GetRandomNumber() % 42;
-            ram_ffe46a = (int)GetRandomNumber() % 42;
+        if (gJamAudioRoute1PendingInput & 16)
+            PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute1ButtonBSampleIndex], 90, 0);
+        if (gJamAudioRoute1PendingInput & 32)
+            PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute1ButtonCSampleIndex], 90, 0);
+        if (gJamAudioRoute1PendingInput & 15) {
+            gJamAudioRoute1ButtonASampleIndex = (int)GetRandomNumber() % 42;
+            gJamAudioRoute1ButtonBSampleIndex = (int)GetRandomNumber() % 42;
+            gJamAudioRoute1ButtonCSampleIndex = (int)GetRandomNumber() % 42;
         }
-        ram_ffe458 = 0;
+        gJamAudioRoute1PendingInput = 0;
     }
-    if (ram_ffe45a) {
-        if (ram_ffe45a & 128) {
-            if (++ram_ffe45e == 3)
-                ram_ffe45e = 0;
-            if (!ram_ffe45e) {
-                func_03e43c();
-                func_03e40e();
+    if (gJamAudioRoute2PendingInput) {
+        if (gJamAudioRoute2PendingInput & 128) {
+            if (++gJamTemplateBankCycleIndex == 3)
+                gJamTemplateBankCycleIndex = 0;
+            if (!gJamTemplateBankCycleIndex) {
+                AudioRequestFmChannelRelease();
+                MusicRequestTrackPointerReset();
             } else {
-                if (ram_ffe45e == 1)
-                    ram_ffe476 = 0;
-                else if (ram_ffe45e == 2)
-                    ram_ffe476 = 1;
+                if (gJamTemplateBankCycleIndex == 1)
+                    gMusicAlternateTemplateBankEnabled = 0;
+                else if (gJamTemplateBankCycleIndex == 2)
+                    gMusicAlternateTemplateBankEnabled = 1;
                 VBLANK_FLAG_7 = VBLANK_FLAG_8;
                 VBLANK_FLAG_8 = !VBLANK_FLAG_7;
             }
         }
-        if (ram_ffe45a & 64) {
-            if (!ram_ffe45c)
+        if (gJamAudioRoute2PendingInput & 64) {
+            if (!gJamSongCycleIndex)
                 gMusicUnknownE488 = 1;
-            PlaySoundEffect(PCMPlaybackPointers[ram_ffe460], 90, 0);
+            PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute2ButtonASampleIndex], 90, 0);
         }
-        if (ram_ffe45a & 16)
-            PlaySoundEffect(PCMPlaybackPointers[ram_ffe462], 90, 0);
-        if (ram_ffe45a & 32)
-            PlaySoundEffect(PCMPlaybackPointers[ram_ffe464], 90, 0);
-        if (ram_ffe45a & 15) {
-            ram_ffe460 = (int)GetRandomNumber() % 42;
-            ram_ffe462 = (int)GetRandomNumber() % 42;
-            ram_ffe464 = (int)GetRandomNumber() % 42;
+        if (gJamAudioRoute2PendingInput & 16)
+            PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute2ButtonBSampleIndex], 90, 0);
+        if (gJamAudioRoute2PendingInput & 32)
+            PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute2ButtonCSampleIndex], 90, 0);
+        if (gJamAudioRoute2PendingInput & 15) {
+            gJamAudioRoute2ButtonASampleIndex = (int)GetRandomNumber() % 42;
+            gJamAudioRoute2ButtonBSampleIndex = (int)GetRandomNumber() % 42;
+            gJamAudioRoute2ButtonCSampleIndex = (int)GetRandomNumber() % 42;
         }
-        ram_ffe45a = 0;
+        gJamAudioRoute2PendingInput = 0;
     }
     if (PLAYER_INDICATOR == 1)
         --TIME_COUNTER;
 }
 
 /* Alternate completed lead animations and release their input lock. */
-void func_03b27a()
+void JamOutUpdateLeadAnimations()
 {
     struct object_state *object;
-    if (ram_ffe41a[0]) {
-        object = &gPlayerInfo[ram_ffe41a[0]];
+    if (gJamToejamEntities[0]) {
+        object = &gPlayerInfo[gJamToejamEntities[0]];
         if (!object->frame_duration) {
-            if (ram_ffe43e == dat_09384e) {
-                if (ram_ffe446 == dat_093834)
-                    object->frame = ram_ffe44c;
-                object->sequence = dat_093834;
+            if (gJamToejamAnimationSequence == JamLeadIdleTransitionSequence) {
+                if (gJamEarlAnimationSequence == JamLeadIdleLoopSequence)
+                    object->frame = gJamEarlAnimationFrame;
+                object->sequence = JamLeadIdleLoopSequence;
             } else
-                object->sequence = dat_09384e;
+                object->sequence = JamLeadIdleTransitionSequence;
             object->frame_duration = 1;
             object->frame = -1;
             object->frame_phase = 6;
-            ram_ffe43e = object->sequence;
+            gJamToejamAnimationSequence = object->sequence;
         }
-        ram_ffe444 = object->frame;
+        gJamToejamAnimationFrame = object->frame;
     }
-    if (ram_ffe42c[0]) {
-        object = &gPlayerInfo[ram_ffe42c[0]];
+    if (gJamEarlEntities[0]) {
+        object = &gPlayerInfo[gJamEarlEntities[0]];
         if (!object->frame_duration) {
-            if (ram_ffe446 == dat_09384e) {
-                if (ram_ffe43e == dat_093834)
-                    object->frame = ram_ffe444;
-                object->sequence = dat_093834;
+            if (gJamEarlAnimationSequence == JamLeadIdleTransitionSequence) {
+                if (gJamToejamAnimationSequence == JamLeadIdleLoopSequence)
+                    object->frame = gJamToejamAnimationFrame;
+                object->sequence = JamLeadIdleLoopSequence;
             } else
-                object->sequence = dat_09384e;
+                object->sequence = JamLeadIdleTransitionSequence;
             object->frame_duration = 1;
             object->frame = -1;
             object->frame_phase = 6;
-            ram_ffe446 = object->sequence;
+            gJamEarlAnimationSequence = object->sequence;
         }
-        ram_ffe44c = object->frame;
+        gJamEarlAnimationFrame = object->frame;
     }
-    if (ram_ffe43e == dat_09384e || ram_ffe43e == dat_093834)
-        ram_ffe452 = 0;
-    if (ram_ffe446 == dat_09384e || ram_ffe446 == dat_093834)
-        ram_ffe454 = 0;
+    if (gJamToejamAnimationSequence == JamLeadIdleTransitionSequence || gJamToejamAnimationSequence == JamLeadIdleLoopSequence)
+        gJamToejamAnimationLocked = 0;
+    if (gJamEarlAnimationSequence == JamLeadIdleTransitionSequence || gJamEarlAnimationSequence == JamLeadIdleLoopSequence)
+        gJamEarlAnimationLocked = 0;
 }
 
 /* Switch object layouts every 170 or 68 updates and maintain plane scroll. */
-void func_03b39e(reset)
+void JamOutUpdateLayoutsAndScroll(reset)
 short reset;
 {
     if (reset) {
-        ram_ffe412 = 0;
-        ram_ffe410 = 170;
-        ram_ffe414 = 0;
-        ram_ffe416 = 0;
-        ram_ffe418 = 0;
+        gJamLayoutPhase = 0;
+        gJamLayoutCountdown = 170;
+        gJamHorizontalScroll = 0;
+        gJamVerticalScroll = 0;
+        gJamScrollStep = 0;
         VDP_COMMAND = 0x7c000003L;
-        VDP_DATA = ram_ffe414;
+        VDP_DATA = gJamHorizontalScroll;
         VDP_COMMAND = 0x40000010L;
-        VDP_DATA = ram_ffe416;
-        func_03b8ca();
+        VDP_DATA = gJamVerticalScroll;
+        JamOutShowLeadPairLayout();
     } else {
-        if (ram_ffe418) {
-            ram_ffe414 -= ram_ffe418;
-            ram_ffe416 += ram_ffe418;
+        if (gJamScrollStep) {
+            gJamHorizontalScroll -= gJamScrollStep;
+            gJamVerticalScroll += gJamScrollStep;
         } else {
-            ram_ffe414 = 0;
-            ram_ffe416 = 0;
+            gJamHorizontalScroll = 0;
+            gJamVerticalScroll = 0;
         }
         VDP_COMMAND = 0x7c000003L;
-        VDP_DATA = ram_ffe414;
+        VDP_DATA = gJamHorizontalScroll;
         VDP_COMMAND = 0x40000010L;
-        VDP_DATA = ram_ffe416;
-        if (!--ram_ffe410) {
-            ram_ffe410 = 170;
-            if (++ram_ffe412 >= 6)
-                ram_ffe412 = 0;
-            ram_ffe452 = 0;
-            ram_ffe454 = 0;
-            switch (ram_ffe412) {
+        VDP_DATA = gJamVerticalScroll;
+        if (!--gJamLayoutCountdown) {
+            gJamLayoutCountdown = 170;
+            if (++gJamLayoutPhase >= 6)
+                gJamLayoutPhase = 0;
+            gJamToejamAnimationLocked = 0;
+            gJamEarlAnimationLocked = 0;
+            switch (gJamLayoutPhase) {
             case 0:
-                func_03b8ca();
+                JamOutShowLeadPairLayout();
                 goto stop_scroll;
             case 1:
-                func_03ba14();
+                JamOutShowFourPairLayout();
             /* The first two layouts converge on this scroll reset in the ROM.
              * Separate resets produce MCC68K's opposite tail-sharing order. */
             stop_scroll:
-                ram_ffe418 = 0;
+                gJamScrollStep = 0;
                 break;
             case 2:
-                func_027e42();
-                func_03bae6();
-                ram_ffe410 = 68;
+                CutsceneReleaseTextEntities();
+                JamOutShowNinePairLayout();
+                gJamLayoutCountdown = 68;
                 break;
             case 3:
-                ram_ffe418 = 1;
-                ram_ffe410 = 68;
+                gJamScrollStep = 1;
+                gJamLayoutCountdown = 68;
                 break;
             case 4:
-                ram_ffe418 = -1;
-                ram_ffe410 = 68;
+                gJamScrollStep = -1;
+                gJamLayoutCountdown = 68;
                 break;
             case 5:
-                ram_ffe418 = 0;
-                ram_ffe410 = 68;
+                gJamScrollStep = 0;
+                gJamLayoutCountdown = 68;
                 break;
             }
         }
@@ -412,7 +412,7 @@ short reset;
 }
 
 /* Copies mirror the lead object's frame, sprite size and tile attributes. */
-void func_03b4c4()
+void JamOutSynchronizeEntityCopies()
 {
     short object_number, piece, piece_count;
     struct object_state *object, *parent;
@@ -426,8 +426,8 @@ void func_03b4c4()
             object->current_frame = parent->current_frame;
             piece_count = object->current_frame->count;
             for (piece = 0; piece < piece_count; ++piece) {
-                parent_sprite = &ram_ffb65a[parent->primary_sprites[piece]];
-                sprite = &ram_ffb65a[object->primary_sprites[piece]];
+                parent_sprite = &gHardwareSpriteTable[parent->primary_sprites[piece]];
+                sprite = &gHardwareSpriteTable[object->primary_sprites[piece]];
                 sprite->size = parent_sprite->size;
                 sprite->tile = parent_sprite->tile;
             }
@@ -436,7 +436,7 @@ void func_03b4c4()
 }
 
 /* Allocate nine copies per character, sharing the lead copy's tile storage. */
-void func_03b564()
+void JamOutCreateCharacterCopies()
 {
     short slot, tile_count, sprite_count;
     char parent_number;
@@ -445,25 +445,25 @@ void func_03b564()
     tile_count = 16;
     sprite_count = 1;
     for (slot = 0; slot < 9; ++slot) {
-        if (ram_ffe41a[slot] = (int)func_00d904()) {
-            object = &gPlayerInfo[ram_ffe41a[slot]];
+        if (gJamToejamEntities[slot] = (int)AllocateEntity()) {
+            object = &gPlayerInfo[gJamToejamEntities[slot]];
             object->tile = 0x8000;
             object->tile_count = tile_count;
             object->sprite_count = sprite_count;
             object->frames = Spr_JamoutToejam;
             object->x = 160;
             object->y = -50;
-            object->sequence = dat_093834;
+            object->sequence = JamLeadIdleLoopSequence;
             object->frame_phase = 6;
             object->frame_duration = 1;
             object->frame = -1;
             if (slot)
                 object->flags_4d |= 4;
             object->sprite_ready = 0;
-            func_00d776(object, 0);
+            AllocateEntityViewportSprites(object, 0);
             if (!slot) {
                 lead_tile = object->tile;
-                parent_number = ram_ffe41a[slot];
+                parent_number = gJamToejamEntities[slot];
             } else {
                 object->tile = lead_tile;
                 object->parent = parent_number;
@@ -473,25 +473,25 @@ void func_03b564()
     tile_count = 19;
     sprite_count = 2;
     for (slot = 0; slot < 9; ++slot) {
-        if (ram_ffe42c[slot] = (int)func_00d904()) {
-            object = &gPlayerInfo[ram_ffe42c[slot]];
+        if (gJamEarlEntities[slot] = (int)AllocateEntity()) {
+            object = &gPlayerInfo[gJamEarlEntities[slot]];
             object->tile = 0x8000;
             object->tile_count = tile_count;
             object->sprite_count = sprite_count;
             object->frames = Spr_JamoutEarl;
             object->x = 160;
             object->y = -50;
-            object->sequence = dat_093834;
+            object->sequence = JamLeadIdleLoopSequence;
             object->frame_phase = 6;
             object->frame_duration = 1;
             object->frame = -1;
             if (slot)
                 object->flags_4d |= 4;
             object->sprite_ready = 0;
-            func_00d776(object, 0);
+            AllocateEntityViewportSprites(object, 0);
             if (!slot) {
                 lead_tile = object->tile;
-                parent_number = ram_ffe42c[slot];
+                parent_number = gJamEarlEntities[slot];
             } else {
                 object->tile = lead_tile;
                 object->parent = parent_number;
@@ -502,117 +502,117 @@ void func_03b564()
 
 /* QUALIFICATION: assigning the handle to an unused temporary retains the ROM's
  * extra word reloads. This compiler-coaxing spelling is retained as an explicit qualification. */
-void func_03b6d2()
+void JamOutReleaseCharacterCopies()
 {
     short slot, object_number;
     for (slot = 0; slot < 9; ++slot) {
-        if (ram_ffe41a[slot]) {
-            object_number = ram_ffe41a[slot];
-            func_00d970(ram_ffe41a[slot]);
+        if (gJamToejamEntities[slot]) {
+            object_number = gJamToejamEntities[slot];
+            FreeEntity(gJamToejamEntities[slot]);
         }
-        if (ram_ffe42c[slot]) {
-            object_number = ram_ffe42c[slot];
-            func_00d970(ram_ffe42c[slot]);
+        if (gJamEarlEntities[slot]) {
+            object_number = gJamEarlEntities[slot];
+            FreeEntity(gJamEarlEntities[slot]);
         }
     }
 }
 
 /* Move one allocated ToeJam copy. */
-void func_03b73e(slot, x, y)
+void JamOutPositionToejamCopy(slot, x, y)
 int slot, x, y;
 {
     struct object_state *object;
-    if (ram_ffe41a[slot]) {
-        object = &gPlayerInfo[ram_ffe41a[slot]];
+    if (gJamToejamEntities[slot]) {
+        object = &gPlayerInfo[gJamToejamEntities[slot]];
         object->x = x;
         object->y = y;
     }
 }
 
 /* Move one allocated Earl copy. */
-void func_03b782(slot, x, y)
+void JamOutPositionEarlCopy(slot, x, y)
 int slot, x, y;
 {
     struct object_state *object;
-    if (ram_ffe42c[slot]) {
-        object = &gPlayerInfo[ram_ffe42c[slot]];
+    if (gJamEarlEntities[slot]) {
+        object = &gPlayerInfo[gJamEarlEntities[slot]];
         object->x = x;
         object->y = y;
     }
 }
 
 /* Put a ToeJam copy at the common off-screen location. */
-void func_03b7c6(slot)
+void JamOutHideToejamCopy(slot)
 int slot;
 {
     struct object_state *object;
-    if (ram_ffe41a[slot]) {
-        object = &gPlayerInfo[ram_ffe41a[slot]];
+    if (gJamToejamEntities[slot]) {
+        object = &gPlayerInfo[gJamToejamEntities[slot]];
         object->x = 160;
         object->y = -50;
     }
 }
 
 /* Put an Earl copy at the common off-screen location. */
-void func_03b7fe(slot)
+void JamOutHideEarlCopy(slot)
 int slot;
 {
     struct object_state *object;
-    if (ram_ffe42c[slot]) {
-        object = &gPlayerInfo[ram_ffe42c[slot]];
+    if (gJamEarlEntities[slot]) {
+        object = &gPlayerInfo[gJamEarlEntities[slot]];
         object->x = 160;
         object->y = -50;
     }
 }
 
 /* Change the lead ToeJam animation unless its current action is locked. */
-void func_03b836(sequence, period)
+void JamOutSetToejamSequence(sequence, period)
 char *sequence;
 short period;
 {
     struct object_state *object;
-    if (ram_ffe452)
+    if (gJamToejamAnimationLocked)
         return;
-    if (ram_ffe41a[0]) {
-        object = &gPlayerInfo[ram_ffe41a[0]];
+    if (gJamToejamEntities[0]) {
+        object = &gPlayerInfo[gJamToejamEntities[0]];
         object->sequence = sequence;
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = period;
     }
-    ram_ffe43e = sequence;
+    gJamToejamAnimationSequence = sequence;
 }
 
 /* Change the lead Earl animation unless its current action is locked. */
-void func_03b880(sequence, period)
+void JamOutSetEarlSequence(sequence, period)
 char *sequence;
 short period;
 {
     struct object_state *object;
-    if (ram_ffe454)
+    if (gJamEarlAnimationLocked)
         return;
-    if (ram_ffe42c[0]) {
-        object = &gPlayerInfo[ram_ffe42c[0]];
+    if (gJamEarlEntities[0]) {
+        object = &gPlayerInfo[gJamEarlEntities[0]];
         object->sequence = sequence;
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = period;
     }
-    ram_ffe446 = sequence;
+    gJamEarlAnimationSequence = sequence;
 }
 
 /* Show the two lead objects and upload the 16 by 22 packed background. */
-void func_03b8ca()
+void JamOutShowLeadPairLayout()
 {
     short row, column, tile;
     for (row = 1; row < 9; ++row) {
-        func_03b7c6(row);
-        func_03b7fe(row);
+        JamOutHideToejamCopy(row);
+        JamOutHideEarlCopy(row);
     }
-    func_03b782(0, 174, 127);
-    func_03b73e(0, 144, 127);
-    func_0273ae();
-    func_02743a();
+    JamOutPositionEarlCopy(0, 174, 127);
+    JamOutPositionToejamCopy(0, 144, 127);
+    InitializeTitleTransitionTilemap();
+    ClearUpperVramTilemap();
     for (row = 0; row < 16; ++row) {
         VDP_COMMAND = 0x60120003L + ((row + 6) << 23);
         for (column = 0; column < 22; ++column) {
@@ -628,7 +628,7 @@ void func_03b8ca()
 }
 
 /* Upload the 14 by 20 packed background at a tile coordinate. */
-void func_03b988(x, y)
+void JamOutDrawPackedBackgroundBlock(x, y)
 short x, y;
 {
     short row, column, tile;
@@ -647,49 +647,49 @@ short x, y;
 }
 
 /* Place four object pairs and draw four copies of the packed background. */
-void func_03ba14()
+void JamOutShowFourPairLayout()
 {
     short slot;
     for (slot = 4; slot < 9; ++slot) {
-        func_03b7c6(slot);
-        func_03b7fe(slot);
+        JamOutHideToejamCopy(slot);
+        JamOutHideEarlCopy(slot);
     }
-    func_03b73e(0, 65, 70);
-    func_03b782(0, 95, 70);
-    func_03b73e(1, 225, 70);
-    func_03b782(1, 255, 70);
-    func_03b73e(2, 65, 182);
-    func_03b782(2, 95, 182);
-    func_03b73e(3, 225, 182);
-    func_03b782(3, 255, 182);
-    func_02743a();
-    func_03b988(0, 0);
-    func_03b988(20, 0);
-    func_03b988(0, 14);
-    func_03b988(20, 14);
+    JamOutPositionToejamCopy(0, 65, 70);
+    JamOutPositionEarlCopy(0, 95, 70);
+    JamOutPositionToejamCopy(1, 225, 70);
+    JamOutPositionEarlCopy(1, 255, 70);
+    JamOutPositionToejamCopy(2, 65, 182);
+    JamOutPositionEarlCopy(2, 95, 182);
+    JamOutPositionToejamCopy(3, 225, 182);
+    JamOutPositionEarlCopy(3, 255, 182);
+    ClearUpperVramTilemap();
+    JamOutDrawPackedBackgroundBlock(0, 0);
+    JamOutDrawPackedBackgroundBlock(20, 0);
+    JamOutDrawPackedBackgroundBlock(0, 14);
+    JamOutDrawPackedBackgroundBlock(20, 14);
 }
 
 /* Arrange all nine copies of each character in a three by three grid. */
-void func_03bae6()
+void JamOutShowNinePairLayout()
 {
-    func_03b73e(0, 38, 53);
-    func_03b782(0, 68, 53);
-    func_03b73e(1, 144, 53);
-    func_03b782(1, 174, 53);
-    func_03b73e(2, 250, 53);
-    func_03b782(2, 280, 53);
-    func_03b73e(3, 38, 127);
-    func_03b782(3, 68, 127);
-    func_03b73e(4, 144, 127);
-    func_03b782(4, 174, 127);
-    func_03b73e(5, 250, 127);
-    func_03b782(5, 280, 127);
-    func_03b73e(6, 38, 201);
-    func_03b782(6, 68, 201);
-    func_03b73e(7, 144, 201);
-    func_03b782(7, 174, 201);
-    func_03b73e(8, 250, 201);
-    func_03b782(8, 280, 201);
-    func_02743a();
-    func_0273ae();
+    JamOutPositionToejamCopy(0, 38, 53);
+    JamOutPositionEarlCopy(0, 68, 53);
+    JamOutPositionToejamCopy(1, 144, 53);
+    JamOutPositionEarlCopy(1, 174, 53);
+    JamOutPositionToejamCopy(2, 250, 53);
+    JamOutPositionEarlCopy(2, 280, 53);
+    JamOutPositionToejamCopy(3, 38, 127);
+    JamOutPositionEarlCopy(3, 68, 127);
+    JamOutPositionToejamCopy(4, 144, 127);
+    JamOutPositionEarlCopy(4, 174, 127);
+    JamOutPositionToejamCopy(5, 250, 127);
+    JamOutPositionEarlCopy(5, 280, 127);
+    JamOutPositionToejamCopy(6, 38, 201);
+    JamOutPositionEarlCopy(6, 68, 201);
+    JamOutPositionToejamCopy(7, 144, 201);
+    JamOutPositionEarlCopy(7, 174, 201);
+    JamOutPositionToejamCopy(8, 250, 201);
+    JamOutPositionEarlCopy(8, 280, 201);
+    ClearUpperVramTilemap();
+    InitializeTitleTransitionTilemap();
 }

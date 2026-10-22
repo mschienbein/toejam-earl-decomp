@@ -33,8 +33,8 @@ short player_number;
     if (!inventory_count)
         return;
     if (--inventory_count > 0)
-        selected_slot = PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                       (ram_ff91e0 = 0) : ++ram_ff91e0] % (inventory_count + 1);
+        selected_slot = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                       (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % (inventory_count + 1);
     else
         selected_slot = 0;
     present_number = gPlayerInventory[player_number][selected_slot];
@@ -42,14 +42,14 @@ short player_number;
         gPlayerInventory[player_number][selected_slot] =
             gPlayerInventory[player_number][inventory_count];
     gPlayerInventory[player_number][inventory_count] = -1;
-    if (ram_ffe24a[player_number] = (int)func_00d904()) {
-        present = &gPlayerInfo[ram_ffe24a[player_number]];
+    if (gPlayerStolenPresentEntities[player_number] = (int)AllocateEntity()) {
+        present = &gPlayerInfo[gPlayerStolenPresentEntities[player_number]];
         present->x = victim->x;
         present->y = victim->y - 3;
         present->height = 20;
         present->acceleration_height = -32;
-        if (PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-            (ram_ff91e0 = 0) : ++ram_ff91e0] & 1)
+        if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+            (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
             present->velocity_x = 256;
         else
             present->velocity_x = -256;
@@ -61,12 +61,12 @@ short player_number;
         present->tile = 0x8000;
         present_sprite = gPresentInfo[present_number].sprite;
         present->frames = &PresentSpriteTable[present_sprite];
-        present->sequence = dat_0ae4a0;
+        present->sequence = SingleFrameHoldAnimation;
         present->frame = -1;
         present->frame_duration = 1;
         present->draw_flags |= 64;
     }
-    ++ram_ffe24c[player_number];
+    ++gPlayerMoleTheftCounts[player_number];
 }
 
 /* A mole in state 3 releases the victim and periodically removes presents.
@@ -83,11 +83,11 @@ struct earthling_state *earthling;
             if (earthling->timer < 15) {
                 SetSprite(victim, GetActivePresentSprite(victim));
                 victim->flags_4d &= ~32;
-            } else if (!ram_ffe24a[player_number]) {
-                if (!ram_ffe24c[player_number] ||
-                    (ram_ffe24c[player_number] < 3 &&
-                     PREGEN_RANDOMS[ram_ff91e0 == 58 ?
-                     (ram_ff91e0 = 0) : ++ram_ff91e0] % 100 < 8))
+            } else if (!gPlayerStolenPresentEntities[player_number]) {
+                if (!gPlayerMoleTheftCounts[player_number] ||
+                    (gPlayerMoleTheftCounts[player_number] < 3 &&
+                     PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                     (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100 < 8))
                     DoMoleAbility(victim, player_number);
             }
         }
@@ -97,9 +97,9 @@ struct earthling_state *earthling;
     if (gPlayerInventory[player_number][0] == -1 ||
         (player_number == 0 && mole->flag_57) ||
         (player_number == 1 && mole->flag_58) ||
-        !func_01b0aa(victim, player_number))
+        !PlayerCanReceiveEarthlingEffect(victim, player_number))
         return;
-    if (!func_012db8(mole->x, mole->y, victim->level)) {
+    if (!ElevatorContainsPosition(mole->x, mole->y, victim->level)) {
         victim->x = mole->x;
         victim->y = mole->y;
     } else {
@@ -118,5 +118,5 @@ struct earthling_state *earthling;
     SetSprite(victim, 70);
     victim->mode_15 = 3;
     victim->flags_4d |= 32;
-    ram_ffe24c[player_number] = 0;
+    gPlayerMoleTheftCounts[player_number] = 0;
 }

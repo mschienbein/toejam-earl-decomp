@@ -3,12 +3,12 @@
 #include "sprite_calls.h"
 
 /* Release exhaust before the rocketship object. */
-void func_028c4c()
+void CutsceneReleaseRocketshipPair()
 {
-    if (ram_ffe3e0)
-        func_00d970(ram_ffe3e0);
-    ram_ffe3e0 = 0;
-    if (ram_ffe3de)
-        func_00d970(ram_ffe3de);
-    ram_ffe3de = 0;
+    if (gCutsceneRocketshipExhaustEntity)
+        FreeEntity(gCutsceneRocketshipExhaustEntity);
+    gCutsceneRocketshipExhaustEntity = 0;
+    if (gCutsceneRocketshipEntity)
+        FreeEntity(gCutsceneRocketshipEntity);
+    gCutsceneRocketshipEntity = 0;
 }

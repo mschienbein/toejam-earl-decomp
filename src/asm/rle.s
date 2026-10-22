@@ -16,7 +16,7 @@
 .equ RLE_NIBBLE_SHIFT, 4
 
 | Arguments: render-piece pointer and tile count. Decode four independent byte lanes.
-| Each lane produces eight bytes per tile at a four-byte stride in ram_ffb8da.
+| Each lane produces eight bytes per tile at a four-byte stride in gSpriteTileUploadBuffer.
 .globl SpriteUnpackInterleavedRLE
 .type SpriteUnpackInterleavedRLE, @function
 SpriteUnpackInterleavedRLE:
@@ -26,8 +26,8 @@ SpriteUnpackInterleavedRLE:
     move.w (0xe,%a6),%d2
     asl.w #TILE_BYTES_PER_LANE_SHIFT,%d2
     movea.l (SPRITE_DATA_POINTER,%a0),%a1
-    movea.l #ram_ffb8da,%a0
-    adda.w (SPRITE_STATE_TABLE).l,%a0
+    movea.l #gSpriteTileUploadBuffer,%a0
+    adda.w (gSpriteTileBufferOffset).l,%a0
     lea (0x1,%a0),%a2
     clr.w %d0
 
@@ -141,8 +141,8 @@ SpriteUnpackRLE:
     movea.l (0x10,%sp),%a0
     move.w (0x16,%sp),%d4
     movea.l (SPRITE_DATA_POINTER,%a0),%a1
-    move.w (SPRITE_STATE_TABLE).l,%d1
-    movea.l #ram_ffb8da,%a0
+    move.w (gSpriteTileBufferOffset).l,%d1
+    movea.l #gSpriteTileUploadBuffer,%a0
     adda.w %d1,%a0
     asl.w #TILE_BYTE_SHIFT,%d4
     bra.w .L_rle_remaining
@@ -211,8 +211,8 @@ SpriteUnpackRaw:
     movea.l (0x4,%sp),%a0
     move.w (0xa,%sp),%d0
     movea.l (SPRITE_DATA_POINTER,%a0),%a1
-    move.w (SPRITE_STATE_TABLE).l,%d1
-    movea.l #ram_ffb8da,%a0
+    move.w (gSpriteTileBufferOffset).l,%d1
+    movea.l #gSpriteTileUploadBuffer,%a0
     adda.w %d1,%a0
     subq.w #0x1,%d0
 SpriteUnpackRaw_Copy8Bytes:

@@ -6,7 +6,7 @@
 
 /* Select unused slots first, then reusable slots when requested. The returned
  * identifiers are the flag-array indices plus 25. */
-int func_00d406(count, selection_mode, include_secondary, output)
+int AllocateSpriteSlots(count, selection_mode, include_secondary, output)
 short count, selection_mode;
 char include_secondary;
 char *output;
@@ -29,7 +29,7 @@ char *output;
         slot = index;
         if (selection_mode == 1)
             slot = 53 - index;
-        state = ram_ffd940[slot];
+        state = gViewportSpriteSlotFlags[slot];
         if (!(state & 1))
             free_slots[free_count++] = slot;
         else if (include_secondary && !(state & 2) &&
@@ -43,7 +43,7 @@ char *output;
     for (index = 0; index < free_count; ++index) {
         char selected = free_slots[index];
 
-        ram_ffd940[selected] = flags;
+        gViewportSpriteSlotFlags[selected] = flags;
         *output++ = selected + 25;
     }
     if (free_count < count) {
@@ -51,7 +51,7 @@ char *output;
         for (index = 0; index < count; ++index) {
             char selected = secondary_slots[index];
 
-            ram_ffd940[selected] = flags;
+            gViewportSpriteSlotFlags[selected] = flags;
             *output++ = selected + 25;
         }
     }
@@ -59,23 +59,23 @@ char *output;
 }
 
 /* Ask the selector for one byte. A nonzero status suppresses the result.
- * The ROM calls func_00d406 PC-relative; [INFERENCE] the two were in one
+ * The ROM calls AllocateSpriteSlots PC-relative; [INFERENCE] the two were in one
  * original source file, since the assembler used PC-relative calls only
  * within a file (config/rev02/tus.json). match.py assembles it that way. */
-char func_00d586(selection_mode, include_secondary)
+char AllocateSpriteSlot(selection_mode, include_secondary)
 short selection_mode;
 int include_secondary;
 {
     char value;
 
-    if (func_00d406(1, selection_mode, include_secondary, &value))
+    if (AllocateSpriteSlots(1, selection_mode, include_secondary, &value))
         return 0;
     else
         return value;
 }
 
 /* Release each identifier in a viewport's slot list. */
-void func_00d5c0(count, slots)
+void FreeSpriteSlots(count, slots)
 short count;
 char *slots;
 {
@@ -84,30 +84,30 @@ char *slots;
 
     for (index = 0; index < count; ++index) {
         slot = slots[index] - 25;
-        ram_ffd940[slot] = 0;
+        gViewportSpriteSlotFlags[slot] = 0;
     }
 }
 
 /* The selection helper at 0x00d406 scans 54 flag bytes.
  * Public item identifiers start at 25; bit 1 is queried by the second routine. */
-void func_00d5fa(item)
+void FreeSpriteSlot(item)
 char item;
 {
     item -= 25;
-    ram_ffd940[item] = 0;
+    gViewportSpriteSlotFlags[item] = 0;
 }
 
-int func_00d612(item)
+int IsSpriteSlotNonReclaimable(item)
 int item;
 {
-    if (ram_ffd940[item - 25] & 2)
+    if (gViewportSpriteSlotFlags[item - 25] & 2)
         return 1;
     else
         return 0;
 }
 
 /* Reserve a consecutive run of eight-tile groups, returning its first tile. */
-short func_00d630(count)
+short AllocateSpriteTileRun(count)
 short count;
 {
     short groups, run, index, mark_index, tile;
@@ -115,13 +115,13 @@ short count;
     groups = (count - 1) / 8 + 1;
     run = 0;
     for (index = 0; index < 80; ++index) {
-        if (!ram_ffd976[index]) {
+        if (!gSpriteTileGroupAllocated[index]) {
             ++run;
             if (run == groups) {
                 index = index + 1 - run;
                 tile = (index << 3) + 640;
                 for (mark_index = 0; mark_index < run; ++mark_index)
-                    ram_ffd976[index++] = 1;
+                    gSpriteTileGroupAllocated[index++] = 1;
                 return tile;
             }
         } else
@@ -131,7 +131,7 @@ short count;
 }
 
 /* Release the eight-tile groups occupied by a tile range. */
-void func_00d6b2(tile, count)
+void FreeSpriteTileRun(tile, count)
 short tile, count;
 {
     short groups, index;
@@ -140,25 +140,25 @@ short tile, count;
     tile -= 640;
     tile /= 8;
     for (index = 0; index < groups; ++index)
-        ram_ffd976[tile + index] = 0;
+        gSpriteTileGroupAllocated[tile + index] = 0;
 }
 
 /* Drop cached sprite identifiers whose slot is no longer marked secondary. */
-void Process2FEntityBit6(entity)
+void ReleaseEntityShadows(entity)
 struct object_state *entity;
 {
-    if (entity->primary_shadow && !func_00d612(entity->primary_shadow)) {
-        func_00d5fa(entity->primary_shadow);
+    if (entity->primary_shadow && !IsSpriteSlotNonReclaimable(entity->primary_shadow)) {
+        FreeSpriteSlot(entity->primary_shadow);
         entity->primary_shadow = 0;
     }
-    if (entity->secondary_shadow && !func_00d612(entity->secondary_shadow)) {
-        func_00d5fa(entity->secondary_shadow);
+    if (entity->secondary_shadow && !IsSpriteSlotNonReclaimable(entity->secondary_shadow)) {
+        FreeSpriteSlot(entity->secondary_shadow);
         entity->secondary_shadow = 0;
     }
 }
 
 /* Allocate the tile range when necessary, then a viewport's sprite slots. */
-void func_00d776(entity, viewport)
+void AllocateEntityViewportSprites(entity, viewport)
 struct object_state *entity;
 short viewport;
 {
@@ -168,7 +168,7 @@ short viewport;
 
     tile_count = entity->tile_count;
     if (!(entity->draw_flags & 6) && !(entity->flags_4d & 4)) {
-        tile = func_00d630(tile_count);
+        tile = AllocateSpriteTileRun(tile_count);
         if (!tile)
             return;
         entity->tile &= 0xf800;
@@ -181,16 +181,16 @@ short viewport;
         viewport_bit = 4;
         slots = entity->secondary_sprites;
     }
-    if (!func_00d406(entity->sprite_count, viewport, 1, slots))
+    if (!AllocateSpriteSlots(entity->sprite_count, viewport, 1, slots))
         entity->draw_flags |= viewport_bit;
     else if (!(entity->draw_flags & 6))
         /* ORIGINAL BUG: With flags_4d bit 2 set and no viewport
          * active, a selector failure reads tile without assigning it. */
-        func_00d6b2(tile, tile_count);
+        FreeSpriteTileRun(tile, tile_count);
 }
 
 /* Release one viewport's slots and, after the last viewport, its tile range. */
-void OpeningPresents7(entity, viewport)
+void ReleaseEntityViewportSprites(entity, viewport)
 struct object_state *entity;
 short viewport;
 {
@@ -201,30 +201,30 @@ short viewport;
     if (!viewport) {
         entity->draw_flags &= 0xfd;
         slots = entity->primary_sprites;
-        if (entity->primary_shadow && !func_00d612(entity->primary_shadow)) {
-            func_00d5fa(entity->primary_shadow);
+        if (entity->primary_shadow && !IsSpriteSlotNonReclaimable(entity->primary_shadow)) {
+            FreeSpriteSlot(entity->primary_shadow);
             entity->primary_shadow = 0;
         }
     } else {
         entity->draw_flags &= 0xfb;
         slots = entity->secondary_sprites;
-        if (entity->secondary_shadow && !func_00d612(entity->secondary_shadow)) {
-            func_00d5fa(entity->secondary_shadow);
+        if (entity->secondary_shadow && !IsSpriteSlotNonReclaimable(entity->secondary_shadow)) {
+            FreeSpriteSlot(entity->secondary_shadow);
             entity->secondary_shadow = 0;
         }
     }
-    func_00d5c0(entity->sprite_count, slots);
+    FreeSpriteSlots(entity->sprite_count, slots);
     if (!(entity->draw_flags & 6) && !(entity->flags_4d & 4)) {
         short tile_count, tile;
 
         tile_count = entity->tile_count;
         tile = entity->tile & 0x7ff;
-        func_00d6b2(tile, tile_count);
+        FreeSpriteTileRun(tile, tile_count);
     }
 }
 
 /* The caller supplies storage for 47 words. */
-void func_00d8f2(words)
+void ResetEntityRuntimeState(words)
 short *words;
 {
     short index;
@@ -234,7 +234,7 @@ short *words;
 }
 
 /* Claim an entity from the pool beginning at record six. */
-short func_00d904()
+short AllocateEntity()
 {
     short count, index;
 
@@ -243,10 +243,10 @@ short func_00d904()
     else
         count = 20;
     for (index = 0; index < count; ++index) {
-        if (!ram_ffd9c6[index]) {
-            ram_ffd9c6[index] = 1;
+        if (!gDynamicEntitySlotAllocated[index]) {
+            gDynamicEntitySlotAllocated[index] = 1;
             count = index + 6;
-            func_00d8f2(&gPlayerInfo[count]);
+            ResetEntityRuntimeState(&gPlayerInfo[count]);
             gPlayerInfo[count].draw_flags = 1;
             return count;
         }
@@ -255,7 +255,7 @@ short func_00d904()
 }
 
 /* Players zero and one are retained; other active records release both views. */
-void func_00d970(entity_number)
+void FreeEntity(entity_number)
 short entity_number;
 {
     struct object_state *entity;
@@ -265,11 +265,11 @@ short entity_number;
     entity = &gPlayerInfo[entity_number];
     if (entity->draw_flags & 1) {
         if (entity->draw_flags & 2)
-            OpeningPresents7(entity, 0);
+            ReleaseEntityViewportSprites(entity, 0);
         if (entity->draw_flags & 4)
-            OpeningPresents7(entity, 1);
+            ReleaseEntityViewportSprites(entity, 1);
         entity->draw_flags = 0;
         if (entity_number >= 6)
-            ram_ffd9c6[entity_number - 6] = 0;
+            gDynamicEntitySlotAllocated[entity_number - 6] = 0;
     }
 }

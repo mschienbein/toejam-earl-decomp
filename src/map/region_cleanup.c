@@ -8,7 +8,7 @@
 
 /* Fill a rectangle. Replacing a different labelled 0x1000 cell replaces
  * every occurrence of that old label throughout the complete map. */
-void func_005afa(start_row, start_column, height, width, replacement)
+void MapFillRectangleAndMergeRegions(start_row, start_column, height, width, replacement)
 short start_row, start_column, height, width, replacement;
 {
     short map_row, map_column, tile, column, row;
@@ -27,8 +27,8 @@ short start_row, start_column, height, width, replacement;
 }
 
 /* Expand adjacent 0x1000 terrain into two-by-three rectangles, merging
- * differing region values through func_005afa. Return whether any changed. */
-short func_005bfe(row, column)
+ * differing region values through MapFillRectangleAndMergeRegions. Return whether any changed. */
+short MapExpandRegionsBesidePaths(row, column)
 short row, column;
 {
     short changed = 0;
@@ -40,7 +40,7 @@ short row, column;
          gMapDataA[row - 1][column + 1] != terrain ||
          gMapDataA[row - 2][column - 1] != terrain ||
          gMapDataA[row - 2][column + 1] != terrain)) {
-        func_005afa(row - 2, column - 1, 2, 3, terrain);
+        MapFillRectangleAndMergeRegions(row - 2, column - 1, 2, 3, terrain);
         changed = 1;
     }
     if ((gMapDataA[row][column] & 4) &&
@@ -49,7 +49,7 @@ short row, column;
          gMapDataA[row + 1][column + 1] != terrain ||
          gMapDataA[row + 2][column - 1] != terrain ||
          gMapDataA[row + 2][column + 1] != terrain)) {
-        func_005afa(row + 1, column - 1, 2, 3, terrain);
+        MapFillRectangleAndMergeRegions(row + 1, column - 1, 2, 3, terrain);
         changed = 1;
     }
     if ((gMapDataA[row][column] & 8) &&
@@ -58,7 +58,7 @@ short row, column;
          gMapDataA[row + 1][column - 1] != terrain ||
          gMapDataA[row - 1][column - 2] != terrain ||
          gMapDataA[row + 1][column - 2] != terrain)) {
-        func_005afa(row - 1, column - 2, 3, 2, terrain);
+        MapFillRectangleAndMergeRegions(row - 1, column - 2, 3, 2, terrain);
         changed = 1;
     }
     if ((gMapDataA[row][column] & 2) &&
@@ -67,7 +67,7 @@ short row, column;
          gMapDataA[row + 1][column + 1] != terrain ||
          gMapDataA[row - 1][column + 2] != terrain ||
          gMapDataA[row + 1][column + 2] != terrain)) {
-        func_005afa(row - 1, column + 1, 3, 2, terrain);
+        MapFillRectangleAndMergeRegions(row - 1, column + 1, 3, 2, terrain);
         changed = 1;
     }
     return changed;
@@ -79,7 +79,7 @@ short row, column;
  * but keeps the remembered terrain label, so a label, a gap and three cells of
  * that label already reach the threshold ([INFERENCE] unintended; the code is
  * kept as the ROM has it). */
-void func_0060ae()
+void MapWidenHorizontalRegionEdges()
 {
     short run_length, row, column;
     unsigned short terrain, previous_terrain;
@@ -141,8 +141,8 @@ void func_0060ae()
 }
 
 /* Scan vertical stretches along both horizontal boundaries, with the same
- * counter thresholds and reset-to-one quirk as func_0060ae. */
-void func_0062ca()
+ * counter thresholds and reset-to-one quirk as MapWidenHorizontalRegionEdges. */
+void MapWidenVerticalRegionEdges()
 {
     short run_length, column, row;
     unsigned short terrain, previous_terrain;
@@ -204,18 +204,18 @@ void func_0062ca()
 }
 
 /* Run the prepasses, then visit 0x2000 cells until no helper reports a change. */
-void func_0064ea()
+void MapStabilizeRegionConnections()
 {
     short row, column, changed = 1;
 
-    func_0060ae();
-    func_0062ca();
+    MapWidenHorizontalRegionEdges();
+    MapWidenVerticalRegionEdges();
     while (changed) {
         changed = 0;
         for (row = 0; row < 26; ++row) {
             for (column = 0; column < 19; ++column) {
                 if ((gMapDataA[row][column] & 0x3000) == 0x2000) {
-                    if (func_005bfe(row, column))
+                    if (MapExpandRegionsBesidePaths(row, column))
                         changed = 1;
                 }
             }
@@ -225,7 +225,7 @@ void func_0064ea()
 
 /* Clear temporary 0x0800 marks, then check uniform 4-by-4 regions without
  * elevator cells before requesting 0x3000 placement at the inner offset. */
-void func_00655a()
+void MapSeedFilledTerrainRegions()
 {
     short row, column, scan_row, scan_column;
     short eligible, cell, replacement;
@@ -235,7 +235,7 @@ void func_00655a()
         for (column = 0; column < 19; ++column)
             gMapDataA[row][column] &= 0xf7ff;
     }
-    probability = func_004f50(4);
+    probability = MapGetRandomGenerationParameter(4);
     for (row = 0; row < 23; ++row) {
         for (column = 0; column < 16; ++column) {
             cell = gMapDataA[row][column];
@@ -260,7 +260,7 @@ void func_00655a()
                     }
                 }
                 if (eligible && probability > GetRandomNumber() % 100)
-                    func_005776(0x3000, (cell >> 8) & 7, 0,
+                    MapGrowTerrainRegion(0x3000, (cell >> 8) & 7, 0,
                                 row + 1, column + 1);
             }
         }
@@ -269,14 +269,14 @@ void func_00655a()
 
 /* Mark one region at a time, then OR in a lookup byte indexed by the
  * four complete 2-by-2 neighborhoods surrounding each 0x1000 cell. */
-void func_00671c(region_count)
+void MapBuildRegionEdgeShapes(region_count)
 short region_count;
 {
     unsigned short cell;
     short upper_table, region, row, column, corner_mask;
 
     for (region = 0; region < region_count; ++region) {
-        upper_table = func_004f50(5);
+        upper_table = MapGetRandomGenerationParameter(5);
         upper_table = upper_table > GetRandomNumber() % 100;
         for (row = 0; row < 26; ++row) {
             for (column = 0; column < 19; ++column) {

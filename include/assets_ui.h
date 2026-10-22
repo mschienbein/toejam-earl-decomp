@@ -10,6 +10,8 @@ extern unsigned char FontBackgroundByteMap[32][40];
 extern short FontDataSize;
 extern char HUDAdditionalTiles[];
 extern char HUDAdditionalTilesSmall[];
+/* Two 32-byte life-icon tiles in each named 64-byte ROM asset. */
+extern char IconTilesA[64], IconTilesB[64];
 extern unsigned char ImageLevelNumbers[10][128];
 extern char ImageTextBase[];
 extern long ImageTextChars1[];
@@ -36,7 +38,7 @@ extern char *RankCharsTable[9];
 extern char *RankNameStrTable[];
 extern struct ride_speech SpeechStringPointers[14];
 extern struct render_piece *Spr_ActionIcons[10];
-extern unsigned char rom_0a836c[4][40];
+extern unsigned char CombinedHudBackgroundByteMap[4][40];
 /* Four-byte prefix of the observed 44-byte runtime text frame (four pieces). */
 extern struct render_frame RuntimeTextMetasprite_0AFADC;
 

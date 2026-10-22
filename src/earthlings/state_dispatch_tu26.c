@@ -13,9 +13,9 @@
 /* ORIGINAL BUG: this consumer retains the observed int result view.
  * Both the shared unsigned char declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
-extern int func_00d9dc();
+extern int GetMapTerrainAtWorldPosition();
 /* Probe eight pixels vertically or sixteen horizontally in states 4..7. */
-int func_01916c(player_number, world_x, world_y, state)
+int EarthlingProbeDirectionalTerrain(player_number, world_x, world_y, state)
 short player_number, world_x, world_y, state;
 {
     if (state == 4)
@@ -26,11 +26,11 @@ short player_number, world_x, world_y, state;
         world_x -= 16;
     else if (state == 7)
         world_x += 16;
-    return (unsigned char)func_00d9dc(player_number, world_x, world_y);
+    return (unsigned char)GetMapTerrainAtWorldPosition(player_number, world_x, world_y);
 }
 
 /* Predict a fixed-point movement step and reject newly entered obstacles. */
-void func_0191d2(step, object)
+void EarthlingMoveOnAllowedTerrain(step, object)
 struct render_frame *step;
 struct object_state *object;
 {
@@ -41,7 +41,7 @@ struct object_state *object;
     short next_x, terrain, player_number, distance;
 
     earthling = object->earthling;
-    if (func_0193fa(object->earthling) || earthling->state == 99)
+    if (EarthlingIsUpdateBlocked(object->earthling) || earthling->state == 99)
         return;
     if (object->level == gLevel912C)
         player_number = 0;
@@ -73,23 +73,23 @@ struct object_state *object;
         return;
     if (earthling->kind == 5 || earthling->kind == 10 ||
         earthling->kind == 11 || earthling->kind == 17) {
-        if (!func_025bce(object, object->x, object->y, 0) &&
-            func_025bce(object, next_x, next_y, 0)) {
+        if (!EntityFindNarrowCollisionAtPosition(object, object->x, object->y, 0) &&
+            EntityFindNarrowCollisionAtPosition(object, next_x, next_y, 0)) {
             object->sprite_state = 0;
             return;
         }
     } else if (earthling->kind != 18) {
-        if (!func_025ca4(object, object->x, object->y) &&
-            (terrain = func_025ca4(object, next_x, next_y))) {
+        if (!EntityFindMenuAwareCollisionAtPosition(object, object->x, object->y) &&
+            (terrain = EntityFindMenuAwareCollisionAtPosition(object, next_x, next_y))) {
             object->sprite_state = 0;
-            func_015da6(terrain - 1);
+            PresentRegisterDecoyHit(terrain - 1);
             return;
         }
     }
     if (earthling->kind == 14 || earthling->kind == 18)
-        terrain = func_01916c(player_number, next_x, next_y, earthling->state);
+        terrain = EarthlingProbeDirectionalTerrain(player_number, next_x, next_y, earthling->state);
     else
-        terrain = func_00d9dc(player_number, next_x, next_y);
+        terrain = GetMapTerrainAtWorldPosition(player_number, next_x, next_y);
     if ((earthling->kind == 13 && terrain == 16) ||
         (earthling->kind == 14 && terrain == 128) ||
         (earthling->kind != 13 && earthling->kind != 14 &&
@@ -103,7 +103,7 @@ struct object_state *object;
 }
 
 /* Freeze a non-null record unless a selected player's gate byte is clear. */
-int func_0193fa(earthling)
+int EarthlingIsUpdateBlocked(earthling)
 struct earthling_state *earthling;
 {
     if (earthling) {
@@ -117,7 +117,7 @@ struct earthling_state *earthling;
 }
 
 /* Keep the sprite's terrain-dependent drawing bit synchronized. */
-void func_01942c(object)
+void EntityUpdateTerrainDrawFlag(object)
 struct object_state *object;
 {
     short player_number;
@@ -128,14 +128,14 @@ struct object_state *object;
         player_number = 1;
     else
         return;
-    if (func_00d9dc(player_number, object->x, object->y) == 144)
+    if (GetMapTerrainAtWorldPosition(player_number, object->x, object->y) == 144)
         object->draw_flags &= ~64;
     else
         object->draw_flags |= 64;
 }
 
 /* Move eligible earthlings within map bounds and update their terrain flags. */
-void func_01948a(step, object)
+void EarthlingMoveWithinMapBounds(step, object)
 struct render_frame *step;
 struct object_state *object;
 {
@@ -146,7 +146,7 @@ struct object_state *object;
     short next_x, terrain, player_number, distance, collision;
 
     earthling = object->earthling;
-    if (func_0193fa(earthling) || earthling->state == 99 ||
+    if (EarthlingIsUpdateBlocked(earthling) || earthling->state == 99 ||
         (object->flags_4d & 64) ||
         (earthling->kind == 7 && earthling->state == 3))
         return;
@@ -180,15 +180,15 @@ struct object_state *object;
         next_x = object->x;
     if (next_y - object->height_pixels <= 8 || next_y >= 1776)
         next_y = object->y;
-    if (!func_025ca4(object, object->x, object->y) &&
-        (collision = func_025ca4(object, next_x, next_y))) {
+    if (!EntityFindMenuAwareCollisionAtPosition(object, object->x, object->y) &&
+        (collision = EntityFindMenuAwareCollisionAtPosition(object, next_x, next_y))) {
         object->sprite_state = 0;
-        func_015da6(collision - 1);
+        PresentRegisterDecoyHit(collision - 1);
         return;
     }
-    terrain = func_00d9dc(player_number, next_x, next_y);
+    terrain = GetMapTerrainAtWorldPosition(player_number, next_x, next_y);
     if (earthling->kind == 19) {
-        if ((ram_ffda1c & 127) == 34)
+        if ((gTerrainQueryMetatileWord & 127) == 34)
             return;
         earthling->value_0a = terrain;
     } else if (terrain == 144) {

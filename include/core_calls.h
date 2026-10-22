@@ -21,13 +21,13 @@ extern void SetSkipVHBlankFlags();
 extern void ToggleLOC_00FF8196();
 extern void VDPInitialisation();
 extern void WaitForNextVBlank();
-extern void func_00059e();
-extern void func_000be2();
-extern void func_000c2e();
-extern void func_000d7e();
-extern void func_000ee6();
-extern int func_000fb6();
-extern void func_00105a();
-extern short func_001262();
+extern void SelectViewportSpriteChain();
+extern void ReloadActiveCameraViews();
+extern void EnterSplitScreen();
+extern void EnterSharedScreen();
+extern void CenterSharedCameraOnPlayer();
+extern int PlayersRequireSeparateViews();
+extern void UpdateScreenSplitMode();
+extern short GetLevelMusicIndex();
 
 #endif

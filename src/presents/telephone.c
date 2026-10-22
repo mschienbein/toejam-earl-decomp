@@ -21,17 +21,17 @@
  * remains unknown [INFERENCE]. */
 
 /* Allocate the telephone's displayed object and copy its position and level. */
-void func_022bf6(telephone)
+void TelephoneCreateDisplayEntity(telephone)
 struct telephone_state *telephone;
 {
     struct object_state *object;
     struct animation_descriptor *animation;
 
-    if (telephone->object = (int)func_01e736(0)) {
+    if (telephone->object = (int)AllocateEntityWithEviction(0)) {
         object = &gPlayerInfo[telephone->object];
         animation = AnimationDescriptors_0AF0A8;
         object->frames = animation->frames;
-        object->sequence = dat_0ae4a0;
+        object->sequence = SingleFrameHoldAnimation;
         object->frame_phase = 0;
         object->frame_duration = 1;
         object->frame = -1;
@@ -48,13 +48,13 @@ struct telephone_state *telephone;
 }
 
 /* Restart the ring timer and advance the visible telephone animation. */
-void func_022c78(telephone_number, telephone)
+void TelephoneStartRing(telephone_number, telephone)
 short telephone_number;
 struct telephone_state *telephone;
 {
     struct object_state *object;
 
-    if (!ram_ffda6c)
+    if (!gElevatorDepartureInProgress)
         PlaySoundEffect((long)Sfx_Telephone, 50, 0);
     gTelephoneTimeToRing[telephone_number] = 60;
     if (telephone->object) {
@@ -89,45 +89,45 @@ short telephone_number;
          earl_screen_x + 20 > 0 && earl_screen_x < 340 &&
          earl_screen_y + 20 > 0 && earl_screen_y < 132)) {
         if (!telephone->object)
-            func_022bf6(telephone);
+            TelephoneCreateDisplayEntity(telephone);
     } else if (telephone->object) {
-        func_00d970(telephone->object);
+        FreeEntity(telephone->object);
         telephone->object = 0;
     }
-    if (!ram_ffe25e[telephone_number]) {
+    if (!gTelephoneActivated[telephone_number]) {
         player = &gPlayerInfo[0];
         player_number = 0;
         do {
             if (gPlayerLives[player_number] >= 0 &&
-                player->level == telephone->level && !TOEJAM_SPEECH_COUNTER &&
+                player->level == telephone->level && !gPcmEffectCooldownTicks &&
                 abs(telephone->x - player->x) < 320 &&
                 abs(telephone->y - player->y) < 224) {
-                ram_ffe25e[telephone_number] = 1;
+                gTelephoneActivated[telephone_number] = 1;
                 gTelephoneRingsLeft[telephone_number] = 6;
-                func_022c78(telephone_number, telephone);
+                TelephoneStartRing(telephone_number, telephone);
                 break;
             }
             ++player;
             ++player_number;
         } while (player_number <= 1);
-        if (!ram_ffe25e[telephone_number])
+        if (!gTelephoneActivated[telephone_number])
             return;
     }
     if (--gTelephoneTimeToRing[telephone_number] <= 0) {
         if (--gTelephoneRingsLeft[telephone_number] > 0 &&
             (gPlayerInfo[0].level == telephone->level ||
              gPlayerInfo[1].level == telephone->level)) {
-            if (!TOEJAM_SPEECH_COUNTER)
-                func_022c78(telephone_number, telephone);
+            if (!gPcmEffectCooldownTicks)
+                TelephoneStartRing(telephone_number, telephone);
             else {
                 ++gTelephoneRingsLeft[telephone_number];
                 gTelephoneTimeToRing[telephone_number] = 1;
             }
         } else {
             if (telephone->object) {
-                func_00d970(telephone->object);
+                FreeEntity(telephone->object);
                 telephone->object = 0;
-                func_015b66(telephone_number, telephone->x, telephone->y + 1,
+                PresentStartTransientEffect(telephone_number, telephone->x, telephone->y + 1,
                             0, telephone->level);
             }
             telephone->level = 0;
@@ -141,11 +141,11 @@ short telephone_number;
                 player->level == telephone->level &&
                 abs(telephone->x - player->x) < 16 &&
                 abs(telephone->y - player->y) < 8) {
-                func_00d970(telephone->object);
+                FreeEntity(telephone->object);
                 telephone->object = 0;
-                ram_ff935a = 1;
+                gMapRevealMode = 1;
                 DrawGameMap(player_number);
-                ram_ff935a = 0;
+                gMapRevealMode = 0;
                 telephone->level = 0;
                 break;
             }

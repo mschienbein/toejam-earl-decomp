@@ -16,7 +16,7 @@
 
 /* Find an unused projectile slot, then use the player's facing, input, and
  * selected powerup to set its origin and launch velocity. */
-void func_01befa(player, player_number, powerup)
+void PlayerLaunchPresentProjectile(player, player_number, powerup)
 struct object_state *player;
 short player_number, powerup;
 {
@@ -27,15 +27,15 @@ short player_number, powerup;
 
     slot = 0;
     do {
-        if (!ram_ffe1c0[slot])
+        if (!gSharedProjectileEntities[slot])
             break;
         ++slot;
     } while (slot < 4);
     if (slot == 4)
         return;
-    if (ram_ffe1c0[slot] = (int)func_00d904()) {
-        ram_ffe1cc[slot] = player_number;
-        projectile = &gPlayerInfo[ram_ffe1c0[slot]];
+    if (gSharedProjectileEntities[slot] = (int)AllocateEntity()) {
+        gSharedProjectileOwners[slot] = player_number;
+        projectile = &gPlayerInfo[gSharedProjectileEntities[slot]];
         direction = player->sprite_state & 3;
         powerup_index = powerup;
         powerup_index -= 3;
@@ -64,7 +64,7 @@ short player_number, powerup;
             speed_y = 768;
             projectile->velocity_height = 64;
             projectile->acceleration_height = -8;
-            func_03e4f8(11);
+            AudioRequestChannelTemplateEffect(11);
         }
         if (direction & 1)
             projectile->velocity_y = -speed_y;
@@ -97,7 +97,7 @@ short player_number, powerup;
 
 /* Shooting animation frames spawn one projectile. The last block selects
  * a shooting pose from held input, outside the elevator. */
-void func_01c188(player, unused)
+void PlayerUpdatePresentShooting(player, unused)
 struct object_state *player;
 short unused;
 {
@@ -107,13 +107,13 @@ short unused;
     player_number = player->entity_number;
     if (player->flags_52 & 0x100000L) {
         if (player->frame == 1) {
-            func_01befa(player, player_number, 3);
+            PlayerLaunchPresentProjectile(player, player_number, 3);
             ++player->frame;
         } else if (!player->frame_duration)
             SetSprite(player, GetActivePresentSprite(player));
     } else if (player->flags_52 & 0x200000L) {
         if (player->frame == 2) {
-            func_01befa(player, player_number, 4);
+            PlayerLaunchPresentProjectile(player, player_number, 4);
             ++player->frame;
         } else if (!player->frame_duration)
             SetSprite(player, GetActivePresentSprite(player));

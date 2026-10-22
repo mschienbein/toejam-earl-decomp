@@ -12,10 +12,10 @@
 #include "ram_system.h"
 #include "speech.h"
 
-#define NEXT_RANDOM PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0]
+#define NEXT_RANDOM PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
 /* The byte at +0 is the earthling kind. */
-int func_01975c(earthling, object)
+int EarthlingProcessSpecialThinkStates(earthling, object)
 struct earthling_state *earthling;
 struct object_state *object;
 {
@@ -42,7 +42,7 @@ struct object_state *object;
     }
     if ((earthling->state & 252) == 8) {
         if (earthling->kind == 4 || earthling->kind == 21) {
-            if (!TOEJAM_SPEECH_COUNTER && object->frame_duration > 3 &&
+            if (!gPcmEffectCooldownTicks && object->frame_duration > 3 &&
                 earthling->value_0a) {
                 PlaySoundEffect((long)Sfx_DentistLaugh, 50, 0);
                 earthling->value_0a = 0;
@@ -52,7 +52,7 @@ struct object_state *object;
             earthling->timer = 0;
         }
         if (earthling->kind == 15) {
-            func_01d2cc(earthling, object);
+            EarthlingUpdateAimedProjectileAttack(earthling, object);
             return 1;
         }
         if (earthling->kind == 16) {
@@ -75,7 +75,7 @@ struct earthling_state *earthling;
     unsigned char minimum_time, maximum_time;
 
     object = &gPlayerInfo[earthling->object];
-    if (func_01975c(earthling, object))
+    if (EarthlingProcessSpecialThinkStates(earthling, object))
         return;
     definition = &EARTHLING_DATA[earthling->kind];
     if (!object->sprite_state && earthling->state && earthling->state != 2) {
@@ -90,7 +90,7 @@ struct earthling_state *earthling;
             if (NEXT_RANDOM % 100 < definition->target_chance) {
                 if (earthling->kind == 15)
                     search_bias = 100;
-                next_state = func_01aa20(object, definition->target_distance,
+                next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance,
                                          search_bias, earthling->kind);
                 if (next_state != -1) {
                     minimum_time = definition->target_time_min;
@@ -108,7 +108,7 @@ struct earthling_state *earthling;
             --earthling->state_delay;
         if (next_state == -1 && earthling->state != 2) {
             if (NEXT_RANDOM % 100 < definition->turn_chance) {
-                next_state = func_0196b0(earthling);
+                next_state = EarthlingSelectTurnState(earthling);
                 if (earthling->kind == 3 && next_state == 0 &&
                     (NEXT_RANDOM & 1))
                     GenerateSpeech(earthling->object, "shut up!!", 1);
@@ -159,7 +159,7 @@ struct earthling_state *earthling;
             earthling->timer = 1;
     }
     if (earthling->kind == 18 && (earthling->state & 252) == 4) {
-        func_02234c(earthling, object);
+        EarthlingSpawnMoleEffect(earthling, object);
         object->flags_4d &= 254;
     }
 }

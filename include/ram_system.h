@@ -24,30 +24,30 @@ extern char HBLANK_FLAG_1;
 
 /* Input state keeps its existing byte-array and word views. Incomplete
  * outer bounds are retained; no adjacent-symbol guess establishes capacity.
- * ram_ff8021 also names P1_PREV_PROCESSED_INPUT[1]. */
+ * gPlayer2PreviousProcessedInput also names P1_PREV_PROCESSED_INPUT[1]. */
 extern unsigned short P1_PAD_INPUT;
 extern unsigned short P2_PAD_INPUT;
 extern unsigned char P1_PROCESSED_INPUT[];
 extern unsigned char P1_PREV_PROCESSED_INPUT[];
 extern unsigned char P1_KEYDOWN[];
-extern char ram_ff801c;
-extern unsigned char ram_ff8021;
-extern char ram_ff8030;
+extern char gControllerPortsSwapped;
+extern unsigned char gPlayer2PreviousProcessedInput;
+extern char gControllerButtonsAcSwapped;
 
 /* VDP register soft copy and main-loop palette/frame state. */
 extern unsigned char gMode2RegSoftcopy;
-extern char ram_ff8024;
-extern char ram_ff8026;
-extern char ram_ff8028;
+extern char gVBlankPlayerUpdateParity;
+extern char gLevelPaletteAnimationFrame;
+extern char gLevelPaletteAnimationDelay;
 
 /* Shared random cache, its current index and generator state. */
 extern unsigned short PREGEN_RANDOMS[59];
-extern unsigned short ram_ff91e0;
+extern unsigned short gRandomCacheIndex;
 extern long gRNGState;
 
 /* Existing shared sound-driver state views. */
 extern short gMusicUnknownE472;
-extern short ram_ffe474;
+extern short gBoomBoxMusicTemplateHold;
 extern char gMusicUnknownE488;
 
 /* Additional selected final-batch storage and resource interfaces. */
@@ -55,6 +55,6 @@ extern short gMusicUnknownE478;
 extern short gMusicUnknownE47A;
 extern short gMusicUnknownE47C;
 extern char gMusicUnknownE489;
-extern unsigned char ram_ff801f;
+extern unsigned char gPlayer2ProcessedInput;
 
 #endif

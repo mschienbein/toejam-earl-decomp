@@ -4,13 +4,13 @@
 .include "sound.inc"
 
 | Remove the three auxiliary sound streams, clear their channel records, and copy a requested template.
-.globl func_03e504
-.type func_03e504, @function
-func_03e504:
+.globl AudioLoadPendingChannelTemplateEffect
+.type AudioLoadPendingChannelTemplateEffect, @function
+AudioLoadPendingChannelTemplateEffect:
     tst.l (ram_ffff18).l
     beq.s .L_reset_channel3
     move.w #0x2,%d1
-    jsr (func_03ec74,%pc)
+    jsr (AudioWriteFmChannelReleaseMask,%pc)
     nop
     clr.l (gMusicPointer3).l
 
@@ -19,7 +19,7 @@ func_03e504:
     tst.l (ram_ffff3e).l
     beq.s .L_reset_channel1
     move.w #0x3,%d1
-    jsr (func_03ec74,%pc)
+    jsr (AudioWriteFmChannelReleaseMask,%pc)
     nop
     clr.l (gMusicPointer4).l
 
@@ -28,7 +28,7 @@ func_03e504:
     tst.l (ram_ffff64).l
     beq.s .L_clear_sfx_channels
     move.w #0x1,%d1
-    jsr (func_03ec74,%pc)
+    jsr (AudioWriteFmChannelReleaseMask,%pc)
     nop
     clr.l (gMusicPointer2).l
 
@@ -61,7 +61,7 @@ func_03e504:
 .L_reset_sfx_request:
     move.w #SOUND_REQUEST_NONE,(gMusicUnknownE47C).l
     rts
-.size func_03e504, .-func_03e504
+.size AudioLoadPendingChannelTemplateEffect, .-AudioLoadPendingChannelTemplateEffect
 
 | Inputs: d1 FM channel, d3 patch index, d4/d5 frequency high/low bytes.
 | Select one of the six YM channels, upload its patch, write frequency, and key the operators.
@@ -665,9 +665,9 @@ SetupYM2612_Return:
 
 | For channel d1, combine its stored operator mask with the YM channel number and write key-on.
 | Restore the DAC address latch before releasing the Z80 bus.
-.globl func_03ec74
-.type func_03ec74, @function
-func_03ec74:
+.globl AudioWriteFmChannelReleaseMask
+.type AudioWriteFmChannelReleaseMask, @function
+AudioWriteFmChannelReleaseMask:
     cmpi.w #YM_CHANNEL_COUNT,%d1
     bge.s .L_key_mask_return
     lea (ram_fffe28).l,%a5
@@ -701,7 +701,7 @@ func_03ec74:
     rts
 .L_key_mask_return:
     rts
-.size func_03ec74, .-func_03ec74
+.size AudioWriteFmChannelReleaseMask, .-AudioWriteFmChannelReleaseMask
 
 | Update channel d1 frequency from d4/d5, choosing the correct YM port pair.
 .globl YM2612UpdateFrequency
@@ -763,26 +763,26 @@ MassiveRoutine:
     movem.l %d2-%d7/%a2-%a6,-(%sp)
     tst.w (gMusicUnknownE478).l
     beq.s .L_update_clear_request
-    jsr (func_03e446,%pc)
+    jsr (AudioReleaseAllFmChannels,%pc)
 
     | Service channel-clear, template, PCM, and PSG requests in their original priority order.
 .L_update_clear_request:
     tst.w (gMusicUnknownE47A).l
     beq.s .L_update_sfx_request
-    jsr (func_03e418,%pc)
+    jsr (MusicClearTrackPointers,%pc)
 .L_update_sfx_request:
     tst.w (gMusicUnknownE47C).l
     blt.s .L_update_pcm_request
-    jsr (func_03e504,%pc)
+    jsr (AudioLoadPendingChannelTemplateEffect,%pc)
 .L_update_pcm_request:
     tst.l (gMusicUnknownE480).l
     beq.s .L_update_psg_request
-    jsr (func_03f62a).l
+    jsr (AudioSubmitPendingPcmSample).l
     bra.s .L_update_psg_timer
 .L_update_psg_request:
     tst.w (gMusicUnknownE47E).l
     blt.s .L_update_psg_timer
-    jsr (func_03f7aa).l
+    jsr (AudioSubmitPendingIndexedCommand).l
 
     | Tick the PSG status countdown.
 .L_update_psg_timer:
@@ -792,12 +792,12 @@ MassiveRoutine:
 
     | Tick speech; an active speech-block flag skips channel processing until the final tick.
 .L_update_speech_timer:
-    tst.w (TOEJAM_SPEECH_COUNTER).l
+    tst.w (gPcmEffectCooldownTicks).l
     beq.s .L_choose_channel_owners
-    subq.w #0x1,(TOEJAM_SPEECH_COUNTER).l
+    subq.w #0x1,(gPcmEffectCooldownTicks).l
     tst.w (gMusicUnknownE470).l
     beq.s .L_choose_channel_owners
-    tst.w (TOEJAM_SPEECH_COUNTER).l
+    tst.w (gPcmEffectCooldownTicks).l
     bne.w .L_update_return
     move.w #0x0,(gMusicUnknownE470).l
 
@@ -854,7 +854,7 @@ MassiveRoutine:
     move.w %d1,%d6
     lsl.w #0x2,%d6
     clr.l (%a3,%d6.w)
-    jsr (func_03ec74,%pc)
+    jsr (AudioWriteFmChannelReleaseMask,%pc)
 .L_vm_stop_channel:
     clr.l (MUSIC_STREAM,%a0)
     clr.l (MUSIC_CALLBACK,%a0)
@@ -888,7 +888,7 @@ MassiveRoutine:
     beq.s .L_vm_clear_gate
     move.b (MUSIC_FM_CHANNEL,%a0),%d1
     ext.w %d1
-    jsr (func_03ec74,%pc)
+    jsr (AudioWriteFmChannelReleaseMask,%pc)
 .L_vm_clear_gate:
     clr.b (MUSIC_NOTE_ACTIVE,%a0)
     bra.w .L_vm_save_pc
@@ -988,7 +988,7 @@ MassiveRoutine:
 
     | VM 9: request the record-scratch PCM effect.
     pea (Sfx_JamRecordScratch).l
-    jsr (func_03f6c6).l
+    jsr (AudioTrySubmitSequencerPcmSample).l
     addq.l #0x4,%sp
     bra.w .L_vm_save_pc
 .L_vm_try_clap:
@@ -997,7 +997,7 @@ MassiveRoutine:
 
     | VM 10: request the clap PCM effect.
     pea (Sfx_JamClap).l
-    jsr (func_03f6c6).l
+    jsr (AudioTrySubmitSequencerPcmSample).l
     addq.l #0x4,%sp
     bra.w .L_vm_save_pc
 .L_vm_try_bass:
@@ -1006,7 +1006,7 @@ MassiveRoutine:
 
     | VM 11: request the bass-drum PCM effect and set the music event flag.
     pea (Sfx_JamBassDrum).l
-    jsr (func_03f6c6).l
+    jsr (AudioTrySubmitSequencerPcmSample).l
     addq.l #0x4,%sp
     move.b #0x1,(gMusicUnknownE488).l
     bra.w .L_vm_save_pc
@@ -1016,7 +1016,7 @@ MassiveRoutine:
 
     | VM 12: request the snare-drum PCM effect.
     pea (Sfx_JamSnareDrum).l
-    jsr (func_03f6c6).l
+    jsr (AudioTrySubmitSequencerPcmSample).l
     addq.l #0x4,%sp
     bra.w .L_vm_save_pc
 

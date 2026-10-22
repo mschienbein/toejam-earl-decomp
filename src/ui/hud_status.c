@@ -21,31 +21,75 @@
  * is unknown [INFERENCE]. */
 extern char *RankCharsTable[];
 
+/* Position the life icons for the menu, split-screen, or combined HUD. */
+void HudPositionLivesSprite(player)
+short player;
+{
+    short sprite_number, y, lives, x;
+
+    if (player == 0) {
+        sprite_number = 19;
+        y = 226;
+    } else {
+        sprite_number = 20;
+        y = 329;
+    }
+    lives = gPlayerLives[player];
+    if (P1_MENU_OPEN[player])
+        x = 298;
+    else if (SPLIT_SCREEN || P1_MENU_OPEN[player ^ 1]) {
+        /* MATCHING QUALIFICATION: the redundant default-only switch keeps
+         * the observed TST/BNE.S/BRA.W join. This is compiler coaxing, not
+         * evidence that the historical source used this control structure. */
+        if (player == 0) {
+            switch (player) {
+            default:
+                x = 138;
+                break;
+            }
+        } else
+            x = 138;
+        y = 5;
+    } else {
+        if (player == 0)
+            x = 228;
+        else
+            x = 398;
+        y = 330;
+    }
+    if (lives < 5)
+        y -= 3;
+    if (gPlayerLives[player] < 0)
+        y = 1;
+    gHardwareSpriteTable[sprite_number].x = x;
+    gHardwareSpriteTable[sprite_number].y = y;
+}
+
 /* Preserve the observed signed/unsigned value views of shared storage.
  * These casts do not imply a different record layout; historical spelling
  * is unknown [INFERENCE]. */
 /* Print each active player's rank and the absent player's vacation label. */
-void func_00b64a()
+void HudDrawRankLabels()
 {
     if (PLAYER_INDICATOR == 2) {
         VDP_COMMAND = 0x5c160003;
-        func_009f8a(RankCharsTable[gPlayerRank[0]]);
+        TextWriteStringTiles(RankCharsTable[gPlayerRank[0]]);
         VDP_COMMAND = 0x5c400003;
-        func_009f8a(RankCharsTable[gPlayerRank[1]]);
+        TextWriteStringTiles(RankCharsTable[gPlayerRank[1]]);
     } else if (PLAYER_INDICATOR == 0) {
         VDP_COMMAND = 0x5c160003;
-        func_009f8a(RankCharsTable[gPlayerRank[0]]);
+        TextWriteStringTiles(RankCharsTable[gPlayerRank[0]]);
         VDP_COMMAND = 0x5c3c0003;
-        func_009f8a(" on");
+        TextWriteStringTiles(" on");
         VDP_COMMAND = 0x5cba0003;
-        func_009f8a("vacation");
+        TextWriteStringTiles("vacation");
     } else {
         VDP_COMMAND = 0x5c400003;
-        func_009f8a(RankCharsTable[gPlayerRank[1]]);
+        TextWriteStringTiles(RankCharsTable[gPlayerRank[1]]);
         VDP_COMMAND = 0x5c120003;
-        func_009f8a(" on");
+        TextWriteStringTiles(" on");
         VDP_COMMAND = 0x5c900003;
-        func_009f8a("vacation");
+        TextWriteStringTiles("vacation");
     }
 }
 
@@ -65,7 +109,7 @@ void DrawHUD()
             VDP_COMMAND = 0x50000003 + ((row + 23) << 23);
             if (row < 4) {
                 for (column = 0; column < 40; column++) {
-                    tile = rom_0a836c[row][column];
+                    tile = CombinedHudBackgroundByteMap[row][column];
                     if (tile & 0x40)
                         tile |= 0x800;
                     if (tile & 0x80)
@@ -78,23 +122,23 @@ void DrawHUD()
                     VDP_DATA = 0xc580;
         }
         VDP_CONTROL_WORD = 0x9297;
-        func_00b64a();
+        HudDrawRankLabels();
     } else {
         if (!P1_MENU_OPEN[0] && !P1_MENU_OPEN[1])
             VDP_CONTROL_WORD = 0x9200;
-        func_00abbe(1);
+        HudPositionLevelNumberSprites(1);
     }
     if (gPlayerLives[0] >= 0)
-        func_00abbe(0);
+        HudPositionLevelNumberSprites(0);
     else
-        func_00abbe(1);
-    func_00ad8a(0);
-    func_00ad8a(1);
-    func_00b0cc(0);
-    func_00b0cc(1);
-    func_00b590(0);
-    func_00b590(1);
-    VDPWritesRoutine1(ram_ffb6b2, 0xf858, 48);
+        HudPositionLevelNumberSprites(1);
+    HudPositionActionIconSprite(0);
+    HudPositionActionIconSprite(1);
+    HudPositionHealthBarSprites(0);
+    HudPositionHealthBarSprites(1);
+    HudPositionLivesSprite(0);
+    HudPositionLivesSprite(1);
+    VDPWritesRoutine1(gHudHardwareSpriteBytes, 0xf858, 48);
     VBLANK_FLAG_5 = 0;
 }
 
@@ -125,7 +169,7 @@ short player_number;
         ++gPlayerRank[player_number];
         while (VBLANK_FLAG_2)
             ;
-        func_00aeb8(player_number, 0);
+        HudInitializeHealthBar(player_number, 0);
         if (!SPLIT_SCREEN)
             VBLANK_FLAG_5 = 1;
         return 1;
@@ -134,53 +178,53 @@ short player_number;
 }
 
 /* Hide the selected player_number's HUD sprites in VRAM and the sprite shadow. */
-void func_00b95c(player_number)
+void HudHidePlayerSprites(player_number)
 short player_number;
 {
     if (player_number == 0 || player_number == 2) {
         VDP_COMMAND = 0x78580003;
         VDP_DATA = 1;
-        ram_ffb65a[11].y = 1;
+        gHardwareSpriteTable[11].y = 1;
         VDP_COMMAND = 0x78600003;
         VDP_DATA = 1;
-        ram_ffb65a[12].y = 1;
+        gHardwareSpriteTable[12].y = 1;
         VDP_COMMAND = 0x78a80003;
         VDP_DATA = 1;
-        ram_ffb65a[21].y = 1;
+        gHardwareSpriteTable[21].y = 1;
         VDP_COMMAND = 0x78780003;
         VDP_DATA = 1;
-        ram_ffb65a[15].y = 1;
+        gHardwareSpriteTable[15].y = 1;
         VDP_COMMAND = 0x78800003;
         VDP_DATA = 1;
-        ram_ffb65a[16].y = 1;
+        gHardwareSpriteTable[16].y = 1;
         VDP_COMMAND = 0x78980003;
         VDP_DATA = 1;
-        ram_ffb65a[19].y = 1;
+        gHardwareSpriteTable[19].y = 1;
     }
     if (player_number == 1 || player_number == 2) {
         VDP_COMMAND = 0x78680003;
         VDP_DATA = 1;
-        ram_ffb65a[13].y = 1;
+        gHardwareSpriteTable[13].y = 1;
         VDP_COMMAND = 0x78700003;
         VDP_DATA = 1;
-        ram_ffb65a[14].y = 1;
+        gHardwareSpriteTable[14].y = 1;
         VDP_COMMAND = 0x78b00003;
         VDP_DATA = 1;
-        ram_ffb65a[22].y = 1;
+        gHardwareSpriteTable[22].y = 1;
         VDP_COMMAND = 0x78880003;
         VDP_DATA = 1;
-        ram_ffb65a[17].y = 1;
+        gHardwareSpriteTable[17].y = 1;
         VDP_COMMAND = 0x78900003;
         VDP_DATA = 1;
-        ram_ffb65a[18].y = 1;
+        gHardwareSpriteTable[18].y = 1;
         VDP_COMMAND = 0x78a00003;
         VDP_DATA = 1;
-        ram_ffb65a[20].y = 1;
+        gHardwareSpriteTable[20].y = 1;
     }
 }
 
 /* Recompute rank from points, restore starting resources, and refresh HUD data. */
-void func_00baa2(player_number)
+void PlayerResetRankAndResources(player_number)
 short player_number;
 {
     gPlayerRank[player_number] = 0;
@@ -195,12 +239,12 @@ short player_number;
         gPlayerLives[player_number] = 3;
         gPlayerBucks[player_number] = 3;
     }
-    TOEJAMS_HEALTH[player_number] = func_00ae90(player_number);
+    TOEJAMS_HEALTH[player_number] = PlayerGetMaximumHealth(player_number);
     TOEJAM_RESTORE_HEALTH[player_number] = -1;
     gPlayer1Powerup[player_number] = -1;
-    func_00aeb8(player_number, 1);
-    func_00acca(player_number);
-    func_00b3e4(player_number);
+    HudInitializeHealthBar(player_number, 1);
+    HudLoadActionIconSprite(player_number);
+    HudLoadLivesSpriteTiles(player_number);
 }
 
 void SetupTheMainGame()
@@ -221,14 +265,14 @@ void SetupTheMainGame()
     TOEJAM_RESTORE_HEALTH[0] = -1;
     gPlayer1Powerup[0] = -1;
     gPlayer2Powerup = -1;
-    func_00aeb8(0, 1);
-    func_00aeb8(1, 1);
-    func_00aa5a(0);
-    func_00aa5a(1);
-    func_00acca(0);
-    func_00acca(1);
-    func_00b3e4(0);
-    func_00b3e4(1);
+    HudInitializeHealthBar(0, 1);
+    HudInitializeHealthBar(1, 1);
+    HudLoadLevelNumberSprites(0);
+    HudLoadLevelNumberSprites(1);
+    HudLoadActionIconSprite(0);
+    HudLoadActionIconSprite(1);
+    HudLoadLivesSpriteTiles(0);
+    HudLoadLivesSpriteTiles(1);
 }
 
 /* Apply death, preserve/restore health around the observed state/mask cases,
@@ -241,9 +285,9 @@ unsigned short terrain_class;
 
     if (entity->sprite_state == 5 || entity->sprite_state == 6 ||
         ((long)entity->flags_52 & 0x20000) || gLevel912C == 26 ||
-        ram_ffde5a[player_number])
+        gPlayerPromotionDisplayEntities[player_number])
         return;
-    if (!TOEJAMS_MAX_HEALTH[player_number] && TOEJAMS_HEALTH[player_number] <= 0) {
+    if (!gHudDisplayedHealth[player_number] && TOEJAMS_HEALTH[player_number] <= 0) {
         KillThePlayer(player_number);
         if (--gPlayerLives[player_number] < 0) {
             ++gPlayerLives[player_number];

@@ -17,7 +17,7 @@
 #include "ui_calls.h"
 
 /* Bucket a ten-bit random value with descending thresholds 256, 224, ... . */
-short func_0077d8()
+short MapChooseBackgroundTileBucket()
 {
     short random_value, threshold, bucket;
 
@@ -32,7 +32,7 @@ short func_0077d8()
 }
 
 /* Install the nine fixed decorations in the map background plane. */
-void func_007804()
+void MapDrawFixedBackgroundDecorations()
 {
     VDP_COMMAND = 0x65820003;
     VDP_DATA = 0x458f;
@@ -55,7 +55,7 @@ void func_007804()
 }
 
 /* Draw the packed font/background map and the two-tile terrain cells. */
-void func_0078a8(player)
+void MapDrawBackgroundAndTerrain(player)
 short player;
 {
     short column, row;
@@ -88,7 +88,7 @@ short player;
             VDP_DATA = left_tile + 0x4580;
         }
     }
-    func_007804();
+    MapDrawFixedBackgroundDecorations();
     for (row = 0; row < 26; ++row) {
         VDP_COMMAND = 0x60040003 + ((row + 2) << 23);
         for (column = 0; column < 19; ++column) {
@@ -103,7 +103,7 @@ short player;
                     palette = 1;
                 else if (tile_number > 101)
                     palette = TileLookupAuxiliary[tile_number - 102];
-                if (ram_ff91ea && (gMapDataD[row][column] & 15))
+                if (gMapDirectionalPathMode && (gMapDataD[row][column] & 15))
                     palette = 3;
                 left_tile |= palette << 13;
                 right_tile |= palette << 13;
@@ -116,7 +116,7 @@ short player;
                 }
             } else {
                 for (half = 0; half < 2; ++half) {
-                    random_tile = func_0077d8();
+                    random_tile = MapChooseBackgroundTileBucket();
                     if (!random_tile)
                         VDP_DATA = 0x2045;
                     else {
@@ -130,13 +130,13 @@ short player;
 }
 
 /* Test the clipped five-by-four map-cell area beneath one cover block. */
-int func_007b24(map, cover_row, cover_column)
+int MapCoverBlockContainsTerrain(map, cover_row, cover_column)
 unsigned short *map;
 int cover_row, cover_column;
 {
     short row_offset, column_offset, row, column;
 
-    if (ram_ff935a) {
+    if (gMapRevealMode) {
         cover_row = cover_row * 4 - 1;
         cover_column = cover_column * 5 - 1;
         for (row_offset = 0; row_offset < 4; ++row_offset) {
@@ -163,7 +163,7 @@ short level;
 
     if (!level)
         return;
-    if (ram_ff91ea)
+    if (gMapDirectionalPathMode)
         return;
     traversal = GetRandomNumber() & 3;
     for (row = 0; row < 7; ++row) {
@@ -172,13 +172,13 @@ short level;
         for (column = 0; column < 8; ++column) {
             if (traversal & 2)
                 column = 7 - column;
-            if (!(ram_ff91ec[level][row] & (0x80 >> column))) {
-                if (ram_ff92a2[level][row] & (0x80 >> column))
-                    func_00815c(row, column, sprites, 1);
-                else if (revealed < 8 && func_007b24(map, row, column) &&
-                        PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0] % 100 < 25 - revealed) {
-                    func_00815c(row, column, sprites, 0);
-                    ram_ff92a2[level][row] |= 0x80 >> column;
+            if (!(gMapVisitedCoverBits[level][row] & (0x80 >> column))) {
+                if (gMapRevealedCoverBits[level][row] & (0x80 >> column))
+                    MapAppendCoverBlockSprites(row, column, sprites, 1);
+                else if (revealed < 8 && MapCoverBlockContainsTerrain(map, row, column) &&
+                        PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100 < 25 - revealed) {
+                    MapAppendCoverBlockSprites(row, column, sprites, 0);
+                    gMapRevealedCoverBits[level][row] |= 0x80 >> column;
                     ++revealed;
                 }
             }
@@ -190,11 +190,11 @@ short level;
     }
     for (row = 0; row < 7; ++row) {
         for (column = 0; column < 8; ++column) {
-            if (!(ram_ff91ec[level][row] & (0x80 >> column)) &&
-                    !(ram_ff92a2[level][row] & (0x80 >> column))) {
-                if (revealed < 2 && func_007b24(map, row, column)) {
-                    func_00815c(row, column, sprites, 0);
-                    ram_ff92a2[level][row] |= 0x80 >> column;
+            if (!(gMapVisitedCoverBits[level][row] & (0x80 >> column)) &&
+                    !(gMapRevealedCoverBits[level][row] & (0x80 >> column))) {
+                if (revealed < 2 && MapCoverBlockContainsTerrain(map, row, column)) {
+                    MapAppendCoverBlockSprites(row, column, sprites, 0);
+                    gMapRevealedCoverBits[level][row] |= 0x80 >> column;
                     ++revealed;
                 } else {
                     for (cover_row = 0; cover_row < 4; ++cover_row) {
@@ -271,49 +271,49 @@ void LoadLevel1Tiles()
 }
 
 /* Append two sprites covering one map block, retaining tiles when requested. */
-int func_00815c(row, column, sprites, retain_tiles)
+int MapAppendCoverBlockSprites(row, column, sprites, retain_tiles)
 short row, column;
 struct hardware_sprite *sprites;
 short retain_tiles;
 {
-    if (ram_ff9358 > 78)
+    if (gMapScreenNextSpriteIndex > 78)
         return 1;
-    sprites[ram_ff9358].x = column * 40 + 128;
-    sprites[ram_ff9358].y = row * 32 + 128;
+    sprites[gMapScreenNextSpriteIndex].x = column * 40 + 128;
+    sprites[gMapScreenNextSpriteIndex].y = row * 32 + 128;
     if (!retain_tiles)
-        sprites[ram_ff9358].tile = 0xc136;
-    ++ram_ff9358;
-    sprites[ram_ff9358].x = column * 40 + 160;
-    sprites[ram_ff9358].y = row * 32 + 128;
+        sprites[gMapScreenNextSpriteIndex].tile = 0xc136;
+    ++gMapScreenNextSpriteIndex;
+    sprites[gMapScreenNextSpriteIndex].x = column * 40 + 160;
+    sprites[gMapScreenNextSpriteIndex].y = row * 32 + 128;
     if (!retain_tiles)
-        sprites[ram_ff9358].tile = 0xc146;
-    ++ram_ff9358;
+        sprites[gMapScreenNextSpriteIndex].tile = 0xc146;
+    ++gMapScreenNextSpriteIndex;
     return 0;
 }
 
 /* Allocate eight icon tiles and initialize all eighty sprite records. */
-void func_008232(sprites)
+void MapInitializeScreenSprites(sprites)
 struct hardware_sprite *sprites;
 {
     short slot, sprite;
     /* The original keeps allocation slot and sprite index as separate counters. */
     unsigned short first_tile;
 
-    first_tile = func_00d630(8);
+    first_tile = AllocateSpriteTileRun(8);
     if (!first_tile) {
-        func_008c78(0);
-        first_tile = func_00d630(8);
+        EntityClearViewportSprites(0);
+        first_tile = AllocateSpriteTileRun(8);
         /* ORIGINAL BUG: after a second failure, the stronger recovery is not
          * followed by another allocation; first_tile remains zero below. */
         if (!first_tile)
-            func_008c78(1);
+            EntityClearViewportSprites(1);
     }
-    func_00d6b2(first_tile, 8);
-    ram_ff9358 = 7;
+    FreeSpriteTileRun(first_tile, 8);
+    gMapScreenNextSpriteIndex = 7;
     slot = 0;
     sprite = 0;
     while (slot < 80) {
-        if (slot < ram_ff9358) {
+        if (slot < gMapScreenNextSpriteIndex) {
             sprites[sprite].tile = first_tile + slot;
             sprites[sprite].size = 0;
         } else if (slot & 1) {
@@ -332,7 +332,7 @@ struct hardware_sprite *sprites;
 }
 
 /* Report a nonzero odd elevator state for the selected player. */
-int func_008356(player)
+int PlayerHasOddElevatorState(player)
 short player;
 {
     int in_elevator = 0;
@@ -352,7 +352,7 @@ struct hardware_sprite *sprites;
 
     for (player = 0; player <= 1; ++player) {
         position = &gPlayerInfo[player];
-        if (!func_008356(player) && position->level == level) {
+        if (!PlayerHasOddElevatorState(player) && position->level == level) {
             tile = sprites[player].tile;
             if (!player) {
                 VDP_COMMAND = 0x40000000 + (((tile << 5) & 0x3fff) << 16) + (((tile << 5) & 0xc000) >> 14);

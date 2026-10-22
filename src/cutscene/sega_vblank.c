@@ -13,9 +13,9 @@ void SegaLogoVBlank()
         SEGA_PAL_LOAD_FLAG = 0;
         CopyPaletteToCRAMSlot(SEGA_PAL_TO_LOAD, 3);
     }
-    if (ram_ffe402) {
+    if (gSegaVBlankSpriteUpdatesEnabled) {
         SpriteLoadingStuff(0, 0);
-        func_00059e(0);
+        SelectViewportSpriteChain(0);
     }
     MassiveRoutine();
     ++TIME_COUNTER;

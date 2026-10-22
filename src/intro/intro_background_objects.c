@@ -13,15 +13,15 @@
 
 /* Allocate eight drifting objects, summing each frame's tile dimensions.
  * Their y range excludes the open interval 150..170. */
-void func_0292de()
+void CutsceneCreateDriftingEntities()
 {
     short object_number, piece_number, slot;
     struct object_state *object;
     struct render_frame *frame;
 
     for (object_number = 0; object_number < 8; object_number++) {
-        frame = rom_03350e[object_number];
-        if (slot = func_00d904()) {
+        frame = CutsceneDriftingEntityFrames[object_number];
+        if (slot = AllocateEntity()) {
             object = &gPlayerInfo[slot];
             object->sprite_count = frame->count;
             object->tile_count = 0;
@@ -39,39 +39,39 @@ void func_0292de()
                 object->y = (int)GetRandomNumber() % 148 + 60;
             } while (object->y > 150 && object->y < 170);
             object->sequence = (char *)&IntroHeldFrameStreams[object_number];
-            object->frames = rom_03350e;
+            object->frames = CutsceneDriftingEntityFrames;
             object->frame_phase = 1;
             object->frame_duration = 1;
             object->frame = -1;
-            func_00d776(object, 0);
+            AllocateEntityViewportSprites(object, 0);
             object->sprite_ready = 0;
         }
-        ram_ffe3e6[object_number] = slot;
+        gCutsceneDriftingEntities[object_number] = slot;
     }
 }
 
 /* Release and clear each of the eight drifting-object slots. */
-void func_029414()
+void CutsceneReleaseDriftingEntities()
 {
     short object_number, slot;
 
     for (object_number = 0; object_number < 8; object_number++) {
-        if (slot = ram_ffe3e6[object_number])
-            func_00d970(slot);
-        ram_ffe3e6[object_number] = 0;
+        if (slot = gCutsceneDriftingEntities[object_number])
+            FreeEntity(slot);
+        gCutsceneDriftingEntities[object_number] = 0;
     }
 }
 
 /* Advance each drifting object when its fractional timer exceeds its
  * velocity word, wrapping x beyond 370 back into -70..-41. */
-void func_029450(scene)
+void CutsceneUpdateDriftingEntities(scene)
 short scene;
 {
     short object_number, slot;
     struct object_state *object;
 
     for (object_number = 0; object_number < 8; object_number++) {
-        if (slot = ram_ffe3e6[object_number]) {
+        if (slot = gCutsceneDriftingEntities[object_number]) {
             object = &gPlayerInfo[slot];
             object->fraction_x++;
             if (object->fraction_x > object->velocity_x) {
@@ -90,30 +90,30 @@ short scene;
 }
 
 /* Allocate four objects with four sprites and forty tiles each. */
-void func_029510()
+void IntroAllocateFlyingEntitySlots()
 {
     short object_number, slot;
     struct object_state *object;
 
     for (object_number = 0; object_number < 4; object_number++) {
-        if (slot = func_00d904()) {
+        if (slot = AllocateEntity()) {
             object = &gPlayerInfo[slot];
             object->sprite_count = 4;
             object->tile_count = 40;
             object->tile = 0;
         }
-        ram_ffe3ee[object_number] = slot;
+        gIntroFlyingEntities[object_number] = slot;
     }
 }
 
 /* Release and clear each of the four flying-object slots. */
-void func_029552()
+void IntroReleaseFlyingEntitySlots()
 {
     short object_number, slot;
 
     for (object_number = 0; object_number < 4; object_number++) {
-        if (slot = ram_ffe3ee[object_number])
-            func_00d970(slot);
-        ram_ffe3ee[object_number] = 0;
+        if (slot = gIntroFlyingEntities[object_number])
+            FreeEntity(slot);
+        gIntroFlyingEntities[object_number] = 0;
     }
 }

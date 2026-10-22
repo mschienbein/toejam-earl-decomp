@@ -12,29 +12,29 @@
 /* ORIGINAL BUG: this consumer retains the observed int result view.
  * Both the shared short declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
-extern int func_00d904();
+extern int AllocateEntity();
 
 /* Set both selected objects to the same position. */
-void func_028e36(x, y)
+void CutscenePositionRocketshipPair(x, y)
 int x, y;
 {
     struct object_state *object;
 
-    object = &gPlayerInfo[ram_ffe3de];
+    object = &gPlayerInfo[gCutsceneRocketshipEntity];
     object->x = x;
     object->y = y;
-    object = &gPlayerInfo[ram_ffe3e0];
+    object = &gPlayerInfo[gCutsceneRocketshipExhaustEntity];
     object->x = x;
     object->y = y;
 }
 
 /* Allocate the first composite object and start its held-frame stream. */
-void func_028e74()
+void EndingCreatePoseComposite()
 {
     struct object_state *object;
 
-    if (ram_ffe3da = func_00d904()) {
-        object = &gPlayerInfo[ram_ffe3da];
+    if (gEndingPoseCompositeEntity = AllocateEntity()) {
+        object = &gPlayerInfo[gEndingPoseCompositeEntity];
         object->tile = 0;
         object->current_frame = CompositeFrames_038AA2[0];
         object->frames = CompositeFrames_038AA2;
@@ -48,19 +48,19 @@ void func_028e74()
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;
-        func_00d776(object, 0);
+        AllocateEntityViewportSprites(object, 0);
     }
 }
 
 /* Position the composite five pixels before the supplied coordinates and
  * select a two-byte held-frame stream. */
-void func_028ef0(frame, x, y)
+void EndingSetPoseComposite(frame, x, y)
 short frame, x, y;
 {
     struct object_state *object;
 
-    if (ram_ffe3da) {
-        object = &gPlayerInfo[ram_ffe3da];
+    if (gEndingPoseCompositeEntity) {
+        object = &gPlayerInfo[gEndingPoseCompositeEntity];
         object->x = x - 5;
         object->y = y - 5;
         object->tile |= 0x8000;
@@ -73,20 +73,20 @@ short frame, x, y;
 }
 
 /* Release the selected composite and clear its allocation slot. */
-void func_028f62()
+void EndingReleasePoseComposite()
 {
-    if (ram_ffe3da)
-        func_00d970(ram_ffe3da);
-    ram_ffe3da = 0;
+    if (gEndingPoseCompositeEntity)
+        FreeEntity(gEndingPoseCompositeEntity);
+    gEndingPoseCompositeEntity = 0;
 }
 
 /* Allocate the second composite with its held frame and tile attributes. */
-void func_028f82()
+void EndingCreateSixPieceComposite()
 {
     struct object_state *object;
 
-    if (ram_ffe3dc = func_00d904()) {
-        object = &gPlayerInfo[ram_ffe3dc];
+    if (gEndingSixPieceCompositeEntity = AllocateEntity()) {
+        object = &gPlayerInfo[gEndingSixPieceCompositeEntity];
         object->current_frame = CompositeFrames_038E2A[0];
         object->frames = CompositeFrames_038E2A;
         object->tile_count = 69;
@@ -99,18 +99,18 @@ void func_028f82()
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;
-        func_00d776(object, 0);
+        AllocateEntityViewportSprites(object, 0);
     }
 }
 
 /* Place the second composite at the requested x and 100 pixels below y. */
-void func_028ffa(x, y)
+void EndingPositionSixPieceComposite(x, y)
 short x, y;
 {
     struct object_state *object;
 
-    if (ram_ffe3dc) {
-        object = &gPlayerInfo[ram_ffe3dc];
+    if (gEndingSixPieceCompositeEntity) {
+        object = &gPlayerInfo[gEndingSixPieceCompositeEntity];
         object->x = x;
         object->y = y + 100;
         object->height = 100;
@@ -118,20 +118,20 @@ short x, y;
 }
 
 /* Release the second composite and clear its allocation slot. */
-void func_029036()
+void EndingReleaseSixPieceComposite()
 {
-    if (ram_ffe3dc)
-        func_00d970(ram_ffe3dc);
-    ram_ffe3dc = 0;
+    if (gEndingSixPieceCompositeEntity)
+        FreeEntity(gEndingSixPieceCompositeEntity);
+    gEndingSixPieceCompositeEntity = 0;
 }
 
 /* Allocate the ending composite with the first ending frame-index stream. */
-void func_029056()
+void EndingCreateRightOffsetComposite()
 {
     struct object_state *object;
 
-    if (ram_ffe3e2 = func_00d904()) {
-        object = &gPlayerInfo[ram_ffe3e2];
+    if (gEndingRightOffsetCompositeEntity = AllocateEntity()) {
+        object = &gPlayerInfo[gEndingRightOffsetCompositeEntity];
         object->tile = 0;
         object->current_frame = CompositeFrames_0393E8[0];
         object->frames = CompositeFrames_0393E8;
@@ -145,38 +145,38 @@ void func_029056()
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;
-        func_00d776(object, 0);
+        AllocateEntityViewportSprites(object, 0);
     }
 }
 
 /* Offset the ending composite 50 pixels to the right. */
-void func_0290d2(x, y)
+void EndingPositionRightOffsetComposite(x, y)
 short x, y;
 {
     struct object_state *object;
 
-    if (ram_ffe3e2) {
-        object = &gPlayerInfo[ram_ffe3e2];
+    if (gEndingRightOffsetCompositeEntity) {
+        object = &gPlayerInfo[gEndingRightOffsetCompositeEntity];
         object->x = x + 50;
         object->y = y;
     }
 }
 
 /* Release the ending composite and clear its allocation slot. */
-void func_029108()
+void EndingReleaseRightOffsetComposite()
 {
-    if (ram_ffe3e2)
-        func_00d970(ram_ffe3e2);
-    ram_ffe3e2 = 0;
+    if (gEndingRightOffsetCompositeEntity)
+        FreeEntity(gEndingRightOffsetCompositeEntity);
+    gEndingRightOffsetCompositeEntity = 0;
 }
 
 /* Allocate the falling rocketship with the corresponding intro stream. */
-void func_029128()
+void IntroCreateFallingRocketship()
 {
     struct object_state *object;
 
-    if (ram_ffe3d8 = func_00d904()) {
-        object = &gPlayerInfo[ram_ffe3d8];
+    if (gIntroFallingRocketshipEntity = AllocateEntity()) {
+        object = &gPlayerInfo[gIntroFallingRocketshipEntity];
         object->tile = 0;
         object->current_frame = Spr_IntroRocketshipFalling[0];
         object->frames = Spr_IntroRocketshipFalling;
@@ -189,39 +189,39 @@ void func_029128()
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;
-        func_00d776(object, 0);
+        AllocateEntityViewportSprites(object, 0);
     }
 }
 
 /* Release the falling rocketship and clear its allocation slot. */
-void func_02919e()
+void IntroReleaseFallingRocketship()
 {
-    if (ram_ffe3d8)
-        func_00d970(ram_ffe3d8);
-    ram_ffe3d8 = 0;
+    if (gIntroFallingRocketshipEntity)
+        FreeEntity(gIntroFallingRocketshipEntity);
+    gIntroFallingRocketshipEntity = 0;
 }
 
 /* Set the falling rocketship's position if it is allocated. */
-void func_0291be(x, y)
+void IntroPositionFallingRocketship(x, y)
 short x, y;
 {
     struct object_state *object;
 
-    if (ram_ffe3d8) {
-        object = &gPlayerInfo[ram_ffe3d8];
+    if (gIntroFallingRocketshipEntity) {
+        object = &gPlayerInfo[gIntroFallingRocketshipEntity];
         object->x = x;
         object->y = y;
     }
 }
 
 /* Allocate the three-piece ending composite at an elevated position. */
-void func_0291ec(x, y)
+void EndingCreateElevatedThreePieceComposite(x, y)
 unsigned short x, y;
 {
     struct object_state *object;
 
-    if (ram_ffe3e4 = func_00d904()) {
-        object = &gPlayerInfo[ram_ffe3e4];
+    if (gEndingElevatedThreePieceCompositeEntity = AllocateEntity()) {
+        object = &gPlayerInfo[gEndingElevatedThreePieceCompositeEntity];
         object->tile = 0;
         object->current_frame = CompositeFrames_0396EA[0];
         object->frames = CompositeFrames_0396EA;
@@ -236,25 +236,25 @@ unsigned short x, y;
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 4;
-        func_00d776(object, 0);
+        AllocateEntityViewportSprites(object, 0);
     }
 }
 
 /* Release the elevated ending composite and clear its allocation slot. */
-void func_029284()
+void EndingReleaseElevatedThreePieceComposite()
 {
-    if (ram_ffe3e4)
-        func_00d970(ram_ffe3e4);
-    ram_ffe3e4 = 0;
+    if (gEndingElevatedThreePieceCompositeEntity)
+        FreeEntity(gEndingElevatedThreePieceCompositeEntity);
+    gEndingElevatedThreePieceCompositeEntity = 0;
 }
 
 /* Restart the elevated composite on the alternate ending stream. */
-void func_0292a4()
+void EndingRestartElevatedCompositeSequence()
 {
     struct object_state *object;
 
-    if (ram_ffe3e4) {
-        object = &gPlayerInfo[ram_ffe3e4];
+    if (gEndingElevatedThreePieceCompositeEntity) {
+        object = &gPlayerInfo[gEndingElevatedThreePieceCompositeEntity];
         object->sprite_ready = 0;
         object->sequence = &EndingFrameIndexStreams[249];
         object->frame_duration = 1;

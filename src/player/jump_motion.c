@@ -14,7 +14,7 @@
 
 /* Advance the alternating jump phase, handle landing and water/space,
  * and delegate the input-dependent horizontal velocity update. */
-void func_011ac0(state, terrain)
+void PlayerUpdatePhasedJumpMotion(state, terrain)
 struct object_state *state;
 unsigned short terrain;
 {
@@ -24,7 +24,7 @@ unsigned short terrain;
     player = state->entity_number;
     if (gPlayer1Powerup[player])
         return;
-    if (!ram_ffda24[player] && (state->flags_52 & 12)) {
+    if (!gPlayerTerrainSinking[player] && (state->flags_52 & 12)) {
         state->height = 0;
         state->draw_flags &= 0xbf;
         return;
@@ -33,28 +33,28 @@ unsigned short terrain;
         !(state->sprite_state == 0 || state->sprite_state == 4 ||
           (state->flags_52 & 0x20400000) || state->sprite_state == 76 ||
           (state->flags_52 & 0x8000)) || ELEVATOR_FLAG[player] ||
-        (ram_ffda24[player] && state->height < -4))
+        (gPlayerTerrainSinking[player] && state->height < -4))
         return;
     direction = state->sprite_state & 3;
     phase = -1;
     jump = P1_PROCESSED_INPUT[player] & 0x40;
     if (!jump) {
-        ram_ffda36[player] = 1;
-        ram_ffe238[player] = 0;
+        gPlayerPhasedJumpArmed[player] = 1;
+        gPlayerChoiceActionReleaseLatches[player] = 0;
     }
-    if (ram_ffe238[player])
+    if (gPlayerChoiceActionReleaseLatches[player])
         return;
     if (state->sprite_state == 0 || state->sprite_state == 4 ||
         (state->flags_52 & 0x20400000) || state->sprite_state == 76) {
-        if (!jump || !ram_ffda36[player])
+        if (!jump || !gPlayerPhasedJumpArmed[player])
             return;
         phase = 1;
-    } else if (!ram_ffda26[player] && !jump) {
-        if (ram_ffda28[player] > 1)
+    } else if (!gPlayerPhasedJumpPhase[player] && !jump) {
+        if (gPlayerPhasedJumpPhaseTicks[player] > 1)
             phase = 1;
-    } else if (ram_ffda26[player] == 1 && jump) {
+    } else if (gPlayerPhasedJumpPhase[player] == 1 && jump) {
         phase = 0;
-        ram_ffda28[player] = 0;
+        gPlayerPhasedJumpPhaseTicks[player] = 0;
         PlaySound(23, 20);
     } else if (state->height < 4) {
         state->velocity_x = 0;
@@ -77,7 +77,7 @@ unsigned short terrain;
             } else {
                 phase = GetActivePresentSprite(state);
                 state->mode_15 = 3;
-                ram_ffda36[player] = 0;
+                gPlayerPhasedJumpArmed[player] = 0;
             }
             if (phase != -1) {
                 SetSprite(state, phase);
@@ -85,18 +85,18 @@ unsigned short terrain;
             }
         } else if (terrain == 0x90) {
             if (TOEJAM_JUMP_COUNTER[player] > 10)
-                SetToejamFalling(state, player);
-            else if (ram_ffda28[player] > 1) {
-                phase = ram_ffda26[player] ^ 1;
-                ram_ffda28[player] = 0;
+                PlayerStartFalling(state, player);
+            else if (gPlayerPhasedJumpPhaseTicks[player] > 1) {
+                phase = gPlayerPhasedJumpPhase[player] ^ 1;
+                gPlayerPhasedJumpPhaseTicks[player] = 0;
                 ++TOEJAM_JUMP_COUNTER[player];
             }
         }
         if (phase == -1)
             return;
     }
-    if (ram_ffda28[player] < 64)
-        ++ram_ffda28[player];
+    if (gPlayerPhasedJumpPhaseTicks[player] < 64)
+        ++gPlayerPhasedJumpPhaseTicks[player];
     if (!(state->flags_52 & 0x8000)) {
         SetSprite(state, 61);
         state->draw_flags |= 0x40;
@@ -105,12 +105,12 @@ unsigned short terrain;
         state->draw_flags &= 0xbf;
     else
         state->draw_flags |= 0x40;
-    func_011dd8(state, player, phase, jump);
+    PlayerApplyPhasedJumpInput(state, player, phase, jump);
 }
 
 /* Apply directional boosts at phase changes, decelerate against released
  * directions, clamp both horizontal axes, and speak once after rising. */
-void func_011dd8(state, player, phase, jump)
+void PlayerApplyPhasedJumpInput(state, player, phase, jump)
 struct object_state *state;
 short player;
 char phase, jump;
@@ -120,8 +120,8 @@ char phase, jump;
     char left, right, up, down;
     short maximum_speed;
 
-    if (ram_ffe1dc[player])
-        input = func_01cc62(player);
+    if (gPlayerControlRemapEntities[player])
+        input = PlayerRemapDirectionalInput(player);
     else
         input = P1_PROCESSED_INPUT[player];
     velocity_x = state->velocity_x;
@@ -131,7 +131,7 @@ char phase, jump;
     up = input & 1;
     down = input & 2;
     if (phase != -1) {
-        ram_ffda26[player] = phase;
+        gPlayerPhasedJumpPhase[player] = phase;
         state->frame = phase - 1;
         state->frame_duration = 1;
         if (jump) {
@@ -178,8 +178,8 @@ char phase, jump;
     }
     state->velocity_x = velocity_x;
     state->velocity_y = velocity_y;
-    if (!ram_ffda38[player] && state->height > 10) {
+    if (!gPlayerPhasedJumpSpeechUsed[player] && state->height > 10) {
         GenerateSpeech(player, "Awesome!!", 1);
-        ram_ffda38[player] = 1;
+        gPlayerPhasedJumpSpeechUsed[player] = 1;
     }
 }

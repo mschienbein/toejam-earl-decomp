@@ -4,7 +4,7 @@
 #include "sprite_calls.h"
 
 /* Count down matching earthling banks, then release their displayed objects. */
-void func_0174b6(level)
+void EarthlingReleaseLevelBank(level)
 short level;
 {
     short bank, record_number;
@@ -20,11 +20,11 @@ short level;
                     /* Byte zero is set to the released-record marker. */
                     EARTHLINGS_IN_LEVEL[bank][record_number].kind = -1;
                     if (object_number) {
-                        func_00d970(object_number);
+                        FreeEntity(object_number);
                         EARTHLINGS_IN_LEVEL[bank][record_number].object = 0;
                     }
                     if (object_number = EARTHLINGS_IN_LEVEL[bank][record_number].second_object) {
-                        func_00d970(object_number);
+                        FreeEntity(object_number);
                         EARTHLINGS_IN_LEVEL[bank][record_number].second_object = 0;
                     }
                 }

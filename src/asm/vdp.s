@@ -53,9 +53,9 @@ ClearColourRAM_Loop:
 | Arguments: source, tile-index destination, tile count (stack longs).
 | Pack the tile-index address into a VRAM write command and transfer longwords.
 | Preserve the original inclusive counter: this copies (argument3 * 8) + 1 longwords.
-.globl func_026f98
-.type func_026f98, @function
-func_026f98:
+.globl CopyLongwordRunToVramTile
+.type CopyLongwordRunToVramTile, @function
+CopyLongwordRunToVramTile:
     move.l (0x8,%sp),%d0
     lsl.l #TILE_VRAM_ADDRESS_SHIFT,%d0
     lsr.w #0x2,%d0
@@ -69,12 +69,12 @@ func_026f98:
     move.l (%a0)+,(VDP_DATA).l
     dbra %d1,.L_copy_tile_longs
     rts
-.size func_026f98, .-func_026f98
+.size CopyLongwordRunToVramTile, .-CopyLongwordRunToVramTile
 
 | Fill the current VDP destination with the low word of value, count times.
-.globl func_026fc2
-.type func_026fc2, @function
-func_026fc2:
+.globl FillVdpDataWords
+.type FillVdpDataWords, @function
+FillVdpDataWords:
     move.l (0x4,%sp),%d0
     move.l (0x8,%sp),%d1
     subq.w #0x1,%d1
@@ -82,12 +82,12 @@ func_026fc2:
     move.w %d0,(VDP_DATA).l
     dbra %d1,.L_fill_words
     rts
-.size func_026fc2, .-func_026fc2
+.size FillVdpDataWords, .-FillVdpDataWords
 
 | Fill the current VDP destination using byte-sized writes, count times.
-.globl func_026fd8
-.type func_026fd8, @function
-func_026fd8:
+.globl FillVdpDataBytes
+.type FillVdpDataBytes, @function
+FillVdpDataBytes:
     move.l (0x4,%sp),%d0
     move.l (0x8,%sp),%d1
     subq.w #0x1,%d1
@@ -95,7 +95,7 @@ func_026fd8:
     move.b %d0,(VDP_DATA).l
     dbra %d1,.L_fill_bytes
     rts
-.size func_026fd8, .-func_026fd8
+.size FillVdpDataBytes, .-FillVdpDataBytes
 
 | Copy count source words to the current VDP destination.
 .globl MoveDataToVRAM
@@ -112,9 +112,9 @@ MoveDataToVRAMLoop:
 
 | Arguments: destination byte address, source, words per row, row count, row stride in words.
 | Issue one VRAM command per row and copy consecutive source words.
-.globl func_027004
-.type func_027004, @function
-func_027004:
+.globl UploadVramWordRectangle
+.type UploadVramWordRectangle, @function
+UploadVramWordRectangle:
     link %a6,#0
     move.l %d2,-(%sp)
     movea.l (0x8,%a6),%a1
@@ -145,7 +145,7 @@ func_027004:
     move.l (%sp)+,%d2
     unlk %a6
     rts
-.size func_027004, .-func_027004
+.size UploadVramWordRectangle, .-UploadVramWordRectangle
 
 | Upload sixteen color words into palette slot (argument & 3).
 .globl CopyPaletteToCRAMSlot

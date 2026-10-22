@@ -4,8 +4,8 @@
 ; effects and one unsigned-PCM stream through the YM2612 channel-six DAC.
 ;
 ; 68000 interface (Z80 RAM is mapped at 0xa00000):
-;   func_03f7aa: command 1, argument = gMusicUnknownE47E (PlaySound's ID).
-;   func_03f62a / func_03f6c6: command 2, LE24 payload address and LE16 count
+;   AudioSubmitPendingIndexedCommand: command 1, argument = gMusicUnknownE47E (PlaySound's ID).
+;   AudioSubmitPendingPcmSample / AudioTrySubmitSequencerPcmSample: command 2, LE24 payload address and LE16 count
 ;     after consuming a sample's big-endian length header on the 68000 side.
 ;   Both take the Z80 bus and inspect Z80MailboxBusy; while it is nonzero they
 ;     release the bus, delay and retry. Once it is clear they write the fields,

@@ -5,10 +5,10 @@
  * movement, earthling movement, and projectile/present effects. The int results
  * retain their current caller interfaces; ABI normalization alone does not
  * uniquely recover the historical C return spellings. */
-extern int func_025bce();
-extern int func_025ca4();
-extern int func_025d80();
-extern int func_025e72();
-extern int func_025f42();
+extern int EntityFindNarrowCollisionAtPosition();
+extern int EntityFindMenuAwareCollisionAtPosition();
+extern int EntityFindVolumeCollisionAtPosition();
+extern int ProjectileFindCollisionExcludingOwner();
+extern int EntityFindHorizontalCollisionAtX();
 
 #endif

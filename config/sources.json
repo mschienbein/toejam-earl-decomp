@@ -247,7 +247,7 @@
    ]
   },
   {
-   "source": "src/engine/late_helpers_collision_release.c",
+   "source": "src/engine/late_helpers_collision_objects.c",
    "versions": [
     "rev02",
     "rev00"

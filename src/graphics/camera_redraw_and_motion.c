@@ -15,63 +15,63 @@ void UpdateCameraX()
 
     VDP_CONTROL_WORD = 0x8f80;
     for (camera = 0; camera < 2; camera++) {
-        if (ram_ff818e[camera]) {
-            start_row = ram_ff818a[camera];
-            count = ram_ff8190[camera];
+        if (gCameraColumnUploadPending[camera]) {
+            start_row = gCameraColumnUploadStartRow[camera];
+            count = gCameraColumnUploadWordCount[camera];
             if (camera == 0)
                 VDP_COMMAND = 0x60000002L + (start_row << 23) +
-                    (ram_ff818c[camera] << 17);
+                    (gCameraColumnUploadVramColumn[camera] << 17);
             else
                 VDP_COMMAND = 0x40000003L + (start_row << 23) +
-                    (ram_ff818c[camera] << 17);
+                    (gCameraColumnUploadVramColumn[camera] << 17);
             if (start_row + count <= 32)
-                MoveDataToVRAM(ram_ff810a[camera], count);
+                MoveDataToVRAM(gCameraColumnUploadWords[camera], count);
             else {
                 first_count = 32 - start_row;
-                MoveDataToVRAM(ram_ff810a[camera], first_count);
+                MoveDataToVRAM(gCameraColumnUploadWords[camera], first_count);
                 if (camera == 0)
-                    VDP_COMMAND = 0x60000002L + (ram_ff818c[camera] << 17);
+                    VDP_COMMAND = 0x60000002L + (gCameraColumnUploadVramColumn[camera] << 17);
                 else
-                    VDP_COMMAND = 0x40000003L + (ram_ff818c[camera] << 17);
-                MoveDataToVRAM(&ram_ff810a[camera][first_count], count - first_count);
+                    VDP_COMMAND = 0x40000003L + (gCameraColumnUploadVramColumn[camera] << 17);
+                MoveDataToVRAM(&gCameraColumnUploadWords[camera][first_count], count - first_count);
             }
-            ram_ff818e[camera] = 0;
+            gCameraColumnUploadPending[camera] = 0;
         }
     }
     VDP_CONTROL_WORD = 0x8f02;
 }
 
 /* Draw every buffered row for one camera, then restore its row cursor. */
-void func_00200a(camera)
+void RedrawCameraTileRows(camera)
 short camera;
 {
     short end_row;
 
     if (camera == 0) {
-        end_row = ram_ff803e + ram_ff8198;
-        while (end_row > ram_ff803e) {
-            func_0016d2(1, 0);
+        end_row = gCamera1TileRowCursor + gCameraColumnUploadHeight;
+        while (end_row > gCamera1TileRowCursor) {
+            BuildCameraTileRow(1, 0);
             UpdateCameraY();
-            ram_ff803e++;
+            gCamera1TileRowCursor++;
         }
-        ram_ff803e = end_row - ram_ff8198;
-        ram_ff8192 = 0;
+        gCamera1TileRowCursor = end_row - gCameraColumnUploadHeight;
+        gCamera1PendingTileDirections = 0;
     } else {
-        end_row = ram_ff8042 + ram_ff8198;
-        while (end_row > ram_ff8042) {
-            func_0016d2(1, 1);
+        end_row = gCamera2TileRowCursor + gCameraColumnUploadHeight;
+        while (end_row > gCamera2TileRowCursor) {
+            BuildCameraTileRow(1, 1);
             UpdateCameraY();
-            ram_ff8042++;
+            gCamera2TileRowCursor++;
         }
-        ram_ff8042 = end_row - ram_ff8198;
-        ram_ff8194 = 0;
+        gCamera2TileRowCursor = end_row - gCameraColumnUploadHeight;
+        gCamera2PendingTileDirections = 0;
     }
-    ram_ff8106[camera] = 0;
-    ram_ff818e[camera] = 0;
+    gCameraRowUploadPending[camera] = 0;
+    gCameraColumnUploadPending[camera] = 0;
 }
 
 /* Clamp camera coordinates and redraw the selected viewport. */
-void func_0020aa(camera, position_x, position_y)
+void SetCameraViewOrigin(camera, position_x, position_y)
 short camera, position_x, position_y;
 {
     if (gPlayerLives[0] < 0)
@@ -85,29 +85,29 @@ short camera, position_x, position_y;
     if (SPLIT_SCREEN) {
         if (position_y > 1672)
             position_y = 1672;
-        ram_ff8198 = 19;
+        gCameraColumnUploadHeight = 19;
     } else {
         if (position_y > 1560)
             position_y = 1560;
-        ram_ff8198 = 32;
+        gCameraColumnUploadHeight = 32;
     }
     if (camera == 0) {
         TOEJAM_CAMERA_NEWX = position_x;
         TOEJAM_CAMERA_NEWY = position_y;
-        ram_ff8040 = (short)((int)position_x >> 3) - 1;
-        ram_ff803e = (short)((int)position_y >> 3) - 1;
+        gCamera1TileColumnCursor = (short)((int)position_x >> 3) - 1;
+        gCamera1TileRowCursor = (short)((int)position_y >> 3) - 1;
     } else {
         EARL_CAMERA_NEWX = position_x;
         EARL_CAMERA_NEWY = position_y;
-        ram_ff8044 = (short)((int)position_x >> 3) - 1;
-        ram_ff8042 = (short)((int)position_y >> 3) - 1;
+        gCamera2TileColumnCursor = (short)((int)position_x >> 3) - 1;
+        gCamera2TileRowCursor = (short)((int)position_y >> 3) - 1;
     }
     {
         /* Compiler-shape note: the named int argument retains the original
          * in-place promotion of the exhausted short camera selector. */
         int selected_camera;
         selected_camera = camera;
-        func_00200a(selected_camera);
+        RedrawCameraTileRows(selected_camera);
     }
     if (gPlayerLives[0] < 0) {
         EARL_CAMERA_NEWX = TOEJAM_CAMERA_NEWX;
@@ -116,32 +116,32 @@ short camera, position_x, position_y;
 }
 
 /* Build rows and columns requested by the four camera-direction bits. */
-void func_00219c()
+void BuildPendingCameraTiles()
 {
     char directions;
 
-    directions = ram_ff8192 & 5;
+    directions = gCamera1PendingTileDirections & 5;
     if (directions && directions != 5) {
-        ram_ff803e = ram_ff8046;
-        func_0016d2(directions & 1, 0);
+        gCamera1TileRowCursor = gCamera1PendingTileRow;
+        BuildCameraTileRow(directions & 1, 0);
     }
-    directions = ram_ff8192 & 10;
+    directions = gCamera1PendingTileDirections & 10;
     if (directions && directions != 10) {
-        ram_ff8040 = TOEJAM_CAMERA_X;
-        func_001ba8(directions & 8, 0);
+        gCamera1TileColumnCursor = TOEJAM_CAMERA_X;
+        BuildCameraTileColumn(directions & 8, 0);
     }
-    ram_ff8192 = 0;
-    directions = ram_ff8194 & 5;
+    gCamera1PendingTileDirections = 0;
+    directions = gCamera2PendingTileDirections & 5;
     if (directions && directions != 5) {
-        ram_ff8042 = ram_ff804a;
-        func_0016d2(directions & 1, 1);
+        gCamera2TileRowCursor = gCamera2PendingTileRow;
+        BuildCameraTileRow(directions & 1, 1);
     }
-    directions = ram_ff8194 & 10;
+    directions = gCamera2PendingTileDirections & 10;
     if (directions && directions != 10) {
-        ram_ff8044 = EARL_CAMERA_X;
-        func_001ba8(directions & 8, 1);
+        gCamera2TileColumnCursor = EARL_CAMERA_X;
+        BuildCameraTileColumn(directions & 8, 1);
     }
-    ram_ff8194 = 0;
+    gCamera2PendingTileDirections = 0;
 }
 
 /* Flush one camera's pending row while preserving the other camera's flag. */
@@ -150,14 +150,14 @@ int camera;
 {
     char other_pending;
 
-    other_pending = ram_ff8106[camera ^ 1];
-    ram_ff8106[camera ^ 1] = 0;
+    other_pending = gCameraRowUploadPending[camera ^ 1];
+    gCameraRowUploadPending[camera ^ 1] = 0;
     VBLANK_FLAG_6 = 1;
     VBLANK_FLAG_3 = 1;
     WaitForNextVBlank(1);
     ClearSkipVHBlankFlags();
     UpdateCameraY();
-    ram_ff8106[camera ^ 1] = other_pending;
+    gCameraRowUploadPending[camera ^ 1] = other_pending;
     SetSkipVHBlankFlags();
     VBLANK_FLAG_3 = 0;
     VBLANK_FLAG_6 = 0;
@@ -169,14 +169,14 @@ int camera;
 {
     char other_pending;
 
-    other_pending = ram_ff818e[camera ^ 1];
-    ram_ff818e[camera ^ 1] = 0;
+    other_pending = gCameraColumnUploadPending[camera ^ 1];
+    gCameraColumnUploadPending[camera ^ 1] = 0;
     VBLANK_FLAG_6 = 1;
     VBLANK_FLAG_3 = 1;
     WaitForNextVBlank(1);
     ClearSkipVHBlankFlags();
     UpdateCameraX();
-    ram_ff818e[camera ^ 1] = other_pending;
+    gCameraColumnUploadPending[camera ^ 1] = other_pending;
     SetSkipVHBlankFlags();
     VBLANK_FLAG_3 = 0;
     VBLANK_FLAG_6 = 0;
@@ -194,11 +194,11 @@ short camera;
         if (TOEJAM_CAMERA_NEWY > 8) {
             TOEJAM_CAMERA_NEWY--;
             new_row = (TOEJAM_CAMERA_NEWY >> 3) - 1;
-            if (new_row != ram_ff803e) {
-                if (ram_ff8106[0])
+            if (new_row != gCamera1TileRowCursor) {
+                if (gCameraRowUploadPending[0])
                     TryUpdateCameraY(0);
-                ram_ff8192 |= 1;
-                ram_ff8046 = new_row;
+                gCamera1PendingTileDirections |= 1;
+                gCamera1PendingTileRow = new_row;
             }
         } else
             return 1;
@@ -206,11 +206,11 @@ short camera;
         if (EARL_CAMERA_NEWY > 8) {
             EARL_CAMERA_NEWY--;
             new_row = (EARL_CAMERA_NEWY >> 3) - 1;
-            if (new_row != ram_ff8042) {
-                if (ram_ff8106[1])
+            if (new_row != gCamera2TileRowCursor) {
+                if (gCameraRowUploadPending[1])
                     TryUpdateCameraY(1);
-                ram_ff8194 |= 1;
-                ram_ff804a = new_row;
+                gCamera2PendingTileDirections |= 1;
+                gCamera2PendingTileRow = new_row;
             }
         } else
             return 1;
@@ -232,11 +232,11 @@ short camera;
         if ((SPLIT_SCREEN && TOEJAM_CAMERA_NEWY < 1672) || TOEJAM_CAMERA_NEWY < 1560) {
             TOEJAM_CAMERA_NEWY++;
             new_row = (TOEJAM_CAMERA_NEWY >> 3) - 1;
-            if (new_row != ram_ff803e) {
-                if (ram_ff8106[0])
+            if (new_row != gCamera1TileRowCursor) {
+                if (gCameraRowUploadPending[0])
                     TryUpdateCameraY(0);
-                ram_ff8192 |= 4;
-                ram_ff8046 = new_row;
+                gCamera1PendingTileDirections |= 4;
+                gCamera1PendingTileRow = new_row;
             }
         } else
             return 1;
@@ -244,11 +244,11 @@ short camera;
         if ((SPLIT_SCREEN && EARL_CAMERA_NEWY < 1672) || EARL_CAMERA_NEWY < 1560) {
             EARL_CAMERA_NEWY++;
             new_row = (EARL_CAMERA_NEWY >> 3) - 1;
-            if (new_row != ram_ff8042) {
-                if (ram_ff8106[1])
+            if (new_row != gCamera2TileRowCursor) {
+                if (gCameraRowUploadPending[1])
                     TryUpdateCameraY(1);
-                ram_ff8194 |= 4;
-                ram_ff804a = new_row;
+                gCamera2PendingTileDirections |= 4;
+                gCamera2PendingTileRow = new_row;
             }
         } else
             return 1;
@@ -270,10 +270,10 @@ short camera;
         if (TOEJAM_CAMERA_NEWX > 8) {
             TOEJAM_CAMERA_NEWX--;
             new_column = (TOEJAM_CAMERA_NEWX >> 3) - 1;
-            if (new_column != ram_ff8040) {
-                if (ram_ff818e[0])
+            if (new_column != gCamera1TileColumnCursor) {
+                if (gCameraColumnUploadPending[0])
                     TryUpdateCameraX(0);
-                ram_ff8192 |= 8;
+                gCamera1PendingTileDirections |= 8;
                 TOEJAM_CAMERA_X = new_column;
             }
         } else
@@ -282,10 +282,10 @@ short camera;
         if (EARL_CAMERA_NEWX > 8) {
             EARL_CAMERA_NEWX--;
             new_column = (EARL_CAMERA_NEWX >> 3) - 1;
-            if (new_column != ram_ff8044) {
-                if (ram_ff818e[1])
+            if (new_column != gCamera2TileColumnCursor) {
+                if (gCameraColumnUploadPending[1])
                     TryUpdateCameraX(1);
-                ram_ff8194 |= 8;
+                gCamera2PendingTileDirections |= 8;
                 EARL_CAMERA_X = new_column;
             }
         } else
@@ -308,10 +308,10 @@ short camera;
         if (TOEJAM_CAMERA_NEWX < 2360) {
             TOEJAM_CAMERA_NEWX++;
             new_column = (TOEJAM_CAMERA_NEWX >> 3) - 1;
-            if (new_column != ram_ff8040) {
-                if (ram_ff818e[0])
+            if (new_column != gCamera1TileColumnCursor) {
+                if (gCameraColumnUploadPending[0])
                     TryUpdateCameraX(0);
-                ram_ff8192 |= 2;
+                gCamera1PendingTileDirections |= 2;
                 TOEJAM_CAMERA_X = new_column;
             }
         } else
@@ -320,10 +320,10 @@ short camera;
         if (EARL_CAMERA_NEWX < 2360) {
             EARL_CAMERA_NEWX++;
             new_column = (EARL_CAMERA_NEWX >> 3) - 1;
-            if (new_column != ram_ff8044) {
-                if (ram_ff818e[1])
+            if (new_column != gCamera2TileColumnCursor) {
+                if (gCameraColumnUploadPending[1])
                     TryUpdateCameraX(1);
-                ram_ff8194 |= 2;
+                gCamera2PendingTileDirections |= 2;
                 EARL_CAMERA_X = new_column;
             }
         } else

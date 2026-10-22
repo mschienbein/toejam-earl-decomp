@@ -10,7 +10,7 @@
  * These casts do not imply a different record layout; historical spelling
  * is unknown [INFERENCE]. */
 /* Compute camera velocity from animation movement and viewport edge thresholds. */
-void func_00267a(player, delta_x, delta_y, screen_x, screen_y)
+void GetPlayerCameraVelocity(player, delta_x, delta_y, screen_x, screen_y)
 short player, *delta_x, *delta_y, screen_x, screen_y;
 {
     short camera_x, camera_y;
@@ -90,7 +90,7 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
 }
 
 /* Advance 24.8 camera accumulators; jointly follow players in an unsplit viewport. */
-void func_0028f6()
+void UpdateCameraFollowing()
 {
     short blocked = 0;
     short primary_x, primary_y, secondary_x, secondary_y;
@@ -116,8 +116,8 @@ void func_0028f6()
         else if (gPlayerInfo[1].y < gPlayerInfo[0].y)
             secondary_y -= gPlayerInfo[1].height;
     }
-    func_00267a(0, &velocity_x[0], &velocity_y[0], primary_x, primary_y);
-    func_00267a(1, &velocity_x[1], &velocity_y[1], secondary_x, secondary_y);
+    GetPlayerCameraVelocity(0, &velocity_x[0], &velocity_y[0], primary_x, primary_y);
+    GetPlayerCameraVelocity(1, &velocity_x[1], &velocity_y[1], secondary_x, secondary_y);
     if (!SPLIT_SCREEN && !P1_MENU_OPEN[0] && !HBLANK_FLAG_1 &&
             gPlayerLives[0] >= 0 && gPlayerLives[1] >= 0) {
         if (velocity_x[0] || velocity_x[1]) {
@@ -142,8 +142,8 @@ void func_0028f6()
                 else if (velocity_x[1] > 0 && primary_x > 50)
                     combined_velocity += velocity_x[1];
             }
-            ram_ff819a += combined_velocity;
-            target = ram_ff819a >> 8;
+            gCamera1FollowXFixed += combined_velocity;
+            target = gCamera1FollowXFixed >> 8;
             while (target > *camera_x)
                 if (blocked = MoveCameraRight(0))
                     break;
@@ -151,7 +151,7 @@ void func_0028f6()
                 if (blocked = MoveCameraLeft(0))
                     break;
             if (blocked) {
-                ram_ff819a = *camera_x << 8;
+                gCamera1FollowXFixed = *camera_x << 8;
                 blocked = 0;
             }
         }
@@ -177,8 +177,8 @@ void func_0028f6()
                 else if (velocity_y[1] > 0 && primary_y > 40)
                     combined_velocity += velocity_y[1];
             }
-            ram_ff819e += combined_velocity;
-            target = ram_ff819e >> 8;
+            gCamera1FollowYFixed += combined_velocity;
+            target = gCamera1FollowYFixed >> 8;
             while (target > *camera_y)
                 if (blocked = MoveCameraDown(0))
                     break;
@@ -186,14 +186,14 @@ void func_0028f6()
                 if (blocked = MoveCameraUp(0))
                     break;
             if (blocked)
-                ram_ff819e = *camera_y << 8;
+                gCamera1FollowYFixed = *camera_y << 8;
         }
         EARL_CAMERA_NEWX = *camera_x;
         EARL_CAMERA_NEWY = *camera_y;
     } else if (gPlayerLives[0] >= 0) {
         if (velocity_x[0]) {
-            ram_ff819a += velocity_x[0];
-            target = ram_ff819a >> 8;
+            gCamera1FollowXFixed += velocity_x[0];
+            target = gCamera1FollowXFixed >> 8;
             while (target > *camera_x)
                 if (blocked = MoveCameraRight(0))
                     break;
@@ -201,13 +201,13 @@ void func_0028f6()
                 if (blocked = MoveCameraLeft(0))
                     break;
             if (blocked) {
-                ram_ff819a = *camera_x << 8;
+                gCamera1FollowXFixed = *camera_x << 8;
                 blocked = 0;
             }
         }
         if (velocity_y[0]) {
-            ram_ff819e += velocity_y[0];
-            target = ram_ff819e >> 8;
+            gCamera1FollowYFixed += velocity_y[0];
+            target = gCamera1FollowYFixed >> 8;
             while (target > *camera_y)
                 if (blocked = MoveCameraDown(0))
                     break;
@@ -215,13 +215,13 @@ void func_0028f6()
                 if (blocked = MoveCameraUp(0))
                     break;
             if (blocked) {
-                ram_ff819e = *camera_y << 8;
+                gCamera1FollowYFixed = *camera_y << 8;
                 blocked = 0;
             }
         }
         if (velocity_x[1]) {
-            ram_ff81a2 += velocity_x[1];
-            target = ram_ff81a2 >> 8;
+            gCamera2FollowXFixed += velocity_x[1];
+            target = gCamera2FollowXFixed >> 8;
             while (target > EARL_CAMERA_NEWX)
                 if (blocked = MoveCameraRight(1))
                     break;
@@ -229,13 +229,13 @@ void func_0028f6()
                 if (blocked = MoveCameraLeft(1))
                     break;
             if (blocked) {
-                ram_ff81a2 = EARL_CAMERA_NEWX << 8;
+                gCamera2FollowXFixed = EARL_CAMERA_NEWX << 8;
                 blocked = 0;
             }
         }
         if (velocity_y[1]) {
-            ram_ff81a6 += velocity_y[1];
-            target = ram_ff81a6 >> 8;
+            gCamera2FollowYFixed += velocity_y[1];
+            target = gCamera2FollowYFixed >> 8;
             while (target > EARL_CAMERA_NEWY)
                 if (blocked = MoveCameraDown(1))
                     break;
@@ -243,12 +243,12 @@ void func_0028f6()
                 if (blocked = MoveCameraUp(1))
                     break;
             if (blocked)
-                ram_ff81a6 = EARL_CAMERA_NEWY << 8;
+                gCamera2FollowYFixed = EARL_CAMERA_NEWY << 8;
         }
     } else {
         if (velocity_x[1]) {
-            ram_ff819a += velocity_x[1];
-            target = ram_ff819a >> 8;
+            gCamera1FollowXFixed += velocity_x[1];
+            target = gCamera1FollowXFixed >> 8;
             while (target > *camera_x)
                 if (blocked = MoveCameraRight(0))
                     break;
@@ -256,13 +256,13 @@ void func_0028f6()
                 if (blocked = MoveCameraLeft(0))
                     break;
             if (blocked) {
-                ram_ff819a = *camera_x << 8;
+                gCamera1FollowXFixed = *camera_x << 8;
                 blocked = 0;
             }
         }
         if (velocity_y[1]) {
-            ram_ff819e += velocity_y[1];
-            target = ram_ff819e >> 8;
+            gCamera1FollowYFixed += velocity_y[1];
+            target = gCamera1FollowYFixed >> 8;
             while (target > *camera_y)
                 if (blocked = MoveCameraDown(0))
                     break;
@@ -270,7 +270,7 @@ void func_0028f6()
                 if (blocked = MoveCameraUp(0))
                     break;
             if (blocked)
-                ram_ff819e = *camera_y << 8;
+                gCamera1FollowYFixed = *camera_y << 8;
         }
     }
 }

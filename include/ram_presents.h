@@ -21,12 +21,12 @@ extern char LEVEL_LOADED_2;
 
 /* Dropped-present records and the existing per-level item mask. */
 extern struct level_item gDroppedPresentTable[32];
-extern unsigned long ram_ffdde8[26];
+extern unsigned long gCollectedLevelItemBits[26];
 
 /* Two eight-byte telephone records and separate ringing state.
  * Existing incomplete state-array bounds are not promoted to guessed sizes. */
 extern struct telephone_state TELEPHONE_1[2];
-extern char ram_ffe25e[];
+extern char gTelephoneActivated[];
 extern char gTelephoneRingsLeft[];
 extern char gTelephoneTimeToRing[];
 

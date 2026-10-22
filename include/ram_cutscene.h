@@ -5,21 +5,21 @@
 /* Exact observed views; unspecified outer bounds do not claim allocations. */
 extern short SEGA_PAL_LOAD_FLAG;
 extern unsigned short *SEGA_PAL_TO_LOAD;
-extern unsigned char ram_ffe3aa;
-extern unsigned char ram_ffe3ac;
-extern char ram_ffe3ca;
-extern char ram_ffe3cc;
-extern unsigned char ram_ffe3da;
-extern unsigned char ram_ffe3dc;
-extern unsigned char ram_ffe3e2;
-extern unsigned char ram_ffe3e4;
-extern unsigned short ram_ffe3f6;
-extern short ram_ffe3f8;
-extern short ram_ffe3fa;
-extern short ram_ffe3fc;
-extern short ram_ffe3fe;
-extern unsigned short ram_ffe400;
-extern short ram_ffe402;
-extern short ram_ffe404;
+extern unsigned char gEndingPlayer1Entity;
+extern unsigned char gEndingPlayer2Entity;
+extern char gCutsceneFirstTextEntity;
+extern char gCutsceneSecondTextEntity;
+extern unsigned char gEndingPoseCompositeEntity;
+extern unsigned char gEndingSixPieceCompositeEntity;
+extern unsigned char gEndingRightOffsetCompositeEntity;
+extern unsigned char gEndingElevatedThreePieceCompositeEntity;
+extern unsigned short gEndingStationaryCompositeEntity;
+extern short gCutsceneScriptState;
+extern short gCutsceneMusicActorAnimationEnabled;
+extern short gCutsceneScriptCountdown;
+extern short gCutsceneAdvanceButtonMask;
+extern unsigned short gSegaTrademarkEntity;
+extern short gSegaVBlankSpriteUpdatesEnabled;
+extern short gSegaRocketPassShown;
 
 #endif

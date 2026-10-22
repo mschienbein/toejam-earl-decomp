@@ -3,34 +3,34 @@
 
 
 /* Exact observed views; unspecified outer bounds do not claim allocations. */
-extern short ram_ffe410;
-extern short ram_ffe412;
-extern short ram_ffe414;
-extern short ram_ffe416;
-extern short ram_ffe418;
-extern short ram_ffe41a[9];
-extern short ram_ffe42c[9];
-extern char *ram_ffe43e;
-extern short ram_ffe442;
-extern short ram_ffe444;
-extern char *ram_ffe446;
-extern short ram_ffe44a;
-extern short ram_ffe44c;
-extern short ram_ffe44e;
-extern short ram_ffe450;
-extern short ram_ffe452;
-extern short ram_ffe454;
-extern short ram_ffe456;
-extern unsigned short ram_ffe458;
-extern unsigned short ram_ffe45a;
-extern short ram_ffe45c;
-extern short ram_ffe45e;
-extern unsigned short ram_ffe460;
-extern unsigned short ram_ffe462;
-extern unsigned short ram_ffe464;
-extern unsigned short ram_ffe466;
-extern unsigned short ram_ffe468;
-extern unsigned short ram_ffe46a;
-extern short ram_ffe476;
+extern short gJamLayoutCountdown;
+extern short gJamLayoutPhase;
+extern short gJamHorizontalScroll;
+extern short gJamVerticalScroll;
+extern short gJamScrollStep;
+extern short gJamToejamEntities[9];
+extern short gJamEarlEntities[9];
+extern char *gJamToejamAnimationSequence;
+extern short gJamPlayer1PreviousInput;
+extern short gJamToejamAnimationFrame;
+extern char *gJamEarlAnimationSequence;
+extern short gJamPlayer2PreviousInput;
+extern short gJamEarlAnimationFrame;
+extern short gJamPlayer1PendingAnimationInput;
+extern short gJamPlayer2PendingAnimationInput;
+extern short gJamToejamAnimationLocked;
+extern short gJamEarlAnimationLocked;
+extern short gJamSelectedSong;
+extern unsigned short gJamAudioRoute1PendingInput;
+extern unsigned short gJamAudioRoute2PendingInput;
+extern short gJamSongCycleIndex;
+extern short gJamTemplateBankCycleIndex;
+extern unsigned short gJamAudioRoute2ButtonASampleIndex;
+extern unsigned short gJamAudioRoute2ButtonBSampleIndex;
+extern unsigned short gJamAudioRoute2ButtonCSampleIndex;
+extern unsigned short gJamAudioRoute1ButtonASampleIndex;
+extern unsigned short gJamAudioRoute1ButtonBSampleIndex;
+extern unsigned short gJamAudioRoute1ButtonCSampleIndex;
+extern short gMusicAlternateTemplateBankEnabled;
 
 #endif

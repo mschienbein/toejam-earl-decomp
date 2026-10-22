@@ -119,10 +119,10 @@ register int player;
             position_y += (row + 1) * 64;
             position_x += (column + 1) * 128;
             if (player == 2) {
-                if (!func_012db8(position_x - 32, position_y, level) &&
-                    !func_012db8(position_x + 32, position_y, level))
+                if (!ElevatorContainsPosition(position_x - 32, position_y, level) &&
+                    !ElevatorContainsPosition(position_x + 32, position_y, level))
                     goto set_position;
-            } else if (!func_012db8(position_x, position_y, level))
+            } else if (!ElevatorContainsPosition(position_x, position_y, level))
                 goto set_position;
         }
     }
@@ -141,10 +141,10 @@ register int player;
                 position_y += (row + 1) * 64;
                 position_x += (column + 1) * 128;
                 if (player == 2) {
-                    if (!func_012db8(position_x - 32, position_y, level) &&
-                        !func_012db8(position_x + 32, position_y, level))
+                    if (!ElevatorContainsPosition(position_x - 32, position_y, level) &&
+                        !ElevatorContainsPosition(position_x + 32, position_y, level))
                         goto set_position;
-                } else if (!func_012db8(position_x, position_y, level))
+                } else if (!ElevatorContainsPosition(position_x, position_y, level))
                     goto set_position;
             }
             column = (column + 1) % 19;

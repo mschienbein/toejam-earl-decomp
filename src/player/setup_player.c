@@ -14,27 +14,27 @@ void SetupPlayer()
     unsigned short tile;
     struct object_state *entity;
 
-    ram_ffb65a[0].link = 11;
+    gHardwareSpriteTable[0].link = 11;
     for (sprite_number = 0; sprite_number < 10; ++sprite_number) {
         tile = 0x85a9;
         if (sprite_number & 1)
             tile |= 0x1800;
-        ram_ffb65a[sprite_number + 1].x = (sprite_number << 5) + 128;
-        ram_ffb65a[sprite_number + 1].y = 236;
-        ram_ffb65a[sprite_number + 1].size = 12;
-        ram_ffb65a[sprite_number + 1].link = sprite_number + 2;
-        ram_ffb65a[sprite_number + 1].tile = tile;
+        gHardwareSpriteTable[sprite_number + 1].x = (sprite_number << 5) + 128;
+        gHardwareSpriteTable[sprite_number + 1].y = 236;
+        gHardwareSpriteTable[sprite_number + 1].size = 12;
+        gHardwareSpriteTable[sprite_number + 1].link = sprite_number + 2;
+        gHardwareSpriteTable[sprite_number + 1].tile = tile;
     }
     for (sprite_number = 11; sprite_number < 23; ++sprite_number)
-        ram_ffb65a[sprite_number].link = sprite_number + 1;
-    ram_ffb65a[sprite_number].link = 23;
-    ram_ffb65a[23].link = 79;
-    ram_ffd932 = 79;
-    ram_ffb65a[24].link = 79;
-    ram_ffd934 = 79;
-    ram_ffb65a[79].link = 0;
+        gHardwareSpriteTable[sprite_number].link = sprite_number + 1;
+    gHardwareSpriteTable[sprite_number].link = 23;
+    gHardwareSpriteTable[23].link = 79;
+    gPrimaryViewportUploadedLink = 79;
+    gHardwareSpriteTable[24].link = 79;
+    gSecondaryViewportUploadedLink = 79;
+    gHardwareSpriteTable[79].link = 0;
     entity = &gPlayerInfo[0];
-    entity->process = func_00e400;
+    entity->process = Player1ProcessTerrainMotion;
     entity->sequence = PlayerAnimationDescriptors[0].sequence;
     entity->frames = PlayerAnimationDescriptors[0].frames;
     entity->frame_phase = 10;
@@ -47,9 +47,9 @@ void SetupPlayer()
     entity->draw_flags = 1;
     entity->flags_4d = 1;
     entity = &gPlayerInfo[1];
-    entity->process = func_00e410;
-    entity->sequence = rom_0ae9de[0].sequence;
-    entity->frames = rom_0ae9de[0].frames;
+    entity->process = Player2ProcessTerrainMotion;
+    entity->sequence = Player2AnimationDescriptors[0].sequence;
+    entity->frames = Player2AnimationDescriptors[0].frames;
     entity->frame_phase = 10;
     entity->frame_duration = 1;
     entity->width = 30;
@@ -60,10 +60,10 @@ void SetupPlayer()
     entity->draw_flags = 1;
     entity->flags_4d = 1;
     entity = &gPlayerInfo[26];
-    ram_ffd93c = entity;
+    gInventoryDrawListHead = entity;
     for (sprite_number = 0; sprite_number < 2; ++sprite_number) {
         entity->frames = Spr_PresentSelector;
-        entity->sequence = rom_0ae4a0;
+        entity->sequence = SingleFrameHoldAnimation;
         entity->width = 32;
         entity->height_pixels = 24;
         entity->sprite_count = 1;
@@ -73,7 +73,7 @@ void SetupPlayer()
         entity = entity->next;
         for (present_number = 0; present_number < 6; ++present_number) {
             entity->frames = PresentSpriteTable;
-            entity->sequence = rom_0ae4a0;
+            entity->sequence = SingleFrameHoldAnimation;
             entity->width = 24;
             entity->height_pixels = 16;
             entity->sprite_count = 1;

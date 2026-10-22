@@ -3,7 +3,7 @@
 #include "ship.h"
 
 /* Animate for at most 240 ticks, or accept and release A/B/C from an enabled pad. */
-void func_020840(player_number)
+void WaitForShipScreenAcknowledgement(player_number)
 short player_number;
 {
     short pressed_buttons;
@@ -15,7 +15,7 @@ short player_number;
             pressed_buttons &= 0x70;
             if (pressed_buttons) {
                 while (MovePadInputIntoD0(0) & 0x70 & pressed_buttons)
-                    func_01fb40(0);
+                    AnimateShipScreenBackground(0);
                 break;
             }
         }
@@ -24,10 +24,10 @@ short player_number;
             pressed_buttons &= 0x70;
             if (pressed_buttons) {
                 while (MovePadInputIntoD0(1) & 0x70 & pressed_buttons)
-                    func_01fb40(0);
+                    AnimateShipScreenBackground(0);
                 break;
             }
         }
-        func_01fb40(0);
+        AnimateShipScreenBackground(0);
     }
 }

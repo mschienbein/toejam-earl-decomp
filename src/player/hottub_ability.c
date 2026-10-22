@@ -10,7 +10,7 @@
 #include "speech.h"
 #include "sprite_calls.h"
 
-#define NEXT_RANDOM PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0]
+#define NEXT_RANDOM PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
 /* Advance entry, bathing, speech, healing, and exit poses at the hot tub. */
 void HottubAbility(player_number, earthling)
@@ -105,7 +105,7 @@ struct earthling_state *earthling;
             player->draw_flags |= 64;
             player->flags_4d &= ~32;
             player->acceleration_height = -32;
-            ram_ffda30[player_number] = 2;
+            gPlayerLandingCounterSeed[player_number] = 2;
         }
     }
     if (sprite != -1)

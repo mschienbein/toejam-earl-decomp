@@ -7,24 +7,24 @@
 #include "sprite_calls.h"
 
 /* Copy complete 32-byte tiles to the next transfer-buffer position. */
-void ClearLOC_00FFB8DA(source, tile_count)
+void AppendSpriteTilesToBuffer(source, tile_count)
 long *source;
 short tile_count;
 {
     long *destination;
     short longword_count;
 
-    destination = (long *)&ram_ffb8da[SPRITE_STATE_TABLE];
+    destination = (long *)&gSpriteTileUploadBuffer[gSpriteTileBufferOffset];
     longword_count = tile_count << 3;
     while (longword_count > 0) {
         *destination++ = *source++;
         --longword_count;
     }
-    SPRITE_STATE_TABLE += tile_count << 5;
+    gSpriteTileBufferOffset += tile_count << 5;
 }
 
 /* Call frame preparation callbacks within the 112-tile frame budget. */
-void func_00cb54()
+void ProcessEntityAnimationMotion()
 {
     char next_frame_or_needs_tiles;
     short tile_total = 0, entity_number, entity_count;
@@ -38,7 +38,7 @@ void func_00cb54()
         entity_count = 26;
     entity = gPlayerInfo;
     for (entity_number = 0; entity_number < entity_count; ++entity_number, ++entity) {
-        if (!(entity->draw_flags & 1) || func_01dee8(entity_number))
+        if (!(entity->draw_flags & 1) || IsSpeechBubbleEntity(entity_number))
             continue;
         if (entity->frame_duration - 1 == 0) {
             if (entity->tile_count + tile_total > 112)

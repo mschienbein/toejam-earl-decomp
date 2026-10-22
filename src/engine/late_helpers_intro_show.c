@@ -4,13 +4,13 @@
 #include "ram_player.h"
 
 /* Clear the hidden flag on each of the ten intro objects. */
-void func_028af0()
+void IntroRevealFrameEntities()
 {
     short index, object_number;
     struct object_state *object;
 
     for (index = 0; index < 10; ++index) {
-        object_number = ram_ffe3ce[index];
+        object_number = gIntroComponentEntities[index];
         object = &gPlayerInfo[object_number];
         object->flags_4d &= ~64;
     }

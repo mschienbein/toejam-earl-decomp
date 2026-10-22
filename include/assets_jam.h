@@ -9,12 +9,12 @@ extern unsigned char CrashPackedTilemapB[14][20];
 extern char JamOutCharacterAnimations[];
 extern struct render_frame *Spr_JamoutEarl[];
 extern struct render_frame *Spr_JamoutToejam[];
-extern char dat_093831[];
-extern char dat_093834[];
-extern char dat_093837[];
-extern char dat_09383a[];
-extern char dat_09383d[];
-extern char dat_093842[];
-extern char dat_09384e[];
+extern char JamBassDrumAlternateSequence[];
+extern char JamLeadIdleLoopSequence[];
+extern char JamSnareDrumFirstSequence[];
+extern char JamSnareDrumSecondSequence[];
+extern char JamClapSequence[];
+extern char JamVocalOrScratchSequence[];
+extern char JamLeadIdleTransitionSequence[];
 
 #endif

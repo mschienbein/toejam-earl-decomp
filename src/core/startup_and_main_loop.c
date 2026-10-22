@@ -64,13 +64,13 @@ short player;
 {
     long input, mapped;
     if (player == 0) {
-        if (!ram_ff801c) input = P1_PAD_INPUT;
+        if (!gControllerPortsSwapped) input = P1_PAD_INPUT;
         else input = P2_PAD_INPUT;
     } else {
-        if (!ram_ff801c) input = P2_PAD_INPUT;
+        if (!gControllerPortsSwapped) input = P2_PAD_INPUT;
         else input = P1_PAD_INPUT;
     }
-    if (ram_ff8030) {
+    if (gControllerButtonsAcSwapped) {
         mapped = input & 0x9f;
         if (input & 0x40)
             mapped |= 0x20;
@@ -82,7 +82,7 @@ short player;
 }
 
 /* Draw the 32-by-32 starfield tilemap using the observed word indices. */
-void func_00046a()
+void DrawStarfieldPlane()
 {
     short row, column;
     unsigned short tile;
@@ -102,15 +102,15 @@ void func_00046a()
 void DrawLevelGraphics()
 {
     short colour;
-    if (--ram_ff8028 < 0) {
-        ram_ff8028 = 3;
-        ram_ff8026 = (ram_ff8026 + 1) & 3;
+    if (--gLevelPaletteAnimationDelay < 0) {
+        gLevelPaletteAnimationDelay = 3;
+        gLevelPaletteAnimationFrame = (gLevelPaletteAnimationFrame + 1) & 3;
         VDP_COMMAND = 0xc0340000;
         for (colour = 0; colour < 4; ++colour) {
             if (gLevel912C < 26)
-                VDP_DATA = PaletteAnimationFramesA[ram_ff8026][colour];
+                VDP_DATA = PaletteAnimationFramesA[gLevelPaletteAnimationFrame][colour];
             else
-                VDP_DATA = PaletteAnimationFramesB[ram_ff8026][colour];
+                VDP_DATA = PaletteAnimationFramesB[gLevelPaletteAnimationFrame][colour];
         }
     }
 }
@@ -146,21 +146,21 @@ short count;
     }
 }
 
-void func_00059e(player)
+void SelectViewportSpriteChain(player)
 short player;
 {
     if (SPLIT_SCREEN) {
         if (player == 0)
-            func_00d022();
+            SelectPrimaryViewportSprites();
         else
-            func_00d04e();
+            SelectSecondaryViewportSprites();
     } else if ((player == 0 && P1_MENU_OPEN[0]) ||
                (player == 1 && P1_MENU_OPEN[1]))
-        func_00d04e();
+        SelectSecondaryViewportSprites();
     else if (player == 0 || P1_MENU_OPEN[0])
-        func_00d022();
+        SelectPrimaryViewportSprites();
     else
-        func_00d00e();
+        TerminatePrimarySpriteChain();
 }
 void HandleVBlank()
 {
@@ -175,10 +175,10 @@ void HandleVBlank()
                 P2_CAMERA_Y = EARL_CAMERA_NEWY;
             }
             if (SPLIT_SCREEN || P1_MENU_OPEN[0] || P1_MENU_OPEN[1]) {
-                func_00cfba(1);
+                SelectSpriteChainStart(1);
                 VDP_CONTROL_WORD = 0x8a70;
             } else {
-                func_00cfba(0);
+                SelectSpriteChainStart(0);
                 VDP_CONTROL_WORD = 0x8ab6;
             }
             VDP_CONTROL_WORD = 0x8014;
@@ -197,40 +197,40 @@ void HandleVBlank()
                     VDP_DATA = -P1_CAMERA_X / 2;
                 }
             }
-            func_00059e(0);
+            SelectViewportSpriteChain(0);
             if (WAIT_FOR_VBLANK_FLAG) {
-                func_00f69e();
+                MapClearTilePriorityNearPlayer();
                 /* The ROM jumps directly to the shared frame increment.
                  * An early return duplicates it rather than matching. */
                 goto end_frame;
             } else if (!VBLANK_FLAG_3) {
                 if (VBLANK_FLAG_4)
-                    func_008cf8();
+                    InventoryServiceRedrawPhase();
                 else if (VBLANK_FLAG_2) {
                     SpriteLoadingStuff(0, 0);
-                    func_00059e(0);
+                    SelectViewportSpriteChain(0);
                 } else if (VBLANK_FLAG_5) {
-                    func_00b3e4(0);
-                    func_00b3e4(1);
+                    HudLoadLivesSpriteTiles(0);
+                    HudLoadLivesSpriteTiles(1);
                     DrawHUD();
                 } else {
-                    if (!func_008be4(4)) {
+                    if (!TextAnimateFontBanks(4)) {
                         DrawLevelGraphics();
                         UpdateCameraY();
                         UpdateCameraX();
-                        func_00b18c(0);
-                        func_00b18c(1);
+                        HudAnimateHealthBar(0);
+                        HudAnimateHealthBar(1);
                     }
-                    if (++ram_ff8024 & 1)
-                        func_00d152(0);
+                    if (++gVBlankPlayerUpdateParity & 1)
+                        HideFlaggedPlayerSprites(0);
                     else
-                        func_00d152(1);
+                        HideFlaggedPlayerSprites(1);
                 }
             }
         }
         if (!VBLANK_FLAG_3 || VBLANK_FLAG_6) {
             if (VBLANK_FLAG_8 != VBLANK_FLAG_7) {
-                func_03e46a(VBLANK_FLAG_7);
+                MusicSelectSongTemplateBank(VBLANK_FLAG_7);
                 VBLANK_FLAG_8 = VBLANK_FLAG_7;
             } else
                 MassiveRoutine();
@@ -247,7 +247,7 @@ end_frame:
 void HandleHBlank()
 {
     if (SKIP_HBLANK_FLAG && gLevel912C < 26) {
-        func_00059e(1);
+        SelectViewportSpriteChain(1);
         if (SPLIT_SCREEN || HBLANK_FLAG_1) {
             if (HBLANK_FLAG_1)
                 VDP_CONTROL_WORD = 0x928e;
@@ -297,7 +297,7 @@ int CheckStartButton()
         if (P1_PROCESSED_INPUT[0] & 0x80) {
             if (!(P1_PREV_PROCESSED_INPUT[0] & 0x80))
                 GamePaused(0);
-        } else if (!(ram_ff8021 & 0x80))
+        } else if (!(gPlayer2PreviousProcessedInput & 0x80))
             GamePaused(1);
         return 1;
     }
@@ -337,7 +337,7 @@ void ProcessInput()
             x = entity->x - 72;
             y = entity->y - 8;
             if (x >= 0 && y >= 0 && x < 2560 && y < 1792) {
-                map_cell = &ram_ff91ec[entity->level][y >> 8];
+                map_cell = &gMapVisitedCoverBits[entity->level][y >> 8];
                 mask = 0x80 >> (x / 320);
                 if (!(*map_cell & mask)) {
                     *map_cell |= mask;
@@ -350,13 +350,13 @@ void ProcessInput()
     }
 }
 
-void func_000be2()
+void ReloadActiveCameraViews()
 {
-    func_002608(0, TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY);
+    SetCameraPosition(0, TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY);
     if (SPLIT_SCREEN)
-        func_002608(1, EARL_CAMERA_NEWX, EARL_CAMERA_NEWY);
+        SetCameraPosition(1, EARL_CAMERA_NEWX, EARL_CAMERA_NEWY);
 }
-void func_000c2e(animate)
+void EnterSplitScreen(animate)
 char animate;
 {
     short y;
@@ -365,10 +365,10 @@ char animate;
             ;
         ClearSkipVHBlankFlags();
         VDP_CONTROL_WORD = 0x9200;
-        func_00b95c(2);
+        HudHidePlayerSprites(2);
         if (animate) {
-            func_002e6a();
-            func_00300a();
+            AnimateSplitScreenWipe();
+            AnimatePlayersIntoSplitViews();
         }
     }
     SPLIT_SCREEN = 1;
@@ -376,13 +376,13 @@ char animate;
         y = gPlayerInfo[0].y - gPlayerInfo[0].height_pixels / 2 - 56;
         if (gPlayerInfo[0].height > 0 && ((long)gPlayerInfo[0].flags_52 & 0x4008000))
             y -= gPlayerInfo[0].height / 2;
-        func_002608(0, gPlayerInfo[0].x - 160, y);
+        SetCameraPosition(0, gPlayerInfo[0].x - 160, y);
     }
     if (!HBLANK_FLAG_1) {
         y = gPlayerInfo[1].y - gPlayerInfo[1].height_pixels / 2 - 56;
         if (gPlayerInfo[1].height > 0 && ((long)gPlayerInfo[1].flags_52 & 0x4008000))
             y -= gPlayerInfo[1].height / 2;
-        func_002608(1, gPlayerInfo[1].x - 160, y);
+        SetCameraPosition(1, gPlayerInfo[1].x - 160, y);
         P2_CAMERA_X = EARL_CAMERA_NEWX;
         P2_CAMERA_Y = EARL_CAMERA_NEWY;
     }
@@ -394,7 +394,7 @@ char animate;
         DrawHUD();
 }
 
-void func_000d7e(distance_y, distance_x)
+void EnterSharedScreen(distance_y, distance_x)
 short distance_y, distance_x;
 {
     short x, y;
@@ -416,13 +416,13 @@ short distance_y, distance_x;
     y += distance_y / 2 - 96;
     display_enabled = gMode2RegSoftcopy & 0x40;
     if (display_enabled) {
-        func_008c5c();
+        WaitForVBlankWithGraphicsPaused();
         ClearSkipVHBlankFlags();
         gMode2RegSoftcopy &= 0x3c;
         VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     }
     SPLIT_SCREEN = 0;
-    func_002608(0, x, y);
+    SetCameraPosition(0, x, y);
     EARL_CAMERA_NEWX = TOEJAM_CAMERA_NEWX;
     EARL_CAMERA_NEWY = TOEJAM_CAMERA_NEWY;
     DrawHUD();
@@ -438,7 +438,7 @@ short distance_y, distance_x;
     }
 }
 
-void func_000ee6(player)
+void CenterSharedCameraOnPlayer(player)
 short player;
 {
     struct object_state *entity;
@@ -450,12 +450,12 @@ short player;
         y -= entity->height / 2;
     display_enabled = gMode2RegSoftcopy & 0x40;
     if (display_enabled) {
-        func_008c5c();
+        WaitForVBlankWithGraphicsPaused();
         ClearSkipVHBlankFlags();
         gMode2RegSoftcopy &= 0x3c;
         VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     }
-    func_002608(0, entity->x - 160, y);
+    SetCameraPosition(0, entity->x - 160, y);
     if (display_enabled) {
         ForceTextBackgroundColorToBlack(0);
         VBLANK_FLAG_5 = 1;
@@ -466,7 +466,7 @@ short player;
         DrawHUD();
 }
 
-int func_000fb6()
+int PlayersRequireSeparateViews()
 {
     short distance_y, distance_x;
     if (gPlayerLives[0] < 0 || gPlayer2Lives < 0)
@@ -490,18 +490,18 @@ int func_000fb6()
     return 0;
 }
 
-void func_00105a(force)
+void UpdateScreenSplitMode(force)
 char force;
 {
     short handled, distance_y, distance_x;
     if (force) {
         handled = 1;
         if (gPlayerLives[0] < 0)
-            func_000ee6(1);
+            CenterSharedCameraOnPlayer(1);
         else if (gPlayer2Lives < 0)
-            func_000ee6(0);
+            CenterSharedCameraOnPlayer(0);
         else if (gPlayerInfo[0].level != gPlayerInfo[1].level)
-            func_000c2e(0);
+            EnterSplitScreen(0);
         else
             handled = 0;
         if (handled)
@@ -523,15 +523,15 @@ char force;
         distance_y += gPlayerInfo[1].height;
     if (force) {
         if (distance_y > 124 || distance_x > 220 || P1_MENU_OPEN[0] || HBLANK_FLAG_1)
-            func_000c2e(0);
+            EnterSplitScreen(0);
         else
-            func_000d7e(distance_y, distance_x);
+            EnterSharedScreen(distance_y, distance_x);
     } else {
         if (!SPLIT_SCREEN && (distance_y > 124 || distance_x > 220))
-            func_000c2e(1);
+            EnterSplitScreen(1);
         else if (SPLIT_SCREEN && distance_y < 104 && distance_x < 200 &&
                  !P1_MENU_OPEN[0] && !HBLANK_FLAG_1)
-            func_000d7e(distance_y, distance_x);
+            EnterSharedScreen(distance_y, distance_x);
     }
     if (!SPLIT_SCREEN) {
         EARL_CAMERA_NEWX = TOEJAM_CAMERA_NEWX;
@@ -575,7 +575,7 @@ void InitialiseTheZ80()
 }
 /* Convert a one-based selection to a repeating zero-based six-entry index.
  * Keep signed C remainder behavior for zero or negative inputs. */
-short func_001262(selection)
+short GetLevelMusicIndex(selection)
 short selection;
 {
     return (selection - 1) % 6;
@@ -610,7 +610,7 @@ void FurtherInitialisation()
     MoveDataToVRAM(ImageTextBase, FontDataSize << 4);
     VDP_COMMAND = 0x40000001;
     MoveDataToVRAM(ImgStarfieldLarge, StarryBackgroundSize << 4);
-    func_008b98();
+    TextCopyFontBanksToRam();
     SetRAMIndexes();
     SEGAAndIntroVideoRoutine();
     NewGameMainMenu();
@@ -625,7 +625,7 @@ void FurtherInitialisation()
     MoveDataToVRAM(HUDAdditionalTiles, 304);
     VDP_COMMAND = 0x7f200003;
     MoveDataToVRAM(HUDAdditionalTilesSmall, 64);
-    func_00046a();
+    DrawStarfieldPlane();
     LoadLevel1Tiles();
     CopyPaletteToCRAMSlot(PaletteGameLine1, 0);
     CopyPaletteToCRAMSlot(PaletteGameLine2, 1);
@@ -635,7 +635,7 @@ void FurtherInitialisation()
     SetupTheMainGame();
     SetPositionOnNewLevel(2);
     ToggleLOC_00FF8196(1);
-    func_00105a(1);
+    UpdateScreenSplitMode(1);
     StackBasedRandom(GetRandomNumber() | ((long)TIME_COUNTER << 16));
     GenerateLevelSeeds();
     DrawHUD();
@@ -653,17 +653,17 @@ void FurtherInitialisation()
     for (;;) {
         time = TIME_COUNTER;
         if (++frame & 1) {
-            func_00105a(0);
-            func_0028f6();
+            UpdateScreenSplitMode(0);
+            UpdateCameraFollowing();
             ProcessLand();
-            func_00cc82();
+            UpdateAndQueueEntitySprites();
         } else {
-            func_00219c();
+            BuildPendingCameraTiles();
             if (frame & 2) {
                 ProcessEarthlings();
-                func_012a56();
+                ElevatorUpdateEntityVisibility();
                 ProcessElevators();
-                func_015a38();
+                MapUpdateItemsAndPresents();
                 ProcessTomatoRain();
             } else {
                 UpdateLandAroundPlayer(0);
@@ -673,9 +673,9 @@ void FurtherInitialisation()
                 Process2FEntityFlag();
             }
             ProcessMovement();
-            func_00bfc6();
-            func_00cb54();
-            func_01e4e4();
+            UpdateAllEntityViewportSprites();
+            ProcessEntityAnimationMotion();
+            UpdateSpeechAndDialogue();
         }
         while (time == TIME_COUNTER)
             GetRandomNumber();

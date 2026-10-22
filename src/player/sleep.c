@@ -19,7 +19,7 @@ void OpenSchoolBook(state)
 struct object_state *state;
 {
     SetSprite(state, 116);
-    ram_ffda3e[state->entity_number] = 60;
+    gPlayerBookSleepDelay[state->entity_number] = 60;
     StopPlayer(state);
     state->mode_15 = 0;
     state->height = 0;
@@ -41,27 +41,27 @@ struct object_state *state;
     if (ELEVATOR_FLAG[player] || state->level == 26)
         return;
     if (state->sprite_state == 116) {
-        if (--ram_ffda3e[player] <= 0) {
+        if (--gPlayerBookSleepDelay[player] <= 0) {
             next_sprite = 117;
-            ram_ffda40[player] = GetRandomNumber() % 7 + 4;
+            gPlayerWakeEffectsLeft[player] = GetRandomNumber() % 7 + 4;
         }
     } else if (state->sprite_state == 117) {
         input = MovePadInputIntoD0(player);
-        if (effect = ram_ffda42[player]) {
+        if (effect = gPlayerWakeEffectEntityHandles[player]) {
             wake_effect = &gPlayerInfo[effect];
-            if ((!ram_ffda40[player] && --P1_IDLE_COUNTER[player] <= 0) ||
+            if ((!gPlayerWakeEffectsLeft[player] && --P1_IDLE_COUNTER[player] <= 0) ||
                 !wake_effect->frame_duration) {
-                func_00d970(effect);
-                ram_ffda42[player] = 0;
-                if (!ram_ffda40[player])
+                FreeEntity(effect);
+                gPlayerWakeEffectEntityHandles[player] = 0;
+                if (!gPlayerWakeEffectsLeft[player])
                     next_sprite = GetActivePresentSprite(state);
             }
         } else if (input && input != P1_KEYDOWN[player] &&
-                   PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0] % 100 < 20) {
-            if (effect = func_00d904()) {
-                ram_ffda42[player] = effect;
+                   PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100 < 20) {
+            if (effect = AllocateEntity()) {
+                gPlayerWakeEffectEntityHandles[player] = effect;
                 wake_effect = &gPlayerInfo[effect];
-                --ram_ffda40[player];
+                --gPlayerWakeEffectsLeft[player];
                 wake_effect->x = state->x;
                 wake_effect->y = state->y;
                 wake_effect->level = state->level;
@@ -74,9 +74,9 @@ struct object_state *state;
                 wake_effect->frames = animation->frames;
                 wake_effect->frame_duration = 1;
                 wake_effect->frame = -1;
-                if (ram_ffda40[player]) {
+                if (gPlayerWakeEffectsLeft[player]) {
                     wake_effect->frame_phase = 15;
-                    if (ram_ffda40[player] & 1)
+                    if (gPlayerWakeEffectsLeft[player] & 1)
                         wake_effect->sequence = InlineAnimationPrograms_AF0CC;
                     else
                         wake_effect->sequence = &InlineAnimationPrograms_AF0CC[2];
@@ -88,22 +88,22 @@ struct object_state *state;
                     P1_IDLE_COUNTER[player] = 30;
                 }
             }
-        } else if (!TOEJAM_SPEECH_COUNTER)
+        } else if (!gPcmEffectCooldownTicks)
             PlaySoundEffect((long)Sfx_Snoring, 30, 0);
         P1_KEYDOWN[player] = input;
     } else {
-        if (effect = ram_ffda42[player]) {
-            func_00d970(effect);
-            ram_ffda42[player] = 0;
+        if (effect = gPlayerWakeEffectEntityHandles[player]) {
+            FreeEntity(effect);
+            gPlayerWakeEffectEntityHandles[player] = 0;
         }
         if (!state->sprite_state
 #if REVISION >= 2
-            && !ram_ffe236[player]
+            && !gPlayerInteractionChoiceActive[player]
 #endif
         ) {
             if (++P1_IDLE_COUNTER[player] > 300) {
                 next_sprite = 117;
-                ram_ffda40[player] = GetRandomNumber() % 7 + 4;
+                gPlayerWakeEffectsLeft[player] = GetRandomNumber() % 7 + 4;
             }
         } else
             P1_IDLE_COUNTER[player] = 0;

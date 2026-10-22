@@ -59,15 +59,29 @@ def snapshot(root: Path = ROOT) -> dict:
     return result
 
 
-def verify(root: Path = ROOT, history: Path = HISTORY) -> list[dict]:
-    entries = read_history(history)
-    if not entries:
-        raise SystemExit("denominator: no recorded revision")
+def check_chain(entries: list[dict]) -> None:
+    """Revision numbers, prev links and entry hashes are intact."""
     prev = None
     for number, entry in enumerate(entries, 1):
         if entry.get("revision") != number or entry.get("prev") != prev or entry.get("entry_sha256") != entry_hash(entry):
             raise SystemExit(f"denominator: history broken at revision {number}")
         prev = entry["entry_sha256"]
+
+
+def verify(root: Path = ROOT, history: Path = HISTORY, base: Path | None = None) -> list[dict]:
+    """The chain is intact, extends `base` (an earlier copy of the history) and matches the files.
+
+    The chain alone cannot detect a dropped tail entry whose snapshot equals the one before it;
+    comparing against the history of a trusted earlier commit (CI: the parent commit) can.
+    """
+    entries = read_history(history)
+    if not entries:
+        raise SystemExit("denominator: no recorded revision")
+    check_chain(entries)
+    if base is not None:
+        earlier = read_history(base)
+        if entries[:len(earlier)] != earlier:
+            raise SystemExit(f"denominator: history does not extend {base} (entries were rewritten or removed)")
     current = snapshot(root)
     recorded = {v: entries[-1]["versions"][v]["files"] for v in VERSIONS}
     actual = {v: current[v]["files"] for v in VERSIONS}
@@ -81,6 +95,7 @@ def verify(root: Path = ROOT, history: Path = HISTORY) -> list[dict]:
 
 def record(note: str, root: Path = ROOT, history: Path = HISTORY) -> dict:
     entries = read_history(history)
+    check_chain(entries)  # never append to a damaged history
     entry = {
         "revision": len(entries) + 1,
         "recorded_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -98,12 +113,13 @@ def record(note: str, root: Path = ROOT, history: Path = HISTORY) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("verify")
+    ver = sub.add_parser("verify")
+    ver.add_argument("--base", type=Path, help="an earlier copy of the history that must be a prefix (CI: parent commit)")
     rec = sub.add_parser("record")
     rec.add_argument("--note", required=True)
     args = parser.parse_args()
     if args.command == "verify":
-        entries = verify()
+        entries = verify(base=args.base if args.base and args.base.is_file() else None)
         latest = entries[-1]["versions"]["rev02"]
         print(f"denominator r{len(entries)} OK: rev02 {latest['functions']} functions, {latest['function_bytes']} bytes")
         return 0

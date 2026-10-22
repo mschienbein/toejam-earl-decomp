@@ -52,7 +52,8 @@ def symbol_table(version: str) -> dict[str, int]:
     for f in catalogue["functions"]:
         table.setdefault(f"func_{f['address']:06x}", f["address"])
     for name in namestool.load(version).values():
-        table[name.name] = name.address
+        for spelling in (name.name, *name.aliases):
+            table[spelling] = name.address
     return table
 
 

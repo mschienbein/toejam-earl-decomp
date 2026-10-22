@@ -40,6 +40,24 @@ class DenominatorTest(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, "history broken at revision 1"):
             denominator.verify(self.root, self.history)
 
+    def test_record_refuses_to_extend_a_damaged_history(self):
+        denominator.record("first", self.root, self.history)
+        entry = json.loads(self.history.read_text())
+        entry["note"] = "rewritten"
+        self.history.write_text(json.dumps(entry) + "\n")
+        with self.assertRaisesRegex(SystemExit, "history broken at revision 1"):
+            denominator.record("second", self.root, self.history)
+
+    def test_dropping_a_tail_revision_is_caught_against_an_earlier_copy(self):
+        denominator.record("first", self.root, self.history)
+        denominator.record("same files again", self.root, self.history)
+        earlier = self.root / "base.jsonl"
+        earlier.write_text(self.history.read_text())
+        self.history.write_text(self.history.read_text().splitlines()[0] + "\n")
+        self.assertEqual(len(denominator.verify(self.root, self.history)), 1)  # the chain alone cannot tell
+        with self.assertRaisesRegex(SystemExit, "does not extend"):
+            denominator.verify(self.root, self.history, base=earlier)
+
 
 if __name__ == "__main__":
     unittest.main()

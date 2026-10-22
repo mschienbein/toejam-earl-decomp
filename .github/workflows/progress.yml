@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # the denominator check compares with the base commit's history
 
       - uses: astral-sh/setup-uv@v6
 
@@ -26,8 +28,15 @@ jobs:
             python3 -m json.tool "$f" > /dev/null
           done
 
-      - name: Verify the recorded denominator (catalogues, classification, data units)
-        run: python3 tools/denominator.py verify
+      - name: Verify the recorded denominator (catalogues, classification, data units; append-only)
+        run: |
+          BASE="${{ github.event.pull_request.base.sha || github.event.before }}"
+          if [ -n "$BASE" ] && git cat-file -e "$BASE:docs/denominator-history.jsonl" 2>/dev/null; then
+            git show "$BASE:docs/denominator-history.jsonl" > "$RUNNER_TEMP/base-history.jsonl"
+            python3 tools/denominator.py verify --base "$RUNNER_TEMP/base-history.jsonl"
+          else
+            python3 tools/denominator.py verify
+          fi
 
       # No ROM and no binutils in CI: synthetic analyzer/ROM tests run, toolchain and real-ROM
       # tests skip themselves.

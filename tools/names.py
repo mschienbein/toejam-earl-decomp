@@ -34,6 +34,7 @@ class Name:
     kind: str
     size: int | None
     source: str
+    aliases: tuple[str, ...] = ()
 
 
 def path(version: str, root: Path = ROOT) -> Path:
@@ -50,7 +51,7 @@ def parse(document: dict, version: str | None = None) -> dict[int, Name]:
     seen: dict[str, int] = {}
     for entry in document.get("symbols", []):
         name, kind = entry.get("name", ""), entry.get("kind")
-        if not IDENT.match(name) or RESERVED.match(name):
+        if not IDENT.fullmatch(name) or RESERVED.fullmatch(name):
             raise NamesError(f"names: {name!r} is not a usable identifier (generated prefixes are reserved)")
         if kind not in KINDS:
             raise NamesError(f"names: {name}: unknown kind {kind!r}")
@@ -64,7 +65,7 @@ def parse(document: dict, version: str | None = None) -> dict[int, Name]:
             raise NamesError(f"names: {name}: ROM name outside the cartridge space")
         aliases = [a if isinstance(a, str) else a.get("name", "") for a in entry.get("aliases", [])]
         for alias in [name, *aliases]:
-            if alias != name and (not IDENT.match(alias) or RESERVED.match(alias)):
+            if alias != name and (not IDENT.fullmatch(alias) or RESERVED.fullmatch(alias)):
                 raise NamesError(f"names: alias {alias!r} of {name} is not a usable identifier")
             if alias in seen and seen[alias] != address:
                 raise NamesError(f"names: {alias!r} names two addresses")
@@ -72,7 +73,8 @@ def parse(document: dict, version: str | None = None) -> dict[int, Name]:
         if address in by_address:
             raise NamesError(f"names: 0x{address:06x} has two names ({by_address[address].name}, {name}); list extras as aliases")
         size = entry.get("size")
-        by_address[address] = Name(name, address, kind, int(size) if size is not None else None, entry.get("source", ""))
+        by_address[address] = Name(name, address, kind, int(size) if size is not None else None,
+                                   entry.get("source", ""), tuple(a for a in aliases if a != name))
     return by_address
 
 

@@ -6,7 +6,8 @@ A build is **PASS** only when `tools/build.py` writes a receipt whose `actual.sh
 pinned sha256 of the version (`config/title.json`). The receipt binds:
 
 - the catalogue sha256 (`config/<version>/catalogue.json`),
-- the sha256 of `tools/build.py`, `m68k.py`, `rom.py`, `toolchain.py`,
+- the sha256 of `tools/build.py`, `m68k.py`, `names.py`, `rom.py`, `toolchain.py`,
+- the sha256 of `config/<version>/names.json` (`names_sha256`; `null` when the version has no names file),
 - the sha256 of the `as`, `ld` and `objcopy` binaries and the `as` banner, and the assembler flags,
 - counts: units by kind, instructions, how many are readable assembly vs raw words, switch tables.
 

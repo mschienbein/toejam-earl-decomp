@@ -42,6 +42,20 @@ class NamesTest(unittest.TestCase):
         with self.assertRaisesRegex(names.NamesError, "not 'rev00'"):
             names.parse(doc(sym("A", "0x000300")), "rev00")
 
+    def test_provenance_objects_are_aliases_too(self):
+        parsed = names.parse(doc(sym("lmodt", "0x027154", aliases=[{"name": "MathMod32", "source": "tje-disasm"}])))
+        self.assertEqual(parsed[0x027154].aliases, ("MathMod32",))
+        with self.assertRaisesRegex(names.NamesError, "names two addresses"):
+            names.parse(doc(sym("lmodt", "0x027154", aliases=[{"name": "Other"}]), sym("Other", "0x027214")))
+        with self.assertRaisesRegex(names.NamesError, "alias 'func_027154'"):
+            names.parse(doc(sym("lmodt", "0x027154", aliases=[{"name": "func_027154"}])))
+
+    def test_a_trailing_newline_is_not_part_of_an_identifier(self):
+        with self.assertRaisesRegex(names.NamesError, "usable identifier"):
+            names.parse(doc(sym("Name\n", "0x000300")))
+        with self.assertRaisesRegex(names.NamesError, "usable identifier"):
+            names.parse(doc(sym("Name", "0x000300", aliases=["Other\n"])))
+
 
 if __name__ == "__main__":
     unittest.main()

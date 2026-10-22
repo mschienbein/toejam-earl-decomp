@@ -31,28 +31,51 @@ REPORT_VERSION = 2
 BLOCK = 0x10000
 
 
-def measures(fns: list[dict], matched: set[int], data_total: int = 0) -> dict:
+def measures(fns: list[dict], matched: set[int], data_total: int = 0, data_done: int = 0) -> dict:
     total = sum(f["size"] for f in fns)
     done = sum(f["size"] for f in fns if f["address"] in matched)
     nf = len(fns)
     nm = sum(1 for f in fns if f["address"] in matched)
     pct = 100.0 * done / total if total else 0.0
+    data_pct = 100.0 * data_done / data_total if data_total else 0.0
     return {
         "fuzzy_match_percent": pct,
         "total_code": str(total),
         "matched_code": str(done),
         "matched_code_percent": pct,
         "total_data": str(data_total),
-        "matched_data": "0",
-        "matched_data_percent": 0.0,
+        "matched_data": str(data_done),
+        "matched_data_percent": data_pct,
         "total_functions": nf,
         "matched_functions": nm,
         "matched_functions_percent": 100.0 * nm / nf if nf else 0.0,
         "complete_code": str(done),
         "complete_code_percent": pct,
-        "complete_data": "0",
-        "complete_data_percent": 0.0,
+        "complete_data": str(data_done),
+        "complete_data_percent": data_pct,
     }
+
+
+def typed_data(version: str, catalogue: dict) -> int:
+    """Bytes of the catalogue's data ranges owned by typed data units (config/<version>/data_units.json).
+
+    A unit counts when its kind is not `raw`: its bytes are rebuilt from an extracted, typed asset.
+    The units must tile the catalogue's header and data ranges exactly (tools/assets.py).
+    """
+    path = ROOT / "config" / version / "data_units.json"
+    if not path.is_file():
+        return 0
+    sys.path.insert(0, str(ROOT / "tools"))
+    import assets   # noqa: E402  (standard library only)
+    config = json.loads(path.read_text(encoding="utf-8"))
+    assets.validate_config(config, catalogue)
+    ranges = [(d["address"], d["address"] + d["size"]) for d in catalogue["data"]]
+    typed = 0
+    for unit in config["units"]:
+        start = int(unit["address"], 16)
+        if unit["kind"] != "raw" and any(lo <= start < hi for lo, hi in ranges):
+            typed += unit["size"]
+    return typed
 
 
 NON_C = ("handwritten_asm", "runtime_helper", "sega_library")
@@ -67,7 +90,7 @@ def excluded(version: str) -> set[int]:
     return {int(e["address"], 16) for e in entries if e["class"] in NON_C and e["confidence"] == "high"}
 
 
-def load(version: str) -> tuple[list[dict], set[int], int]:
+def load(version: str) -> tuple[list[dict], set[int], int, int]:
     catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text(encoding="utf-8"))
     not_c = excluded(version)
     functions = sorted((f for f in catalogue["functions"] if f["kind"] == "function" and f["address"] not in not_c),
@@ -90,7 +113,7 @@ def load(version: str) -> tuple[list[dict], set[int], int]:
                              f"{version} C function")
         matched.add(address)
     data_total = sum(d["size"] for d in catalogue["data"])
-    return functions, matched, data_total
+    return functions, matched, data_total, typed_data(version, catalogue)
 
 
 def display_names(version: str) -> dict[int, str]:
@@ -108,7 +131,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=Path("report.json"))
     parser.add_argument("--summary", type=Path, help="also append a Markdown summary (e.g. $GITHUB_STEP_SUMMARY)")
     args = parser.parse_args()
-    functions, matched, data_total = load(args.version)
+    functions, matched, data_total, data_done = load(args.version)
     display = display_names(args.version)
 
     blocks: dict[int, list[dict]] = {}
@@ -134,7 +157,7 @@ def main() -> int:
             ],
             "metadata": {"complete": False, "module_name": "rom", "progress_categories": ["game"], "auto_generated": True},
         })
-    total = measures(functions, matched, data_total)
+    total = measures(functions, matched, data_total, data_done)
     total["total_units"] = len(units)
     total["complete_units"] = sum(u["measures"]["complete_units"] for u in units)
     report = {
@@ -145,7 +168,8 @@ def main() -> int:
     }
     args.output.write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8", newline="\n")
     line = (f"{args.version}: {total['matched_functions']}/{total['total_functions']} functions, "
-            f"{total['matched_code']}/{total['total_code']} code bytes ({total['matched_code_percent']:.3f}%)")
+            f"{total['matched_code']}/{total['total_code']} code bytes ({total['matched_code_percent']:.3f}%); "
+            f"data {total['matched_data']}/{total['total_data']} bytes typed ({total['matched_data_percent']:.3f}%)")
     print(line)
     if args.summary:
         with args.summary.open("a") as f:

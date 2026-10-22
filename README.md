@@ -23,8 +23,8 @@ assembly source instead. The typed-data badge counts data bytes rebuilt from typ
 | Z80 sound driver + boot stub, 1,332 bytes | Z80 assembly, `src/z80/` | all |
 | 865,932 other data bytes | typed assets extracted from your dump at build time (`docs/DATA.md`) | all; 6 bytes typed `unreferenced` (no reader found) |
 
-REV 00 builds from the same sources (`revision.h` covers its few differences); its C progress is
-the same 581 functions. History: [docs/STATUS.md](docs/STATUS.md); what remains: [docs/RESUME.md](docs/RESUME.md).
+REV 00 builds from the same sources (`revision.h` covers its few differences: seven bug fixes in
+REV 02, [docs/REVISIONS.md](docs/REVISIONS.md)); its C progress is the same 581 functions. History: [docs/STATUS.md](docs/STATUS.md); what remains: [docs/RESUME.md](docs/RESUME.md).
 
 | Revision | Role | Functions | Rebuild |
 |---|---|---:|---|

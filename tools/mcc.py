@@ -317,7 +317,8 @@ def compile_c(source: Path, include_dirs: list[Path] = (), options: list[str] = 
         env = {**os.environ, "EMU2_DRIVE_C": str(drive), "EMU2_CWD": "C:\\WORK",
                "EMU2_DEFAULT_DRIVE": "C", "EMU2_PROGNAME": "C:\\MCC68K\\MCC68K.EXE"}
         command = [str(emu2), str(compiler), " ".join([name, *PROFILE, *options]) + ";"]
-        result = subprocess.run(command, cwd=work, env=env, capture_output=True, text=True, timeout=timeout)
+        result = subprocess.run(command, cwd=work, env=env, capture_output=True, text=True, timeout=timeout,
+                                encoding="latin-1")   # DOS console output (code page bytes)
         outputs = [p for p in work.iterdir() if p.name.upper() == f"{name}.SRC"]
         errors = re.search(r"(\d+) Errors? detected", result.stdout)
         if result.returncode != 0 or not outputs or (errors and errors.group(1) != "0"):

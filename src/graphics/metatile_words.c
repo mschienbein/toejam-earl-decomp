@@ -1,0 +1,50 @@
+extern unsigned short ram_ff804e[2][45];
+extern unsigned short ram_ff8196;
+extern char ram_ff8108[], ram_ff8106[];
+extern unsigned short LevelMetatileMaps[122][8][16];
+extern unsigned short OverlayMetatileMaps[15][8][16];
+
+/* Fill one 45-word transfer row and mark it ready. */
+void func_0015a8(camera)
+short camera;
+{
+    short column;
+
+    for (column = 0; column < 45; column++)
+        ram_ff804e[camera][column] = ram_ff8196 | (unsigned short)0;
+    ram_ff8108[camera] = 45;
+    ram_ff8106[camera] = 1;
+}
+
+/* Read a background metatile word; bit 7 requests a horizontal mirror. */
+unsigned short func_001612(metatile, row, column)
+unsigned short metatile, row, column;
+{
+    short tile;
+
+    if (metatile & 0x80) {
+        metatile &= 0x7f;
+        tile = LevelMetatileMaps[metatile][row][15 - column] ^ 0x800;
+    } else
+        tile = LevelMetatileMaps[metatile][row][column];
+    return tile;
+}
+
+/* Read an overlay word, retaining zero when mirroring an empty tile. */
+unsigned long func_001670(metatile, row, column)
+unsigned short metatile, row, column;
+{
+    unsigned short tile;
+
+    if (metatile & 0x10) {
+        metatile &= 15;
+        metatile--;
+        tile = OverlayMetatileMaps[metatile][row][15 - column];
+        if (tile)
+            tile ^= 0x800;
+    } else {
+        metatile--;
+        tile = OverlayMetatileMaps[metatile][row][column];
+    }
+    return tile;
+}

@@ -44,6 +44,34 @@
    ]
   },
   {
+   "source": "src/graphics/camera_column_transfer.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/graphics/camera_follow.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/graphics/camera_motion.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/graphics/camera_row_transfer.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/graphics/clear_words.c",
    "versions": [
     "rev02",
@@ -59,6 +87,13 @@
   },
   {
    "source": "src/graphics/glyph_map.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/graphics/metatile_words.c",
    "versions": [
     "rev02",
     "rev00"

@@ -31,6 +31,7 @@ extern unsigned short P1_PAD_INPUT, P2_PAD_INPUT, TIME_COUNTER;
 extern short WAIT_FOR_VBLANK_FLAG;
 extern void (*gVBlankFunc)();
 extern void func_00cfba(), func_00059e(), func_00f69e(), func_008cf8();
+extern void func_00d022(), func_00d04e(), func_00d00e();
 extern void SpriteLoadingStuff(), func_00b3e4(), DrawHUD(), DrawLevelGraphics();
 extern int func_008be4();
 extern void UpdateCameraY(), UpdateCameraX(), func_00b18c(), func_00d152();
@@ -541,17 +542,17 @@ extern void func_0028f6(), ProcessLand(), func_00cc82(), func_00219c();
 extern void ProcessEarthlings(), func_012a56(), ProcessElevators(), func_015a38(), ProcessTomatoRain();
 extern void UpdateLandAroundPlayer(), ProcessInput(), ProcessPlayers(), Process2FEntityFlag();
 extern void ProcessMovement(), func_00bfc6(), func_00cb54(), func_01e4e4();
-/* This caller consumes the full D0 return, with no 16-bit narrowing.
- * The separately accepted definition has an unsigned-short C return type. */
-extern long GetRandomNumber();
-extern short FontDataSize, StarryBackgroundSize, LevelTilesSize, InventoryLabelTileCounts[2];
-extern char ImgTextBase[], ImgStarfieldLarge[], LevelTiles[];
-extern char InventoryOpenDropTiles[], InventoryIdentifyTiles[], HUDAdditionalTiles[], HUDAdditionalTilesSmall[];
+extern unsigned short GetRandomNumber();
+extern short FontDataSize, StarryBackgroundSize, LevelTilesSize;
+extern short InventoryLabelIdentifySize, InventoryLabelOpenSize;
+extern char ImageTextBase[], ImgStarfieldLarge[], LevelTiles[];
+extern char InventoryLabelOpen[], InventoryLabelIdentify[], HUDAdditionalTiles[], HUDAdditionalTilesSmall[];
 extern unsigned short PaletteGameLine2[], PaletteGameLine3[], PaletteGameLine4[];
 
 void FurtherInitialisation()
 {
-    /* The ROM has no explicit initialization of this local. Its allocated
+    /* ORIGINAL BUG: the matching source reads an uninitialized frame count.
+     * The ROM has no explicit initialization of this local. Its allocated
      * D2 register last held TIME_COUNTER << 16, whose low word is zero.
      * [INFERENCE] The original source relied on an uninitialized frame count;
      * adding an initializer changes the bytes (and should not be hidden). */
@@ -574,7 +575,7 @@ void FurtherInitialisation()
     ClearSRAM();
     ClearVideoRAM();
     VDP_COMMAND = 0x70000002;
-    MoveDataToVRAM(ImgTextBase, FontDataSize << 4);
+    MoveDataToVRAM(ImageTextBase, FontDataSize << 4);
     VDP_COMMAND = 0x40000001;
     MoveDataToVRAM(ImgStarfieldLarge, StarryBackgroundSize << 4);
     func_008b98();
@@ -585,9 +586,9 @@ void FurtherInitialisation()
     VDP_COMMAND = 0x40000000;
     MoveDataToVRAM(LevelTiles, LevelTilesSize << 4);
     VDP_COMMAND = 0x46600001;
-    MoveDataToVRAM(InventoryOpenDropTiles, InventoryLabelTileCounts[1] << 4);
+    MoveDataToVRAM(InventoryLabelOpen, InventoryLabelOpenSize << 4);
     VDP_COMMAND = 0x79a00000;
-    MoveDataToVRAM(InventoryIdentifyTiles, InventoryLabelTileCounts[0] << 4);
+    MoveDataToVRAM(InventoryLabelIdentify, InventoryLabelIdentifySize << 4);
     VDP_COMMAND = 0x74000003;
     MoveDataToVRAM(HUDAdditionalTiles, 304);
     VDP_COMMAND = 0x7f200003;

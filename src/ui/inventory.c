@@ -31,15 +31,12 @@ extern struct object_state *ram_ffd938;
 extern struct present_info gPresentInfo[28];
 extern long ImageTextChars1[], ImageTextChars2[];
 extern char TEXT_SPRITE_DATA_START[][1888];
-extern unsigned char FontBackgroundByteMap[28][40];
+extern unsigned char FontBackgroundByteMap[32][40];
 extern unsigned char InventoryCompactMapA[3][13], InventoryCompactMapB[3][13];
 extern unsigned char InventoryCompactMapC[3][11], InventoryCompactMapD[3][22];
 extern char *PresentSpriteTable[28], *RankCharsTable[9];
-#if REVISION >= 2
-extern char *InventoryCharsTable[28], *InventoryNameStringTable[28];
-#else
-extern char *InventoryCharsTable[36], *InventoryNameStringTable[36];
-#endif
+extern char *InventoryCharsTable[28];
+extern char *InventoryNameStringTable[27];
 extern char InventoryCharsUnFall[13], Sfx_Randomize[];
 extern unsigned short gLevelSeeds[26], PREGEN_RANDOMS[59], ram_ff91e0;
 extern unsigned short gPlayerPoints[2];
@@ -67,7 +64,8 @@ extern void DropPresent(), func_01e94e(), func_00d776();
 extern long StackBasedRandom();
 extern unsigned short GetRandomNumber();
 extern int SelectRandomPresent(), func_000fb6(), OpenSelectedPresent();
-extern short GenerateSpeech(), func_01e38e();
+extern short GenerateSpeech();
+extern int func_01e38e();
 
 /* Typed forward declarations for calls within this original translation unit. */
 extern void ForceTextBackgroundColorToBlack(), func_008b98();
@@ -576,7 +574,8 @@ short player_number;
     CheckBButton();
 }
 
-/* Draw the inventory, set both processed-input bytes to B, then check B. */
+/* Draw the inventory, set both processed-input bytes to the present-action
+ * bit (0x40), then run CheckBButton. */
 void func_009934(player)
 short player;
 {

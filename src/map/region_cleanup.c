@@ -80,9 +80,12 @@ short row, column;
     return changed;
 }
 
-/* Scan horizontal runs of 0x1000 terrain along both vertical boundaries.
- * Runs of four extend two cells into the neighboring row; edge runs of
- * five have the middle cell cleared. */
+/* Scan horizontal stretches of 0x1000 terrain along both vertical boundaries.
+ * A counter reaching four extends two cells into the neighboring row; at five
+ * the middle cell is cleared. A non-qualifying cell resets the counter to one
+ * but keeps the remembered terrain label, so a label, a gap and three cells of
+ * that label already reach the threshold ([INFERENCE] unintended; the code is
+ * kept as the ROM has it). */
 void func_0060ae()
 {
     short run_length, row, column;
@@ -144,8 +147,8 @@ void func_0060ae()
     }
 }
 
-/* Scan vertical runs along both horizontal boundaries, using the same
- * run thresholds as func_0060ae. */
+/* Scan vertical stretches along both horizontal boundaries, with the same
+ * counter thresholds and reset-to-one quirk as func_0060ae. */
 void func_0062ca()
 {
     short run_length, column, row;

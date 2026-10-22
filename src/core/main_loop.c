@@ -15,7 +15,7 @@ struct input_entity {
 extern struct input_entity gPlayerInfo[40];
 extern unsigned char P1_PROCESSED_INPUT[], P1_PREV_PROCESSED_INPUT[], ram_ff8021;
 extern char gPlayerLives[], gPlayer2Lives;
-extern short gPlayerPoints[];
+extern unsigned short gPlayerPoints[];
 /* [INFERENCE] 26 seven-byte rows precede the same-format table at 0xff92a2;
  * DisplayMap accesses both tables with an identical row-times-seven stride. */
 extern unsigned char ram_ff91ec[26][7];

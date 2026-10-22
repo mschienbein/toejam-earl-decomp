@@ -24235,7 +24235,7 @@
     {
       "name": "InventoryCharsTable",
       "source": "tje-disasm:src/main.S:InventoryCharsTable; corrected by REV 00 code reference (Main, MatchWave08 evidence)",
-      "evidence": "REV 00 table start 0x0ABBD2 (was 0x0ABBF2): REV 00 code (LoadPresentsIntoInventory, func_00a614) loads this base, and REV 00 holds eight more pointer entries before the 28 that REV 02 keeps; the bytes at 0x0ABBF2 are those 28 entries.",
+      "evidence": "REV 00 table start 0x0ABBD2 (was 0x0ABBF2): REV 00 code (LoadPresentsIntoInventory) loads this base. Both revisions hold 28 pointers; the earlier byte-matched transfer landed 0x20 into the REV 00 table, where its later entries happen to equal REV 02's first ones (C009Review).",
       "source_line": 79971,
       "address": "0x0ABBD2",
       "kind": "rom_data",
@@ -24888,7 +24888,7 @@
     {
       "name": "InventoryNameStringTable",
       "source": "tje-disasm:src/main.S:InventoryNameStringTable; corrected by REV 00 code reference (Main, MatchWave08 evidence)",
-      "evidence": "REV 00 table start 0x0ABDBC (was 0x0ABDDC): REV 00 code (LoadPresentsIntoInventory, func_00a614) loads this base, and REV 00 holds eight more pointer entries before the 28 that REV 02 keeps; the bytes at 0x0ABDDC are those 28 entries.",
+      "evidence": "REV 00 table start 0x0ABDBC (was 0x0ABDDC): REV 00 code (func_00a614) loads this base. Both revisions hold 27 pointers; the earlier byte-matched transfer landed 0x20 into the REV 00 table (C009Review).",
       "source_line": 80055,
       "address": "0x0ABDBC",
       "kind": "rom_data",

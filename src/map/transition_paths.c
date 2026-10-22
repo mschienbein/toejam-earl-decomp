@@ -5,8 +5,8 @@ struct map_transition_descriptor {
 };
 extern struct map_transition_descriptor MapTransitionDescriptors[];
 extern unsigned short gMapDataA[26][19];
-extern char ELEVATOR_POS_TABLE, ram_ff911b;
-extern char ram_ff911c, ram_ff911d, ram_ff911e, ram_ff911f;
+struct elevator_position { char x, y; };
+extern struct elevator_position ELEVATOR_POS_TABLE[8];
 extern short ram_ff91e6, ram_ff91e8;
 
 int func_006b22(list_number, value)
@@ -29,9 +29,9 @@ int func_006b74(row, column, incoming, outgoing)
 short row, column, incoming, outgoing;
 {
     if ((gMapDataA[row][column] & 0x1f00) ||
-        (ELEVATOR_POS_TABLE == column && ram_ff911b == row) ||
-        (ram_ff911c == column && ram_ff911d == row) ||
-        (ram_ff911e == column && ram_ff911f == row))
+        (ELEVATOR_POS_TABLE[0].x == column && ELEVATOR_POS_TABLE[0].y == row) ||
+        (ELEVATOR_POS_TABLE[1].x == column && ELEVATOR_POS_TABLE[1].y == row) ||
+        (ELEVATOR_POS_TABLE[2].x == column && ELEVATOR_POS_TABLE[2].y == row))
         return 0;
     ++ram_ff91e6;
     if (incoming == 8 && outgoing == 8) {

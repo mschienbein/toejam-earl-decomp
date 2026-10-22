@@ -1,4 +1,4 @@
-/* StopPlayer (name from tje-disasm) leaves the first six bytes alone and
+/* StopPlayer (name from RyanFae's disassembly) leaves the first six bytes alone and
  * clears two interleaved groups of three 16-bit components, in component
  * order. [INFERENCE] They are the motion components of a player record. */
 struct resettable_vectors {

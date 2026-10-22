@@ -1,8 +1,9 @@
 extern int func_00d406();
 
 /* Ask the selector for one byte. A nonzero status suppresses the result.
- * The ROM calls func_00d406 PC-relative, so the two were in one original
- * source file (config/rev02/tus.json); match.py assembles the call that way. */
+ * The ROM calls func_00d406 PC-relative; [INFERENCE] the two were in one
+ * original source file, since the assembler used PC-relative calls only
+ * within a file (config/rev02/tus.json). match.py assembles it that way. */
 char func_00d586(selection_mode, include_secondary)
 short selection_mode;
 int include_secondary;

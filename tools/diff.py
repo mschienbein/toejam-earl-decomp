@@ -105,10 +105,13 @@ def original_symbol_address(name: str, symbols: packet.Symbols) -> int | None:
         return symbols.by_name[name]
     # Generated absolute labels have address-bearing names, but only accept exact metadata labels
     # or a location inside a known extent, not a misspelled arbitrary symbol that happens to parse.
-    match = re.fullmatch(r"(?:func|frag|loc|data|dat|jtbl|ram)_([0-9a-fA-F]{6})", name)
+    match = re.fullmatch(r"(?:func|frag|loc|data|dat|rom|jtbl|ram)_([0-9a-fA-F]{6})", name)
     if match:
         address = int(match[1], 16)
-        if 0xFF0000 <= address <= 0xFFFFFF or symbols.identify(address)[0].startswith(("func_", "frag_", "data_", "loc_", "jtbl_")):
+        if 0xFF0000 <= address <= 0xFFFFFF:
+            return address
+        owner, _ = symbols.identify(address)
+        if not owner.startswith(("addr_", "ram_")):   # inside a catalogued unit or a named data unit
             return address
     return None
 

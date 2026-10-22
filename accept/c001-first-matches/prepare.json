@@ -1,0 +1,411 @@
+{
+ "builds": {
+  "rev00": {
+   "c_units": [
+    {
+     "address": "0x0011ca",
+     "functions": [
+      "DelayRoutine1"
+     ],
+     "options": [],
+     "sha256": "5cbe282860fd99c87b3112a2d40eb4cf6cc8a75870b4ba80229a22b0566078af",
+     "size": 14,
+     "source": "src/core/delay.c"
+    },
+    {
+     "address": "0x001262",
+     "functions": [
+      "func_001262"
+     ],
+     "options": [],
+     "sha256": "66cfe64d04136e37f95bc26f61e2e12a0080cc97c2579edd6e908b28e40cfbe0",
+     "size": 36,
+     "source": "src/core/selection_cycle.c"
+    },
+    {
+     "address": "0x00056c",
+     "functions": [
+      "GetSkipVBlankFlag"
+     ],
+     "options": [],
+     "sha256": "23cc623ecc14738db4f9a897f34fdf4b21b977dabb4a20f6172a5f546324863b",
+     "size": 12,
+     "source": "src/core/status_flag.c"
+    },
+    {
+     "address": "0x006b22",
+     "functions": [
+      "func_006b22"
+     ],
+     "options": [],
+     "sha256": "2b87d0c763899cee37a4f6b889d0279f4d4008c538f07780b6e16d28a9bd9d5b",
+     "size": 82,
+     "source": "src/data/list_membership.c"
+    },
+    {
+     "address": "0x01c730",
+     "functions": [
+      "SetTomatoRainTomatoes"
+     ],
+     "options": [],
+     "sha256": "1b5ec5987409b1e28b3f027f0a3d7b793c29e677ebeffe3a83d35e604cf03a9d",
+     "size": 68,
+     "source": "src/engine/random_counter.c"
+    },
+    {
+     "address": "0x0282fe",
+     "functions": [
+      "func_02836c"
+     ],
+     "options": [],
+     "sha256": "24fdfc77af589fb7587330747c0a46bd032ae6ebdb21434914b207ba647f885e",
+     "size": 92,
+     "source": "src/engine/reset_sequence.c"
+    },
+    {
+     "address": "0x00d8d2",
+     "functions": [
+      "func_00d8f2"
+     ],
+     "options": [],
+     "sha256": "7403edcf24b7bc6761f7502d5ce4660e983fca838dc1ddc86f8e2a7dee83ef0e",
+     "size": 18,
+     "source": "src/graphics/clear_words.c"
+    },
+    {
+     "address": "0x009e0e",
+     "functions": [
+      "func_009e2e"
+     ],
+     "options": [],
+     "sha256": "944bc43d2457c1da9b8e7d2ca5829bf18a24d2c5af0da2fec1c6c5c1bfa08c5a",
+     "size": 348,
+     "source": "src/graphics/glyph_map.c"
+    },
+    {
+     "address": "0x00e3c2",
+     "functions": [
+      "StopPlayer"
+     ],
+     "options": [],
+     "sha256": "c9e13959b66975e1a6dccb511386320e403dba39fdc575ff61120d8e603c7731",
+     "size": 30,
+     "source": "src/graphics/reset_vectors.c"
+    },
+    {
+     "address": "0x004e7e",
+     "functions": [
+      "GetRandomNumber"
+     ],
+     "options": [],
+     "sha256": "88dd77dd04ea0a6dfe3f62c367d48c1f9ae26c28ee2b4f833250c80107f43df1",
+     "size": 106,
+     "source": "src/math/random.c"
+    },
+    {
+     "address": "0x00d5da",
+     "functions": [
+      "func_00d5fa",
+      "func_00d612"
+     ],
+     "options": [],
+     "sha256": "d4fe43a7633d913d9a878b58b85f5cc6992b670a65304eca1db150bdd9f9a786",
+     "size": 54,
+     "source": "src/presents/item_flags.c"
+    },
+    {
+     "address": "0x00d566",
+     "functions": [
+      "func_00d586"
+     ],
+     "options": [],
+     "sha256": "05c5ec556ce5f8a1846ceaf0804c91c43ab3992c7acab9e21b9758232b246c74",
+     "size": 58,
+     "source": "src/presents/query_byte.c"
+    }
+   ],
+   "image_sha256": [
+    "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+    "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228"
+   ],
+   "raw_words": 0,
+   "receipt_sha256": [
+    "488e91d47a88e9c006c616281daacfc15de0a7ea91f213c2f51b9c22a24010b5",
+    "80704fcddd2888e0bf27bd847a641eb2637f203aa4aa779c12633cd064c99909"
+   ],
+   "result": "PASS"
+  },
+  "rev02": {
+   "c_units": [
+    {
+     "address": "0x0011ca",
+     "functions": [
+      "DelayRoutine1"
+     ],
+     "options": [],
+     "sha256": "5cbe282860fd99c87b3112a2d40eb4cf6cc8a75870b4ba80229a22b0566078af",
+     "size": 14,
+     "source": "src/core/delay.c"
+    },
+    {
+     "address": "0x001262",
+     "functions": [
+      "func_001262"
+     ],
+     "options": [],
+     "sha256": "66cfe64d04136e37f95bc26f61e2e12a0080cc97c2579edd6e908b28e40cfbe0",
+     "size": 36,
+     "source": "src/core/selection_cycle.c"
+    },
+    {
+     "address": "0x00056c",
+     "functions": [
+      "GetSkipVBlankFlag"
+     ],
+     "options": [],
+     "sha256": "23cc623ecc14738db4f9a897f34fdf4b21b977dabb4a20f6172a5f546324863b",
+     "size": 12,
+     "source": "src/core/status_flag.c"
+    },
+    {
+     "address": "0x006b22",
+     "functions": [
+      "func_006b22"
+     ],
+     "options": [],
+     "sha256": "2b87d0c763899cee37a4f6b889d0279f4d4008c538f07780b6e16d28a9bd9d5b",
+     "size": 82,
+     "source": "src/data/list_membership.c"
+    },
+    {
+     "address": "0x01c772",
+     "functions": [
+      "SetTomatoRainTomatoes"
+     ],
+     "options": [],
+     "sha256": "1b5ec5987409b1e28b3f027f0a3d7b793c29e677ebeffe3a83d35e604cf03a9d",
+     "size": 68,
+     "source": "src/engine/random_counter.c"
+    },
+    {
+     "address": "0x02836c",
+     "functions": [
+      "func_02836c"
+     ],
+     "options": [],
+     "sha256": "24fdfc77af589fb7587330747c0a46bd032ae6ebdb21434914b207ba647f885e",
+     "size": 92,
+     "source": "src/engine/reset_sequence.c"
+    },
+    {
+     "address": "0x00d8f2",
+     "functions": [
+      "func_00d8f2"
+     ],
+     "options": [],
+     "sha256": "7403edcf24b7bc6761f7502d5ce4660e983fca838dc1ddc86f8e2a7dee83ef0e",
+     "size": 18,
+     "source": "src/graphics/clear_words.c"
+    },
+    {
+     "address": "0x009e2e",
+     "functions": [
+      "func_009e2e"
+     ],
+     "options": [],
+     "sha256": "944bc43d2457c1da9b8e7d2ca5829bf18a24d2c5af0da2fec1c6c5c1bfa08c5a",
+     "size": 348,
+     "source": "src/graphics/glyph_map.c"
+    },
+    {
+     "address": "0x00e3e2",
+     "functions": [
+      "StopPlayer"
+     ],
+     "options": [],
+     "sha256": "c9e13959b66975e1a6dccb511386320e403dba39fdc575ff61120d8e603c7731",
+     "size": 30,
+     "source": "src/graphics/reset_vectors.c"
+    },
+    {
+     "address": "0x004e7e",
+     "functions": [
+      "GetRandomNumber"
+     ],
+     "options": [],
+     "sha256": "88dd77dd04ea0a6dfe3f62c367d48c1f9ae26c28ee2b4f833250c80107f43df1",
+     "size": 106,
+     "source": "src/math/random.c"
+    },
+    {
+     "address": "0x00d5fa",
+     "functions": [
+      "func_00d5fa",
+      "func_00d612"
+     ],
+     "options": [],
+     "sha256": "d4fe43a7633d913d9a878b58b85f5cc6992b670a65304eca1db150bdd9f9a786",
+     "size": 54,
+     "source": "src/presents/item_flags.c"
+    },
+    {
+     "address": "0x00d586",
+     "functions": [
+      "func_00d586"
+     ],
+     "options": [],
+     "sha256": "05c5ec556ce5f8a1846ceaf0804c91c43ab3992c7acab9e21b9758232b246c74",
+     "size": 58,
+     "source": "src/presents/query_byte.c"
+    }
+   ],
+   "image_sha256": [
+    "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+    "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163"
+   ],
+   "raw_words": 0,
+   "receipt_sha256": [
+    "c7e0ad7af4420a703f5e6743f4f581181a5253868ad195b009a45734119f1b64",
+    "29a60fa9e2489d605848109f5fafd60093d9dd4979999627e7a00e34f181f3f4"
+   ],
+   "result": "PASS"
+  }
+ },
+ "checkpoint": "c001-first-matches",
+ "git": {
+  "dirty_paths": [],
+  "head": "48681368524131957916a592485979ce2548da0b"
+ },
+ "prepared_utc": "2026-10-22T00:49:42Z",
+ "result": "PASS",
+ "sources": {
+  "rev00": [
+   {
+    "options": [],
+    "sha256": "5cbe282860fd99c87b3112a2d40eb4cf6cc8a75870b4ba80229a22b0566078af",
+    "source": "src/core/delay.c"
+   },
+   {
+    "options": [],
+    "sha256": "66cfe64d04136e37f95bc26f61e2e12a0080cc97c2579edd6e908b28e40cfbe0",
+    "source": "src/core/selection_cycle.c"
+   },
+   {
+    "options": [],
+    "sha256": "23cc623ecc14738db4f9a897f34fdf4b21b977dabb4a20f6172a5f546324863b",
+    "source": "src/core/status_flag.c"
+   },
+   {
+    "options": [],
+    "sha256": "2b87d0c763899cee37a4f6b889d0279f4d4008c538f07780b6e16d28a9bd9d5b",
+    "source": "src/data/list_membership.c"
+   },
+   {
+    "options": [],
+    "sha256": "1b5ec5987409b1e28b3f027f0a3d7b793c29e677ebeffe3a83d35e604cf03a9d",
+    "source": "src/engine/random_counter.c"
+   },
+   {
+    "options": [],
+    "sha256": "24fdfc77af589fb7587330747c0a46bd032ae6ebdb21434914b207ba647f885e",
+    "source": "src/engine/reset_sequence.c"
+   },
+   {
+    "options": [],
+    "sha256": "7403edcf24b7bc6761f7502d5ce4660e983fca838dc1ddc86f8e2a7dee83ef0e",
+    "source": "src/graphics/clear_words.c"
+   },
+   {
+    "options": [],
+    "sha256": "944bc43d2457c1da9b8e7d2ca5829bf18a24d2c5af0da2fec1c6c5c1bfa08c5a",
+    "source": "src/graphics/glyph_map.c"
+   },
+   {
+    "options": [],
+    "sha256": "c9e13959b66975e1a6dccb511386320e403dba39fdc575ff61120d8e603c7731",
+    "source": "src/graphics/reset_vectors.c"
+   },
+   {
+    "options": [],
+    "sha256": "88dd77dd04ea0a6dfe3f62c367d48c1f9ae26c28ee2b4f833250c80107f43df1",
+    "source": "src/math/random.c"
+   },
+   {
+    "options": [],
+    "sha256": "d4fe43a7633d913d9a878b58b85f5cc6992b670a65304eca1db150bdd9f9a786",
+    "source": "src/presents/item_flags.c"
+   },
+   {
+    "options": [],
+    "sha256": "05c5ec556ce5f8a1846ceaf0804c91c43ab3992c7acab9e21b9758232b246c74",
+    "source": "src/presents/query_byte.c"
+   }
+  ],
+  "rev02": [
+   {
+    "options": [],
+    "sha256": "5cbe282860fd99c87b3112a2d40eb4cf6cc8a75870b4ba80229a22b0566078af",
+    "source": "src/core/delay.c"
+   },
+   {
+    "options": [],
+    "sha256": "66cfe64d04136e37f95bc26f61e2e12a0080cc97c2579edd6e908b28e40cfbe0",
+    "source": "src/core/selection_cycle.c"
+   },
+   {
+    "options": [],
+    "sha256": "23cc623ecc14738db4f9a897f34fdf4b21b977dabb4a20f6172a5f546324863b",
+    "source": "src/core/status_flag.c"
+   },
+   {
+    "options": [],
+    "sha256": "2b87d0c763899cee37a4f6b889d0279f4d4008c538f07780b6e16d28a9bd9d5b",
+    "source": "src/data/list_membership.c"
+   },
+   {
+    "options": [],
+    "sha256": "1b5ec5987409b1e28b3f027f0a3d7b793c29e677ebeffe3a83d35e604cf03a9d",
+    "source": "src/engine/random_counter.c"
+   },
+   {
+    "options": [],
+    "sha256": "24fdfc77af589fb7587330747c0a46bd032ae6ebdb21434914b207ba647f885e",
+    "source": "src/engine/reset_sequence.c"
+   },
+   {
+    "options": [],
+    "sha256": "7403edcf24b7bc6761f7502d5ce4660e983fca838dc1ddc86f8e2a7dee83ef0e",
+    "source": "src/graphics/clear_words.c"
+   },
+   {
+    "options": [],
+    "sha256": "944bc43d2457c1da9b8e7d2ca5829bf18a24d2c5af0da2fec1c6c5c1bfa08c5a",
+    "source": "src/graphics/glyph_map.c"
+   },
+   {
+    "options": [],
+    "sha256": "c9e13959b66975e1a6dccb511386320e403dba39fdc575ff61120d8e603c7731",
+    "source": "src/graphics/reset_vectors.c"
+   },
+   {
+    "options": [],
+    "sha256": "88dd77dd04ea0a6dfe3f62c367d48c1f9ae26c28ee2b4f833250c80107f43df1",
+    "source": "src/math/random.c"
+   },
+   {
+    "options": [],
+    "sha256": "d4fe43a7633d913d9a878b58b85f5cc6992b670a65304eca1db150bdd9f9a786",
+    "source": "src/presents/item_flags.c"
+   },
+   {
+    "options": [],
+    "sha256": "05c5ec556ce5f8a1846ceaf0804c91c43ab3992c7acab9e21b9758232b246c74",
+    "source": "src/presents/query_byte.c"
+   }
+  ]
+ },
+ "suite": {
+  "returncode": 0,
+  "summary": "OK"
+ }
+}

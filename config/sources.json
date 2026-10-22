@@ -65,7 +65,28 @@
    ]
   },
   {
+   "source": "src/earthlings/mole_santa_drops.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/mole_santa_helpers.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/earthlings/movement_decision.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/nice_earthling_touch.c",
    "versions": [
     "rev02",
     "rev00"
@@ -185,6 +206,20 @@
   },
   {
    "source": "src/map/elevator_icon.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/map/land_path_animation.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/map/land_processing.c",
    "versions": [
     "rev02",
     "rev00"
@@ -457,6 +492,27 @@
    ]
   },
   {
+   "source": "src/presents/helpers_noop.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/helpers_telephone_clear.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/helpers_telephone_open.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/presents/item_updates.c",
    "versions": [
     "rev02",
@@ -486,6 +542,55 @@
   },
   {
    "source": "src/presents/telephone.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/ship/piece_collection.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/ship/piece_level_assignment.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/ship/screen_acknowledgement.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/ship/screen_setup.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/ship/special_earthling_predicates.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/speech/speech_core.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/speech/speech_update.c",
    "versions": [
     "rev02",
     "rev00"

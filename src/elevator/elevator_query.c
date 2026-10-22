@@ -1,6 +1,7 @@
 #include "elevator.h"
-#include "ram.h"
 #include "elevator_calls.h"
+#include "ram_elevator.h"
+
 /* The one-based identifier encodes a record pair and its member. */
 int ProcessElevator(elevator_number)
 char elevator_number;

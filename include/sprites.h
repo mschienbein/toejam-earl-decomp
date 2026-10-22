@@ -49,7 +49,7 @@ struct scene_descriptor {
     char *idle_sequence, *interaction_sequence;
     char frame_phase;
     unsigned char width, height;
-    char draw_offset, draw_attribute, reserved_11;
+    char tile_count, sprite_count, reserved_11;
 };
 
 /* Six-byte placement record; a zero x separates descriptor groups. */

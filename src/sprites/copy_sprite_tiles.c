@@ -1,5 +1,6 @@
-#include "ram.h"
+#include "ram_sprites.h"
 #include "sprite_calls.h"
+
 /* Copy complete 32-byte tiles to the next transfer-buffer position. */
 void ClearLOC_00FFB8DA(source, tile_count)
 long *source;

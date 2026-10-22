@@ -1,6 +1,8 @@
 #include "elevator.h"
-#include "ram.h"
 #include "map_calls.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+
 /* Mark tiles with 0x0800 while searching for the coordinates at ff911c/d.
  * Terrain class 0x1000 follows matching terrain or an incoming road bit;
  * class 0x2000 follows its outgoing road bits. The latter has no coordinate

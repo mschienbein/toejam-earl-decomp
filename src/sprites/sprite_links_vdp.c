@@ -1,6 +1,7 @@
 #include "hardware.h"
-#include "ram.h"
+#include "ram_sprites.h"
 #include "sprite_calls.h"
+
 /* Terminate the sprite chain beginning at VRAM address 0xf802. */
 void func_00cffa()
 {

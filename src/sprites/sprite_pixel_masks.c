@@ -1,6 +1,7 @@
 #include "sprites.h"
-#include "ram.h"
+#include "ram_sprites.h"
 #include "sprite_calls.h"
+
 /* Remove the packed rows below the supplied vertical cutoff. */
 short func_00c85a(piece, cutoff)
 struct render_piece *piece;

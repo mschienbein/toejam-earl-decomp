@@ -1,6 +1,9 @@
 #include "entities.h"
-#include "ram.h"
 #include "player.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
+
 /* Select the player's idle sprite from the active present and terrain,
  * resetting the animation and horizontal velocity for a new selection. */
 int GetActivePresentSprite(player)

@@ -1,5 +1,6 @@
-#include "ram.h"
 #include "player.h"
+#include "ram_player.h"
+
 /* Initialize the four per-player bytes used by func_011ac0. */
 void func_011a7c(player)
 short player;

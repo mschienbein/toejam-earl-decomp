@@ -1,7 +1,8 @@
 #include "entities.h"
-#include "ram.h"
 #include "player.h"
+#include "ram_system.h"
 #include "sprite_calls.h"
+
 /* Stop horizontal movement, raise a submerged player, and select the
  * directional rocket-skates sprite for the current terrain and height. */
 void OpenRocketSkates(state, player, terrain)

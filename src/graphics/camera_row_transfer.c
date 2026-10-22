@@ -1,7 +1,8 @@
 #include "hardware.h"
-#include "ram.h"
 #include "graphics_calls.h"
-#include "romcalls.h"
+#include "hardware_calls.h"
+#include "ram_camera.h"
+
 /* Transfer pending horizontal rows, splitting at the 64-column wrap. */
 void UpdateCameraY()
 {

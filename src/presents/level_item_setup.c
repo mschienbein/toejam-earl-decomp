@@ -2,14 +2,17 @@
 
 #include "presents.h"
 #include "elevator.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
+#include "assets_presents.h"
 #include "earthling_calls.h"
 #include "map_calls.h"
-#include "random.h"
 #include "present_calls.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_presents.h"
+#include "random.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
 
 /* ORIGINAL BUG: this consumer keeps a int result view of func_00d9dc,
  * whose canonical return is unsigned char. The observed caller omits that

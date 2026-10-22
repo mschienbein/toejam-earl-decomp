@@ -1,9 +1,12 @@
 #include "entities.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_audio.h"
+#include "audio_calls.h"
 #include "player.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
 /* Select movement speeds, directional sprite, and animation mode. */
 void func_00f00c(player, player_number, input, land)
 struct object_state *player;

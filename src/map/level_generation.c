@@ -1,10 +1,10 @@
 #define TJE_LOCAL_TILEALTERNATIVEPOINTERS
+
 #include "map.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
 #include "map_calls.h"
+#include "ram_map.h"
 #include "random.h"
-#include "romcalls.h"
 
 /* Compiler bound qualification: the compatible incomplete-array view
  * preserves the observed long index arithmetic. The shared complete bound

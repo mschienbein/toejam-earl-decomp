@@ -1,9 +1,9 @@
 #include "entities.h"
-#include "ram.h"
+#include "collision_calls.h"
 #include "earthling_calls.h"
 #include "elevator_calls.h"
 #include "player.h"
-#include "romcalls.h"
+#include "ram_sprites.h"
 
 /* Preserve the observed signed/unsigned value views of shared storage.
  * These casts do not imply a different record layout; historical spelling
@@ -21,7 +21,7 @@ void ProcessMovement()
     for (entity = ram_ffd938; entity; entity = entity->next) {
         if ((entity->draw_flags & 1) && !(entity->draw_flags & 8) &&
             !func_0193fa(entity->earthling)) {
-            if (!((unsigned char)entity->mode_15 & 1) &&
+            if (!(entity->mode_15 & 1) &&
                 (entity->velocity_x || entity->acceleration_x)) {
                 entity->velocity_x += entity->acceleration_x;
                 fixed_position = (entity->x << 8) +
@@ -33,7 +33,7 @@ void ProcessMovement()
                 next_x = entity->x;
                 fraction_x = entity->fraction_x;
             }
-            if (!((unsigned char)entity->mode_15 & 2) &&
+            if (!(entity->mode_15 & 2) &&
                 (entity->velocity_y || entity->acceleration_y)) {
                 entity->velocity_y += entity->acceleration_y;
                 fixed_position = (entity->y << 8) +

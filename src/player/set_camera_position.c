@@ -1,6 +1,8 @@
-#include "ram.h"
+#include "graphics_calls.h"
 #include "player.h"
-#include "romcalls.h"
+#include "ram_camera.h"
+#include "ram_player.h"
+
 /* Copy the selected camera coordinates into their 24.8 accumulators. */
 void func_002608(player, position_x, position_y)
 int player;

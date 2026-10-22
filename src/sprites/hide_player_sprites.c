@@ -1,7 +1,8 @@
 #include "entities.h"
 #include "hardware.h"
-#include "ram.h"
+#include "ram_player.h"
 #include "sprite_calls.h"
+
 /* Move the selected active sprite list to hardware Y coordinate one. */
 void func_00d152(player)
 short player;

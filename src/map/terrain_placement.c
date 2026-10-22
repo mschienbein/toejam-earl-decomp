@@ -1,9 +1,11 @@
 #include "entities.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
 #include "elevator_calls.h"
 #include "map_calls.h"
+#include "ram_map.h"
+#include "ram_player.h"
 #include "random.h"
+
 /* Search all rectangle origins, beginning at a random origin. Bit 7 of the
  * metatile mirrors the returned X coordinate; flags select tile properties. */
 int TerrainValidation(metatile, width, height, position_x, position_y, flags)

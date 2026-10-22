@@ -22,4 +22,10 @@ extern void func_002e6a();
 extern void func_023086();
 extern void func_023154();
 
+/* ROM-only camera interfaces retain their current caller spellings;
+ * the ABI alone does not uniquely establish historical C return types. */
+extern void func_0016d2();
+extern void func_001ba8();
+extern void func_0020aa();
+
 #endif

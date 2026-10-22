@@ -1,8 +1,10 @@
 #include "entities.h"
 #include "sprites.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_sprites.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
 #include "sprite_calls.h"
+
 /* Update each active viewport sprite's size bits and tile from elevation. */
 void Process2FEntityBit0(entity)
 struct object_state *entity;

@@ -1,7 +1,8 @@
 #include "earthlings.h"
-#include "ram.h"
 #include "earthling_calls.h"
+#include "ram_earthlings.h"
 #include "sprite_calls.h"
+
 /* Count down matching earthling banks, then release their displayed objects. */
 void func_0174b6(level)
 short level;

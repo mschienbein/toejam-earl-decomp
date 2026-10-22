@@ -1,7 +1,11 @@
 #include "entities.h"
-#include "ram.h"
 #include "player.h"
-#include "romcalls.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
+#include "ram_presents.h"
+#include "random.h"
+
 /* Consider two object-index slots first, then the two player records. Squared
  * quarter-coordinate distances choose the nearer eligible target. Modes 12
  * and 7 select steering helpers; mode 14 may call func_01b078 first and then

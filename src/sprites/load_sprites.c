@@ -1,7 +1,8 @@
 #include "sprites.h"
-#include "ram.h"
+#include "hardware_calls.h"
+#include "ram_sprites.h"
+#include "ram_system.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
 
 /* Transfer the sprite table unless suppressed, then the queued tile runs. */
 void SpriteLoadingStuff(force, tiles_only)

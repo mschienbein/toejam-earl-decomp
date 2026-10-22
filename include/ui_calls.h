@@ -57,4 +57,13 @@ extern void func_00b95c();
 extern void func_00baa2();
 extern void func_01db30();
 
+/* ROM-only menu/HUD interfaces retain their current caller spellings;
+ * the ABI alone does not uniquely establish historical C return types. */
+extern void NewGameMainMenu();
+extern void func_00aeb8();
+extern void func_00b3e4();
+extern void func_00b590();
+/* Displays BogusGameOverStr, then returns to the reset trampoline. */
+extern void func_023554();
+
 #endif

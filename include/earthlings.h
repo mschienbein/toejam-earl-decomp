@@ -30,8 +30,8 @@ struct earthling_definition {
     char movement_mode;              /* 10: copied to object movement mode */
     unsigned char width;             /* 11 */
     unsigned char height_pixels;     /* 12 */
-    char draw_offset;                /* 13 */
-    char draw_attribute;             /* 14 */
+    char tile_count;                /* 13 */
+    char sprite_count;             /* 14 */
     char target_chance;              /* 15 */
     unsigned char target_distance;   /* 16 */
     char turn_chance;                /* 17 */
@@ -49,6 +49,14 @@ struct earthling_definition {
     char state_delay;                /* 23 */
     char health;                     /* 24 */
     char reserved_25;                /* 25 */
+};
+
+/* Six-byte special-earthling state shared by mailbox contact and predicates.
+ * The two-entry table has kind-dependent contact bytes. */
+struct special_earthling_state {
+    char mode, level;                 /* 00, 01 */
+    short timer;                      /* 02 */
+    char contact[2];                  /* 04, 05 */
 };
 
 #endif

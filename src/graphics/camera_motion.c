@@ -1,7 +1,9 @@
-#include "ram.h"
 #include "core_calls.h"
 #include "graphics_calls.h"
-#include "romcalls.h"
+#include "ram_camera.h"
+#include "ram_player.h"
+#include "ram_system.h"
+
 /* Build rows and columns requested by the four camera-direction bits. */
 void func_00219c()
 {

@@ -1,5 +1,6 @@
-#include "ram.h"
 #include "engine_calls.h"
+#include "ram_speech.h"
+
 /* Test whether an ordinary object is held by one of the four effect slots. */
 int func_01dee8(object_number)
 short object_number;

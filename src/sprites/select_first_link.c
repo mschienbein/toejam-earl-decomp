@@ -1,6 +1,7 @@
 #include "hardware.h"
-#include "ram.h"
+#include "ram_sprites.h"
 #include "sprite_calls.h"
+
 /* Change the first sprite's link in VRAM and its RAM mirror. */
 void func_00cfba(primary_only)
 short primary_only;

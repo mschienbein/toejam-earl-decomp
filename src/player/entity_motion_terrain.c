@@ -1,9 +1,10 @@
 #include "entities.h"
-#include "ram.h"
 #include "core_calls.h"
 #include "player.h"
+#include "ram_effects.h"
+#include "ram_map.h"
+#include "ram_player.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
 
 /* Preserve the observed signed/unsigned value views of shared storage.
  * These casts do not imply a different record layout; historical spelling

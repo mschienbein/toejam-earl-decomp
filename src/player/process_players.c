@@ -1,9 +1,13 @@
 #include "entities.h"
-#include "ram.h"
+#include "earthling_calls.h"
 #include "player.h"
 #include "present_calls.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
+#include "ram_ui.h"
 #include "ui_calls.h"
-#include "romcalls.h"
+
 /* Dispatch player-state handlers, then update common promotion and collision processing. */
 void ProcessPlayers()
 {

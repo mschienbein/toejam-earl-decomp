@@ -1,7 +1,8 @@
 #include "hardware.h"
-#include "ram.h"
 #include "graphics_calls.h"
-#include "romcalls.h"
+#include "hardware_calls.h"
+#include "ram_camera.h"
+
 /* Transfer pending vertical columns using a 128-byte VRAM increment. */
 void UpdateCameraX()
 {

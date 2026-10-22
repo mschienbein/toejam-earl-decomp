@@ -1,6 +1,9 @@
 #include "entities.h"
-#include "ram.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
 #include "sprite_calls.h"
+
 /* Select unused slots first, then reusable slots when requested. The returned
  * identifiers are the flag-array indices plus 25. */
 int func_00d406(count, selection_mode, include_secondary, output)
@@ -181,7 +184,7 @@ short viewport;
     if (!func_00d406(entity->sprite_count, viewport, 1, slots))
         entity->draw_flags |= viewport_bit;
     else if (!(entity->draw_flags & 6))
-        /* ORIGINAL BUG: With allocation_flags bit 2 set and no viewport
+        /* ORIGINAL BUG: With flags_4d bit 2 set and no viewport
          * active, a selector failure reads tile without assigning it. */
         func_00d6b2(tile, tile_count);
 }

@@ -1,7 +1,10 @@
 #include "entities.h"
 #include "sprites.h"
-#include "ram.h"
 #include "graphics_calls.h"
+#include "ram_camera.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "ram_ui.h"
 
 /* Preserve the observed signed/unsigned value views of shared storage.
  * These casts do not imply a different record layout; historical spelling
@@ -34,7 +37,7 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
     }
     if (entity->frame_phase && (entity->mode_15 & 3)) {
         for (frame_count = 0; ; frame_count++) {
-            sequence_byte = ((unsigned char *)entity->sequence)[frame_count];
+            sequence_byte = entity->sequence[frame_count];
             if ((sequence_byte & 0xf0) == 0xf0)
                 break;
             frame = entity->frames[sequence_byte & 0x7f];

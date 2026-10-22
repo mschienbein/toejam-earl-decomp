@@ -1,9 +1,12 @@
 #include "elevator.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
 #include "map_calls.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_system.h"
 #include "random.h"
-#include "romcalls.h"
+
 /* Reuse a player or saved map when possible; otherwise generate the requested
  * level under its stored random seed. Successful loads restore the prior random
  * state; a rejected generation returns 1 without restoring it. */

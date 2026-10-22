@@ -1,9 +1,13 @@
 #include "entities.h"
 #include "sprites.h"
 #include "hardware.h"
-#include "ram.h"
+#include "ram_camera.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
+#include "ram_ui.h"
 #include "ui_calls.h"
-#include "romcalls.h"
+
 /* Position the two health-bar sprites for the active HUD arrangement. */
 void func_00b0cc(player_number)
 short player_number;

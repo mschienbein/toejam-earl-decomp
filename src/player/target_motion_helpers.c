@@ -1,6 +1,7 @@
 #include "entities.h"
+#include "audio_calls.h"
 #include "player.h"
-#include "romcalls.h"
+
 /* Follow the vertical delta only outside a two-unit dead zone, while always
  * moving horizontally and returning the corresponding facing state. */
 char func_01b02e(state, delta_x, delta_y)

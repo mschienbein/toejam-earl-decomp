@@ -1,11 +1,16 @@
 #include "entities.h"
 #include "earthlings.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_audio.h"
+#include "assets_earthlings.h"
+#include "audio_calls.h"
 #include "earthling_calls.h"
 #include "player.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "random.h"
+#include "speech.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
 /* Flatten an eligible player, apply direct damage, and play the squish sound. */
 void Player_Squish(player_number, earthling)
 short player_number;

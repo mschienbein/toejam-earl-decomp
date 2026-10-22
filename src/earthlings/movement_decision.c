@@ -1,9 +1,11 @@
 #include "entities.h"
 #include "earthlings.h"
-#include "ram.h"
+#include "collision_calls.h"
 #include "earthling_calls.h"
 #include "present_calls.h"
-#include "romcalls.h"
+#include "ram_player.h"
+#include "ram_system.h"
+
 /* [INFERENCE] Return -1 after consuming a type-18 collision, otherwise choose
  * whether to move from state 6/7 or the low bit of the next random value. */
 char func_0196b0(earthling)

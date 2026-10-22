@@ -1,10 +1,11 @@
 #include "entities.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_audio.h"
+#include "audio_calls.h"
 #include "player.h"
+#include "ram_player.h"
 #include "sprite_calls.h"
 #include "ui_calls.h"
-#include "romcalls.h"
+
 /* Align complementary facing sprites into a shared animation. When Earl's
  * animation completes, redistribute the players' health using the average
  * and the two values returned by func_00ae90. */

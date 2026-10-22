@@ -1,12 +1,28 @@
+#define TJE_LOCAL_FUNC_01E736
+
 #include "entities.h"
 #include "presents.h"
 #include "sprites.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_audio.h"
+#include "assets_presents.h"
+#include "assets_sprites.h"
+#include "audio_calls.h"
 #include "map_calls.h"
 #include "present_calls.h"
+#include "ram_camera.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_presents.h"
+#include "ram_speech.h"
+#include "random.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
+/* ORIGINAL BUG: this byte-store consumer keeps an int result view of the
+ * short allocator. The shared short declaration adds normalization absent
+ * from the ROM; the historical missing declaration is [INFERENCE]. */
+extern int func_01e736();
+
 /* Allocate the telephone's displayed object and copy its position and level. */
 void func_022bf6(telephone)
 struct telephone_state *telephone;

@@ -1,12 +1,16 @@
 #include "hardware.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_ui.h"
 #include "core_calls.h"
 #include "engine_calls.h"
-#include "random.h"
+#include "hardware_calls.h"
 #include "present_calls.h"
+#include "ram_effects.h"
+#include "ram_player.h"
+#include "ram_speech.h"
+#include "ram_ui.h"
+#include "random.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
 /* Release occupied effect-object slots and clear the associated per-player state. */
 void func_01d436()
 {

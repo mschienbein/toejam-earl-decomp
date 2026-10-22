@@ -1,10 +1,12 @@
 #include "entities.h"
 #include "hardware.h"
-#include "ram.h"
 #include "core_calls.h"
 #include "graphics_calls.h"
+#include "map_calls.h"
+#include "ram_camera.h"
+#include "ram_player.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
 /* Ensure both primary sprites are resident, wipe paired rows inward, then
  * fill the 28-by-40 destination and write 0x1c to VDP register 18. */
 void func_002e6a()

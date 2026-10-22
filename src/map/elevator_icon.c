@@ -1,10 +1,11 @@
 #include "elevator.h"
 #include "sprites.h"
 #include "hardware.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
+#include "hardware_calls.h"
 #include "map_calls.h"
-#include "romcalls.h"
+#include "ram_elevator.h"
+
 /* Upload and position the first elevator icon on the requested level,
  * except for elevators in state 13. */
 void Map_DrawElevator(level, sprite)

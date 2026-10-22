@@ -1,13 +1,20 @@
 #define TJE_LOCAL_RANKCHARSTABLE
+
 #include "entities.h"
 #include "sprites.h"
 #include "hardware.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_ui.h"
+#include "hardware_calls.h"
 #include "player.h"
 #include "present_calls.h"
+#include "ram_camera.h"
+#include "ram_effects.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
+#include "ram_system.h"
+#include "ram_ui.h"
 #include "ui_calls.h"
-#include "romcalls.h"
 
 /* Compiler bound qualification: the compatible incomplete-array view
  * preserves the observed index arithmetic. The complete bound changes width;

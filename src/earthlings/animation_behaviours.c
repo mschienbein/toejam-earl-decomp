@@ -1,9 +1,12 @@
 #include "entities.h"
 #include "earthlings.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_earthlings.h"
 #include "earthling_calls.h"
 #include "player.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "ram_ui.h"
+
 #define NEXT_RANDOM PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0]
 
 /* Reverse blocked horizontal motion, probabilistically acquire a target,

@@ -2,11 +2,15 @@
 
 #include "entities.h"
 #include "sprites.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_presents.h"
+#include "assets_sprites.h"
+#include "audio_calls.h"
 #include "player.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
+#include "ram_system.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
 
 /* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
  * whose canonical return is short. The observed caller omits that

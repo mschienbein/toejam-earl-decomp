@@ -1,6 +1,7 @@
 #include "hardware.h"
-#include "ram.h"
 #include "core_calls.h"
+#include "ram_system.h"
+
 /* Write the VDP register initialization sequence, then enter game setup.
  * ResetVDP also matches plain C exactly despite its previous assembly label. */
 

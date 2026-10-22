@@ -1,15 +1,17 @@
 #include "entities.h"
 #include "sprites.h"
-#include "ram.h"
+#include "hardware_calls.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
 /* Chain both players' primary sprite lists and transfer the hardware table. */
 void func_00d07a()
 {
     char index, sprite_count, sprite_number, next_sprite;
     char *sprite_list;
 
-    sprite_count = (char)gPlayerInfo[0].current_frame->count;
+    sprite_count = gPlayerInfo[0].current_frame->count;
     sprite_list = gPlayerInfo[0].primary_sprites;
     sprite_number = *sprite_list;
     ram_ffb65a[23].link = sprite_number;
@@ -20,7 +22,7 @@ void func_00d07a()
         next_sprite = sprite_list[index + 1];
         ram_ffb65a[sprite_number].link = next_sprite;
     }
-    sprite_count = (char)gPlayerInfo[1].current_frame->count;
+    sprite_count = gPlayerInfo[1].current_frame->count;
     sprite_list = gPlayerInfo[1].primary_sprites;
     ram_ffb65a[sprite_number].link = *sprite_list;
     for (index = 0; index < sprite_count; ++index) {

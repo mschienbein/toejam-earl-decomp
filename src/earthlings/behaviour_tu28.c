@@ -1,11 +1,14 @@
 #include "entities.h"
 #include "earthlings.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_audio.h"
+#include "assets_earthlings.h"
+#include "audio_calls.h"
 #include "earthling_calls.h"
 #include "player.h"
 #include "present_calls.h"
-#include "romcalls.h"
+#include "ram_player.h"
+#include "ram_system.h"
+
 /* Select the next directional animation for earthling category 19. */
 char func_019d3e(earthling, object, next_state)
 struct earthling_state *earthling;

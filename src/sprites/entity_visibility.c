@@ -1,14 +1,12 @@
-#define TJE_LOCAL_GPLAYERINFO
 #include "entities.h"
-#include "ram.h"
 #include "engine_calls.h"
+#include "ram_camera.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
+#include "ram_system.h"
+#include "ram_ui.h"
 #include "sprite_calls.h"
-
-/* Compiler bound qualification: the compatible incomplete-array view
- * preserves the observed index arithmetic. The complete bound changes width;
- * a pointer cast changes address-register allocation. Historical declaration
- * spelling is unknown [INFERENCE]. */
-extern struct object_state gPlayerInfo[];
 
 /* Test the entity's level and bounds against the chosen camera rectangle. */
 short func_00bdd8(entity, viewport)

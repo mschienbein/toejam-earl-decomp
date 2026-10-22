@@ -1,28 +1,30 @@
 #define TJE_LOCAL_FUNC_00D904
-#define TJE_LOCAL_FUNC_020EAA
 
 #include "entities.h"
 #include "earthlings.h"
 #include "sprites.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_earthlings.h"
+#include "assets_sprites.h"
 #include "earthling_calls.h"
 #include "elevator_calls.h"
 #include "map_calls.h"
-#include "random.h"
 #include "present_calls.h"
+#include "ram_camera.h"
+#include "ram_earthlings.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_ship.h"
+#include "ram_system.h"
+#include "random.h"
+#include "ship.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
 
 /* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
  * whose canonical return is short. The observed caller omits that
  * narrowing; the historical missing declaration is [INFERENCE]. */
 extern int func_00d904();
 
-/* ORIGINAL BUG: this consumer keeps a int result view of func_020eaa,
- * whose canonical return is char. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
-extern int func_020eaa();
 /* Reject elevator overlap and any occupied earthling inside the combined radii.
  * The original normalizes the overlap predicate to zero or one before testing it. */
 int CheckEarthlingOverlap(definition, bank, x, y, level)
@@ -353,8 +355,8 @@ struct earthling_state *earthling;
         object->level = earthling->level;
         object->width = data->width;
         object->height_pixels = data->height_pixels;
-        object->sprite_count = data->draw_attribute;
-        object->tile_count = data->draw_offset;
+        object->sprite_count = data->sprite_count;
+        object->tile_count = data->tile_count;
         if (func_020e70(earthling)) {
             object->sprite_count = 1;
             object->tile_count = 12;

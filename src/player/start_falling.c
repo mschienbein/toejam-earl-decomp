@@ -1,9 +1,14 @@
 #include "entities.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_audio.h"
+#include "audio_calls.h"
 #include "player.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
+#include "ram_speech.h"
+#include "ram_system.h"
+#include "speech.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
 /* Start falling in the current facing direction, nudging away from a
  * neighboring supported tile before the vblank terrain-priority update. */
 void SetToejamFalling(player, player_number)

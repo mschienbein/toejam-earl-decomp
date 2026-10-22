@@ -62,4 +62,16 @@ extern void func_01bea6();
 extern void func_01befa();
 extern void func_01c188();
 
+/* ROM-only player interfaces retain their current caller spellings;
+ * the ABI alone does not uniquely establish historical C return types. */
+extern void CheckPlayerFalling();
+extern int Player_Youch();
+extern void SpriteChecks();
+extern void func_00dd82();
+extern void func_00f69e();
+extern void func_010294();
+extern void func_010ffc();
+extern int func_012028();
+extern char func_01afb8();
+
 #endif

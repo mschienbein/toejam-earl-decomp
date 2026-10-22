@@ -1,6 +1,7 @@
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
 #include "graphics_calls.h"
+#include "ram_camera.h"
+
 /* Fill one 45-word transfer row and mark it ready. */
 void func_0015a8(camera)
 short camera;

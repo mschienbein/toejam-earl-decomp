@@ -1,12 +1,20 @@
 #include "entities.h"
 #include "earthlings.h"
 #include "sprites.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_earthlings.h"
+#include "assets_sprites.h"
 #include "earthling_calls.h"
 #include "player.h"
+#include "ram_earthlings.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "ram_ui.h"
+#include "random.h"
+#include "ship.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
 /* Invoke eligible loaded earthlings' per-type abilities on alternating slots. */
 void func_018834()
 {

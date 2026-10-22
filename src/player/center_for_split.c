@@ -1,9 +1,12 @@
 #include "entities.h"
-#include "ram.h"
 #include "core_calls.h"
 #include "player.h"
+#include "ram_camera.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
+#include "random.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
 /* Animate the players toward the centers of the two half-height viewports,
  * keeping 26.6 intermediates; restore the world positions after the effect. */
 void func_00300a()

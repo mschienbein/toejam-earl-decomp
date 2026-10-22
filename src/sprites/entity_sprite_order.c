@@ -1,6 +1,9 @@
 #include "entities.h"
 #include "sprites.h"
-#include "ram.h"
+#include "ram_camera.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
 #include "sprite_calls.h"
 
 /* Preserve the observed signed/unsigned value views of shared storage.
@@ -14,8 +17,8 @@ struct object_state *entity;
 
     if (entity->parent >= 0) {
         parent = &gPlayerInfo[entity->parent];
-        entity->x = (char)(unsigned char)entity->flag_57 + parent->x;
-        entity->y = (char)(unsigned char)entity->flag_58 + parent->y;
+        entity->x = (char)entity->flag_57 + parent->x;
+        entity->y = (char)entity->flag_58 + parent->y;
         entity->height = (char)entity->offset_height + parent->height;
         if (parent->tile & 0x8000)
             entity->tile |= 0x8000;

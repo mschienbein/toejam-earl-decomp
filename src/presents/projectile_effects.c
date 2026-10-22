@@ -1,3 +1,4 @@
+#define TJE_LOCAL_FUNC_01E736
 #define TJE_LOCAL_FUNC_00D904
 #define TJE_LOCAL_FUNC_00D9DC
 #define TJE_LOCAL_FUNC_015DA6
@@ -5,15 +6,26 @@
 #include "entities.h"
 #include "earthlings.h"
 #include "sprites.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_audio.h"
+#include "assets_map.h"
+#include "assets_sprites.h"
+#include "audio_calls.h"
+#include "collision_calls.h"
 #include "earthling_calls.h"
-#include "map_calls.h"
-#include "random.h"
 #include "player.h"
 #include "present_calls.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "ram_ui.h"
+#include "random.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
+/* ORIGINAL BUG: this byte-store consumer keeps an int result view of the
+ * short allocator. The shared short declaration adds normalization absent
+ * from the ROM; the historical missing declaration is [INFERENCE]. */
+extern int func_01e736();
 
 /* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
  * whose canonical return is short. The observed caller omits that
@@ -293,8 +305,7 @@ short player_number;
 }
 
 /* Keep action bits and remap a nonzero direction nibble through the selected row.
- * ORIGINAL BUG: accepted jump_motion.c and rocket_motion.c callers declare this
- * as int, although the definition returns unsigned char; they retain the low byte. */
+ * Callers use the shared unsigned-char return declaration. */
 unsigned char func_01cc62(player_number)
 short player_number;
 {

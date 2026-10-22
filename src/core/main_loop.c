@@ -1,22 +1,29 @@
 #include "entities.h"
 #include "hardware.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
+#include "assets_palettes.h"
+#include "assets_scenes.h"
+#include "assets_ui.h"
+#include "audio_calls.h"
 #include "core_calls.h"
 #include "earthling_calls.h"
 #include "elevator_calls.h"
 #include "graphics_calls.h"
+#include "hardware_calls.h"
+#include "intro_calls.h"
 #include "map_calls.h"
-#include "random.h"
 #include "player.h"
 #include "present_calls.h"
+#include "ram_camera.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "ram_ui.h"
+#include "random.h"
+#include "speech.h"
 #include "sprite_calls.h"
 #include "ui_calls.h"
-#include "romcalls.h"
 
-/* Preserve the observed signed/unsigned value views of shared storage.
- * These casts do not imply a different record layout; historical spelling
- * is unknown [INFERENCE]. */
 /* Cycle four CRAM colours once every four calls. */
 void DrawLevelGraphics()
 {
@@ -195,16 +202,16 @@ void GetPlayerInput()
         P1_PREV_PROCESSED_INPUT[player] = P1_PROCESSED_INPUT[player];
         if (gPlayerLives[player] >= 0) {
             P1_PROCESSED_INPUT[player] = MovePadInputIntoD0(player);
-            if (((long)entity->flags_52 & 0x20000) || entity->sprite_state == 79 ||
+            if ((entity->flags_52 & 0x20000) || entity->sprite_state == 79 ||
                 entity->sprite_state == 78 || entity->sprite_state == 5 || entity->sprite_state == 6)
                 P1_PROCESSED_INPUT[player] &= 0x80;
         } else
             P1_PROCESSED_INPUT[player] = 0;
-        if ((long)entity->flags_52 & 0x20000000)
+        if (entity->flags_52 & 0x20000000)
             P1_PROCESSED_INPUT[player] &= 0x8f;
-        else if ((long)entity->flags_52 & 0x60)
+        else if (entity->flags_52 & 0x60)
             P1_PROCESSED_INPUT[player] &= 0xcf;
-        else if (((long)entity->flags_52 & 0x7800000) || entity->sprite_state == 2)
+        else if ((entity->flags_52 & 0x7800000) || entity->sprite_state == 2)
             P1_PROCESSED_INPUT[player] &= 0xef;
         entity = &gPlayerInfo[1];
     }
@@ -365,7 +372,7 @@ short player;
     char display_enabled;
     entity = &gPlayerInfo[player];
     y = entity->y - entity->height_pixels / 2 - 112;
-    if (entity->height > 0 && ((long)entity->flags_52 & 0x4008000))
+    if (entity->height > 0 && (entity->flags_52 & 0x4008000))
         y -= entity->height / 2;
     display_enabled = gMode2RegSoftcopy & 0x40;
     if (display_enabled) {

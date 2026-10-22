@@ -1,12 +1,15 @@
 #include "entities.h"
 #include "sprites.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_scenes.h"
 #include "engine_calls.h"
 #include "graphics_calls.h"
 #include "player.h"
+#include "ram_camera.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
+#include "speech.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
 /* Create an object from one placement and one scene descriptor. */
 void func_023086(placement_number, descriptor_number)
 short placement_number, descriptor_number;
@@ -24,8 +27,8 @@ short placement_number, descriptor_number;
         object->frame_phase = descriptor->frame_phase;
         object->width = descriptor->width;
         object->height_pixels = descriptor->height;
-        object->sprite_count = descriptor->draw_attribute;
-        object->tile_count = descriptor->draw_offset;
+        object->sprite_count = descriptor->sprite_count;
+        object->tile_count = descriptor->tile_count;
         object->frame_duration = 1;
         object->frame = -1;
         object->x = FunkatronScenePlacements[placement_number].x;

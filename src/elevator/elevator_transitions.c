@@ -2,10 +2,14 @@
 
 #include "entities.h"
 #include "elevator.h"
-#include "ram.h"
-#include "core_calls.h"
+#include "audio_calls.h"
 #include "elevator_calls.h"
-#include "romcalls.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "ram_ui.h"
+#include "random.h"
 
 /* ORIGINAL BUG: this consumer keeps a int result view of func_001262,
  * whose canonical return is short. The observed caller omits that

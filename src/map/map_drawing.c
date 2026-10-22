@@ -2,14 +2,20 @@
 #include "earthlings.h"
 #include "sprites.h"
 #include "hardware.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
+#include "assets_ui.h"
 #include "core_calls.h"
+#include "hardware_calls.h"
 #include "map_calls.h"
+#include "ram_earthlings.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_system.h"
 #include "random.h"
 #include "sprite_calls.h"
 #include "ui_calls.h"
-#include "romcalls.h"
+
 /* Bucket a ten-bit random value with descending thresholds 256, 224, ... . */
 short func_0077d8()
 {

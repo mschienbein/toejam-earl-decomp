@@ -1,8 +1,11 @@
 #include "entities.h"
 #include "sprites.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_presents.h"
+#include "assets_sprites.h"
 #include "player.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
+
 /* Initialize the hardware sprite links, the two players, and the two
  * selector-plus-six-present record chains beginning at record 26. */
 void SetupPlayer()

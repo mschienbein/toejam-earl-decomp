@@ -1,7 +1,8 @@
 #include "entities.h"
 #include "sprites.h"
-#include "assets.h"
+#include "assets_sprites.h"
 #include "sprite_calls.h"
+
 /* Select a character's ten-byte sprite descriptor and reset its animation. */
 void SetSprite(entity, sprite_state)
 struct object_state *entity;

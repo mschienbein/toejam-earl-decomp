@@ -1,6 +1,7 @@
 #include "entities.h"
 #include "player.h"
-#include "romcalls.h"
+#include "random.h"
+
 /* Require the same level and absolute x/y differences below 16 and 5. */
 int func_00dcc2(entity, x, y, level)
 struct object_state *entity;

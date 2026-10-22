@@ -2,11 +2,13 @@
 
 #include "entities.h"
 #include "earthlings.h"
-#include "ram.h"
 #include "earthling_calls.h"
-#include "map_calls.h"
 #include "player.h"
-#include "romcalls.h"
+#include "ram_earthlings.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "ram_ui.h"
+#include "ship.h"
 
 /* ORIGINAL BUG: this consumer keeps a int result view of func_00d9dc,
  * whose canonical return is unsigned char. The observed caller omits that

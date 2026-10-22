@@ -2,13 +2,17 @@
 
 #include "entities.h"
 #include "earthlings.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_audio.h"
+#include "audio_calls.h"
 #include "earthling_calls.h"
-#include "map_calls.h"
 #include "player.h"
+#include "ram_effects.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "random.h"
+#include "speech.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
 
 /* ORIGINAL BUG: this consumer keeps a unsigned short result view of func_00d9dc,
  * whose canonical return is unsigned char. The observed caller omits that

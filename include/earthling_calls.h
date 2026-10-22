@@ -40,4 +40,26 @@ extern void func_01a722();
 extern void func_01a7f0();
 extern void func_01a8a0();
 
+/* Additional matched wave interfaces and their observed call targets. */
+extern void AI_MailboxTouch();
+extern void AI_OperaSingerTouch();
+extern void AI_WisemanTouch();
+extern void AI_WizardTouch();
+extern void DropPresentsAbility();
+extern void func_020f6c();
+extern int func_021c60();
+
+/* Represented C definitions establish these return types. */
+extern void CheckAButton();
+extern int NiceEarthlingCheck();
+extern void func_021d32();
+extern void func_02234c();
+extern void func_0223f6();
+
+/* ROM-only earthling interfaces retain their current caller spellings;
+ * the ABI alone does not uniquely establish historical C return types. */
+extern void OpenEarthlingPresent();
+extern void func_018da4();
+extern void func_023cb4();
+
 #endif

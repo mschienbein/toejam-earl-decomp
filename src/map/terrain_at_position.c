@@ -1,7 +1,8 @@
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
 #include "graphics_calls.h"
 #include "map_calls.h"
+#include "ram_map.h"
+
 /* Read the high terrain nibble at a world position. A map coordinate of
  * zero or past the upper bound reads as terrain 0x80 on levels 1 and 26 and
  * 0x90 elsewhere ([INFERENCE] callers pass nonnegative coordinates; a

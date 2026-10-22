@@ -1,8 +1,10 @@
 #include "elevator.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
 #include "map_calls.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
 #include "random.h"
+
 /* Walk between two map cells, adding reciprocal direction bits and 0x2000
  * to the word map. A level-dependent draw also copies direction bits to the
  * byte map; turns are selected from the observed lookup table. */

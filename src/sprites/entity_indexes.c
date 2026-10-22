@@ -1,7 +1,9 @@
 #include "entities.h"
 #include "sprites.h"
-#include "ram.h"
+#include "ram_player.h"
+#include "ram_sprites.h"
 #include "sprite_calls.h"
+
 /* Initialize the sprite sentinels and store each entity's own slot number. */
 void SetRAMIndexes()
 {

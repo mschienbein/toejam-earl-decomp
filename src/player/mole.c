@@ -3,11 +3,14 @@
 #include "entities.h"
 #include "earthlings.h"
 #include "presents.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_presents.h"
 #include "earthling_calls.h"
 #include "elevator_calls.h"
 #include "player.h"
+#include "ram_earthlings.h"
+#include "ram_player.h"
+#include "ram_presents.h"
+#include "ram_system.h"
 #include "sprite_calls.h"
 
 /* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,

@@ -1,8 +1,10 @@
 #include "elevator.h"
 #include "map.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
 #include "map_calls.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+
 /* ROM descriptors contain a count-prefixed byte list at offset two. */
 
 int func_006b22(list_number, value)

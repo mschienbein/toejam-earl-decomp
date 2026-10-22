@@ -1,17 +1,24 @@
 #include "entities.h"
 #include "hardware.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_audio.h"
+#include "audio_calls.h"
 #include "core_calls.h"
 #include "earthling_calls.h"
 #include "elevator_calls.h"
 #include "map_calls.h"
-#include "random.h"
 #include "player.h"
 #include "present_calls.h"
+#include "ram_camera.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "ram_ui.h"
+#include "random.h"
 #include "sprite_calls.h"
 #include "ui_calls.h"
-#include "romcalls.h"
+
 /* Apply the active sinking animation, then handle Earl's idle variation. */
 void func_01044e(player, land)
 struct object_state *player;

@@ -1,6 +1,7 @@
 #include "entities.h"
-#include "ram.h"
 #include "player.h"
+#include "ram_ui.h"
+
 /* Check the per-player exclusion byte and the allowed sprite/state masks. */
 int func_01b0aa(player, player_number)
 struct object_state *player;

@@ -1,9 +1,13 @@
 #include "entities.h"
-#include "ram.h"
 #include "player.h"
 #include "present_calls.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_player.h"
+#include "ram_system.h"
+#include "random.h"
 #include "sprite_calls.h"
-#include "romcalls.h"
+
 /* Choose a direction from velocity, then select standing, jumping, or
  * braking sprites according to the terrain and the active movement flags. */
 void func_011462(state, player, terrain)

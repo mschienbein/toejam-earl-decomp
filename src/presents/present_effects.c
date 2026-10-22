@@ -1,21 +1,39 @@
+#define TJE_LOCAL_FUNC_01E736
 #define TJE_LOCAL_FUNC_001262
 #define TJE_LOCAL_FUNC_00D904
 
 #include "entities.h"
 #include "sprites.h"
 #include "hardware.h"
-#include "ram.h"
-#include "assets.h"
+#include "revision.h"
+#include "assets_audio.h"
+#include "assets_sprites.h"
+#include "assets_ui.h"
+#include "audio_calls.h"
+#include "collision_calls.h"
 #include "core_calls.h"
 #include "earthling_calls.h"
 #include "elevator_calls.h"
 #include "map_calls.h"
-#include "random.h"
 #include "player.h"
 #include "present_calls.h"
+#include "ram_camera.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_speech.h"
+#include "ram_system.h"
+#include "ram_ui.h"
+#include "random.h"
+#include "speech.h"
 #include "sprite_calls.h"
 #include "ui_calls.h"
-#include "romcalls.h"
+
+/* ORIGINAL BUG: this byte-store consumer keeps an int result view of the
+ * short allocator. The shared short declaration adds normalization absent
+ * from the ROM; the historical missing declaration is [INFERENCE]. */
+extern int func_01e736();
 
 /* ORIGINAL BUG: this consumer keeps a int result view of func_001262,
  * whose canonical return is short. The observed caller omits that
@@ -26,7 +44,6 @@ extern int func_001262();
  * whose canonical return is short. The observed caller omits that
  * narrowing; the historical missing declaration is [INFERENCE]. */
 extern int func_00d904();
-#include "revision.h"
 
 /* Create or restart the player's short-lived effect at the given position. */
 int func_015b66(player_number, x, y, height, level)

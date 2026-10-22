@@ -1,10 +1,11 @@
 #include "elevator.h"
 #include "map.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
 #include "map_calls.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
 #include "random.h"
-#include "romcalls.h"
+
 /* Fill a rectangle. Replacing a different labelled 0x1000 cell replaces
  * every occurrence of that old label throughout the complete map. */
 void func_005afa(start_row, start_column, height, width, replacement)

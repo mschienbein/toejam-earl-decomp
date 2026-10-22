@@ -1,9 +1,10 @@
 #include "elevator.h"
-#include "ram.h"
-#include "assets.h"
+#include "assets_map.h"
 #include "map_calls.h"
+#include "ram_elevator.h"
+#include "ram_map.h"
 #include "random.h"
-#include "romcalls.h"
+
 /* Exchange a player's map with the saved map, preserving the other
  * player's visibility nibble in the active mask plane. */
 void func_0044e2(player)

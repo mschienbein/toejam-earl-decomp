@@ -1,5 +1,6 @@
-#include "ram.h"
+#include "ram_system.h"
 #include "random.h"
+
 /* Park-Miller generator, using Schrage's split to avoid overflowing 31 bits.
  * The original public result is the low unsigned 16 bits of the new seed. */
 unsigned short GetRandomNumber()

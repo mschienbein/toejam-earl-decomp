@@ -40,4 +40,15 @@ extern short func_00d904();
 #endif
 extern void func_00d970();
 
+/* Additional matched wave interfaces and their observed call targets. */
+extern void func_00c920();
+
+/* ROM-only sprite decoding/processing interfaces retain their current caller
+ * spellings; the ABI alone does not uniquely establish historical C returns. */
+extern void SpriteUnpackInterleavedRLE();
+extern void SpriteUnpackRLE();
+extern int func_00c7a8();
+extern void func_00cb54();
+extern void func_00cc82();
+
 #endif

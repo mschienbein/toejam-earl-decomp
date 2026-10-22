@@ -1,5 +1,6 @@
 #include "entities.h"
 #include "player.h"
+
 /* The first three words are position; the next two are horizontal motion.
  * [INFERENCE] The returned values 4..7 select facing directions. */
 

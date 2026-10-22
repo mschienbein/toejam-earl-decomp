@@ -161,7 +161,8 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
         work.mkdir(parents=True, exist_ok=True)
         obj = work / f"{unit}.o"
         if assembly:
-            result = subprocess.run([str(toolchain.tool("m68k-elf", "as")), *cunits.ASM_FLAGS, "-I", str(ROOT / "include"),
+            include_flags = [flag for folder in [*includes, ROOT / "include"] for flag in ("-I", str(folder))]
+            result = subprocess.run([str(toolchain.tool("m68k-elf", "as")), *cunits.ASM_FLAGS, *include_flags,
                                      "-o", str(obj), str(source)], capture_output=True, text=True)
             if result.returncode:
                 raise MatchError(f"the assembler rejected it:\n{result.stderr}")

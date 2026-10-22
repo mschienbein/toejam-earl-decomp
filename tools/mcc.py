@@ -40,6 +40,18 @@ BRANCH = re.compile(r"^(B(?:RA|SR|HI|LS|CC|HS|CS|LO|NE|EQ|VC|VS|PL|MI|GE|LT|GT|L
 HEX = re.compile(r"\$([0-9A-Fa-f]+)")
 DOTTED = re.compile(r"(?<![\w.$])\.([A-Za-z_]\w*)")
 LABEL = re.compile(r"^([A-Za-z_]\w*):\s*(.*)$")
+FIELDS = re.compile(r"""^(\S+)(?:(\s+)((?:'[^']*'|"[^"]*"|[^\s'"])+))?(?:\s+.*)?$""")
+
+
+def strip_comment(statement: str) -> str:
+    """Drop an end-of-line comment: Microtec ends the operand field at the first unquoted blank."""
+    fields = FIELDS.match(statement)
+    if not fields:
+        return statement
+    mnemonic, gap, operands = fields.groups()
+    if operands is None or operands.startswith("*"):
+        return mnemonic
+    return f"{mnemonic}{gap}{operands}"
 
 
 class CompileError(RuntimeError):
@@ -167,6 +179,7 @@ def adapt(listing: str, unit: str, near: dict[str, str] | None = None) -> str:
             stripped = label.group(2)
             if not stripped:
                 continue
+        stripped = strip_comment(stripped)
         branch = BRANCH.match(stripped)
         if branch:
             mnemonic, gap, target = branch.groups()

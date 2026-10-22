@@ -14,7 +14,7 @@ UNIT\tIDNT\t
 \tSECTION\t9,,C
 \tXDEF\t.loop
 .loop:
-\tMOVE.W\t6(SP),D0
+\tMOVE.W\t6(SP),D0\t*fr
 \tBRA\t_L2
 _L1:
 \tSUBQ.W\t#1,D0
@@ -61,6 +61,11 @@ class AdaptTest(unittest.TestCase):
         before = mcc.adapt(LISTING, "unit", {"helper": "backward"}).splitlines()
         call = before.index("\tJSR\t(helper,PC)")
         self.assertNotEqual(before[call + 1], "\tNOP")
+
+    def test_end_of_line_comments_are_dropped(self):
+        self.assertIn("\tMOVE.W\t6(SP),D0", self.lines)
+        self.assertEqual(mcc.strip_comment("RTS\t*x"), "RTS")
+        self.assertEqual(mcc.strip_comment("DC.B\t'a b',0\t*text"), "DC.B\t'a b',0")
 
     def test_explicit_short_branch_is_kept(self):
         self.assertIn("\tBEQ.S\t_L3", self.lines)

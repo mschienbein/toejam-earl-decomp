@@ -11,10 +11,14 @@ spells differently and never changes an instruction:
 - Microtec prefixes C identifiers with a dot (`.name`); the dot is removed so C names are the
   project's symbol names (`func_0011ca`, imported names, RAM globals);
 - `$hex` -> `0xhex`;
-- branch sizing: Microtec's one-pass assembler gives an unsized branch to a label that is not yet
-  defined (a forward reference) a 16-bit displacement; GNU as would shrink it, so unsized forward
-  Bcc/BRA/BSR get an explicit `.w`. Backward branches stay unsized (both assemblers pick the
-  shortest form for a known distance).
+- sizing, reproducing ASM68K 6.6A as measured (CompilerHunter receipts asm66-branch-rules.json,
+  asm66-call-option-results.json) and as the ROM shows (compiled code: 386 backward PC-relative
+  calls without NOP, 72 forward PC-relative calls followed by NOP, none forward without NOP):
+  - an unsized Bcc/BRA/BSR to a label not yet defined (forward) gets a 16-bit displacement (`.w`);
+    to a label already defined (backward) the shortest form (`jb<cc>`: byte when it fits, -128 too);
+  - a bare `JSR`/`JMP` to a label in the same code section becomes PC-relative: 4 bytes backward;
+    forward the assembler keeps the 6 bytes it reserved, as PC-relative plus `NOP`; any other target
+    (another C file, RAM, the runtime) stays absolute long.
 """
 from __future__ import annotations
 
@@ -87,10 +91,28 @@ def compile_c(source: Path, include_dirs: list[Path] = (), options: list[str] = 
         return outputs[0].read_text(encoding="latin-1")
 
 
+CALL = re.compile(r"^(JSR|JMP)(\s+)([A-Za-z_]\w*)$", re.I)
+
+
+def code_labels(listing: str) -> set[str]:
+    """Labels defined in the code section (SECTION 9), with the Microtec dot removed."""
+    labels, in_code = set(), False
+    for raw in listing.splitlines():
+        stripped = raw.strip()
+        if re.match(r"SECTION\s+(\d+)", stripped, re.I):
+            in_code = re.match(r"SECTION\s+(\d+)", stripped, re.I).group(1) == "9"
+            continue
+        label = LABEL.match(DOTTED.sub(r"\1", stripped))
+        if in_code and label:
+            labels.add(label.group(1))
+    return labels
+
+
 def adapt(listing: str, unit: str) -> str:
-    """Microtec assembly -> GNU as assembly (directives and spellings only)."""
+    """Microtec assembly -> GNU as assembly (directives, spellings and ASM68K sizing only)."""
     lines: list[str] = []
     defined: set[str] = set()
+    local = code_labels(listing)
     for raw in listing.splitlines():
         stripped = raw.strip()
         if not stripped or stripped.startswith("*"):
@@ -117,8 +139,21 @@ def adapt(listing: str, unit: str) -> str:
         branch = BRANCH.match(stripped)
         if branch:
             mnemonic, gap, target = branch.groups()
-            size = "" if target in defined else ".w"   # forward reference: the one-pass assembler uses a word
-            lines.append(f"\t{mnemonic}{size}{gap}{target}")
+            if target in defined:   # backward: shortest form (gas jbra/jbsr/jb<cc> relax to byte when it fits)
+                lines.append(f"\tjb{mnemonic[1:].lower()}{gap}{target}")
+            else:                   # forward: the one-pass assembler reserved a word displacement
+                lines.append(f"\t{mnemonic}.w{gap}{target}")
+            continue
+        call = CALL.match(stripped)
+        if call:
+            mnemonic, gap, target = call.groups()
+            if target in defined:
+                lines.append(f"\t{mnemonic}{gap}({target},PC)")
+            elif target in local:
+                lines.append(f"\t{mnemonic}{gap}({target},PC)")
+                lines.append("\tNOP")   # forward: PC-relative inside the 6 bytes reserved for absolute long
+            else:
+                lines.append(f"\t{mnemonic}{gap}({target}).L")
             continue
         lines.append("\t" + stripped)
     return "\n".join(lines) + "\n"

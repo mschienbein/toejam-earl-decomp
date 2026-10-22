@@ -23,8 +23,13 @@ _L2:
 \tBNE\t_L1
 \tBEQ.S\t_L3
 \tJSR\t.helper
+\tJSR\t.loop
+\tJSR\t.later
 \tMOVE.L\t#$FF800E,A0
 _L3:
+\tRTS
+\tXDEF\t.later
+.later:
 \tRTS
 \tSECTION\t14,,D
 * allocations for .loop
@@ -40,8 +45,14 @@ class AdaptTest(unittest.TestCase):
     def test_unsized_forward_branch_gets_a_word_displacement(self):
         self.assertIn("\tBRA.w\t_L2", self.lines)
 
-    def test_unsized_backward_branch_is_left_to_the_assembler(self):
-        self.assertIn("\tBNE\t_L1", self.lines)
+    def test_unsized_backward_branch_takes_the_shortest_form(self):
+        self.assertIn("\tjbne\t_L1", self.lines)
+
+    def test_calls_in_the_same_file_are_pc_relative_and_forward_ones_keep_six_bytes(self):
+        self.assertIn("\tJSR\t(loop,PC)", self.lines)
+        later = self.lines.index("\tJSR\t(later,PC)")
+        self.assertEqual(self.lines[later + 1], "\tNOP")
+        self.assertIn("\tJSR\t(helper).L", self.lines)
 
     def test_explicit_short_branch_is_kept(self):
         self.assertIn("\tBEQ.S\t_L3", self.lines)
@@ -49,7 +60,6 @@ class AdaptTest(unittest.TestCase):
     def test_microtec_dot_prefix_and_hex_are_respelled(self):
         self.assertIn("loop:", self.lines)
         self.assertIn("\t.globl loop", self.lines)
-        self.assertIn("\tJSR\thelper", self.lines)
         self.assertIn("\tMOVE.L\t#0xFF800E,A0", self.lines)
 
     def test_sections_map_and_microtec_directives_disappear(self):

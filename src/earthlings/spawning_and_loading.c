@@ -1,95 +1,28 @@
-struct earthling_state;
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15;
-    void (*process)();
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    struct earthling_state *earthling;
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct earthling_state {
-    char reserved, object, reserved_2, state;
-    short timer, x, y, reserved_0a, reserved_0c;
-    char reserved_0e, second_object, reserved_10[2];
-};
+#define TJE_LOCAL_FUNC_00D904
+#define TJE_LOCAL_FUNC_020EAA
 
-struct timed_animation {
-    char *sequence;
-    char **frames;
-    char period, spare;
-};
-struct earthling_definition {
-    struct timed_animation *states;
-    void (*update)(), (*ability)(), (*touch)();
-    char mode_15;
-    unsigned char width, height_pixels;
-    char draw_offset, draw_attribute, reserved_15[3];
-    unsigned char flags_18, radius, distance_x, distance_y;
-    char reserved_1c[8], health, reserved_25;
-};
+#include "entities.h"
+#include "earthlings.h"
+#include "sprites.h"
+#include "ram.h"
+#include "assets.h"
+#include "earthling_calls.h"
+#include "elevator_calls.h"
+#include "map_calls.h"
+#include "random.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
 
-extern struct object_state gPlayerInfo[40];
-extern struct earthling_state EARTHLINGS_IN_LEVEL[][20];
-extern struct earthling_state EARTHLINGS_IN_LEVEL_COPY[20];
-extern struct earthling_definition EARTHLING_DATA[24];
-extern struct timed_animation AnimationDescriptors_0AEF9C[];
-extern char EarthlingCoordinatePairs[];
-extern char EARTHLING_LOAD_FLAG[];
-extern char EARTHLING_LEVEL[];
-extern unsigned short gMapDataA[26][19];
-extern unsigned short gMapDataB[26][19];
-extern unsigned short gLevelSeeds[26];
-extern char gLevel912C;
-extern char gLevel912E;
-extern char SPLIT_SCREEN;
-extern char ram_ff911e;
-extern char ram_ff911f;
-extern char ram_ffe212[10];
-extern char gHighestLevel;
-extern char gShipPieceLevels[10];
-extern char LevelEarthlingChoices[26][20];
-extern unsigned long ram_ffe142[26];
-extern char gPlayerLives[];
-extern char gPlayer2Lives;
-extern short ram_ffe1ae;
-extern short TOEJAM_CAMERA_NEWX;
-extern short TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX;
-extern short EARL_CAMERA_NEWY;
-extern unsigned short PREGEN_RANDOMS[59];
-extern unsigned short ram_ff91e0;
-extern unsigned short GetRandomNumber();
-extern long StackBasedRandom();
-extern int abs();
-extern int func_0144a6();
-extern int func_020e70();
-extern int TerrainValidation();
-extern int func_012db8();
-/* ORIGINAL BUG: the original allocation callers use int, while the accepted
- * func_00d904 definition returns short; only the stored byte/word is used. */
+/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
+ * whose canonical return is short. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
 extern int func_00d904();
-/* ORIGINAL BUG: the original unit uses an int declaration for func_020eaa;
- * its body normalizes a char result, but OpenEarthlingPresent tests D0.L. */
-extern int func_020eaa();
-extern void func_00d970();
-extern void func_023cb4();
-extern void func_01f98e();
-extern void func_01e94e();
 
+/* ORIGINAL BUG: this consumer keeps a int result view of func_020eaa,
+ * whose canonical return is char. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_020eaa();
 /* Reject elevator overlap and any occupied earthling inside the combined radii.
  * The original normalizes the overlap predicate to zero or one before testing it. */
 int CheckEarthlingOverlap(definition, bank, x, y, level)
@@ -104,8 +37,8 @@ short bank, x, y, level;
         return 0;
     for (record_number = 0; record_number < 20; ++record_number) {
         earthling = &EARTHLINGS_IN_LEVEL[bank][record_number];
-        if (earthling->reserved != -1) {
-            other_definition = &EARTHLING_DATA[earthling->reserved];
+        if (earthling->kind != -1) {
+            other_definition = &EARTHLING_DATA[earthling->kind];
             clearance = (short)other_definition->radius << 2;
             clearance += (short)definition->radius << 2;
             if (clearance > abs(x - earthling->x) &&
@@ -129,7 +62,7 @@ short x, y, level;
         bank = 1;
     earthling = EARTHLINGS_IN_LEVEL[bank];
     for (record_number = 0; record_number < 2; ++record_number, ++earthling) {
-        if (!earthling->reserved || func_020e70(earthling)) {
+        if (!earthling->kind || func_020e70(earthling)) {
             distance_x = abs(x - earthling->x);
             distance_y = abs(y - earthling->y);
             if (distance_x < 340 && distance_y < 200)
@@ -290,22 +223,22 @@ short level;
                 ram_ffe142[level] |= (unsigned long)0x80000000 >> record_number;
         }
         if (!kind || (kind >= 0 && !(ram_ffe142[level] & ((unsigned long)0x80000000 >> record_number)))) {
-            EARTHLINGS_IN_LEVEL[bank][record_number].reserved = kind;
-            EARTHLINGS_IN_LEVEL[bank][record_number].reserved_2 = level;
+            EARTHLINGS_IN_LEVEL[bank][record_number].kind = kind;
+            EARTHLINGS_IN_LEVEL[bank][record_number].level = level;
             EARTHLINGS_IN_LEVEL[bank][record_number].x = position_x;
             EARTHLINGS_IN_LEVEL[bank][record_number].y = position_y;
-            EARTHLINGS_IN_LEVEL[bank][record_number].reserved_0c = position_y;
+            EARTHLINGS_IN_LEVEL[bank][record_number].value_0c = position_y;
             if (kind == 19 || kind == 9) {
-                EARTHLINGS_IN_LEVEL[bank][record_number].reserved_0a = 0;
-                EARTHLINGS_IN_LEVEL[bank][record_number].reserved_0c = 0;
+                EARTHLINGS_IN_LEVEL[bank][record_number].value_0a = 0;
+                EARTHLINGS_IN_LEVEL[bank][record_number].value_0c = 0;
             } else if (kind == 7)
-                EARTHLINGS_IN_LEVEL[bank][record_number].reserved_0a = 1;
+                EARTHLINGS_IN_LEVEL[bank][record_number].value_0a = 1;
             else
-                EARTHLINGS_IN_LEVEL[bank][record_number].reserved_0a = position_x;
+                EARTHLINGS_IN_LEVEL[bank][record_number].value_0a = position_x;
             EARTHLINGS_IN_LEVEL[bank][record_number].reserved_10[0] = EARTHLING_DATA[kind].health;
             EARTHLINGS_IN_LEVEL[bank][record_number].reserved_10[1] = 0;
         } else
-            EARTHLINGS_IN_LEVEL[bank][record_number].reserved = -1;
+            EARTHLINGS_IN_LEVEL[bank][record_number].kind = -1;
     }
     ++EARTHLING_LOAD_FLAG[bank];
     EARTHLING_LEVEL[bank] = level;
@@ -317,8 +250,8 @@ void SetupInitialEarthlings()
     short record_number;
 
     for (record_number = 0; record_number < 20; ++record_number) {
-        EARTHLINGS_IN_LEVEL[0][record_number].reserved = -1;
-        EARTHLINGS_IN_LEVEL_COPY[record_number].reserved = -1;
+        EARTHLINGS_IN_LEVEL[0][record_number].kind = -1;
+        EARTHLINGS_IN_LEVEL_COPY[record_number].kind = -1;
     }
     if (gPlayerLives[0] >= 0)
         func_017ac8(1);
@@ -341,14 +274,14 @@ short state;
     earthling->state = state;
     if (!earthling->object)
         return;
-    data = &EARTHLING_DATA[earthling->reserved];
+    data = &EARTHLING_DATA[earthling->kind];
     animation = &data->states[state];
     object = &gPlayerInfo[earthling->object];
     object->sequence = animation->sequence;
     object->frames = animation->frames;
     object->frame_phase = animation->period;
     object->frame_duration = 1;
-    object->sprite = state;
+    object->sprite_state = state;
     if (object->frame >= 0)
         --object->frame;
     for (sequence_index = 0; sequence_index <= object->frame; ++sequence_index)
@@ -374,13 +307,13 @@ struct earthling_state *earthling;
         func_00d970(earthling->second_object);
         earthling->second_object = 0;
     }
-    if (!EARTHLING_LOAD_FLAG[0] || EARTHLING_LEVEL[0] != earthling->reserved_2)
+    if (!EARTHLING_LOAD_FLAG[0] || EARTHLING_LEVEL[0] != earthling->level)
         other_level = 1;
     do {
-        FindSpawnLocationForEarthling(earthling->reserved, other_level,
+        FindSpawnLocationForEarthling(earthling->kind, other_level,
                                      &earthling->x, &earthling->y,
-                                     earthling->reserved_2);
-    } while (func_012db8(earthling->x, earthling->y, earthling->reserved_2));
+                                     earthling->level);
+    } while (func_012db8(earthling->x, earthling->y, earthling->level));
 }
 
 /* Release displayed objects and restore the two saved coordinates. */
@@ -395,8 +328,8 @@ struct earthling_state *earthling;
         func_00d970(earthling->second_object);
         earthling->second_object = 0;
     }
-    earthling->x = earthling->reserved_0a;
-    earthling->y = earthling->reserved_0c;
+    earthling->x = earthling->value_0a;
+    earthling->y = earthling->value_0c;
 }
 
 /* Allocate display objects and install the initial animation and type fields. */
@@ -407,29 +340,29 @@ struct earthling_state *earthling;
     struct object_state *object;
     struct timed_animation *animation;
 
-    data = &EARTHLING_DATA[earthling->reserved];
+    data = &EARTHLING_DATA[earthling->kind];
     if (earthling->object = func_00d904()) {
         object = &gPlayerInfo[earthling->object];
         object->earthling = earthling;
         object->process = data->update;
-        object->mode_15 = data->mode_15;
+        object->mode_15 = data->movement_mode;
         object->x = earthling->x;
         object->y = earthling->y;
-        if (earthling->reserved == 7)
+        if (earthling->kind == 7)
             object->height = 40;
-        object->level = earthling->reserved_2;
+        object->level = earthling->level;
         object->width = data->width;
         object->height_pixels = data->height_pixels;
-        object->draw_attribute = data->draw_attribute;
-        object->draw_offset = data->draw_offset;
+        object->sprite_count = data->draw_attribute;
+        object->tile_count = data->draw_offset;
         if (func_020e70(earthling)) {
-            object->draw_attribute = 1;
-            object->draw_offset = 12;
+            object->sprite_count = 1;
+            object->tile_count = 12;
             object->mode_15 = 0;
             object->draw_flags |= 8;
         }
         object->tile = 0x8000;
-        if (earthling->reserved != 14)
+        if (earthling->kind != 14)
             object->flags_4d |= 1;
         if ((data->flags_18 & 1) &&
             (PREGEN_RANDOMS[ram_ff91e0 == 58 ?
@@ -439,26 +372,26 @@ struct earthling_state *earthling;
             object = &gPlayerInfo[earthling->second_object];
             object->x = earthling->x;
             object->y = earthling->y + 1;
-            object->x += EarthlingCoordinatePairs[earthling->reserved * 2];
-            object->height = EarthlingCoordinatePairs[earthling->reserved * 2 + 1];
-            object->level = earthling->reserved_2;
+            object->x += EarthlingCoordinatePairs[earthling->kind * 2];
+            object->height = EarthlingCoordinatePairs[earthling->kind * 2 + 1];
+            object->level = earthling->level;
             object->width = 32;
             object->height_pixels = 32;
-            object->draw_attribute = 1;
-            object->draw_offset = 9;
+            object->sprite_count = 1;
+            object->tile_count = 9;
             object->tile = 0x8000;
             animation = AnimationDescriptors_0AEF9C;
             object->sequence = animation->sequence;
             object->frames = animation->frames;
             object->frame_phase = animation->period;
             object->frame_duration = 1;
-        } else if (earthling->reserved == 8) {
+        } else if (earthling->kind == 8) {
             object->flags_4d = 64;
             SetEarthlingState(earthling, 3);
         } else
             SetEarthlingState(earthling, 0);
         earthling->timer = 0;
-    } else if (!earthling->reserved)
+    } else if (!earthling->kind)
         func_01e94e();
     else
         func_01804e(earthling);
@@ -483,14 +416,14 @@ struct earthling_state *earthlings;
         toejam_y = earthling->y - TOEJAM_CAMERA_NEWY;
         earl_x = earthling->x - EARL_CAMERA_NEWX;
         earl_y = earthling->y - EARL_CAMERA_NEWY;
-        if (earthling->reserved != -1) {
-            if (earthling->reserved_2 == gLevel912C &&
+        if (earthling->kind != -1) {
+            if (earthling->level == gLevel912C &&
                 toejam_x + 160 > 0 && toejam_x < 480 &&
                 toejam_y + 112 > 0 && toejam_y < 336)
                 earthling->reserved_10[1] |= 2;
             else
                 earthling->reserved_10[1] &= ~2;
-            if (earthling->reserved_2 == gLevel912E && SPLIT_SCREEN &&
+            if (earthling->level == gLevel912E && SPLIT_SCREEN &&
                 earl_x + 160 > 0 && earl_x < 480 &&
                 earl_y + 112 > 0 && earl_y < 336)
                 earthling->reserved_10[1] |= 4;

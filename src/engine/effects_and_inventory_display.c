@@ -1,20 +1,12 @@
-extern char ram_ffe1c0[12], ram_ffe1d8[4], ram_ffe244[6], ram_ffe1ee[4];
-extern short ram_ffe242, ram_ffe240;
-extern char ram_ffe1e4[], ram_ffe1e6[], ram_ffde56[], ram_ffde58[];
-extern char ram_ffde5a[], ram_ffde5c[], gPlayer1RainCloudState[], ram_ffe1be[];
-extern char ram_ffe1dc[], ram_ffda42[], ram_ffde6c[], ram_ffe232[];
-extern char ram_ffe236[], ram_ffe234[], gPlayer1TomatoRainTimer[];
-extern char ram_ffe1ec, InventoryAuxiliaryTiles[], InventoryAuxiliaryTilesLarge[];
-extern short InventoryAuxiliaryTileCounts[2];
-extern unsigned char PresentDisplayTilemap[5][19];
-extern unsigned short InventoryVDPTilemap[][6][8];
-extern unsigned short GetRandomNumber();
-extern void func_00d970(), func_01528a(), func_023012(), MoveDataToVRAM();
-extern void ClearSkipVHBlankFlags(), SetSkipVHBlankFlags();
-#define VDP_CONTROL (*(unsigned long *)0xc00004L)
-#define VDP_CONTROL_WORD (*(unsigned short *)0xc00004L)
-#define VDP_DATA (*(unsigned short *)0xc00000L)
-
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "engine_calls.h"
+#include "random.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
 /* Release occupied effect-object slots and clear the associated per-player state. */
 void func_01d436()
 {
@@ -114,7 +106,7 @@ short filled;
     unsigned short tile;
 
     for (row = 0; row < 28; ++row) {
-        VDP_CONTROL = 0x50000003L + ((long)row << 23);
+        VDP_COMMAND = 0x50000003L + ((long)row << 23);
         for (column = 0; column < 40; ++column) {
             if (row == 0 || row == 27 || column == 0 || column == 39) {
                 tile = GetRandomNumber() & 3;
@@ -140,13 +132,13 @@ void func_01d8ac()
     short row, column;
     unsigned short tile;
 
-    VDP_CONTROL = 0x79a00000L;
+    VDP_COMMAND = 0x79a00000L;
     MoveDataToVRAM(InventoryAuxiliaryTiles, 80);
-    VDP_CONTROL = 0x7a400000L;
+    VDP_COMMAND = 0x7a400000L;
     MoveDataToVRAM(InventoryAuxiliaryTilesLarge,
                    (InventoryAuxiliaryTileCounts[1] + InventoryAuxiliaryTileCounts[0]) << 4);
     for (row = 0; row < 28; ++row) {
-        VDP_CONTROL = 0x60000003L + ((long)row << 23);
+        VDP_COMMAND = 0x60000003L + ((long)row << 23);
         for (column = 0; column < 40; ++column) {
             if (row == 0 || row == 27 || column == 0 || column == 39)
                 tile = 0xe1d1;
@@ -185,7 +177,7 @@ void func_01da0a()
         return;
     ClearSkipVHBlankFlags();
     for (row = 0; row < 5; ++row) {
-        VDP_CONTROL = 0x60140003L + ((row + 5) << 23);
+        VDP_COMMAND = 0x60140003L + ((row + 5) << 23);
         for (column = 0; column < 19; ++column) {
             tile = PresentDisplayTilemap[row][column];
             if (tile & 0x80) {
@@ -210,7 +202,7 @@ short selection;
     /* The original subtracts this negative tile offset; adding 465 emits ADDI instead. */
     tile_base = InventoryAuxiliaryTileCounts[1] - -465;
     for (row = 0; row < 6; ++row) {
-        VDP_CONTROL = 0x60200003L + ((row + 11) << 23);
+        VDP_COMMAND = 0x60200003L + ((row + 11) << 23);
         for (column = 0; column < 8; ++column) {
             if (selection < 0)
                 VDP_DATA = 0x8000;

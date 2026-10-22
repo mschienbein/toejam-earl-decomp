@@ -1,72 +1,12 @@
-struct earthling_state;
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15;
-    void (*process)();
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    struct earthling_state *earthling;
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct earthling_state {
-    char reserved, object, reserved_2, state;
-    short timer, x, y, reserved_0a, reserved_0c;
-    char reserved_0e, second_object, reserved_10[2];
-};
-
-struct timed_animation {
-    char *sequence;
-    char **frames;
-    char period, spare;
-};
-struct earthling_definition {
-    struct timed_animation *states;
-    void (*update)(), (*ability)(), (*touch)();
-    char mode_15;
-    unsigned char width, height_pixels;
-    char draw_offset, draw_attribute, reserved_15[3];
-    unsigned char flags_18, radius, distance_x, distance_y;
-    char reserved_1c[8], health, reserved_25;
-};
-
-struct animation_descriptor {
-    char *sequence;
-    char **frames;
-};
-
-extern struct object_state gPlayerInfo[40];
-extern struct earthling_state EARTHLINGS_IN_LEVEL[][20];
-extern struct earthling_definition EARTHLING_DATA[24];
-extern struct animation_descriptor SleepAnimationDescriptors[23];
-extern char EARTHLING_LOAD_FLAG[];
-extern char EARTHLING_LEVEL[];
-extern char P1_MENU_OPEN[];
-extern char ELEVATOR_FLAG[];
-extern char ram_ffde6c[];
-extern short ram_ffe1ae;
-extern unsigned short PREGEN_RANDOMS[59];
-extern unsigned short ram_ff91e0;
-extern int abs();
-extern int func_020e70();
-extern int func_0193fa();
-extern int func_00dd1e();
-extern void func_00d970();
-extern void func_01bb62();
-extern void SetEarthlingState();
-
+#include "entities.h"
+#include "earthlings.h"
+#include "sprites.h"
+#include "ram.h"
+#include "assets.h"
+#include "earthling_calls.h"
+#include "player.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
 /* Invoke eligible loaded earthlings' per-type abilities on alternating slots. */
 void func_018834()
 {
@@ -78,9 +18,9 @@ void func_018834()
         if (EARTHLING_LOAD_FLAG[bank]) {
             for (index = ram_ffe1ae; index < 20; index += 2) {
                 earthling = &EARTHLINGS_IN_LEVEL[bank][index];
-                if (earthling->reserved != -1 && earthling->object &&
+                if (earthling->kind != -1 && earthling->object &&
                     earthling->state != 99 && !func_020e70(earthling)) {
-                    data = &EARTHLING_DATA[earthling->reserved];
+                    data = &EARTHLING_DATA[earthling->kind];
                     if (data->ability && !func_0193fa(earthling))
                         (*data->ability)(earthling);
                 }
@@ -102,10 +42,10 @@ void func_0188ee()
         if (EARTHLING_LOAD_FLAG[buffer]) {
             for (slot = ram_ffe1ae; slot < 20; slot += 2) {
                 earthling = &EARTHLINGS_IN_LEVEL[buffer][slot];
-                if (earthling->reserved == -1 || !earthling->object ||
+                if (earthling->kind == -1 || !earthling->object ||
                     earthling->state == 99)
                     continue;
-                data = &EARTHLING_DATA[earthling->reserved];
+                data = &EARTHLING_DATA[earthling->kind];
                 object = &gPlayerInfo[earthling->object];
                 player_number = PREGEN_RANDOMS[ram_ff91e0 == 58 ?
                                 (ram_ff91e0 = 0) : ++ram_ff91e0] & 1;
@@ -114,8 +54,8 @@ void func_0188ee()
                     if (!P1_MENU_OPEN[player_number] &&
                         !ELEVATOR_FLAG[player_number] &&
                         !(player->flags_4d & 16) &&
-                        func_00dd1e(object, player, data->distance_x,
-                                    data->distance_y)) {
+                        func_00dd1e(object, player, data->contact_distance_x,
+                                    data->contact_distance_y)) {
                         if ((data->flags_18 & 1) && earthling->state == 2) {
                             SetEarthlingState(earthling, 0);
                             earthling->timer = 0;
@@ -124,7 +64,7 @@ void func_0188ee()
                     }
                     player_number ^= 1;
                 }
-                if (earthling->reserved == 7)
+                if (earthling->kind == 7)
                     func_01bb62(earthling, data);
             }
         }
@@ -149,22 +89,22 @@ void func_018a6c()
                 buffer = 1;
             for (slot = ram_ffe1ae; slot < 20; slot += 2) {
                 earthling = &EARTHLINGS_IN_LEVEL[buffer][slot];
-                if (earthling->reserved == -1 || earthling->state == 99 ||
-                    !earthling->object || earthling->reserved == 0 ||
-                    earthling->reserved == 8 || earthling->reserved == 14 ||
-                    earthling->reserved == 20 || earthling->reserved == 23 ||
-                    earthling->reserved == 24 || func_020e70(earthling))
+                if (earthling->kind == -1 || earthling->state == 99 ||
+                    !earthling->object || earthling->kind == 0 ||
+                    earthling->kind == 8 || earthling->kind == 14 ||
+                    earthling->kind == 20 || earthling->kind == 23 ||
+                    earthling->kind == 24 || func_020e70(earthling))
                     continue;
-                if (earthling->reserved == 7) {
+                if (earthling->kind == 7) {
                     if (earthling->state == 3)
                         continue;
-                } else if (earthling->reserved == 18) {
+                } else if (earthling->kind == 18) {
                     if (earthling->state == 3)
                         continue;
-                } else if (earthling->reserved == 11) {
+                } else if (earthling->kind == 11) {
                     if (earthling->state < 2)
                         continue;
-                } else if (earthling->reserved == 17 || earthling->reserved == 10) {
+                } else if (earthling->kind == 17 || earthling->kind == 10) {
                     if ((earthling->state & 0xfc) != 4)
                         continue;
                 }
@@ -174,12 +114,12 @@ void func_018a6c()
                 object = &gPlayerInfo[earthling->object];
                 object->velocity_x = 0;
                 object->velocity_y = 0;
-                object->sequence = SleepAnimationDescriptors[earthling->reserved].sequence;
-                object->frames = SleepAnimationDescriptors[earthling->reserved].frames;
+                object->sequence = SleepAnimationDescriptors[earthling->kind].sequence;
+                object->frames = SleepAnimationDescriptors[earthling->kind].frames;
                 object->frame_phase = 6;
                 object->frame_duration = 1;
                 object->frame = -1;
-                object->sprite = 99;
+                object->sprite_state = 99;
                 earthling->state = 99;
                 if (earthling->second_object) {
                     func_00d970(earthling->second_object);
@@ -203,7 +143,7 @@ short level;
         buffer = 1;
     earthling = EARTHLINGS_IN_LEVEL[buffer];
     for (slot = 0; slot < 20; ++slot, ++earthling) {
-        if (earthling->reserved != -1 && earthling->state == 99)
+        if (earthling->kind != -1 && earthling->state == 99)
             SetEarthlingState(earthling, 0);
     }
 }
@@ -222,9 +162,9 @@ char draw_mask;
         if (EARTHLING_LOAD_FLAG[buffer]) {
             for (slot = 0; slot < 20; ++slot) {
                 earthling = &EARTHLINGS_IN_LEVEL[buffer][slot];
-                if (earthling->reserved != -1 && earthling->object &&
+                if (earthling->kind != -1 && earthling->object &&
                     earthling->state == 2) {
-                    data = &EARTHLING_DATA[earthling->reserved];
+                    data = &EARTHLING_DATA[earthling->kind];
                     if ((data->flags_18 & 1) &&
                         (gPlayerInfo[earthling->object].draw_flags & draw_mask)) {
                         SetEarthlingState(earthling, 0);

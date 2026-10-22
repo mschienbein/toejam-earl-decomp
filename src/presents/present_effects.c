@@ -1,82 +1,32 @@
-#include "revision.h"
+#define TJE_LOCAL_FUNC_001262
+#define TJE_LOCAL_FUNC_00D904
 
-#define VDP_CONTROL (*(unsigned short *)0xc00004)
+#include "entities.h"
+#include "sprites.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "earthling_calls.h"
+#include "elevator_calls.h"
+#include "map_calls.h"
+#include "random.h"
+#include "player.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4], frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct timed_animation {
-    char *sequence;
-    char **frames;
-    char period, spare;
-};
-struct animation_descriptor {
-    char *sequence;
-    char **frames;
-};
-extern struct object_state gPlayerInfo[40];
-extern struct timed_animation dat_0aefa6[2], dat_0aefba[], dat_0aefc4[];
-extern struct timed_animation dat_0aefce[], dat_0aefd8[], dat_0aefec, dat_0af05a[];
-extern struct animation_descriptor AnimationDescriptors_0AF0D0[];
-extern char ram_ffde56[], ram_ffde58[], ram_ffde5a[], ram_ffde5c[];
-extern char ram_ffde5e[], ram_ffde60[], ram_ffde6c[];
-extern short ram_ffde6e[];
-extern char gPlayer1RainCloudState[];
-extern short gPlayer1RainCloudTimer[];
-extern char ELEVATOR_FLAG[], gPlayerRank[], gPlayerBucks[], gPlayerLives[];
-extern char P1_MENU_OPEN[], TOEJAMS_HEALTH[], TOEJAM_FALL_STATE[], ram_ffda2c[];
-extern char gPlayer1BurpTimer[], gPlayer1BurpsLeft[];
-extern char gPlayer1Powerup[], ram_ffda30[];
-extern unsigned short gPlayerPoints[], gPlayer1PowerupTimer[];
-extern unsigned char LAND_UNDER_TOEJAM, LAND_UNDER_EARL;
-extern char ram_ff936c, SPLIT_SCREEN, HBLANK_FLAG_1, VBLANK_FLAG_5, VBLANK_FLAG_7;
-extern char gHighestLevel, gMusicUnknownE488;
-extern short ram_ffe474, TOEJAM_SPEECH_COUNTER;
-extern unsigned short PREGEN_RANDOMS[59], ram_ff91e0;
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY;
-extern unsigned char gMode2RegSoftcopy;
-extern char *RankNameStrTable[];
-extern char Sfx_YeahAllRight[], Sfx_ExtraLifeGlitz[], Sfx_JamSnareDrum[], Sfx_Burp[];
-extern unsigned short GetRandomNumber();
-extern short GenerateSpeech(), GetScoreForPromo();
-extern int func_01e736(), func_012db8(), func_025bce();
-extern int GetActivePresentSprite(), func_01e38e();
-/* ORIGINAL BUG: this file consumes the allocator as int although its accepted
- * definition returns short. Only the low byte of the result is retained. */
-extern int func_00d904();
-/* ORIGINAL BUG: this caller uses func_001262 as int ([INFERENCE] an implicit
- * declaration in the original); its accepted definition returns short. Only
- * the low byte is stored, and the observed caller omits short normalization. */
+/* ORIGINAL BUG: this consumer keeps a int result view of func_001262,
+ * whose canonical return is short. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
 extern int func_001262();
-extern void PlaySound(), PlaySoundEffect(), func_00d970(), func_01bde8();
-extern void SetPositionOnNewLevel(), func_008c5c(), ClearSkipVHBlankFlags();
-extern void func_00105a(), SetSkipVHBlankFlags(), SetSprite(), StopPlayer();
-extern void func_03e4f8(), func_018c74();
-extern int func_018ce2();
-extern void func_01bea6(), CheckForTelephone(), CheckTomatoRainTimer();
-extern void EatYummyFood(), EatYuckyFood(), EatFudgeSundae();
-extern void SetTomatoRainTomatoes(), OpenTelephone(), OpenEarthlingPresent();
-extern void OpenSchoolBook(), OpenRocketSkates(), func_011a7c();
-extern void func_0156aa(), func_00acca();
-extern void PerformPromotion(), SetupSelectedPresent();
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
+ * whose canonical return is short. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_00d904();
+#include "revision.h"
 
 /* Create or restart the player's short-lived effect at the given position. */
 int func_015b66(player_number, x, y, height, level)
@@ -96,8 +46,8 @@ char level;
         effect->level = level;
         effect->width = 32;
         effect->height_pixels = 32;
-        effect->draw_attribute = 1;
-        effect->draw_offset = 16;
+        effect->sprite_count = 1;
+        effect->tile_count = 16;
         effect->tile |= 0x8000;
         animation = &dat_0aefec;
         effect->sequence = animation->sequence;
@@ -130,8 +80,8 @@ short player_number;
             decoy->x += 8;
         decoy->width = 16;
         decoy->height_pixels = 32;
-        decoy->draw_attribute = 2;
-        decoy->draw_offset = 24;
+        decoy->sprite_count = 2;
+        decoy->tile_count = 24;
         decoy->tile |= 0x8000;
         animation = &dat_0aefa6[player_number];
         decoy->sequence = animation->sequence;
@@ -227,8 +177,8 @@ short player_number;
             doorway->x += 8;
         doorway->width = 24;
         doorway->height_pixels = 48;
-        doorway->draw_attribute = 2;
-        doorway->draw_offset = 28;
+        doorway->sprite_count = 2;
+        doorway->tile_count = 28;
         doorway->tile |= 0x8000;
         animation = &dat_0aefd8[0];
         doorway->sequence = animation->sequence;
@@ -236,7 +186,7 @@ short player_number;
         doorway->frame_phase = animation->period;
         doorway->frame_duration = 1;
         doorway->frame = -1;
-        doorway->sprite = 0;
+        doorway->sprite_state = 0;
         doorway->flags_4d |= 1;
         if (!func_015b66(player_number, doorway->x, doorway->y + 1, 5, doorway->level))
             doorway->flags_4d |= 64;
@@ -256,7 +206,7 @@ short row, column;
         if (object_number = ram_ffde5c[player_number]) {
             doorway = &gPlayerInfo[object_number];
             if (player->level == doorway->level &&
-                (doorway->sprite || player->y >= doorway->y)) {
+                (doorway->sprite_state || player->y >= doorway->y)) {
                 doorway_row = (doorway->y - 10) >> 3;
                 doorway_column = (doorway->x - 16) >> 3;
                 if (row >= doorway_row && row < doorway_row + 3 &&
@@ -291,10 +241,10 @@ struct object_state *player;
     func_008c5c();
     ClearSkipVHBlankFlags();
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     func_00105a(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     SetSkipVHBlankFlags();
 }
 
@@ -338,14 +288,14 @@ short doorway_owner;
                     }
                 }
             }
-            if (active != object->sprite) {
+            if (active != object->sprite_state) {
                 animation = &dat_0aefd8[active];
                 object->sequence = animation->sequence;
                 object->frames = animation->frames;
                 object->frame_phase = animation->period;
                 object->frame_duration = 1;
                 object->frame = -1;
-                object->sprite = active;
+                object->sprite_state = active;
                 if (active)
                     object->flags_4d &= ~1;
                 else {
@@ -376,7 +326,7 @@ unsigned short terrain;
         display = &gPlayerInfo[ram_ffde5a[player_number]];
         player = &gPlayerInfo[player_number];
         display->flags_4d |= 8;
-        display->reserved_56 = player_number;
+        display->parent = player_number;
         display->level = player->level;
         display->tile |= 0x8000;
         display->width = 32;
@@ -384,27 +334,27 @@ unsigned short terrain;
         if (promotion == 11) {
             animation = dat_0aefce;
             display->flag_58 = 8;
-            display->draw_attribute = 2;
-            display->draw_offset = 32;
+            display->sprite_count = 2;
+            display->tile_count = 32;
         } else {
-            display->draw_attribute = 1;
-            display->draw_offset = 16;
+            display->sprite_count = 1;
+            display->tile_count = 16;
             if (promotion == 16)
                 animation = dat_0aefba;
             else
                 animation = dat_0aefc4;
             display->flag_58 = 6;
-            display->reserved_59[0] = 1;
+            display->offset_height = 1;
         }
         display->sequence = animation->sequence;
         display->frames = animation->frames;
         display->frame_phase = animation->period;
         display->frame = -1;
         display->frame_duration = 1;
-        display->sprite = promotion;
+        display->sprite_state = promotion;
         if (promotion != 11 && terrain < 128 && player->height <= 0 &&
-            player->sprite != 5 && player->sprite != 6 && player->sprite != 79 &&
-            player->sprite != 78 && player->sprite != 77 &&
+            player->sprite_state != 5 && player->sprite_state != 6 && player->sprite_state != 79 &&
+            player->sprite_state != 78 && player->sprite_state != 77 &&
             !(player->flags_52 & 0x7785bf60L)) {
             SetSprite(player, (char)(promotion == 17 ? 71 : 70));
             player->mode_15 = 3;
@@ -441,19 +391,19 @@ unsigned short terrain;
     short player_number, phase, promotion_complete = 0;
     struct object_state *display;
 
-    player_number = player->value_5e;
+    player_number = player->entity_number;
     if (!ram_ffde5a[player_number])
         return;
     display = &gPlayerInfo[ram_ffde5a[player_number]];
     display->level = player->level;
     if (display->frame_duration) {
-        if (display->sprite == 16) {
+        if (display->sprite_state == 16) {
             if (TOEJAMS_HEALTH[player_number] > 1)
                 --TOEJAMS_HEALTH[player_number];
             PlaySound(18, 40);
-        } else if (display->sprite == 17 && TOEJAM_SPEECH_COUNTER < 4)
+        } else if (display->sprite_state == 17 && TOEJAM_SPEECH_COUNTER < 4)
             PlaySoundEffect((long)Sfx_ExtraLifeGlitz, 87, 0);
-        else if (display->sprite == 11 &&
+        else if (display->sprite_state == 11 &&
                  (PREGEN_RANDOMS[ram_ff91e0 == 58 ?
                   (ram_ff91e0 = 0) : ++ram_ff91e0] & 2)) {
             phase = display->frame % 14;
@@ -461,22 +411,22 @@ unsigned short terrain;
                 PlaySoundEffect((long)Sfx_JamSnareDrum, 90, 0);
         }
     } else {
-        if (display->sprite == 17) {
+        if (display->sprite_state == 17) {
             if (gPlayerLives[player_number] < 8) {
                 ++gPlayerLives[player_number];
                 VBLANK_FLAG_5 = 1;
             }
-        } else if (display->sprite == 16) {
-            if (player->sprite != 5 && player->sprite != 6) {
+        } else if (display->sprite_state == 16) {
+            if (player->sprite_state != 5 && player->sprite_state != 6) {
                 TOEJAMS_HEALTH[player_number] = 0;
                 GenerateSpeech(player_number, "Bogus", 0);
             }
-        } else if (display->sprite == 11) {
+        } else if (display->sprite_state == 11) {
             GenerateSpeech(player_number, RankNameStrTable[gPlayerRank[player_number]], 1);
             promotion_complete = 1;
             PlaySoundEffect((long)Sfx_YeahAllRight, 90, 0);
         }
-        if (player->sprite == 71 || player->sprite == 70)
+        if (player->sprite_state == 71 || player->sprite_state == 70)
             SetSprite(player, GetActivePresentSprite(player));
         func_00d970(ram_ffde5a[player_number]);
         ram_ffde5a[player_number] = 0;
@@ -518,14 +468,14 @@ short player_number;
             player = &gPlayerInfo[player_number];
             cloud->level = player->level;
             cloud->flags_4d |= 8;
-            cloud->reserved_56 = player_number;
+            cloud->parent = player_number;
             cloud->flag_58 = 10;
-            cloud->reserved_59[0] = 10;
+            cloud->offset_height = 10;
             cloud->tile |= 0x8000;
             cloud->width = 32;
             cloud->height_pixels = 32;
-            cloud->draw_attribute = 1;
-            cloud->draw_offset = 16;
+            cloud->sprite_count = 1;
+            cloud->tile_count = 16;
             animation = dat_0af05a;
             cloud->sequence = animation->sequence;
             cloud->frames = animation->frames;
@@ -552,23 +502,23 @@ short player_number;
     player = &gPlayerInfo[player_number];
     cloud->level = player->level;
     if (ELEVATOR_FLAG[player_number] || P1_MENU_OPEN[player_number]) {
-        if (cloud->sprite) {
+        if (cloud->sprite_state) {
             animation = &animations[0];
-            cloud->sprite = 0;
+            cloud->sprite_state = 0;
             TOEJAMS_HEALTH[player_number] -= 2;
         }
     } else if (--gPlayer1RainCloudTimer[player_number] <= 0 ||
                gPlayerLives[player_number] < 0 ||
-               player->sprite == 5 || player->sprite == 6) {
+               player->sprite_state == 5 || player->sprite_state == 6) {
         func_00d970(cloud_number);
         gPlayer1RainCloudState[player_number] = 0;
-    } else if (cloud->sprite) {
+    } else if (cloud->sprite_state) {
         if (!cloud->frame_duration) {
             animation = &animations[0];
-            cloud->sprite = 0;
+            cloud->sprite_state = 0;
             if (!TOEJAM_FALL_STATE[player_number] &&
-                (player->sprite == 0 || player->sprite == 4 ||
-                 (player->flags_52 & 0x20400000) || player->sprite == 76 ||
+                (player->sprite_state == 0 || player->sprite_state == 4 ||
+                 (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
                  (player->flags_52 & 0x0834d06c))) {
                 ram_ffda2c[player_number] = 2;
                 SetSprite(player, 68);
@@ -581,7 +531,7 @@ short player_number;
         }
     } else if ((GetRandomNumber() & 63) == 1) {
         animation = &animations[1];
-        cloud->sprite = 1;
+        cloud->sprite_state = 1;
     }
     if (animation) {
         cloud->sequence = animation->sequence;
@@ -609,8 +559,8 @@ short player_number;
         box->level = player->level;
         box->width = 32;
         box->height_pixels = 24;
-        box->draw_attribute = 1;
-        box->draw_offset = 16;
+        box->sprite_count = 1;
+        box->tile_count = 16;
         box->tile |= 0x8000;
         animation = AnimationDescriptors_0AF0D0;
         box->sequence = animation->sequence;
@@ -676,7 +626,7 @@ short player_number, present_number;
     unsigned short terrain;
 
     player = &gPlayerInfo[player_number];
-    if (ELEVATOR_FLAG[player_number] || player->sprite == 5 || player->sprite == 6)
+    if (ELEVATOR_FLAG[player_number] || player->sprite_state == 5 || player->sprite_state == 6)
         return 1;
     terrain = player_number == 0 ? LAND_UNDER_TOEJAM : LAND_UNDER_EARL;
     if (present_number == 27)
@@ -703,8 +653,8 @@ short player_number, present_number;
     } else if (present_number == 22) {
         SetTomatoRainTomatoes(player_number);
         GenerateSpeech(player_number, "Uh oh?!?", 1);
-        if (player->sprite == 0 || player->sprite == 4 ||
-            (player->flags_52 & 0x20400000) || player->sprite == 76 ||
+        if (player->sprite_state == 0 || player->sprite_state == 4 ||
+            (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
             (player->flags_52 & 0x0830400c)) {
             SetSprite(player, 1);
             StopPlayer(player);
@@ -804,9 +754,9 @@ unsigned short terrain;
     if (present_number != 5)
         sprite = GetActivePresentSprite(player);
     if (sprite != -1 && !(player->flags_52 & 0x20000000) &&
-        (player->sprite == 0 || player->sprite == 4 ||
-         (player->flags_52 & 0x20400000) || player->sprite == 76 ||
-         player->sprite == 3 || player->sprite == 7 ||
+        (player->sprite_state == 0 || player->sprite_state == 4 ||
+         (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
+         player->sprite_state == 3 || player->sprite_state == 7 ||
 #if REVISION >= 2
          (player->flags_52 & 0x0804c81c))) {
 #else

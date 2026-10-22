@@ -1,56 +1,19 @@
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4], frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct earthling_state {
-    char reserved, object, reserved_2, state;
-    short timer, x, y, terrain;
-    char reserved_0c[3], second_object, reserved_10[2];
-};
-struct earthling_definition {
-    char reserved_00[21], target_chance;
-    unsigned char target_distance;
-    char turn_chance;
-    unsigned char movement_flags;
-    char reserved_19;
-    unsigned char contact_distance_x, contact_distance_y;
-    char damage;
-    unsigned char target_time_min, target_time_max;
-    unsigned char turn_time_min, turn_time_max;
-    unsigned char move_time_min, move_time_max;
-    char state_delay, reserved_24[2];
-};
-extern struct object_state gPlayerInfo[40];
-extern unsigned short PREGEN_RANDOMS[59], ram_ff91e0;
-extern char gPlayer1Powerup[], ram_ffe1bc[], ram_ffe1ba[], ram_ffde58[];
-extern short ram_ffe1b6[];
-extern char gLevel912C, gLevel912E, Sfx_BoogieBoogie[];
-extern int abs(), GetActivePresentSprite(), func_00dd1e();
-extern int Player_Youch(), func_01b0aa(), func_01b5ca();
-extern short GenerateSpeech();
-extern void SetSprite(), SetToejamFalling(), func_01942c();
-extern void SetEarthlingState(), PlaySoundEffect(), func_00d970();
-extern void func_018da4(), DamageEarthling();
-/* ORIGINAL BUG: this file consumes the terrain query as an unsigned short;
- * its accepted definition returns unsigned char. */
-extern unsigned short func_00d9dc();
+#define TJE_LOCAL_FUNC_00D9DC
 
+#include "entities.h"
+#include "earthlings.h"
+#include "ram.h"
+#include "assets.h"
+#include "earthling_calls.h"
+#include "map_calls.h"
+#include "player.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
+
+/* ORIGINAL BUG: this consumer keeps a unsigned short result view of func_00d9dc,
+ * whose canonical return is unsigned char. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern unsigned short func_00d9dc();
 #define NEXT_RANDOM PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0]
 
 /* Bounce a falling earthling at ground level, or damage it after its animation
@@ -97,7 +60,7 @@ struct earthling_state *earthling;
         return;
     player = &gPlayerInfo[player_number];
     if (!func_01b0aa(player, player_number) &&
-        !(player->flags_52 & 0x40000) && player->sprite != 77)
+        !(player->flags_52 & 0x40000) && player->sprite_state != 77)
         return;
     SetSprite(player, 79);
     player->mode_15 = 3;
@@ -114,7 +77,7 @@ struct earthling_state *earthling;
     ram_ffe1b6[player_number] = 225;
     func_00d970(earthling->object);
     earthling->object = 0;
-    earthling->reserved = -1;
+    earthling->kind = -1;
 }
 
 /* Sprite 78 counts down to restoring the active present or a terrain pose.
@@ -127,8 +90,8 @@ unsigned short terrain;
     short player_number;
     int quarter_velocity;
 
-    player_number = player->value_5e;
-    if (player->sprite == 78) {
+    player_number = player->entity_number;
+    if (player->sprite_state == 78) {
         if (--ram_ffe1bc[player_number] <= 0) {
             if (gPlayer1Powerup[player_number] == 5)
                 sprite_or_direction = GetActivePresentSprite(player);
@@ -151,7 +114,7 @@ unsigned short terrain;
                 SetSprite(player, sprite_or_direction);
         } else if (!(ram_ffe1bc[player_number] & 15))
             ++player->frame_phase;
-    } else if (player->sprite == 79) {
+    } else if (player->sprite_state == 79) {
         if (--ram_ffe1b6[player_number] <= 0) {
             player->velocity_x = 0;
             player->velocity_y = 0;

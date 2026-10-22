@@ -1,6 +1,5 @@
-extern unsigned short SPRITE_STATE_TABLE;
-extern char ram_ffb8da[8192];
-
+#include "ram.h"
+#include "sprite_calls.h"
 /* Copy complete 32-byte tiles to the next transfer-buffer position. */
 void ClearLOC_00FFB8DA(source, tile_count)
 long *source;

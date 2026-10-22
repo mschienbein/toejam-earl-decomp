@@ -1,31 +1,20 @@
-struct present_info {
-    char sprite, identified;
-};
-struct level_item {
-    char kind, level, object, reserved;
-    short x, y;
-};
-struct elevator_position { char x, y; };
-struct item_position { short x, y; };
-extern struct present_info gPresentInfo[28];
-extern char gPlayerInventory[][16], gPlayerLives[], gPlayer2Lives;
-extern struct level_item gObjectTable[][32];
-extern struct level_item LEVEL_ITEMS_2[32], gDroppedPresentTable[32];
-extern char LEVEL_LOADED_1[], LEVEL_LOADED_2, LEVEL_PLAYERS_FLAG_1[];
-extern struct elevator_position ELEVATOR_POS_TABLE[8];
-extern struct item_position Level1PresentLocations[12];
-extern unsigned short gMapDataA[26][19], gMapDataB[26][19];
-extern unsigned short gLevelSeeds[26];
-extern unsigned long ram_ffdde8[26];
-extern char gLevel912C, dat_08bfce[23], PresentWeightTable[27];
-extern unsigned short GetRandomNumber();
-extern long StackBasedRandom();
-/* ORIGINAL BUG: func_00d9dc returns unsigned char in terrain_at_position.c,
- * but this caller treats it as int ([INFERENCE] an implicit declaration). */
-extern long abs();
-extern int TerrainValidation(), func_01771a(), func_00d9dc();
-extern void PlaceStuffInLevel(), func_00d970(), func_023c6e();
+#define TJE_LOCAL_FUNC_00D9DC
 
+#include "presents.h"
+#include "elevator.h"
+#include "ram.h"
+#include "assets.h"
+#include "earthling_calls.h"
+#include "map_calls.h"
+#include "random.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_00d9dc,
+ * whose canonical return is unsigned char. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_00d9dc();
 /* Reserve the two fixed identities, then assign the other present sprites
  * to random unused identities, scanning forward through collisions. */
 void SetupPresentIdentities()

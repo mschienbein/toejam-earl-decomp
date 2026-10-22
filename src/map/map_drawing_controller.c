@@ -1,41 +1,21 @@
+#include "entities.h"
+#include "sprites.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "map_calls.h"
+#include "random.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 #include "revision.h"
-
-struct map_sprite {
-    short y;
-    unsigned char size, link;
-    unsigned short tile;
-    short x;
-};
-struct map_player {
-    short x, y;
-    char reserved04[72], level, reserved4d[51];
-};
-extern unsigned char gMode2RegSoftcopy, VBLANK_FLAG_2;
-extern char SPLIT_SCREEN, P1_MENU_OPEN[];
-extern short P1_IDLE_COUNTER[], ram_ff935a;
-extern struct map_sprite ram_ffb65a[80];
-extern struct map_player gPlayerInfo[40];
-extern short MapScreenTileCount;
-extern unsigned char MapScreenTiles[], LevelTiles[];
-extern unsigned short PaletteMapLine1[], PaletteMapLine2[], PaletteMapLine3[];
-extern unsigned short PaletteGameLine1[], PaletteGameLine2[], PaletteGameLine3[];
-extern void WaitForNextVBlank(), VDPWritesRoutine1(), ClearSkipVHBlankFlags();
-extern void MoveDataToVRAM(), CopyPaletteToCRAMSlot(), Map_DrawElevator();
-extern void func_008232(), func_0078a8(), LoadMapIntoVRAM();
-extern void Map_DrawPlayer(), Map_DrawShipPiece(), PreGenerateRandoms();
-extern void func_00871a(), DrawMapCharacters();
-extern void func_00046a(), DrawHUD(), func_0090c4(), ShowShipPieces(), SetSkipVHBlankFlags();
-extern long MovePadInputIntoD0();
-#define VDP_CONTROL (*(unsigned long *)0xc00004L)
-#define VDP_CONTROL_WORD (*(unsigned short *)0xc00004L)
-#define VDP_DATA (*(unsigned short *)0xc00000L)
 
 /* Show the map, wait for the selecting player to dismiss it, then restore
  * the game or ship-piece display and the normal blanking flags. */
 void DrawGameMap(player)
 short player;
 {
-    struct map_sprite sprites[80];
+    struct hardware_sprite sprites[80];
     short map_number, buttons;
 
     map_number = 0;
@@ -53,14 +33,14 @@ short player;
     ClearSkipVHBlankFlags();
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
-    VDP_CONTROL = 0x40200000L;
+    VDP_COMMAND = 0x40200000L;
     MoveDataToVRAM(MapScreenTiles, MapScreenTileCount << 4);
     func_008232(sprites);
     func_0078a8(map_number);
     LoadMapIntoVRAM(map_number, sprites);
-    VDP_CONTROL = 0x40020010L;
+    VDP_COMMAND = 0x40020010L;
     VDP_DATA = 8;
-    VDP_CONTROL = 0x7c020003L;
+    VDP_COMMAND = 0x7c020003L;
     VDP_DATA = -8;
     VDP_CONTROL_WORD = 0x911e;
     VDP_CONTROL_WORD = 0x921c;
@@ -94,7 +74,7 @@ short player;
     func_00046a();
     VDPWritesRoutine1(ram_ffb65a, 0xf800, 320);
     if (ram_ff935a || (buttons & 0x20)) {
-        VDP_CONTROL = 0x40000000L;
+        VDP_COMMAND = 0x40000000L;
         MoveDataToVRAM(LevelTiles, (MapScreenTileCount + 41) << 4);
         VDP_CONTROL_WORD = 0x9100;
         VDP_CONTROL_WORD = 0x9200;

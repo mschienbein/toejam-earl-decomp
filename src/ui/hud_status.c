@@ -1,42 +1,23 @@
-#define VDP_CONTROL (*(unsigned short *)0xc00004L)
-#define VDP_COMMAND (*(long *)0xc00004L)
-#define VDP_DATA (*(unsigned short *)0xc00000L)
+#define TJE_LOCAL_RANKCHARSTABLE
+#include "entities.h"
+#include "sprites.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "player.h"
+#include "present_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 
-struct hud_sprite {
-    short y;
-    unsigned char size, link;
-    unsigned short tile;
-    short x;
-};
-struct health_entity {
-    char reserved00[47];
-    unsigned char flags;
-    char reserved30[27];
-    char sprite_state;
-    char reserved4c[6];
-    long sprite_mask;
-    char reserved56[8];
-    char character;
-    char reserved5f[33];
-};
-extern struct hud_sprite ram_ffb65a[80];
-extern char gPlayerLives[], gPlayerRank[], gPlayerBucks[], gPlayer2Bucks;
-extern unsigned short gPlayerPoints[];
-extern char TOEJAMS_HEALTH[], EARLS_HEALTH, TOEJAMS_MAX_HEALTH[];
-extern char TOEJAM_RESTORE_HEALTH[], EARL_RESTORE_HEALTH;
-extern char gPlayer1Powerup[], gPlayer2Powerup;
-extern char VBLANK_FLAG_5, SPLIT_SCREEN, PLAYER_INDICATOR;
-extern unsigned char VBLANK_FLAG_2;
-extern char gToejamLevel, gEarlLevel, gLevel912C, ram_ffde5a[];
-extern char P1_MENU_OPEN[], ram_ffb6b2[];
-extern unsigned short TIME_COUNTER;
+/* Compiler bound qualification: the compatible incomplete-array view
+ * preserves the observed index arithmetic. The complete bound changes width;
+ * a pointer cast changes address-register allocation. Historical declaration
+ * spelling is unknown [INFERENCE]. */
 extern char *RankCharsTable[];
-extern unsigned char rom_0a836c[4][40];
-extern int func_00ae90();
-extern void func_009f8a(), func_00abbe(), func_00ad8a(), func_00b0cc();
-extern void func_00aeb8(), func_00acca(), func_00b3e4(), func_00aa5a();
-extern void func_00b590(), VDPWritesRoutine1(), KillThePlayer(), PerformPromotion();
 
+/* Preserve the observed signed/unsigned value views of shared storage.
+ * These casts do not imply a different record layout; historical spelling
+ * is unknown [INFERENCE]. */
 /* Print each active player's rank and the absent player's vacation label. */
 void func_00b64a()
 {
@@ -90,11 +71,11 @@ void DrawHUD()
                 for (column = 0; column < 40; column++)
                     VDP_DATA = 0xc580;
         }
-        VDP_CONTROL = 0x9297;
+        VDP_CONTROL_WORD = 0x9297;
         func_00b64a();
     } else {
         if (!P1_MENU_OPEN[0] && !P1_MENU_OPEN[1])
-            VDP_CONTROL = 0x9200;
+            VDP_CONTROL_WORD = 0x9200;
         func_00abbe(1);
     }
     if (gPlayerLives[0] >= 0)
@@ -247,13 +228,13 @@ void SetupTheMainGame()
 /* Apply death, preserve/restore health around the observed state/mask cases,
  * and check promotion. */
 void HealthAndLivesChecks(entity, terrain_class)
-struct health_entity *entity;
+struct object_state *entity;
 unsigned short terrain_class;
 {
-    short player_number = entity->character;
+    short player_number = entity->entity_number;
 
     if (entity->sprite_state == 5 || entity->sprite_state == 6 ||
-        (entity->sprite_mask & 0x20000) || gLevel912C == 26 ||
+        ((long)entity->flags_52 & 0x20000) || gLevel912C == 26 ||
         ram_ffde5a[player_number])
         return;
     if (!TOEJAMS_MAX_HEALTH[player_number] && TOEJAMS_HEALTH[player_number] <= 0) {
@@ -268,7 +249,7 @@ unsigned short terrain_class;
         }
         return;
     }
-    if ((entity->sprite_mask & 0x800) || entity->sprite_state == 3 ||
+    if (((long)entity->flags_52 & 0x800) || entity->sprite_state == 3 ||
         entity->sprite_state == 7) {
         if (TOEJAM_RESTORE_HEALTH[player_number] == -1)
             TOEJAM_RESTORE_HEALTH[player_number] = TOEJAMS_HEALTH[player_number];
@@ -279,8 +260,8 @@ unsigned short terrain_class;
             TOEJAMS_HEALTH[player_number] = TOEJAM_RESTORE_HEALTH[player_number];
         TOEJAM_RESTORE_HEALTH[player_number] = -1;
     }
-    if ((entity->flags & 0x80) && entity->sprite_state != 2)
-        entity->flags &= 0x7f;
+    if ((entity->draw_flags & 0x80) && entity->sprite_state != 2)
+        entity->draw_flags &= 0x7f;
     if (CheckPromotionScore(player_number))
         PerformPromotion(player_number, 11, terrain_class);
 }

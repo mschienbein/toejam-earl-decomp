@@ -1,14 +1,9 @@
-struct upload_piece {
-    unsigned char width, height;
-    char x, y, flipped_x, format;
-    char *data;
-};
-extern unsigned short SPRITE_STATE_TABLE;
-extern char ram_ffb8da[8192];
-
+#include "sprites.h"
+#include "ram.h"
+#include "sprite_calls.h"
 /* Remove the packed rows below the supplied vertical cutoff. */
 short func_00c85a(piece, cutoff)
-struct upload_piece *piece;
+struct render_piece *piece;
 short cutoff;
 {
     short column, row, row_width, first_hidden;

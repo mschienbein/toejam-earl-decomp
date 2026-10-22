@@ -1,12 +1,8 @@
-extern unsigned short GetRandomNumber();
-extern char gLevel912A;
-extern unsigned short gMapDataA[26][19];
-/* This routine uses the leading 26-by-19 byte view of this work area. */
-extern unsigned char gMapDataD[52][19];
-struct elevator_position { char x, y; };
-extern struct elevator_position ELEVATOR_POS_TABLE[8];
-extern unsigned char dat_08bfc2[];
-
+#include "elevator.h"
+#include "ram.h"
+#include "assets.h"
+#include "map_calls.h"
+#include "random.h"
 /* Walk between two map cells, adding reciprocal direction bits and 0x2000
  * to the word map. A level-dependent draw also copies direction bits to the
  * byte map; turns are selected from the observed lookup table. */

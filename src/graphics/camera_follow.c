@@ -1,27 +1,11 @@
-struct camera_entity {
-    short x, y, elevation;
-    short velocity_x, velocity_y, velocity_z;
-    short acceleration_x, acceleration_y, acceleration_z;
-    unsigned char fraction_x, fraction_y, fraction_z;
-    char movement_lock, reserved16[4];
-    unsigned char *sequence;
-    char **frames;
-    char reserved22[4], frame, frame_phase, frame_duration;
-    unsigned char half_width, height;
-    char reserved2b[4];
-    unsigned char flags;
-    char reserved30[27], sprite_state, reserved4c[6];
-    long sprite_mask;
-    char reserved56[42];
-};
-extern struct camera_entity gPlayerInfo[], gEarlPositionX;
-extern char gPlayerLives[], P1_MENU_OPEN[], TOEJAM_FALL_STATE[];
-extern char SPLIT_SCREEN, HBLANK_FLAG_1;
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY;
-extern long ram_ff819a, ram_ff819e, ram_ff81a2, ram_ff81a6;
-extern short MoveCameraRight(), MoveCameraLeft(), MoveCameraDown(), MoveCameraUp();
+#include "entities.h"
+#include "sprites.h"
+#include "ram.h"
+#include "graphics_calls.h"
 
+/* Preserve the observed signed/unsigned value views of shared storage.
+ * These casts do not imply a different record layout; historical spelling
+ * is unknown [INFERENCE]. */
 /* Compute camera velocity from animation movement and viewport edge thresholds. */
 void func_00267a(player, delta_x, delta_y, screen_x, screen_y)
 short player, *delta_x, *delta_y, screen_x, screen_y;
@@ -30,8 +14,8 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
     short velocity_x = 0, velocity_y = 0;
     short frame_count;
     unsigned char sequence_byte;
-    char *frame;
-    struct camera_entity *entity;
+    struct render_frame *frame;
+    struct object_state *entity;
     short left, right, top, bottom;
 
     if (gPlayerLives[player] < 0 || P1_MENU_OPEN[player]) {
@@ -48,31 +32,31 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
         camera_x = EARL_CAMERA_NEWX;
         camera_y = EARL_CAMERA_NEWY;
     }
-    if (entity->frame_phase && (entity->movement_lock & 3)) {
+    if (entity->frame_phase && (entity->mode_15 & 3)) {
         for (frame_count = 0; ; frame_count++) {
-            sequence_byte = entity->sequence[frame_count];
+            sequence_byte = ((unsigned char *)entity->sequence)[frame_count];
             if ((sequence_byte & 0xf0) == 0xf0)
                 break;
             frame = entity->frames[sequence_byte & 0x7f];
-            velocity_x += frame[1];
-            velocity_y += frame[2];
+            velocity_x += frame->motion_x;
+            velocity_y += frame->motion_y;
         }
         velocity_x *= entity->velocity_x;
         velocity_y *= entity->velocity_y;
         velocity_x /= entity->frame_phase * frame_count;
         velocity_y /= entity->frame_phase * frame_count;
     }
-    if ((entity->flags & 24) || (entity->sprite_mask & 0x100))
+    if ((entity->draw_flags & 24) || ((long)entity->flags_52 & 0x100))
         velocity_x = 0;
-    else if (!(entity->movement_lock & 1) && entity->x > 168 && entity->x < 2512)
+    else if (!(entity->mode_15 & 1) && entity->x > 168 && entity->x < 2512)
         velocity_x = entity->velocity_x;
-    if ((entity->flags & 40) || (entity->sprite_mask & 0x100) ||
+    if ((entity->draw_flags & 40) || ((long)entity->flags_52 & 0x100) ||
             entity->sprite_state == 5 || entity->sprite_state == 6)
         velocity_y = 0;
-    else if (!(entity->movement_lock & 2)) {
+    else if (!(entity->mode_15 & 2)) {
         velocity_y = entity->velocity_y;
         if (!TOEJAM_FALL_STATE[player])
-            velocity_y -= entity->velocity_z / 2;
+            velocity_y -= entity->velocity_height / 2;
     }
     if (gPlayerLives[player ^ 1] < 0) {
         left = right = 160;
@@ -114,20 +98,20 @@ void func_0028f6()
     camera_x = &TOEJAM_CAMERA_NEWX;
     camera_y = &TOEJAM_CAMERA_NEWY;
     primary_x = gPlayerInfo[0].x - *camera_x;
-    primary_y = gPlayerInfo[0].y - *camera_y - gPlayerInfo[0].height / 2;
+    primary_y = gPlayerInfo[0].y - *camera_y - gPlayerInfo[0].height_pixels / 2;
     secondary_x = gPlayerInfo[1].x - EARL_CAMERA_NEWX;
-    secondary_y = gPlayerInfo[1].y - EARL_CAMERA_NEWY - gPlayerInfo[1].height / 2;
-    if (gPlayerInfo[0].elevation > 0 && (gPlayerInfo[0].sprite_mask & 0x04008000)) {
+    secondary_y = gPlayerInfo[1].y - EARL_CAMERA_NEWY - gPlayerInfo[1].height_pixels / 2;
+    if (gPlayerInfo[0].height > 0 && ((long)gPlayerInfo[0].flags_52 & 0x04008000)) {
         if (SPLIT_SCREEN)
-            primary_y -= gPlayerInfo[0].elevation / 2;
+            primary_y -= gPlayerInfo[0].height / 2;
         else if (gPlayerInfo[0].y < gPlayerInfo[1].y)
-            primary_y -= gPlayerInfo[0].elevation;
+            primary_y -= gPlayerInfo[0].height;
     }
-    if (gPlayerInfo[1].elevation > 0 && (gPlayerInfo[1].sprite_mask & 0x04008000)) {
+    if (gPlayerInfo[1].height > 0 && ((long)gPlayerInfo[1].flags_52 & 0x04008000)) {
         if (SPLIT_SCREEN)
-            secondary_y -= gPlayerInfo[1].elevation / 2;
+            secondary_y -= gPlayerInfo[1].height / 2;
         else if (gPlayerInfo[1].y < gPlayerInfo[0].y)
-            secondary_y -= gPlayerInfo[1].elevation;
+            secondary_y -= gPlayerInfo[1].height;
     }
     func_00267a(0, &velocity_x[0], &velocity_y[0], primary_x, primary_y);
     func_00267a(1, &velocity_x[1], &velocity_y[1], secondary_x, secondary_y);

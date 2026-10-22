@@ -1,31 +1,12 @@
-struct pause_object {
-    short x, y, height;
-    char reserved_06[20];
-    char *sequence;
-    char **frames;
-    char reserved_22[4], frame, frame_phase, frame_duration;
-    char width, height_pixels, draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[26], ready, sprite, level;
-    char reserved_4d[51];
-};
-struct animation_descriptor {
-    char *sequence;
-    char **frames;
-};
-extern struct pause_object gPlayerInfo[40];
-extern struct animation_descriptor dat_0af0b0;
-extern char ram_ffe212[10], gLevel912C, gLevel912E, SPLIT_SCREEN;
-extern char P1_MENU_OPEN[], VBLANK_FLAG_8;
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY;
-extern int MovePadInputIntoD0(), func_01e736();
-extern void func_01da9c(), PlaySound(), WaitForNextVBlank();
-extern void func_03e4f8(), func_03e43c(), func_03e40e(), func_00034e();
-extern void func_01e94e(), func_00d776(), func_00cc82(), func_00d970();
-
+#include "entities.h"
+#include "sprites.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "engine_calls.h"
+#include "sprite_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 /* Level 26 uses a pause loop with a two-way option and a reset action. */
 void func_01db30(player_number)
 short player_number;
@@ -73,7 +54,7 @@ short player_number;
     unsigned short object_number, viewport, viewport_mask;
     short entry_number, minimum_entry;
     unsigned char first_input, second_input;
-    struct pause_object *object;
+    struct object_state *object;
     struct animation_descriptor *animation;
 
     if (gLevel912C == 26) {
@@ -102,8 +83,8 @@ short player_number;
             }
         } else
             object->height = 112;
-        object->draw_attribute = 4;
-        object->draw_offset = 48;
+        object->sprite_count = 4;
+        object->tile_count = 48;
         object->tile |= 0x8000;
         animation = &dat_0af0b0;
         object->sequence = animation->sequence;
@@ -117,7 +98,7 @@ short player_number;
         }
         do {
             func_00cc82();
-        } while (!object->ready);
+        } while (!object->sprite_ready);
         PlaySound(6, 99);
         WaitForNextVBlank(1);
         PlaySound(20, 99);

@@ -1,24 +1,10 @@
-#define VDP_COMMAND (*(long *)0xc00004L)
-#define VRAM_WRITE(address) (0x40000000L + (((address) & 0x3fff) << 16) + (((address) & 0xc000) >> 14))
-
-struct hud_sprite {
-    short y;
-    unsigned char size, link;
-    unsigned short tile;
-    short x;
-};
-struct action_icon {
-    unsigned char width_tiles, height_tiles;
-    char x_offset, y_offset, reserved04, attributes;
-};
-extern struct hud_sprite ram_ffb65a[80];
-extern char gToejamLevel, gEarlLevel, gPlayerLives[], P1_MENU_OPEN[], SPLIT_SCREEN;
-extern char gPlayerRank[], gPlayer1Powerup[];
-extern unsigned char ImageLevelNumbers[10][128], LevelNumberPalettes[10], VBLANK_FLAG_2;
-extern struct action_icon *Spr_ActionIcons[10];
-extern int GetSkipVBlankFlag(), func_00c7a8();
-extern void MoveDataToVRAM();
-
+#include "sprites.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 /* Upload the two level digits and set the pair of hardware sprite tiles. */
 void func_00aa5a(player_number)
 short player_number;
@@ -104,7 +90,7 @@ short player_number;
 {
     short sprite_number, tile_number, powerup;
     unsigned short attributes;
-    struct action_icon *icon;
+    struct render_piece *icon;
 
     if (player_number == 0) {
         sprite_number = 21;
@@ -122,7 +108,7 @@ short player_number;
         while (VBLANK_FLAG_2)
             ;
     func_00c7a8(icon, tile_number);
-    attributes = ((icon->attributes & 3) << 13) + 0x8000;
+    attributes = ((icon->format & 3) << 13) + 0x8000;
     ram_ffb65a[sprite_number].size = 5;
     ram_ffb65a[sprite_number].tile = tile_number + attributes;
     VBLANK_FLAG_2 = 1;
@@ -133,7 +119,7 @@ void func_00ad8a(player_number)
 short player_number;
 {
     short x, icon_number, y;
-    struct action_icon *icon;
+    struct render_piece *icon;
 
     if (gPlayer1Powerup[player_number] == -1)
         icon_number = player_number;
@@ -168,8 +154,8 @@ short player_number;
             x = 306;
         y = 321;
     }
-    ram_ffb65a[icon_number].x = icon->x_offset + x;
-    ram_ffb65a[icon_number].y = icon->y_offset + y;
+    ram_ffb65a[icon_number].x = icon->x + x;
+    ram_ffb65a[icon_number].y = icon->y + y;
 }
 
 /* ToeJam starts at 23 health units and Earl at 31, plus four per rank. */
@@ -185,4 +171,3 @@ short player_number;
     maximum_health += gPlayerRank[player_number] << 2;
     return maximum_health;
 }
-

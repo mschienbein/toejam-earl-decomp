@@ -1,44 +1,15 @@
-#define VDP_CONTROL (*(unsigned short *)0xc00004)
-#define VDP_COMMAND (*(unsigned long *)0xc00004)
-#define VDP_DATA (*(unsigned short *)0xc00000)
-
-/* VDP sprite records are eight bytes; player records have a 128-byte stride.
- * The earthling bank stride is 360 bytes and its records are eighteen bytes. */
-struct map_sprite {
-    short y;
-    unsigned char size, link;
-    unsigned short tile;
-    short x;
-};
-struct map_player {
-    short x, y;
-    char reserved04[72], level, reserved4d[51];
-};
-struct map_earthling {
-    char record_code, reserved01[5];
-    short x, y;
-    char reserved0a[8];
-};
-extern unsigned short gMapDataA[26][19], gMapDataB[26][19];
-extern unsigned char gMapDataD[52][19];
-extern char gLevel912C, gLevel912E, ram_ff91ea;
-extern unsigned char FontBackgroundByteMap[32][40];
-extern unsigned char TileLookupAuxiliary[20], Level1MapData[26][19];
-extern unsigned char MapCoverLayout[4][5];
-extern short ram_ff935a, ram_ff9358;
-extern unsigned short ram_ff91e0, PREGEN_RANDOMS[];
-extern unsigned char ram_ff91ec[26][7], ram_ff92a2[26][7];
-extern char ELEVATOR_FLAG[], EARTHLING_LOAD_FLAG[], EARTHLING_LEVEL[];
-extern struct map_player gPlayerInfo[40];
-extern struct map_earthling EARTHLINGS_IN_LEVEL[][20];
-extern unsigned short ToejamMapIcon[16], EarlMapIcon[16], ShipPieceMapIcon[64];
-extern unsigned short GetRandomNumber();
-extern short func_00d630();
-extern void MoveDataToVRAM(), func_008c78(), func_00d6b2();
-extern int func_00815c();
-extern unsigned short TIME_COUNTER;
-extern void WaitForNextVBlank();
-
+#include "entities.h"
+#include "earthlings.h"
+#include "sprites.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "map_calls.h"
+#include "random.h"
+#include "sprite_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 /* Bucket a ten-bit random value with descending thresholds 256, 224, ... . */
 short func_0077d8()
 {
@@ -178,7 +149,7 @@ int cover_row, cover_column;
 /* Retain revealed blocks, select additional blocks, and draw the remainder. */
 void DisplayMap(map, sprites, level)
 unsigned short *map;
-struct map_sprite *sprites;
+struct hardware_sprite *sprites;
 short level;
 {
     short column, row, revealed = 0, traversal;
@@ -234,7 +205,7 @@ short level;
 /* Draw overlay tiles in the foreground plane, leaving a one-tile border. */
 void LoadMapIntoVRAM(player, sprites)
 short player;
-struct map_sprite *sprites;
+struct hardware_sprite *sprites;
 {
     short row, level;
     short column, overlay, overlay_number;
@@ -296,7 +267,7 @@ void LoadLevel1Tiles()
 /* Append two sprites covering one map block, retaining tiles when requested. */
 int func_00815c(row, column, sprites, retain_tiles)
 short row, column;
-struct map_sprite *sprites;
+struct hardware_sprite *sprites;
 short retain_tiles;
 {
     if (ram_ff9358 > 78)
@@ -316,7 +287,7 @@ short retain_tiles;
 
 /* Allocate eight icon tiles and initialize all eighty sprite records. */
 void func_008232(sprites)
-struct map_sprite *sprites;
+struct hardware_sprite *sprites;
 {
     short slot, sprite;
     /* The original keeps allocation slot and sprite index as separate counters. */
@@ -368,10 +339,10 @@ short player;
 /* Upload each visible player's icon and position its map sprite. */
 void Map_DrawPlayer(level, sprites)
 int level;
-struct map_sprite *sprites;
+struct hardware_sprite *sprites;
 {
     short player, tile;
-    struct map_player *position;
+    struct object_state *position;
 
     for (player = 0; player <= 1; ++player) {
         position = &gPlayerInfo[player];
@@ -394,7 +365,7 @@ struct map_sprite *sprites;
 /* Draw the first loaded ship-piece record on the requested level. */
 void Map_DrawShipPiece(level, sprites)
 short level;
-struct map_sprite *sprites;
+struct hardware_sprite *sprites;
 {
     short bank, piece, world_x, world_y;
     unsigned short tile;
@@ -402,9 +373,9 @@ struct map_sprite *sprites;
     for (bank = 0; bank < 2; ++bank) {
         if (!EARTHLING_LOAD_FLAG[bank] || EARTHLING_LEVEL[bank] != level)
             continue;
-        if (!EARTHLINGS_IN_LEVEL[bank][0].record_code)
+        if (!EARTHLINGS_IN_LEVEL[bank][0].kind)
             piece = 0;
-        else if (!EARTHLINGS_IN_LEVEL[bank][1].record_code)
+        else if (!EARTHLINGS_IN_LEVEL[bank][1].kind)
             piece = 1;
         else
             continue;
@@ -428,7 +399,7 @@ struct map_sprite *sprites;
 
 /* Blink the first three map markers using bits 3 and 4 of the time counter. */
 void DrawMapCharacters(sprites)
-struct map_sprite *sprites;
+struct hardware_sprite *sprites;
 {
     WaitForNextVBlank(1);
     if (TIME_COUNTER & 24) {

@@ -1,34 +1,16 @@
-/* Fields reused from accepted src/ui/inventory.c; the record stride is 128 bytes. */
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[26], value_4a, sprite_state, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-extern struct object_state gPlayerInfo[40];
-
-extern char TOEJAM_FALL_STATE[], gPlayerLives[], gPlayer2Lives, gHighestLevel, ELEVATOR_FLAG[], gPlayer1Powerup[], TOEJAM_JUMP_COUNTER[], Sfx_Splash[];
-extern unsigned char LAND_UNDER_TOEJAM, LAND_UNDER_EARL, gMode2RegSoftcopy, LAND_NEAR_TOEJAM[5][5], LAND_NEAR_EARL[5][5];
-extern void func_0174b6(), func_0143e6(), LOAD_ELEVATOR_1(), func_004dfe(), func_017ac8(), PlaceStuffInLevel(), ClearSkipVHBlankFlags(), SetPositionOnNewLevel(), func_00105a(), func_00aa5a(), func_00abbe(), SetSkipVHBlankFlags(), StopPlayer(), SetSprite(), PlaySoundEffect();
-extern char SetupElevator();
-extern int GetActivePresentSprite();
-#define VDP_CONTROL_WORD (*(unsigned short *)0xc00004L)
-
+#include "entities.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "earthling_calls.h"
+#include "elevator_calls.h"
+#include "map_calls.h"
+#include "player.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 /* Change levels once both falling players, or the only falling player,
  * are ready. A supported partner supplies the landing coordinates. */
 void MakePlayerFall(falling)
@@ -129,7 +111,7 @@ unsigned short land;
     short player_number;
     char sprite;
 
-    player_number = player->value_5e;
+    player_number = player->entity_number;
     if (!player->level || gPlayer1Powerup[player_number] == 1)
         return;
     sprite = -1;
@@ -171,7 +153,7 @@ unsigned short land;
     short player_number, row, column;
     char sprite;
 
-    player_number = player->value_5e;
+    player_number = player->entity_number;
     sprite = -1;
     if (player->flags_52 & 0x1000) {
         if (!player->frame_duration)

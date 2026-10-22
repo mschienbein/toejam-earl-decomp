@@ -1,35 +1,17 @@
-/* Fields reused from accepted src/ui/inventory.c; the record stride is 128 bytes. */
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[26], value_4a, sprite_state, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-extern struct object_state gPlayerInfo[40];
-
-extern char gPlayer1Powerup[], TOEJAM_JUMP_COUNTER[], TOEJAM_FALL_STATE[], ELEVATOR_FLAG[], ram_ffda24[], ram_ffda30[], ram_ffda2c[], TOEJAMS_HEALTH[], Sfx_Splash[], Sfx_Springing[], ram_ffde56[], gPlayerLives[], gHighestLevel, ram_ffda6c, SPLIT_SCREEN, P1_MENU_OPEN[], ram_ffda1e[], gPlayerRank[];
-extern unsigned char P1_PROCESSED_INPUT[], LAND_NEAR_TOEJAM[5][5], LAND_NEAR_EARL[5][5], gMode2RegSoftcopy, func_00d9dc();
-extern void StopPlayer(), SetSprite(), PlaySoundEffect(), OpenRocketSkates(), SetToejamFalling(), func_00beb2(), WaitForNextVBlank(), func_00cc82(), func_0174b6(), func_0143e6(), func_004dfe(), func_017ac8(), PlaceStuffInLevel(), func_012762(), SetPositionOnNewLevel(), func_008c5c(), ClearSkipVHBlankFlags(), func_00aa5a(), func_00105a(), SetSkipVHBlankFlags(), UpdateLandAroundPlayer(), PlaySound(), func_00acca(), func_00ad8a(), func_00cffa(), func_023554(), func_00cfba(), OpeningPresents7(), func_00b95c(), DrawHUD();
-extern char SetupElevator();
-extern int GetActivePresentSprite(), func_015d52(), func_015b66();
-extern unsigned short GetRandomNumber();
-#define VDP_CONTROL_WORD (*(unsigned short *)0xc00004L)
-
+#include "entities.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "earthling_calls.h"
+#include "elevator_calls.h"
+#include "map_calls.h"
+#include "random.h"
+#include "player.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 /* Apply the active sinking animation, then handle Earl's idle variation. */
 void func_01044e(player, land)
 struct object_state *player;
@@ -39,7 +21,7 @@ unsigned short land;
     char direction;
     unsigned char *nearby_land;
 
-    player_number = player->value_5e;
+    player_number = player->entity_number;
     if (!player_number)
         nearby_land = &LAND_NEAR_TOEJAM[0][0];
     else
@@ -101,7 +83,7 @@ unsigned short land;
     short player_number;
     char sprite, direction;
 
-    player_number = player->value_5e;
+    player_number = player->entity_number;
     if (gPlayer1Powerup[player_number] != 1 ||
         TOEJAM_FALL_STATE[player_number] || ELEVATOR_FLAG[player_number])
         return;
@@ -152,7 +134,7 @@ unsigned short land;
     short player_number;
     char sprite, direction;
 
-    player_number = player->value_5e;
+    player_number = player->entity_number;
     if (TOEJAM_FALL_STATE[player_number])
         return;
     if ((player->flags_52 & 0x20) || (player->flags_52 & 0x10000000)) {

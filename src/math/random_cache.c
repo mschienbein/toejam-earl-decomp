@@ -1,7 +1,5 @@
-extern long gRNGState;
-extern unsigned short PREGEN_RANDOMS[59];
-extern unsigned short ram_ff91e0;
-
+#include "ram.h"
+#include "random.h"
 /* Park-Miller generator, using Schrage's split to avoid overflowing 31 bits.
  * The original public result is the low unsigned 16 bits of the new seed. */
 unsigned short GetRandomNumber()
@@ -49,4 +47,3 @@ void PreGenerateRandoms()
     ram_ff91e0 = 0;
     gRNGState = saved_state;
 }
-

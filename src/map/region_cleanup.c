@@ -1,18 +1,10 @@
-extern unsigned short gMapDataA[26][19];
-extern unsigned short GetRandomNumber();
-extern unsigned long func_004f50();
-extern void func_005776();
-struct elevator_position { char x, y; };
-extern struct elevator_position ELEVATOR_POS_TABLE[8];
-/* The byte lookup unit has observed subtable starts at offsets 16 and 36. */
-struct map_generation_tables {
-    unsigned char tiles[16];
-    unsigned char edge_plain[20], edge_alternate[20];
-    unsigned char filled_plain[32], filled_alternate[32];
-    unsigned char remaining[76];
-};
-extern struct map_generation_tables MapGenerationLookupTables;
-
+#include "elevator.h"
+#include "map.h"
+#include "ram.h"
+#include "assets.h"
+#include "map_calls.h"
+#include "random.h"
+#include "romcalls.h"
 /* Fill a rectangle. Replacing a different labelled 0x1000 cell replaces
  * every occurrence of that old label throughout the complete map. */
 void func_005afa(start_row, start_column, height, width, replacement)

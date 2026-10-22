@@ -1,31 +1,6 @@
-/* Fields reused from accepted src/ui/inventory.c; the record stride is 128 bytes. */
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[26], value_4a, sprite_state, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-extern struct object_state gPlayerInfo[40];
-
-extern char gPlayer1Powerup[], ELEVATOR_FLAG[];
-extern unsigned char LAND_UNDER_TOEJAM, LAND_UNDER_EARL;
-extern void OpenRocketSkates();
-
+#include "entities.h"
+#include "ram.h"
+#include "player.h"
 /* Select the player's idle sprite from the active present and terrain,
  * resetting the animation and horizontal velocity for a new selection. */
 int GetActivePresentSprite(player)
@@ -35,7 +10,7 @@ struct object_state *player;
     short player_number;
     char sprite;
 
-    player_number = player->value_5e;
+    player_number = player->entity_number;
     land = player_number == 0 ? LAND_UNDER_TOEJAM : LAND_UNDER_EARL;
     land &= 0xf0;
     if (gPlayer1Powerup[player_number] == 2) {

@@ -1,39 +1,26 @@
-/* Coordinate, motion, and record-link layout also used by ProcessMovement.
- * This unit additionally reads the level byte at offset 0x4c. */
-struct moving_entity {
-    short x, y, elevation;
-    short velocity_x, velocity_y, velocity_z;
-    short acceleration_x, acceleration_y, acceleration_z;
-    unsigned char fraction_x, fraction_y, fraction_z, movement_lock;
-    char reserved16[19];
-    unsigned char half_width, height;
-    char reserved2b[4];
-    unsigned char flags;
-    char reserved30[27];
-    char sprite_state, level, reserved4d;
-    long identity;
-    long sprite_mask;
-    char reserved56[4];
-    struct moving_entity *next;
-    char character;
-    char reserved5f[33];
-};
+#include "entities.h"
+#include "ram.h"
+#include "core_calls.h"
+#include "player.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
+
+/* Preserve the observed signed/unsigned value views of shared storage.
+ * These casts do not imply a different record layout; historical spelling
+ * is unknown [INFERENCE]. */
+/* Local 12-byte proposed-position result, not an entity storage view. */
 struct movement_destination {
     short x, y;
     char reserved04[2];
     short tile_x, tile_y;
     unsigned char fraction_x, fraction_y;
 };
-extern unsigned char LAND_NEAR_TOEJAM[], LAND_NEAR_EARL[];
-extern char gLevel912C, gPlayer1Powerup[], TOEJAM_JUMP_COUNTER[];
-extern int func_000fb6();
-extern void SetSprite(), func_00dd82();
 
 /* Apply the nearby terrain grid to a proposed 24.8 position. Properties at
  * least 0x80 also adjust edge cells and select collision-facing sprites. */
 void func_00e17a(player, entity, destination)
 short player;
-struct moving_entity *entity;
+struct object_state *entity;
 struct movement_destination *destination;
 {
     short alternate = 0;
@@ -43,9 +30,9 @@ struct movement_destination *destination;
     short saved_x, saved_y;
 
     if (!player)
-        terrain = LAND_NEAR_TOEJAM;
+        terrain = LAND_NEAR_TOEJAM[0];
     else
-        terrain = LAND_NEAR_EARL;
+        terrain = LAND_NEAR_EARL[0];
     if (gLevel912C == 26 &&
         (entity->x != destination->x || entity->y != destination->y)) {
         saved_x = entity->x;
@@ -55,22 +42,22 @@ struct movement_destination *destination;
         if (func_000fb6()) {
             entity->x = saved_x;
             entity->y = saved_y;
-            entity->flags |= 48;
+            entity->draw_flags |= 48;
             return;
         }
         entity->x = saved_x;
         entity->y = saved_y;
     }
     property = terrain[destination->tile_y * 5 + destination->tile_x] & 0xf0;
-    if (entity->sprite_mask & 0x40800L) {
+    if ((long)entity->flags_52 & 0x40800L) {
         if (entity->level == 1 || entity->level == 26) {
             if (destination->x <= 28 || destination->x >= 2652) {
                 destination->x = entity->x;
-                entity->flags |= 16;
+                entity->draw_flags |= 16;
             }
             if (destination->y <= 48 || destination->y >= 1736) {
                 destination->y = entity->y;
-                entity->flags |= 32;
+                entity->draw_flags |= 32;
             }
         }
         if (property != 0x80) {
@@ -78,11 +65,11 @@ struct movement_destination *destination;
             SetSprite(entity, sprite);
             entity->velocity_x = 0;
             entity->velocity_y = 0;
-            entity->movement_lock = 0;
+            entity->mode_15 = 0;
         }
         property = 0x50;
     }
-    if (property <= 0x50 || entity->elevation > 0) {
+    if (property <= 0x50 || entity->height > 0) {
         entity->x = destination->x;
         entity->fraction_x = destination->fraction_x;
         entity->y = destination->y;
@@ -130,7 +117,7 @@ struct movement_destination *destination;
                 }
             }
             SetSprite(entity, sprite);
-            entity->flags |= 48;
+            entity->draw_flags |= 48;
             TOEJAM_JUMP_COUNTER[player] = 0;
         }
     }
@@ -139,21 +126,16 @@ struct movement_destination *destination;
 /* StopPlayer (name from RyanFae's disassembly) leaves the first six bytes alone and
  * clears two interleaved groups of three 16-bit components, in component
  * order. [INFERENCE] They are the motion components of a player record. */
-struct resettable_vectors {
-    unsigned char header[6];
-    short first[3];
-    short second[3];
-};
 
 void StopPlayer(state)
-struct resettable_vectors *state;
+struct object_state *state;
 {
-    state->first[0] = 0;
-    state->second[0] = 0;
-    state->first[1] = 0;
-    state->second[1] = 0;
-    state->first[2] = 0;
-    state->second[2] = 0;
+    state->velocity_x = 0;
+    state->acceleration_x = 0;
+    state->velocity_y = 0;
+    state->acceleration_y = 0;
+    state->velocity_height = 0;
+    state->acceleration_height = 0;
 }
 
 /* Process callbacks installed by SetupPlayer for the two player records. */

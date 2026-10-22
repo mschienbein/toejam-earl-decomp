@@ -1,6 +1,6 @@
-struct elevator_record { short x, y; char level, state, entity, timer; };
-extern struct elevator_record ELEVATOR_LOCATION[][2];
-
+#include "elevator.h"
+#include "ram.h"
+#include "elevator_calls.h"
 /* The one-based identifier encodes a record pair and its member. */
 int ProcessElevator(elevator_number)
 char elevator_number;

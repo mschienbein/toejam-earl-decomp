@@ -1,10 +1,7 @@
-extern char ram_ff8102[], ram_ff8104[], ram_ff8106[], ram_ff8108[];
-extern unsigned short ram_ff804e[2][45], ram_ff810a[2][32], ram_ff8196;
-extern short ram_ff8198;
-extern char ram_ff818e[], ram_ff8190[], ram_ff8199;
-extern void MoveDataToVRAM();
-#define VDP_CONTROL (*(unsigned long *)0xc00004L)
-
+#include "hardware.h"
+#include "ram.h"
+#include "graphics_calls.h"
+#include "romcalls.h"
 /* Transfer pending horizontal rows, splitting at the 64-column wrap. */
 void UpdateCameraY()
 {
@@ -16,10 +13,10 @@ void UpdateCameraY()
             start_column = ram_ff8104[camera];
             count = ram_ff8108[camera];
             if (camera == 0)
-                VDP_CONTROL = 0x60000002L + (ram_ff8102[camera] << 23) +
+                VDP_COMMAND = 0x60000002L + (ram_ff8102[camera] << 23) +
                     (start_column << 17);
             else
-                VDP_CONTROL = 0x40000003L + (ram_ff8102[camera] << 23) +
+                VDP_COMMAND = 0x40000003L + (ram_ff8102[camera] << 23) +
                     (start_column << 17);
             if (start_column + count <= 64)
                 MoveDataToVRAM(ram_ff804e[camera], count);
@@ -27,9 +24,9 @@ void UpdateCameraY()
                 first_count = 64 - start_column;
                 MoveDataToVRAM(ram_ff804e[camera], first_count);
                 if (camera == 0)
-                    VDP_CONTROL = 0x60000002L + (ram_ff8102[camera] << 23);
+                    VDP_COMMAND = 0x60000002L + (ram_ff8102[camera] << 23);
                 else
-                    VDP_CONTROL = 0x40000003L + (ram_ff8102[camera] << 23);
+                    VDP_COMMAND = 0x40000003L + (ram_ff8102[camera] << 23);
                 MoveDataToVRAM(&ram_ff804e[camera][first_count], count - first_count);
             }
             ram_ff8106[camera] = 0;

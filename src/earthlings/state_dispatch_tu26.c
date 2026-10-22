@@ -1,46 +1,18 @@
-struct earthling_state {
-    char reserved, object, reserved_2, state;
-    short timer;
-    char reserved_6[4];
-    short terrain;
-    char reserved_c[5];
-    unsigned char flags_11;
-};
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    unsigned char reserved_12[3];
-    char mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    struct earthling_state *earthling;
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-/* [INFERENCE] The callback record supplies signed movement multipliers. */
-struct movement_step {
-    char reserved, x, y;
-};
-extern char gLevel912C, gLevel912E, P1_MENU_OPEN, HBLANK_FLAG_1;
-extern unsigned short ram_ffda1c;
-extern int func_0193fa(), func_025bce(), func_025ca4();
-extern void func_015da6();
-/* ORIGINAL BUG: these callers use an int result for func_00d9dc, whose
- * accepted definition returns unsigned char. The explicit narrowing below
- * and at the terrain assignments preserves the observed caller behaviour. */
-extern int func_00d9dc();
+#define TJE_LOCAL_FUNC_00D9DC
 
+#include "entities.h"
+#include "earthlings.h"
+#include "sprites.h"
+#include "ram.h"
+#include "earthling_calls.h"
+#include "map_calls.h"
+#include "present_calls.h"
+#include "romcalls.h"
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_00d9dc,
+ * whose canonical return is unsigned char. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_00d9dc();
 /* Probe eight pixels vertically or sixteen horizontally in states 4..7. */
 int func_01916c(player_number, world_x, world_y, state)
 short player_number, world_x, world_y, state;
@@ -58,7 +30,7 @@ short player_number, world_x, world_y, state;
 
 /* Predict a fixed-point movement step and reject newly entered obstacles. */
 void func_0191d2(step, object)
-struct movement_step *step;
+struct render_frame *step;
 struct object_state *object;
 {
     struct earthling_state *earthling;
@@ -77,56 +49,56 @@ struct object_state *object;
     else
         return;
     if (object->mode_15 & 1) {
-        distance = object->velocity_x * step->x;
-        fixed_position = object->reserved_12[0] +
+        distance = object->velocity_x * step->motion_x;
+        fixed_position = object->fraction_x +
             (object->x << 8) + distance;
         next_x = (short)(fixed_position >> 8);
         fraction_x = fixed_position & 0xff;
     } else {
         next_x = object->x;
-        fraction_x = object->reserved_12[0];
+        fraction_x = object->fraction_x;
     }
     if (object->mode_15 & 2) {
-        distance = object->velocity_y * step->y;
-        fixed_position = object->reserved_12[1] +
+        distance = object->velocity_y * step->motion_y;
+        fixed_position = object->fraction_y +
             (object->y << 8) + distance;
         fraction_y = fixed_position & 0xff;
         next_y = (short)(fixed_position >> 8);
     } else {
         next_y = object->y;
-        fraction_y = object->reserved_12[1];
+        fraction_y = object->fraction_y;
     }
     if (next_x == object->x && next_y == object->y)
         return;
-    if (earthling->reserved == 5 || earthling->reserved == 10 ||
-        earthling->reserved == 11 || earthling->reserved == 17) {
+    if (earthling->kind == 5 || earthling->kind == 10 ||
+        earthling->kind == 11 || earthling->kind == 17) {
         if (!func_025bce(object, object->x, object->y, 0) &&
             func_025bce(object, next_x, next_y, 0)) {
-            object->sprite = 0;
+            object->sprite_state = 0;
             return;
         }
-    } else if (earthling->reserved != 18) {
+    } else if (earthling->kind != 18) {
         if (!func_025ca4(object, object->x, object->y) &&
             (terrain = func_025ca4(object, next_x, next_y))) {
-            object->sprite = 0;
+            object->sprite_state = 0;
             func_015da6(terrain - 1);
             return;
         }
     }
-    if (earthling->reserved == 14 || earthling->reserved == 18)
+    if (earthling->kind == 14 || earthling->kind == 18)
         terrain = func_01916c(player_number, next_x, next_y, earthling->state);
     else
         terrain = func_00d9dc(player_number, next_x, next_y);
-    if ((earthling->reserved == 13 && terrain == 16) ||
-        (earthling->reserved == 14 && terrain == 128) ||
-        (earthling->reserved != 13 && earthling->reserved != 14 &&
+    if ((earthling->kind == 13 && terrain == 16) ||
+        (earthling->kind == 14 && terrain == 128) ||
+        (earthling->kind != 13 && earthling->kind != 14 &&
          (unsigned short)terrain < 80)) {
         object->x = next_x;
-        object->reserved_12[0] = fraction_x;
+        object->fraction_x = fraction_x;
         object->y = next_y;
-        object->reserved_12[1] = fraction_y;
+        object->fraction_y = fraction_y;
     } else
-        object->sprite = 0;
+        object->sprite_state = 0;
 }
 
 /* Freeze a non-null record unless a selected player's gate byte is clear. */
@@ -134,8 +106,8 @@ int func_0193fa(earthling)
 struct earthling_state *earthling;
 {
     if (earthling) {
-        if (((earthling->flags_11 & 2) && !P1_MENU_OPEN) ||
-            ((earthling->flags_11 & 4) && !HBLANK_FLAG_1))
+        if (((earthling->reserved_10[1] & 2) && !P1_MENU_OPEN[0]) ||
+            ((earthling->reserved_10[1] & 4) && !HBLANK_FLAG_1))
             return 0;
         else
             return 1;
@@ -163,7 +135,7 @@ struct object_state *object;
 
 /* Move eligible earthlings within map bounds and update their terrain flags. */
 void func_01948a(step, object)
-struct movement_step *step;
+struct render_frame *step;
 struct object_state *object;
 {
     struct earthling_state *earthling;
@@ -175,7 +147,7 @@ struct object_state *object;
     earthling = object->earthling;
     if (func_0193fa(earthling) || earthling->state == 99 ||
         (object->flags_4d & 64) ||
-        (earthling->reserved == 7 && earthling->state == 3))
+        (earthling->kind == 7 && earthling->state == 3))
         return;
     if (object->level == gLevel912C)
         player_number = 0;
@@ -184,24 +156,24 @@ struct object_state *object;
     else
         return;
     if (object->mode_15 & 1) {
-        distance = object->velocity_x * step->x;
-        fixed_position = object->reserved_12[0] +
+        distance = object->velocity_x * step->motion_x;
+        fixed_position = object->fraction_x +
             (object->x << 8) + distance;
         next_x = (short)(fixed_position >> 8);
         fraction_x = fixed_position & 0xff;
     } else {
         next_x = object->x;
-        fraction_x = object->reserved_12[0];
+        fraction_x = object->fraction_x;
     }
     if (object->mode_15 & 2) {
-        distance = object->velocity_y * step->y;
-        fixed_position = object->reserved_12[1] +
+        distance = object->velocity_y * step->motion_y;
+        fixed_position = object->fraction_y +
             (object->y << 8) + distance;
         fraction_y = fixed_position & 0xff;
         next_y = (short)(fixed_position >> 8);
     } else {
         next_y = object->y;
-        fraction_y = object->reserved_12[1];
+        fraction_y = object->fraction_y;
     }
     if (next_x - object->width <= 8 || object->width + next_x >= 2672)
         next_x = object->x;
@@ -209,28 +181,28 @@ struct object_state *object;
         next_y = object->y;
     if (!func_025ca4(object, object->x, object->y) &&
         (collision = func_025ca4(object, next_x, next_y))) {
-        object->sprite = 0;
+        object->sprite_state = 0;
         func_015da6(collision - 1);
         return;
     }
     terrain = func_00d9dc(player_number, next_x, next_y);
-    if (earthling->reserved == 19) {
+    if (earthling->kind == 19) {
         if ((ram_ffda1c & 127) == 34)
             return;
-        earthling->terrain = terrain;
+        earthling->value_0a = terrain;
     } else if (terrain == 144) {
-        if (earthling->reserved == 6 || earthling->reserved == 22)
+        if (earthling->kind == 6 || earthling->kind == 22)
             object->flags_4d |= 32;
         else
             object->draw_flags &= ~64;
     } else {
-        if (earthling->reserved == 6 || earthling->reserved == 22)
+        if (earthling->kind == 6 || earthling->kind == 22)
             object->flags_4d &= ~32;
         else
             object->draw_flags |= 64;
     }
     object->x = next_x;
-    object->reserved_12[0] = fraction_x;
+    object->fraction_x = fraction_x;
     object->y = next_y;
-    object->reserved_12[1] = fraction_y;
+    object->fraction_y = fraction_y;
 }

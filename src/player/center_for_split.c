@@ -1,15 +1,9 @@
-struct centered_entity {
-    short x, y, elevation;
-    char reserved06[36];
-    unsigned char height;
-    char reserved2b[85];
-};
-extern struct centered_entity gPlayerInfo[26];
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern void *ram_ffd938;
-extern long abs();
-extern void func_00c242(), WaitForNextVBlank(), SpriteLoadingStuff();
-
+#include "entities.h"
+#include "ram.h"
+#include "core_calls.h"
+#include "player.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
 /* Animate the players toward the centers of the two half-height viewports,
  * keeping 26.6 intermediates; restore the world positions after the effect. */
 void func_00300a()
@@ -32,12 +26,12 @@ void func_00300a()
     primary_target_x = (long)(TOEJAM_CAMERA_NEWX + 160);
     primary_target_x *= 64;
     primary_target_y = (long)((TOEJAM_CAMERA_NEWY + 56) +
-        gPlayerInfo[0].height / 2 + gPlayerInfo[0].elevation / 2);
+        gPlayerInfo[0].height_pixels / 2 + gPlayerInfo[0].height / 2);
     primary_target_y *= 64;
     secondary_target_x = (long)(TOEJAM_CAMERA_NEWX + 160);
     secondary_target_x *= 64;
     secondary_target_y = (long)((TOEJAM_CAMERA_NEWY + 168) +
-        gPlayerInfo[1].height / 2 + gPlayerInfo[1].elevation / 2);
+        gPlayerInfo[1].height_pixels / 2 + gPlayerInfo[1].height / 2);
     secondary_target_y *= 64;
     primary_dx = primary_target_x - primary_x;
     primary_dy = primary_target_y - primary_y;

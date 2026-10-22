@@ -1,21 +1,11 @@
-struct indexed_sprite {
-    short y;
-    unsigned char size, link;
-    unsigned short tile;
-    short x;
-};
-struct indexed_entity {
-    char reserved00[94];
-    char entity_number;
-    char reserved5f[33];
-};
-extern struct indexed_sprite ram_ffb65a[80];
-extern struct indexed_entity gPlayerInfo[40];
-
+#include "entities.h"
+#include "sprites.h"
+#include "ram.h"
+#include "sprite_calls.h"
 /* Initialize the sprite sentinels and store each entity's own slot number. */
 void SetRAMIndexes()
 {
-    struct indexed_entity *entity;
+    struct object_state *entity;
     short entity_number;
 
     ram_ffb65a[0].link = 23;

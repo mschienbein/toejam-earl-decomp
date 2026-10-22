@@ -1,44 +1,19 @@
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct earthling_state {
-    char reserved, object, reserved_2, state;
-    short timer;
-};
-struct present_info {
-    char sprite, reserved;
-};
-extern struct object_state gPlayerInfo[40];
-extern char gPlayerInventory[][16];
-extern struct present_info gPresentInfo[28];
-extern char *PresentSpriteTable[28];
-extern unsigned short PREGEN_RANDOMS[59], ram_ff91e0;
-extern char ram_ffe24a[], ram_ffe24c[], dat_0ae4a0[];
-/* ORIGINAL BUG: this file calls func_00d904 as int (an implicit declaration in the original
- * [INFERENCE]); its definition in sprites/entity_slots_tu14.c returns short. The caller keeps
- * the low byte, so behaviour is unaffected. */
-extern int func_00d904();
-extern int GetActivePresentSprite(), func_01b0aa(), func_012db8();
-extern void SetSprite(), SetEarthlingState();
+#define TJE_LOCAL_FUNC_00D904
 
+#include "entities.h"
+#include "earthlings.h"
+#include "presents.h"
+#include "ram.h"
+#include "assets.h"
+#include "earthling_calls.h"
+#include "elevator_calls.h"
+#include "player.h"
+#include "sprite_calls.h"
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
+ * whose canonical return is short. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_00d904();
 /* Remove a random occupied inventory slot, replacing it with the last slot,
  * and launch a present object from the victim's position when allocation succeeds. */
 void DoMoleAbility(victim, player_number)
@@ -80,8 +55,8 @@ short player_number;
         present->level = victim->level;
         present->width = 24;
         present->height_pixels = 16;
-        present->draw_attribute = 1;
-        present->draw_offset = 6;
+        present->sprite_count = 1;
+        present->tile_count = 6;
         present->tile = 0x8000;
         present_sprite = gPresentInfo[present_number].sprite;
         present->frames = &PresentSpriteTable[present_sprite];
@@ -103,7 +78,7 @@ struct earthling_state *earthling;
 
     victim = &gPlayerInfo[player_number];
     if (earthling->state == 3) {
-        if (victim->sprite == 70) {
+        if (victim->sprite_state == 70) {
             if (earthling->timer < 15) {
                 SetSprite(victim, GetActivePresentSprite(victim));
                 victim->flags_4d &= ~32;

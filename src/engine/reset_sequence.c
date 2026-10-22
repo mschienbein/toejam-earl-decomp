@@ -1,6 +1,8 @@
-extern void func_0282c0(), func_00cc82(), WaitForNextVBlank(), SpriteLoadingStuff();
-extern char VBLANK_FLAG_2;
-
+#include "ram.h"
+#include "core_calls.h"
+#include "engine_calls.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
 /* Keep the selector order: the repeated target is hoisted into a preserved
  * address register, and the original combines the argument stack cleanups. */
 void func_02836c()

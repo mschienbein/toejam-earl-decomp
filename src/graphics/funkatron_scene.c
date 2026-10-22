@@ -1,44 +1,12 @@
-/* Offsets and the 128-byte object stride are observed. */
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct scene_descriptor {
-    char **frames;
-    char *idle_sequence, *interaction_sequence;
-    char frame_phase;
-    unsigned char width, height;
-    char draw_offset, draw_attribute, reserved;
-};
-struct scene_placement {
-    short x, y, interaction;
-};
-extern struct object_state gPlayerInfo[40];
-extern struct scene_descriptor FunkatronSceneDescriptors[30];
-extern struct scene_placement FunkatronScenePlacements[277];
-extern char ram_ffe264[277], ram_ffe390, PLAYER_INDICATOR;
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern short func_00d904();
-extern int func_00dd1e(), func_01e38e();
-extern void func_00d970(), func_01da0a();
-
+#include "entities.h"
+#include "sprites.h"
+#include "ram.h"
+#include "assets.h"
+#include "engine_calls.h"
+#include "graphics_calls.h"
+#include "player.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
 /* Create an object from one placement and one scene descriptor. */
 void func_023086(placement_number, descriptor_number)
 short placement_number, descriptor_number;
@@ -56,8 +24,8 @@ short placement_number, descriptor_number;
         object->frame_phase = descriptor->frame_phase;
         object->width = descriptor->width;
         object->height_pixels = descriptor->height;
-        object->draw_attribute = descriptor->draw_attribute;
-        object->draw_offset = descriptor->draw_offset;
+        object->sprite_count = descriptor->draw_attribute;
+        object->tile_count = descriptor->draw_offset;
         object->frame_duration = 1;
         object->frame = -1;
         object->x = FunkatronScenePlacements[placement_number].x;
@@ -115,10 +83,10 @@ void func_023154()
                 object = &gPlayerInfo[object_number];
                 if (func_00dd1e(object, &gPlayerInfo[0], 80, 50) ||
                     func_00dd1e(object, &gPlayerInfo[1], 80, 50)) {
-                    if (!object->sprite) {
+                    if (!object->sprite_state) {
                         object->sequence = descriptor->interaction_sequence;
                         object->frame = -1;
-                        object->sprite = 1;
+                        object->sprite_state = 1;
                     }
                     player_number = 0;
                     if (!object->flag_57 &&
@@ -129,7 +97,7 @@ void func_023154()
                             if (!((interaction == 31 && player_number == 0) ||
                                   (interaction == 53 && player_number == 0) ||
                                   (interaction == 54 && player_number == 1))) {
-                                if (func_01e38e(interaction, object->value_5e) >= 0)
+                                if (func_01e38e(interaction, object->entity_number) >= 0)
                                     object->flag_57 = 1;
                             }
                             if ((interaction == 31 && player_number == 1) ||
@@ -137,10 +105,10 @@ void func_023154()
                                 func_01da0a();
                         }
                     }
-                } else if (object->sprite) {
+                } else if (object->sprite_state) {
                     object->sequence = descriptor->idle_sequence;
                     object->frame = -1;
-                    object->sprite = 0;
+                    object->sprite_state = 0;
                 }
             }
         } else if (object_number) {

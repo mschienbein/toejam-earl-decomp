@@ -1,32 +1,31 @@
+#include "hardware.h"
+#include "ram.h"
+#include "core_calls.h"
 /* Write the VDP register initialization sequence, then enter game setup.
  * ResetVDP also matches plain C exactly despite its previous assembly label. */
-#define VDP_CONTROL (*(unsigned short *)0xc00004)
-extern void FurtherInitialisation();
-extern char ram_ff801c, ram_ff8030;
-extern unsigned short P1_PAD_INPUT, P2_PAD_INPUT;
 
 void ResetVDP()
 {
-    VDP_CONTROL = 0x8004;
-    VDP_CONTROL = 0x8144;
-    VDP_CONTROL = 0x8228;
-    VDP_CONTROL = 0x8334;
-    VDP_CONTROL = 0x8407;
-    VDP_CONTROL = 0x857c;
-    VDP_CONTROL = 0x8700;
-    VDP_CONTROL = 0x8a00;
-    VDP_CONTROL = 0x8b00;
-    VDP_CONTROL = 0x8c89;
-    VDP_CONTROL = 0x8d3f;
-    VDP_CONTROL = 0x8f02;
-    VDP_CONTROL = 0x9001;
-    VDP_CONTROL = 0x9100;
-    VDP_CONTROL = 0x9200;
-    VDP_CONTROL = 0x9302;
-    VDP_CONTROL = 0x9400;
-    VDP_CONTROL = 0x9500;
-    VDP_CONTROL = 0x9600;
-    VDP_CONTROL = 0x9700;
+    VDP_CONTROL_WORD = 0x8004;
+    VDP_CONTROL_WORD = 0x8144;
+    VDP_CONTROL_WORD = 0x8228;
+    VDP_CONTROL_WORD = 0x8334;
+    VDP_CONTROL_WORD = 0x8407;
+    VDP_CONTROL_WORD = 0x857c;
+    VDP_CONTROL_WORD = 0x8700;
+    VDP_CONTROL_WORD = 0x8a00;
+    VDP_CONTROL_WORD = 0x8b00;
+    VDP_CONTROL_WORD = 0x8c89;
+    VDP_CONTROL_WORD = 0x8d3f;
+    VDP_CONTROL_WORD = 0x8f02;
+    VDP_CONTROL_WORD = 0x9001;
+    VDP_CONTROL_WORD = 0x9100;
+    VDP_CONTROL_WORD = 0x9200;
+    VDP_CONTROL_WORD = 0x9302;
+    VDP_CONTROL_WORD = 0x9400;
+    VDP_CONTROL_WORD = 0x9500;
+    VDP_CONTROL_WORD = 0x9600;
+    VDP_CONTROL_WORD = 0x9700;
 }
 
 void VDPInitialisation()
@@ -57,4 +56,3 @@ short player;
     }
     return input;
 }
-

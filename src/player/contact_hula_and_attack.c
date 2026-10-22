@@ -1,51 +1,11 @@
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4], frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct earthling_state {
-    char reserved, object, reserved_2, state;
-    short timer, x, y, terrain;
-    char reserved_0c[3], second_object, reserved_10[2];
-};
-struct earthling_definition {
-    char reserved_00[21], target_chance;
-    unsigned char target_distance;
-    char turn_chance;
-    unsigned char movement_flags;
-    char reserved_19;
-    unsigned char contact_distance_x, contact_distance_y;
-    char damage;
-    unsigned char target_time_min, target_time_max;
-    unsigned char turn_time_min, turn_time_max;
-    unsigned char move_time_min, move_time_max;
-    char state_delay, reserved_24[2];
-};
-extern struct object_state gPlayerInfo[40];
-extern struct earthling_definition EARTHLING_DATA[24];
-extern char ram_ffda24[], TOEJAMS_HEALTH[];
-extern char HULA_DANCE_TIMER[], HULA_DANCE[], ram_ffe1b4;
-extern unsigned short PREGEN_RANDOMS[59], ram_ff91e0;
-extern char Sfx_Squish[], Sfx_Aloha[];
-extern int func_01b0aa(), abs(), GetActivePresentSprite();
-extern short GenerateSpeech();
-extern void SetSprite(), SetEarthlingState(), PlaySoundEffect();
-
+#include "entities.h"
+#include "earthlings.h"
+#include "ram.h"
+#include "assets.h"
+#include "earthling_calls.h"
+#include "player.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
 /* Flatten an eligible player, apply direct damage, and play the squish sound. */
 void Player_Squish(player_number, earthling)
 short player_number;
@@ -54,7 +14,7 @@ struct earthling_state *earthling;
     struct object_state *player;
 
     player = &gPlayerInfo[player_number];
-    if ((earthling->reserved != 19 || (earthling->state & 0xfc) == 4) &&
+    if ((earthling->kind != 19 || (earthling->state & 0xfc) == 4) &&
         func_01b0aa(player, player_number)) {
         player->mode_15 = 3;
         SetSprite(player, 2);
@@ -65,7 +25,7 @@ struct earthling_state *earthling;
             player->height = 0;
         if (earthling->state)
             earthling->timer = 30;
-        TOEJAMS_HEALTH[player_number] -= EARTHLING_DATA[earthling->reserved].damage;
+        TOEJAMS_HEALTH[player_number] -= EARTHLING_DATA[earthling->kind].damage;
         PlaySoundEffect((long)Sfx_Squish, 50, 0);
     }
 }
@@ -110,11 +70,11 @@ struct earthling_state *earthling;
             }
             HULA_DANCE_TIMER[player_number] = (distance >> 5) + 4;
         }
-    } else if (player->sprite == 89) {
+    } else if (player->sprite_state == 89) {
         sprite = GetActivePresentSprite(player);
         HULA_DANCE_TIMER[player_number] = 0;
     }
-    if (sprite != -1 && sprite != player->sprite) {
+    if (sprite != -1 && sprite != player->sprite_state) {
         player->mode_15 = 3;
         SetSprite(player, sprite);
     }

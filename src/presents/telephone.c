@@ -1,50 +1,12 @@
-/* The 128-byte stride and accessed offsets are observed in these routines. */
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27];
-    char sprite, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-extern struct object_state gPlayerInfo[40];
-
-struct telephone_state {
-    char reserved, level, object, reserved_3;
-    short x, y;
-};
-struct animation_descriptor {
-    char *sequence;
-    char **frames;
-};
-extern struct telephone_state TELEPHONE_1[];
-extern struct animation_descriptor AnimationDescriptors_0AF0A8[];
-extern char dat_0ae4a0[];
-extern char Sfx_Telephone[];
-extern char ram_ffda6c;
-extern char gTelephoneTimeToRing[], gTelephoneRingsLeft[], ram_ffe25e[];
-extern char gLevel912C, gLevel912E, SPLIT_SCREEN, gPlayerLives[];
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY, TOEJAM_SPEECH_COUNTER;
-extern short ram_ff935a;
-extern int func_01e736(), func_015b66();
-extern int abs();
-extern void PlaySoundEffect(), func_00d970(), DrawGameMap();
-
+#include "entities.h"
+#include "presents.h"
+#include "sprites.h"
+#include "ram.h"
+#include "assets.h"
+#include "map_calls.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
 /* Allocate the telephone's displayed object and copy its position and level. */
 void func_022bf6(telephone)
 struct telephone_state *telephone;
@@ -65,8 +27,8 @@ struct telephone_state *telephone;
         object->level = telephone->level;
         object->width = 24;
         object->height_pixels = 16;
-        object->draw_attribute = 1;
-        object->draw_offset = 6;
+        object->sprite_count = 1;
+        object->tile_count = 6;
         object->tile = 0x8000;
         object->draw_flags |= 8;
     }

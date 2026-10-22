@@ -1,19 +1,9 @@
-extern unsigned short gMapDataA[26][19], gMapDataB[26][19];
-extern unsigned char gMapDataD[52][19];
-extern char gLevel912A, gLevel912C, gLevel912E, gLevel9130, gHighestLevel;
-extern char VBLANK_FLAG_2, gPlayerLives[];
-extern unsigned short gLevelSeeds[26], FunkatronMapData[26][19];
-extern unsigned char Level0MapData[5][4], Level1MapData[26][19];
-struct elevator_position { char x, y; };
-extern struct elevator_position ELEVATOR_POS_TABLE[8];
-extern long StackBasedRandom();
-extern int func_0046c6(), func_0077ae();
-extern unsigned long func_004f50();
-extern unsigned short GetRandomNumber();
-extern void func_0044e2(), CopyLevelBetweenPlayers(), func_00433e(), func_004842();
-extern void func_005776(), func_0064ea(), func_00655a(), func_00671c();
-extern void func_003604(), func_0039e8(), func_003cb6(), func_0071e8(), func_004174();
-
+#include "elevator.h"
+#include "ram.h"
+#include "assets.h"
+#include "map_calls.h"
+#include "random.h"
+#include "romcalls.h"
 /* Reuse a player or saved map when possible; otherwise generate the requested
  * level under its stored random seed. Successful loads restore the prior random
  * state; a rejected generation returns 1 without restoring it. */

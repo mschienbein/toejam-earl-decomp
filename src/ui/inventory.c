@@ -1,90 +1,16 @@
+#include "entities.h"
+#include "presents.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "random.h"
+#include "player.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 #include "revision.h"
-
-/* Entity fields used by the inventory, with the observed 128-byte stride. */
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[26], value_4a, sprite_state, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct present_info {
-    char sprite, identified;
-};
-extern struct object_state gPlayerInfo[40];
-extern struct object_state ram_ffaf5a, ram_ffb2da, ram_ffafda, ram_ffb35a;
-extern struct object_state *ram_ffd938;
-extern struct present_info gPresentInfo[28];
-extern long ImageTextChars1[], ImageTextChars2[];
-extern char TEXT_SPRITE_DATA_START[][1888];
-extern unsigned char FontBackgroundByteMap[32][40];
-extern unsigned char InventoryCompactMapA[3][13], InventoryCompactMapB[3][13];
-extern unsigned char InventoryCompactMapC[3][11], InventoryCompactMapD[3][22];
-extern char *PresentSpriteTable[28], *RankCharsTable[9];
-extern char *InventoryCharsTable[28];
-extern char *InventoryNameStringTable[27];
-extern char InventoryCharsUnFall[13], Sfx_Randomize[];
-extern unsigned short gLevelSeeds[26], PREGEN_RANDOMS[59], ram_ff91e0;
-extern unsigned short gPlayerPoints[2];
-extern char gPlayerRank[], gPlayer2Rank, gPlayerBucks[];
-extern char gPlayer1MailboxItems[][3], gPlayer1MailboxPrices[][3];
-extern char gPlayerInventory[][16], gPlayerLives[], ELEVATOR_FLAG[];
-extern char P1_MENU_OPEN[], P1_MENU_SCROLL[], P1_MENU_SEL_ROW[], P1_MENU_SEL_COL[];
-extern char ram_ff9362[], P1_TEXT_WIGGLE, P1_MENU_COUNTER;
-extern char VHBLANK_FLAG_2, HBLANK_FLAG_1, SPLIT_SCREEN;
-extern char VBLANK_FLAG_3, VBLANK_FLAG_4, VBLANK_FLAG_5;
-extern unsigned char VBLANK_FLAG_2;
-extern unsigned char P1_PROCESSED_INPUT[], P1_PREV_PROCESSED_INPUT[];
-extern char ram_ff936c, ram_ff9378, ram_ff9386, ram_ffda6c;
-extern char ram_ffafa7, ram_ffb327;
-extern short P1_IDLE_COUNTER[], TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY;
-extern short ram_ff936e, ram_ff9370, ram_ff9372, ram_ff9374;
-
-extern void VDPWritesRoutine1(), WaitForNextVBlank(), OpeningPresents7();
-extern void func_00c242(), func_00c4fa(), DrawHUD(), PlaySound();
-extern void func_00105a(), func_00beb2(), ClearSkipVHBlankFlags();
-extern void SetSkipVHBlankFlags(), SetupPresentIdentities(), PlaySoundEffect();
-extern void func_00cc82(), func_0159a8(), func_010ab6(), GetPlayerInput();
-extern void DropPresent(), func_01e94e(), func_00d776();
-extern long StackBasedRandom();
-extern unsigned short GetRandomNumber();
-extern int SelectRandomPresent(), func_000fb6(), OpenSelectedPresent();
-extern short GenerateSpeech();
-extern int func_01e38e();
-
-/* Typed forward declarations for calls within this original translation unit. */
-extern void ForceTextBackgroundColorToBlack(), func_008b98();
-extern void SetVHBlankFlag2(), ClearVHBlankFlag2(), func_008c5c();
-extern int func_008be4();
-extern void func_008c78(), func_008cf8(), SetMailOrderPresents(), DrawInventory();
-extern void func_00903c(), func_0090c4(), func_0090e6(), ToggleInventory();
-extern void CheckIfOpenForBoth(), RandomizeInventory(), RandomizePresents();
-extern void ProcessInventory(), CheckBButton(), func_0098f6(), func_009934();
-extern char func_009972(), func_009e2e();
-extern short OpenPresent();
-extern void func_009afa(), func_009bf6();
-extern int func_009d2e();
-extern void func_009f8a(), func_009fbe(), func_00a054(), func_00a0ea();
-extern void func_00a1cc(), func_00a2e0(), OpeningPresents4();
-extern void LoadPresentsIntoInventory(), func_00a614(), func_00a77e();
-
-#define VDP_DATA (*(unsigned short *)0xc00000L)
-#define VDP_CONTROL (*(unsigned long *)0xc00004L)
 
 /* Select black or dark blue for the text background colour. */
 void ForceTextBackgroundColorToBlack(force_black)
@@ -95,7 +21,7 @@ short force_black;
      * also avoids a CLR access to the VDP data port. [INFERENCE] This may
      * be why the original materializes zero in a register. */
 
-    VDP_CONTROL = 0xc01e0000L;
+    VDP_COMMAND = 0xc01e0000L;
     if (force_black)
         VDP_DATA = black;
     else
@@ -203,7 +129,7 @@ void func_008cf8()
             }
         }
         for (; row < row_end; row++) {
-            VDP_CONTROL = 0x50000003L + ((long)row << 23);
+            VDP_COMMAND = 0x50000003L + ((long)row << 23);
             for (column = 0; column < 40; column++) {
                 tile = FontBackgroundByteMap[row][column];
                 if (tile & 0x40)
@@ -795,14 +721,14 @@ short player_number;
 {
     short column = 6;
     if (player_number == 0) {
-        VDP_CONTROL = 0x56000003L + (column << 17);
+        VDP_COMMAND = 0x56000003L + (column << 17);
         if (gPlayerBucks[0] < 100)
             VDP_DATA = 0x85b4;
         func_009fbe(gPlayerBucks[0]);
         if (gPlayerBucks[0] < 10)
             VDP_DATA = 0x85b4;
     } else {
-        VDP_CONTROL = 0x5c800003L + (column << 17);
+        VDP_COMMAND = 0x5c800003L + (column << 17);
         if (gPlayerBucks[1] < 100)
             VDP_DATA = 0x85b4;
         func_009fbe(gPlayerBucks[1]);
@@ -820,20 +746,20 @@ short player_number;
     if (player_number == 0) {
         if (gPlayerPoints[0] > 99)
             --column;
-        VDP_CONTROL = 0x56000003L + (column << 17);
+        VDP_COMMAND = 0x56000003L + (column << 17);
         func_009fbe(gPlayerPoints[0]);
         if (gPlayerPoints[0] > 999)
             func_009f8a(" pts");
-        VDP_CONTROL = 0x55a80003L;
+        VDP_COMMAND = 0x55a80003L;
         func_009f8a(RankCharsTable[gPlayerRank[0]]);
     } else {
         if (gPlayerPoints[1] > 99)
             --column;
-        VDP_CONTROL = 0x5c800003L + (column << 17);
+        VDP_COMMAND = 0x5c800003L + (column << 17);
         func_009fbe(gPlayerPoints[1]);
         if (gPlayerPoints[1] > 999)
             func_009f8a(" pts");
-        VDP_CONTROL = 0x5c280003L;
+        VDP_COMMAND = 0x5c280003L;
         func_009f8a(RankCharsTable[gPlayer2Rank]);
     }
 }
@@ -904,7 +830,7 @@ short player_number;
         for (func_00d776(object, group); !(object->draw_flags & ready_mask);
              func_00d776(object, group))
             func_01e94e();
-        object->value_4a = 0;
+        object->sprite_ready = 0;
         object->flags_4d |= 64;
     }
     gPlayerInfo[player_number].draw_flags |= 8;
@@ -943,10 +869,10 @@ short player_number;
 
     if (player_number == 0) {
         base_row = 5;
-        object = &ram_ffafda;
+        object = ram_ffafda;
     } else {
         base_row = 18;
-        object = &ram_ffb35a;
+        object = ram_ffb35a;
     }
     for (row = 0; row < 3; ++row) {
         for (column = 0; column < 2; ++column, ++object) {
@@ -955,14 +881,14 @@ short player_number;
             if (present_number != -1) {
                 present_sprite = gPresentInfo[present_number].sprite;
                 object->frames = &PresentSpriteTable[present_sprite];
-                object->value_4a = 0;
+                object->sprite_ready = 0;
                 object->y = (row * 2 + base_row + 1) * 8;
                 object->x = column * 160 + 21;
                 object->flags_4d &= ~64;
                 object->frame = 0;
             }
             if (!ram_ff9386) {
-                VDP_CONTROL = (((row * 2 + base_row) << 23) + 0x50000003L) +
+                VDP_COMMAND = (((row * 2 + base_row) << 23) + 0x50000003L) +
                               ((column * 20 + 5) << 17);
                 if (present_number != -1) {
                     if (gPresentInfo[present_number].identified) {
@@ -998,22 +924,22 @@ short player_number;
 
     if (player_number == 0) {
         base_row = 5;
-        object = &ram_ffafda;
+        object = ram_ffafda;
     } else {
         base_row = 18;
-        object = &ram_ffb35a;
+        object = ram_ffb35a;
     }
     for (row = 0; row < 3; ++row, ++object) {
         present_number = gPlayer1MailboxItems[player_number][row];
         present_sprite = gPresentInfo[present_number].sprite;
         object->frames = &PresentSpriteTable[present_sprite];
-        object->value_4a = 0;
+        object->sprite_ready = 0;
         object->y = (row * 2 + base_row + 1) * 8;
         object->x = 21;
         object->flags_4d &= ~64;
         object->frame = 0;
         if (!ram_ff9386) {
-            VDP_CONTROL = ((row * 2 + base_row) << 23) + 0x500a0003L;
+            VDP_COMMAND = ((row * 2 + base_row) << 23) + 0x500a0003L;
             if (gPresentInfo[present_number].identified) {
                 if (present_number == 12 && gPlayerLives[player_number ^ 1] < 0)
                     func_009f8a("un-fall .....");
@@ -1039,7 +965,7 @@ short player_number, menu, already_blanked;
         func_008c5c();
         ClearSkipVHBlankFlags();
         for (row = 0; row < 3; ++row) {
-            VDP_CONTROL = ((base_row + row) << 23) + 0x501c0003L;
+            VDP_COMMAND = ((base_row + row) << 23) + 0x501c0003L;
             for (character = 0; character < 13; ++character)
                 VDP_DATA = 0x824e;
         }
@@ -1047,7 +973,7 @@ short player_number, menu, already_blanked;
     if (menu == 0) {
         column = 14;
         for (row = 0; row < 3; ++row) {
-            VDP_CONTROL = (((base_row + row) << 23) + 0x50000003L) + (column << 17);
+            VDP_COMMAND = (((base_row + row) << 23) + 0x50000003L) + (column << 17);
             for (character = 0; character < 13; ++character) {
                 tile = InventoryCompactMapA[row][character];
                 if (tile & 64)
@@ -1059,7 +985,7 @@ short player_number, menu, already_blanked;
     } else if (menu == 1) {
         column = 14;
         for (row = 0; row < 3; ++row) {
-            VDP_CONTROL = (((base_row + row) << 23) + 0x50000003L) + (column << 17);
+            VDP_COMMAND = (((base_row + row) << 23) + 0x50000003L) + (column << 17);
             for (character = 0; character < 13; ++character) {
                 tile = InventoryCompactMapB[row][character];
                 if (tile & 64)
@@ -1071,7 +997,7 @@ short player_number, menu, already_blanked;
     } else if (menu == 2) {
         column = 15;
         for (row = 0; row < 3; ++row) {
-            VDP_CONTROL = (((base_row + row) << 23) + 0x50000003L) + (column << 17);
+            VDP_COMMAND = (((base_row + row) << 23) + 0x50000003L) + (column << 17);
             for (character = 0; character < 11; ++character) {
                 tile = InventoryCompactMapC[row][character];
                 if (tile & 64)
@@ -1083,7 +1009,7 @@ short player_number, menu, already_blanked;
     } else {
         column = 9;
         for (row = 0; row < 3; ++row) {
-            VDP_CONTROL = (((base_row + row) << 23) + 0x50000003L) + (column << 17);
+            VDP_COMMAND = (((base_row + row) << 23) + 0x50000003L) + (column << 17);
             for (character = 0; character < 22; ++character) {
                 tile = InventoryCompactMapD[row][character];
                 if (tile & 64)

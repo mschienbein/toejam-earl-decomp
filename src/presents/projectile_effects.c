@@ -1,64 +1,34 @@
-/* tu33 after the resistant opening function: tomato and other projectile effects. */
-struct earthling_state {
-    char reserved, object, reserved_2, state;
-    short timer, x, y;
-    char reserved_0a[5], second_object, reserved_10[2];
-};
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4], frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[26], sprite_reset, sprite, level;
-    unsigned char flags_4d;
-    struct earthling_state *earthling;
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct animation_descriptor {
-    char *sequence;
-    char **frames;
-};
-struct timed_animation {
-    char *sequence;
-    char **frames;
-    char period, spare;
-};
-extern struct object_state gPlayerInfo[40];
-extern struct animation_descriptor AnimationDescriptors_0AEFF6[];
-extern struct animation_descriptor dat_0aeffe, dat_0af006;
-extern struct timed_animation dat_0af018, dat_0af022, dat_0af02c;
-extern struct timed_animation AnimationDescriptors_0AF00E[];
-extern struct timed_animation AnimationDescriptors_0AF076[], dat_0af080, dat_0af08a;
-extern unsigned char dat_08bfe6[4][10];
-extern char ram_ffe1c0[12], ram_ffe1cc[12], ram_ffe1d8[4];
-extern char ram_ffe1dc[], ram_ffe1e2[], ram_ffe1e4[], ram_ffe1e6[], ram_ffde58[];
-extern short ram_ffe1de[];
-extern char gPlayer1TomatoRainTimer[2], TOMATO_RAIN_TIMER[2];
-extern char gPlayerLives[], ELEVATOR_FLAG[], P1_MENU_OPEN[], gPlayer1Powerup[];
-extern char ram_ffe236[], TOEJAMS_HEALTH[];
-extern unsigned char P1_PROCESSED_INPUT[], P1_PREV_PROCESSED_INPUT[];
-extern short gMusicUnknownE472;
-extern char Sfx_ChickenCluck[];
-extern unsigned short GetRandomNumber();
-/* ORIGINAL BUG: these callsites consume int results although accepted definitions
- * return short (allocator), unsigned char (terrain), and short (decoy hit).
- * The allocator result is stored as a byte; terrain is read as a word; the decoy
- * result is tested as a long. [INFERENCE] Original declarations were missing. */
-extern int func_00d904(), func_00d9dc(), func_015da6();
-extern int func_025e72(), func_01e736(), abs(), func_00dd1e(), Player_Youch();
-extern void func_00d970(), func_03e4f8(), DamageEarthling(), PlaySound();
-extern void PlaySoundEffect(), SetEarthlingState(), func_01c2a2(), func_01cd9e();
+#define TJE_LOCAL_FUNC_00D904
+#define TJE_LOCAL_FUNC_00D9DC
+#define TJE_LOCAL_FUNC_015DA6
 
+#include "entities.h"
+#include "earthlings.h"
+#include "sprites.h"
+#include "ram.h"
+#include "assets.h"
+#include "earthling_calls.h"
+#include "map_calls.h"
+#include "random.h"
+#include "player.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
+ * whose canonical return is short. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_00d904();
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_00d9dc,
+ * whose canonical return is unsigned char. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_00d9dc();
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_015da6,
+ * whose canonical return is short. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_015da6();
 /* Process all twelve tomato handles, changing landed or collided tomatoes
  * into their impact animation and releasing completed objects. */
 void ProcessTomatoRain()
@@ -73,7 +43,7 @@ void ProcessTomatoRain()
             if (projectile->height < 10 && !(projectile->draw_flags & 6)) {
                 func_00d970(object_number);
                 ram_ffe1c0[slot] = 0;
-            } else if (projectile->sprite == -1) {
+            } else if (projectile->sprite_state == -1) {
                 if (projectile->height <= 0) {
                     if (projectile->tile & 0x8000) {
                         projectile->draw_flags &= ~64;
@@ -83,8 +53,8 @@ void ProcessTomatoRain()
                         object_number = func_00d9dc(object_number, projectile->x, projectile->y);
                         if (object_number == 144) {
                             projectile->tile &= 0x7fff;
-                            projectile->sprite_reset = 0;
-                            projectile->sprite = 21;
+                            projectile->sprite_ready = 0;
+                            projectile->sprite_state = 21;
                         } else {
                             projectile->velocity_x = 0;
                             projectile->velocity_y = 0;
@@ -98,7 +68,7 @@ void ProcessTomatoRain()
                             projectile->sequence = animation->sequence;
                             projectile->frames = animation->frames;
                             projectile->frame_phase = animation->period;
-                            projectile->sprite = 0;
+                            projectile->sprite_state = 0;
                             projectile->frame = -1;
                             projectile->frame_duration = 1;
                             if (!gMusicUnknownE472)
@@ -127,11 +97,11 @@ void ProcessTomatoRain()
                         projectile->frame_phase = animation->period;
                         projectile->frame = -1;
                         projectile->frame_duration = 1;
-                        projectile->sprite = 0;
+                        projectile->sprite_state = 0;
                         func_03e4f8(2);
                     }
                 }
-            } else if (!projectile->frame_duration && projectile->sprite != 21) {
+            } else if (!projectile->frame_duration && projectile->sprite_state != 21) {
                 func_00d970(object_number);
                 ram_ffe1c0[slot] = 0;
             }
@@ -180,15 +150,15 @@ int player_number;
         projectile->level = player->level;
         projectile->width = 9;
         projectile->height_pixels = 7;
-        projectile->draw_attribute = 1;
-        projectile->draw_offset = 16;
+        projectile->sprite_count = 1;
+        projectile->tile_count = 16;
         projectile->tile = 0x8000;
         animation = AnimationDescriptors_0AEFF6;
         projectile->sequence = animation->sequence;
         projectile->frames = animation->frames;
         projectile->frame_phase = 0;
         projectile->draw_flags |= 64;
-        projectile->sprite = -1;
+        projectile->sprite_state = -1;
         --gPlayer1TomatoRainTimer[player_number];
     }
 }
@@ -243,8 +213,8 @@ struct object_state *source;
         projectile->level = source->level;
         projectile->width = 16;
         projectile->height_pixels = 8;
-        projectile->draw_attribute = 1;
-        projectile->draw_offset = 2;
+        projectile->sprite_count = 1;
+        projectile->tile_count = 2;
         projectile->tile = 0x8000;
         projectile->sequence = animation->sequence;
         projectile->frames = animation->frames;
@@ -252,7 +222,7 @@ struct object_state *source;
         projectile->frame = -1;
         projectile->frame_duration = 1;
         projectile->draw_flags |= 64;
-        projectile->sprite = -1;
+        projectile->sprite_state = -1;
         func_03e4f8(4);
     }
 }
@@ -301,13 +271,13 @@ short player_number;
             effect = &gPlayerInfo[ram_ffe1dc[player_number]];
             player = &gPlayerInfo[player_number];
             effect->flags_4d |= 8;
-            effect->reserved_56 = player_number;
+            effect->parent = player_number;
             effect->level = player->level;
             effect->tile |= 0x8000;
             effect->width = 32;
             effect->height_pixels = 32;
-            effect->draw_attribute = 1;
-            effect->draw_offset = 16;
+            effect->sprite_count = 1;
+            effect->tile_count = 16;
             animation = AnimationDescriptors_0AF00E;
             effect->sequence = animation->sequence;
             effect->frames = animation->frames;
@@ -344,13 +314,13 @@ struct object_state *player;
     short player_number;
     struct object_state *effect;
 
-    player_number = player->value_5e;
+    player_number = player->entity_number;
     if (!ram_ffe1dc[player_number])
         return;
     effect = &gPlayerInfo[ram_ffe1dc[player_number]];
     effect->level = player->level;
     if (--ram_ffe1de[player_number] <= 0 || gPlayerLives[player_number] < 0 ||
-        player->sprite == 5 || player->sprite == 6) {
+        player->sprite_state == 5 || player->sprite_state == 6) {
         func_00d970(ram_ffe1dc[player_number]);
         ram_ffe1dc[player_number] = 0;
     } else if (!ELEVATOR_FLAG[player_number] && (effect->frame_duration & 2) &&
@@ -373,7 +343,7 @@ void func_01cd9e()
                     func_00d970(object_number);
                     ram_ffe1d8[slot] = 0;
                 }
-            } else if (projectile->sprite == -1) {
+            } else if (projectile->sprite_state == -1) {
                 if (projectile->height <= 0) {
                     if (projectile->tile & 0x8000) {
                         projectile->draw_flags &= ~64;
@@ -383,7 +353,7 @@ void func_01cd9e()
                         hit = func_00d9dc(hit, projectile->x, projectile->y);
                         if (hit == 0x90) {
                             projectile->tile &= ~0x8000;
-                            projectile->sprite_reset = 0;
+                            projectile->sprite_ready = 0;
                         } else {
                             func_00d970(object_number);
                             ram_ffe1d8[slot] = 0;
@@ -422,8 +392,8 @@ short player_number;
         effect->tile |= 0x8000;
         effect->width = 24;
         effect->height_pixels = 20;
-        effect->draw_attribute = 1;
-        effect->draw_offset = 16;
+        effect->sprite_count = 1;
+        effect->tile_count = 16;
         animation = AnimationDescriptors_0AF076;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
@@ -475,8 +445,8 @@ short player_number;
         effect->tile |= 0x8000;
         effect->width = 24;
         effect->height_pixels = 20;
-        effect->draw_attribute = 1;
-        effect->draw_offset = 16;
+        effect->sprite_count = 1;
+        effect->tile_count = 16;
         animation = &dat_0af08a;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
@@ -498,9 +468,9 @@ unsigned short terrain;
     struct object_state *effect;
     struct earthling_state source;
 
-    player_number = player->value_5e;
+    player_number = player->entity_number;
     if (gPlayer1Powerup[player_number] != 6 || ELEVATOR_FLAG[player_number] ||
-        player->sprite == 5 || player->sprite == 6) {
+        player->sprite_state == 5 || player->sprite_state == 6) {
         if (ram_ffe1e4[player_number])
             func_01cf66(player_number);
     } else if (!(P1_PREV_PROCESSED_INPUT[player_number] & 64) &&
@@ -515,7 +485,7 @@ unsigned short terrain;
     } else if (object_number = ram_ffe1e4[player_number]) {
         effect = &gPlayerInfo[object_number];
         if (!effect->frame_duration && (effect->draw_flags & 6)) {
-            source.reserved = 1;
+            source.kind = 1;
             source.x = effect->x;
             source.y = effect->y;
             source.object = object_number;

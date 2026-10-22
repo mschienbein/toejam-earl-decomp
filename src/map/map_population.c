@@ -1,7 +1,6 @@
-extern unsigned short gMapDataA[26][19];
-struct elevator_position { char x, y; };
-extern struct elevator_position ELEVATOR_POS_TABLE[8];
-
+#include "elevator.h"
+#include "ram.h"
+#include "map_calls.h"
 /* Mark tiles with 0x0800 while searching for the coordinates at ff911c/d.
  * Terrain class 0x1000 follows matching terrain or an incoming road bit;
  * class 0x2000 follows its outgoing road bits. The latter has no coordinate

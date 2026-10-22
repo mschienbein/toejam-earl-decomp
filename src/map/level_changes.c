@@ -1,14 +1,9 @@
-extern unsigned short gMapDataA[26][19], gMapDataB[26][19], gMapDataC[26][19];
-extern unsigned char gMapDataD[52][19];
-extern unsigned char ram_ff8f2c[26][19];
-extern char gLevel912C, gLevel912E, gLevel9130;
-extern char gWorldType, gHighestLevel, gLevel912A;
-extern unsigned short gLevelSeeds[26], FixedWorldSeeds[26];
-extern unsigned short GetRandomNumber();
-extern unsigned long func_004f50();
-extern long abs();
-struct elevator_position { char x, y; };
-extern struct elevator_position ELEVATOR_POS_TABLE[8];
+#include "elevator.h"
+#include "ram.h"
+#include "assets.h"
+#include "map_calls.h"
+#include "random.h"
+#include "romcalls.h"
 /* Exchange a player's map with the saved map, preserving the other
  * player's visibility nibble in the active mask plane. */
 void func_0044e2(player)
@@ -93,4 +88,3 @@ int func_0046c6()
     }
     return count;
 }
-

@@ -1,13 +1,7 @@
-extern char ram_ff8192, ram_ff8194;
-extern short ram_ff803e, ram_ff8040, ram_ff8042, ram_ff8044;
-extern short ram_ff8046, ram_ff804a, TOEJAM_CAMERA_X, EARL_CAMERA_X;
-extern char ram_ff8106[], ram_ff818e[], gPlayerLives[], SPLIT_SCREEN;
-extern char VBLANK_FLAG_6, VBLANK_FLAG_3;
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY;
-extern void func_0016d2(), func_001ba8(), UpdateCameraY(), UpdateCameraX();
-extern void WaitForNextVBlank(), ClearSkipVHBlankFlags(), SetSkipVHBlankFlags();
-
+#include "ram.h"
+#include "core_calls.h"
+#include "graphics_calls.h"
+#include "romcalls.h"
 /* Build rows and columns requested by the four camera-direction bits. */
 void func_00219c()
 {

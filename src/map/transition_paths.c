@@ -1,13 +1,9 @@
+#include "elevator.h"
+#include "map.h"
+#include "ram.h"
+#include "assets.h"
+#include "map_calls.h"
 /* ROM descriptors contain a count-prefixed byte list at offset two. */
-struct map_transition_descriptor {
-    unsigned char bank, flags;
-    unsigned char *shapes, *alternatives;
-};
-extern struct map_transition_descriptor MapTransitionDescriptors[];
-extern unsigned short gMapDataA[26][19];
-struct elevator_position { char x, y; };
-extern struct elevator_position ELEVATOR_POS_TABLE[8];
-extern short ram_ff91e6, ram_ff91e8;
 
 int func_006b22(list_number, value)
 unsigned char list_number, value;

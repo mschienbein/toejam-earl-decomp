@@ -1,5 +1,5 @@
-extern unsigned short ram_ff8196;
-
+#include "ram.h"
+#include "core_calls.h"
 /* Store the high bit of the flag, or clear the word. */
 void ToggleLOC_00FF8196(enabled)
 short enabled;

@@ -1,74 +1,23 @@
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[26], value_4a, sprite_state, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct present_info {
-    char sprite, identified;
-};
-struct level_item {
-    char kind, level, object, reserved;
-    short x, y;
-};
-/* Hardware-sprite layout shared with src/ui/hud_initialization.c. */
-struct hud_sprite {
-    short y;
-    unsigned char size, link;
-    unsigned short tile;
-    short x;
-};
-/* Preserve the accepted mole prefix and map record stride. The secondary
- * object at byte 15 is also accessed by neighboring func_0174b6. */
-struct earthling_state {
-    char reserved, object, reserved_2, state;
-    short timer, x, y;
-    char reserved_0a[5], second_object, reserved_10[2];
-};
-extern struct object_state gPlayerInfo[40];
-extern struct present_info gPresentInfo[28];
-extern struct level_item gObjectTable[][32], gDroppedPresentTable[32];
-extern struct hud_sprite ram_ffb65a[80];
-extern char *PresentSpriteTable[28], *FramePointers_AF09C[], *Spr_GroundItem[];
-extern char dat_0ae4a0[];
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY;
-extern char gLevel912C, gLevel912E, SPLIT_SCREEN, TOEJAMS_HEALTH[];
-extern char gPlayerLives[], gPlayerBucks[], gPlayerInventory[][16];
-extern char gPlayer1Powerup[], ram_ffda30[], P1_MENU_OPEN[];
-extern char ELEVATOR_FLAG[], LEVEL_PLAYERS_FLAG_1[], LEVEL_PLAYERS_FLAG_2;
-extern char LEVEL_LOADED_1[];
-extern unsigned char LAND_UNDER_TOEJAM, LAND_UNDER_EARL;
-extern unsigned short gPlayer1PowerupTimer[];
-extern unsigned long ram_ffdde8[26];
-extern char PresentAuxiliarySignedLookup[16], Sfx_Money[], Sfx_ChowDown[];
-/* ORIGINAL BUG: the original caller treats the short-returning allocator
- * as int ([INFERENCE] an implicit declaration), retaining only the low byte. */
-extern int func_00d904();
-extern void func_00d970(), LoadLevel2AndUp();
-extern short GenerateSpeech();
-extern long abs();
-extern int func_00ae90(), func_01e312(), func_01e38e();
-extern int GetActivePresentSprite(), Player_Youch();
-extern void PlaySound(), PlaySoundEffect(), func_019086();
-extern void StopPlayer(), SetSprite(), func_00acca(), func_00ad8a();
-extern void ProcessPresents(), func_023154();
+#define TJE_LOCAL_FUNC_00D904
 
+#include "entities.h"
+#include "earthlings.h"
+#include "presents.h"
+#include "sprites.h"
+#include "ram.h"
+#include "assets.h"
+#include "earthling_calls.h"
+#include "graphics_calls.h"
+#include "player.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
+ * whose canonical return is short. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_00d904();
 /* Allocate a world-item object and configure its frames, size and position.
  * Non-present ground items set drawing flag 0x80; kinds 81 and up use the
  * larger 32-by-64 dimensions. */
@@ -96,13 +45,13 @@ struct level_item *item;
         if (item->kind < 81) {
             object->width = 24;
             object->height_pixels = 16;
-            object->draw_attribute = 1;
-            object->draw_offset = 12;
+            object->sprite_count = 1;
+            object->tile_count = 12;
         } else {
             object->width = 32;
             object->height_pixels = 64;
-            object->draw_attribute = 2;
-            object->draw_offset = 32;
+            object->sprite_count = 2;
+            object->tile_count = 32;
             object->flags_4d |= 1;
         }
         object->tile = 0x8000;
@@ -280,7 +229,7 @@ struct level_item *items;
             abs(item->x - state->x) < 24 &&
             abs(item->y - state->y) < 12) {
             /* The accepted reserved byte supplies the hurt-source kind. */
-            source.reserved = 1;
+            source.kind = 1;
             source.x = item->x;
             source.y = item->y;
             source.object = item->object;
@@ -383,14 +332,14 @@ void func_0159a8()
             item = gObjectTable[bank];
             for (index = 0; index < 28; index++, item++) {
                 if (item->kind != -1 && item->kind < 64 && item->object)
-                    gPlayerInfo[item->object].value_4a = 0;
+                    gPlayerInfo[item->object].sprite_ready = 0;
             }
         }
     }
     item = gDroppedPresentTable;
     for (index = 0; index < 32; index++, item++) {
         if (item->kind != -1 && item->object)
-            gPlayerInfo[item->object].value_4a = 0;
+            gPlayerInfo[item->object].sprite_ready = 0;
     }
 }
 

@@ -1,9 +1,6 @@
-extern char gPlayerLives[];
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY;
-extern long ram_ff819a, ram_ff819e, ram_ff81a2, ram_ff81a6;
-extern void func_0020aa();
-
+#include "ram.h"
+#include "player.h"
+#include "romcalls.h"
 /* Copy the selected camera coordinates into their 24.8 accumulators. */
 void func_002608(player, position_x, position_y)
 int player;

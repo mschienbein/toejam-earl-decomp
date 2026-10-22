@@ -1,106 +1,29 @@
-struct elevator_entity {
-    short x, y, elevation;
-    short velocity_x, velocity_y, velocity_z;
-    short acceleration_x, acceleration_y, acceleration_z;
-    unsigned char fraction_x, fraction_y, fraction_z, movement_lock;
-    void (*process)();
-    char *sequence, *frames;
-    char reserved22[4];
-    char frame, frame_period, frame_ticks;
-    unsigned char half_width, height;
-    char tile_count;
-    unsigned short tile_base;
-    char sprite_count;
-    unsigned char flags;
-    char reserved30[24];
-    char primary_sprite, secondary_sprite, sprite_reset, sprite_state, level;
-    char state_flags;
-    long identity;
-    unsigned long sprite_mask;
-    char reserved56[4];
-    struct elevator_entity *next;
-    char character;
-    char reserved5f[33];
-};
-struct elevator_record {
-    short x, y;
-    char level, state, entity, timer;
-};
-struct elevator_animation {
-    char *sequence, *frames;
-    char frame_period, y_offset;
-};
-extern struct elevator_entity gPlayerInfo[40];
-extern struct elevator_record ELEVATOR_LOCATION[][2];
-struct elevator_position { char x, y; };
-extern struct elevator_position ELEVATOR_POS_TABLE[8];
-extern struct elevator_animation dat_0aee98[13], dat_0aef1a[13];
-extern char ram_ff911c, ram_ff911d, gLevel912C, gLevel912E, SPLIT_SCREEN;
-extern char ELEVATOR_FLAG[];
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY;
-extern long abs();
-extern void func_00d970(), func_00d8f2();
-
-/* Background frames have a four-byte header followed by ten-byte parts.
- * Only the packing byte at part offset five is inspected here. */
-struct transition_part {
-    char reserved00[5], packing, reserved06[4];
-};
-struct transition_frame {
-    long header;
-    struct transition_part parts[4];
-};
-struct ride_speech {
-    char *first_line, *second_line, *reply_first_line, *reply_second_line;
-};
-extern struct transition_frame *Spr_TransitionBackground[];
-extern struct ride_speech SpeechStringPointers[14];
-extern struct elevator_entity *ram_ffda6e;
-extern char gPlayerLives[], gPlayer2Lives, ram_ffda6b, ram_ffda6c;
-extern char TOEJAM_FALL_STATE[], ram_ffda23;
-extern char VBLANK_FLAG_2, VBLANK_FLAG_7, VBLANK_FLAG_8;
-extern unsigned char gMode2RegSoftcopy, ram_ffd92e, ram_ffb715, ram_ffd932;
-struct setup_sprite {
-    short y;
-    unsigned char size, link;
-    unsigned short tile;
-    short x;
-};
-extern struct setup_sprite ram_ffb65a[80];
-extern unsigned char ram_ffda7a[4];
-extern unsigned char ShipRelatedData[8][8], SpritePriorityLookup[26];
-extern unsigned short SPRITE_STATE_TABLE, ram_ffd8dc[40], TIME_COUNTER;
-extern short LevelTilesSize;
-extern short ram_ffda74, ram_ffda76, ram_ffda78;
-extern long ram_ffda72, ram_ffda7e;
-extern unsigned char LevelTiles[], FunkatronExtraTiles[];
-extern unsigned short PaletteShipScreen_bank3[], FunkatronPaletteA[], FunkatronPaletteB[];
-extern unsigned short PaletteGameLine4[], PaletteGameLine2[], PaletteTitleScreen_bank1[];
-extern void (*gVBlankFunc)();
-extern unsigned short GetRandomNumber();
-extern short GenerateSpeech();
-extern void MoveDataToVRAM(), CopyPaletteToCRAMSlot(), SpriteLoadingStuff();
-extern void SpriteUnpackInterleavedRLE(), SpriteUnpackRLE(), VDPWritesRoutine1();
-extern void func_008b98(), func_01d8ac(), func_00b95c(), ToggleLOC_00FF8196();
-extern void func_0174b6(), func_0143e6(), OpeningPresents7();
-extern void func_01d436(), func_004dfe(), StopPlayer(), SetSprite();
-extern void func_01e2c4(), func_00105a(), SetSkipVHBlankFlags(), ClearSkipVHBlankFlags();
-extern void func_00c4fa(), func_00cc82(), func_00d022(), MassiveRoutine(), func_008c5c();
-extern void func_017ac8(), PlaceStuffInLevel(), func_00aa5a(), func_02297c();
-extern void func_03e43c(), func_03e40e();
-#define VDP_CONTROL (*(unsigned long *)0xc00004L)
-#define VDP_CONTROL_WORD (*(unsigned short *)0xc00004L)
-#define VDP_DATA (*(unsigned short *)0xc00000L)
-
+#include "entities.h"
+#include "elevator.h"
+#include "sprites.h"
+#include "ui.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "earthling_calls.h"
+#include "elevator_calls.h"
+#include "engine_calls.h"
+#include "map_calls.h"
+#include "random.h"
+#include "player.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 /* Select the two animation descriptors for an elevator's state and keep
  * the second entity at its descriptor's vertical offset from the first. */
 void func_012694(elevator, state)
 struct elevator_record *elevator;
 char state;
 {
-    struct elevator_entity *entity;
-    struct elevator_animation *animation;
+    struct object_state *entity;
+    struct timed_animation *animation;
     short x, y;
 
     elevator->state = state;
@@ -114,8 +37,8 @@ char state;
     animation = &dat_0aee98[state];
     entity->sequence = animation->sequence;
     entity->frames = animation->frames;
-    entity->frame_period = animation->frame_period;
-    entity->frame_ticks = 1;
+    entity->frame_phase = animation->period;
+    entity->frame_duration = 1;
     entity->frame = -1;
     entity->sprite_state = state;
     x = entity->x;
@@ -124,17 +47,17 @@ char state;
     animation = &dat_0aef1a[state];
     entity->sequence = animation->sequence;
     entity->frames = animation->frames;
-    entity->frame_period = animation->frame_period;
+    entity->frame_phase = animation->period;
     entity->y = animation->y_offset + y;
     entity->x = x;
-    entity->frame_ticks = 1;
+    entity->frame_duration = 1;
     entity->frame = -1;
     entity->sprite_state = state;
 }
 
 /* Convert the saved map-cell coordinates into the player's position. */
 void func_012762(player)
-struct elevator_entity *player;
+struct object_state *player;
 {
     char map_x, map_y;
 
@@ -223,11 +146,11 @@ void func_012974(elevator)
 struct elevator_record *elevator;
 {
     char entity_number = 2;
-    struct elevator_entity *entity;
+    struct object_state *entity;
 
-    if (gPlayerInfo[2].flags & 1) {
+    if (gPlayerInfo[2].draw_flags & 1) {
         entity_number = 3;
-        if (gPlayerInfo[3].flags & 1)
+        if (gPlayerInfo[3].draw_flags & 1)
             return;
     }
     elevator->entity = entity_number;
@@ -235,28 +158,28 @@ struct elevator_record *elevator;
     func_00d8f2(entity);
     entity->x = elevator->x;
     entity->y = elevator->y;
-    entity->elevation = 0;
+    entity->height = 0;
     entity->level = elevator->level;
-    entity->half_width = 40;
-    entity->height = 48;
+    entity->width = 40;
+    entity->height_pixels = 48;
     entity->sprite_count = 2;
     entity->tile_count = 28;
-    entity->tile_base = 0x8000;
-    entity->flags = 1;
-    entity->state_flags |= 1;
+    entity->tile = 0x8000;
+    entity->draw_flags = 1;
+    entity->flags_4d |= 1;
     entity = entity + 2;
     func_00d8f2(entity);
     entity->x = elevator->x;
     entity->y = elevator->y;
-    entity->elevation = 0;
+    entity->height = 0;
     entity->level = elevator->level;
-    entity->half_width = 40;
-    entity->height = 48;
+    entity->width = 40;
+    entity->height_pixels = 48;
     entity->sprite_count = 2;
     entity->tile_count = 28;
-    entity->tile_base = 0x8000;
-    entity->flags = 1;
-    entity->state_flags |= 1;
+    entity->tile = 0x8000;
+    entity->draw_flags = 1;
+    entity->flags_4d |= 1;
     func_012694(elevator, elevator->state);
 }
 
@@ -303,7 +226,7 @@ short player_number, x, y, elevation;
 {
     short elevator_type, pair, distance_x, distance_y;
     char elevator_number;
-    struct elevator_entity *player;
+    struct object_state *player;
     struct elevator_record *elevator;
 
     player = &gPlayerInfo[player_number];
@@ -327,7 +250,7 @@ short player_number, x, y, elevation;
                         return 1;
                     distance_y = abs(y - (elevator->y + 5));
                     if (distance_y < 7) {
-                        if (player->elevation > 0)
+                        if (player->height > 0)
                             return 1;
                         if (elevator->state == 3 && distance_x < 10 &&
                             player->y > elevator->y) {
@@ -344,12 +267,12 @@ short player_number, x, y, elevation;
 
 /* Test movement across an active same-level elevator threshold. */
 int func_012d0c(player, x, y)
-struct elevator_entity *player;
+struct object_state *player;
 short x, y;
 {
     /* The original reads this character byte, but its value does not
      * contribute to the threshold predicate below. */
-    char player_number = player->character;
+    char player_number = player->entity_number;
     struct elevator_record *elevator;
     short record_number, distance_y;
 
@@ -389,16 +312,16 @@ void LoadFinalLevelMap()
 {
     short scroll;
 
-    VDP_CONTROL = 0x40000000L;
+    VDP_COMMAND = 0x40000000L;
     MoveDataToVRAM(LevelTiles, LevelTilesSize << 4);
     func_008b98();
-    VDP_CONTROL = 0x42800000L;
+    VDP_COMMAND = 0x42800000L;
     MoveDataToVRAM(FunkatronExtraTiles, 80);
-    VDP_CONTROL = 0x48200000L;
+    VDP_COMMAND = 0x48200000L;
     MoveDataToVRAM(&FunkatronExtraTiles[160], 16);
-    VDP_CONTROL = 0x52400000L;
+    VDP_COMMAND = 0x52400000L;
     MoveDataToVRAM(&FunkatronExtraTiles[192], 48);
-    VDP_CONTROL = 0x6a800000L;
+    VDP_COMMAND = 0x6a800000L;
     MoveDataToVRAM(&FunkatronExtraTiles[288], 896);
     CopyPaletteToCRAMSlot(PaletteShipScreen_bank3, 0);
     CopyPaletteToCRAMSlot(FunkatronPaletteA, 1);
@@ -407,9 +330,9 @@ void LoadFinalLevelMap()
     VDP_CONTROL_WORD = 0x9200;
     func_01d8ac();
     scroll = 0;
-    VDP_CONTROL = 0x40020010L;
+    VDP_COMMAND = 0x40020010L;
     VDP_DATA = scroll;
-    VDP_CONTROL = 0x7c020003L;
+    VDP_COMMAND = 0x7c020003L;
     VDP_DATA = scroll;
     func_00b95c(2);
     ToggleLOC_00FF8196(0);
@@ -419,7 +342,7 @@ void LoadFinalLevelMap()
 void func_012f34()
 {
     short player_number, elevator_number;
-    struct elevator_entity *player;
+    struct object_state *player;
     struct elevator_record *elevator;
 
     if (gPlayerLives[0] >= 0) {
@@ -434,10 +357,10 @@ void func_012f34()
     }
     player = gPlayerInfo;
     for (player_number = 0; player_number <= 1; ++player_number, ++player) {
-        if (player->flags & 1) {
-            if (player->flags & 2)
+        if (player->draw_flags & 1) {
+            if (player->draw_flags & 2)
                 OpeningPresents7(player, 0);
-            if (player->flags & 4)
+            if (player->draw_flags & 4)
                 OpeningPresents7(player, 1);
         }
     }
@@ -456,29 +379,29 @@ void func_012f34()
 /* Move both active players to level 26, reset sprites, and load the final map. */
 void func_013036()
 {
-    struct elevator_entity *player;
+    struct object_state *player;
 
     if (gPlayerLives[0] >= 0) {
         gPlayerInfo[0].level = 26;
         func_004dfe(0, gPlayerInfo[0].level);
         player = &gPlayerInfo[0];
-        gPlayerInfo[0].elevation = 0;
+        gPlayerInfo[0].height = 0;
         StopPlayer(player);
         TOEJAM_FALL_STATE[0] = 0;
         SetSprite(player, 0);
-        player->state_flags &= 0xaf;
-        player->tile_base &= 0x7fff;
+        player->flags_4d &= 0xaf;
+        player->tile &= 0x7fff;
     }
     if (gPlayer2Lives >= 0) {
         gPlayerInfo[1].level = 26;
         func_004dfe(1, gPlayerInfo[1].level);
         player = &gPlayerInfo[1];
-        gPlayerInfo[1].elevation = 0;
+        gPlayerInfo[1].height = 0;
         StopPlayer(player);
         ram_ffda23 = 0;
         SetSprite(player, 0);
-        player->state_flags &= 0xaf;
-        player->tile_base &= 0x7fff;
+        player->flags_4d &= 0xaf;
+        player->tile &= 0x7fff;
     }
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
@@ -499,13 +422,16 @@ void func_013160()
 {
     short part_number;
     char packing;
-    struct transition_frame *frame;
-    struct transition_part *part;
+    /* The 4-piece payload view preserves MCC68K word indexing. Four
+     * pieces are observed in each transition frame; the common frame type remains
+     * only its four-byte prefix. */
+    struct render_frame *frame;
+    struct render_piece *part;
 
     frame = Spr_TransitionBackground[gLevel912C * 2];
     for (part_number = 0; part_number < 4; ++part_number) {
-        part = &frame->parts[part_number];
-        packing = part->packing;
+        part = &((struct render_piece (*)[4])(frame + 1))[0][part_number];
+        packing = part->format;
         if (packing < 0)
             SpriteUnpackInterleavedRLE(part, 16);
         else
@@ -520,17 +446,17 @@ void func_013160()
 /* Alternate the two ride sprites every sixteen ticks and transfer the table. */
 void func_01320e()
 {
-    struct elevator_entity *first, *second;
+    struct object_state *first, *second;
 
     first = ram_ffda6e;
     second = first + 2;
     if (!(TIME_COUNTER & 15)) {
-        if (first->sprite_reset) {
-            first->sprite_reset = 0;
-            second->sprite_reset = 1;
+        if (first->sprite_ready) {
+            first->sprite_ready = 0;
+            second->sprite_ready = 1;
         } else {
-            first->sprite_reset = 1;
-            second->sprite_reset = 0;
+            first->sprite_ready = 1;
+            second->sprite_ready = 0;
         }
         func_00c4fa();
         VDPWritesRoutine1(ram_ffb65a, 0xf800, 320);
@@ -540,7 +466,7 @@ void func_01320e()
 
 /* Choose an unused two-character exchange, create its lines, and hide them. */
 void func_01326e(entity)
-struct elevator_entity *entity;
+struct object_state *entity;
 {
     short speech_number, attempt, first_line, second_line = 0;
     short reply_first_line, reply_second_line = 0;
@@ -557,23 +483,23 @@ struct elevator_entity *entity;
         if (attempt != 14) {
             ram_ffda7e |= 1L << speech_number;
             entity->x -= 24;
-            first_line = GenerateSpeech(entity->character, SpeechStringPointers[speech_number].first_line, 0);
+            first_line = GenerateSpeech(entity->entity_number, SpeechStringPointers[speech_number].first_line, 0);
             if (SpeechStringPointers[speech_number].second_line)
-                second_line = GenerateSpeech(entity->character, SpeechStringPointers[speech_number].second_line, 0);
+                second_line = GenerateSpeech(entity->entity_number, SpeechStringPointers[speech_number].second_line, 0);
             entity->x += 40;
-            reply_first_line = GenerateSpeech(entity->character, SpeechStringPointers[speech_number].reply_first_line, 0);
+            reply_first_line = GenerateSpeech(entity->entity_number, SpeechStringPointers[speech_number].reply_first_line, 0);
             if (SpeechStringPointers[speech_number].reply_second_line)
-                reply_second_line = GenerateSpeech(entity->character, SpeechStringPointers[speech_number].reply_second_line, 0);
+                reply_second_line = GenerateSpeech(entity->entity_number, SpeechStringPointers[speech_number].reply_second_line, 0);
             entity->x -= 16;
             func_00cc82();
             if (ram_ffda7a[0] = first_line)
-                gPlayerInfo[first_line].sprite_reset = 0;
+                gPlayerInfo[first_line].sprite_ready = 0;
             if (ram_ffda7a[1] = second_line)
-                gPlayerInfo[second_line].sprite_reset = 0;
+                gPlayerInfo[second_line].sprite_ready = 0;
             if (ram_ffda7a[2] = reply_first_line)
-                gPlayerInfo[reply_first_line].sprite_reset = 0;
+                gPlayerInfo[reply_first_line].sprite_ready = 0;
             if (ram_ffda7a[3] = reply_second_line)
-                gPlayerInfo[reply_second_line].sprite_reset = 0;
+                gPlayerInfo[reply_second_line].sprite_ready = 0;
             func_00c4fa();
             return;
         }
@@ -591,25 +517,25 @@ void func_013450()
 
     if (TIME_COUNTER == 60) {
         if (line = ram_ffda7a[0])
-            gPlayerInfo[line].sprite_reset = 1;
+            gPlayerInfo[line].sprite_ready = 1;
     } else if (TIME_COUNTER == 120) {
         if (line = ram_ffda7a[0])
-            gPlayerInfo[line].sprite_reset = 0;
+            gPlayerInfo[line].sprite_ready = 0;
         if (line = ram_ffda7a[1])
-            gPlayerInfo[line].sprite_reset = 1;
+            gPlayerInfo[line].sprite_ready = 1;
         else
             TIME_COUNTER = 180;
     } else if (TIME_COUNTER == 180) {
         if (line = ram_ffda7a[1])
-            gPlayerInfo[line].sprite_reset = 0;
+            gPlayerInfo[line].sprite_ready = 0;
     } else if (TIME_COUNTER == 300) {
         if (line = ram_ffda7a[2])
-            gPlayerInfo[line].sprite_reset = 1;
+            gPlayerInfo[line].sprite_ready = 1;
     } else if (TIME_COUNTER == 360) {
         if (line = ram_ffda7a[2])
-            gPlayerInfo[line].sprite_reset = 0;
+            gPlayerInfo[line].sprite_ready = 0;
         if (line = ram_ffda7a[3])
-            gPlayerInfo[line].sprite_reset = 1;
+            gPlayerInfo[line].sprite_ready = 1;
         else
             TIME_COUNTER = 419;
     } else if (TIME_COUNTER == 420)
@@ -624,7 +550,7 @@ void ElevatorRideVBlank()
     if (ram_ffda78 < 0 || ram_ffda76 < 2048)
         ram_ffda76 += ram_ffda78 >> 8;
     ram_ffda72 -= ram_ffda76;
-    VDP_CONTROL = 0x40000010L;
+    VDP_COMMAND = 0x40000010L;
     VDP_DATA = ram_ffda72 >> 8;
     func_013450();
     func_01320e();
@@ -639,7 +565,7 @@ struct elevator_record *elevator;
 {
     short band, row, repeat, column;
     unsigned short tile;
-    struct elevator_entity *first, *second;
+    struct object_state *first, *second;
 
     ram_ffda6e = &gPlayerInfo[elevator->entity];
     first = ram_ffda6e;
@@ -647,22 +573,22 @@ struct elevator_record *elevator;
     first->x = TOEJAM_CAMERA_NEWX + 160;
     first->y = TOEJAM_CAMERA_NEWY + 144;
     first->level = gLevel912C;
-    first->sprite_reset = 0;
+    first->sprite_ready = 0;
     second->level = gLevel912C;
-    second->sprite_reset = 0;
+    second->sprite_ready = 0;
     func_012694(elevator, 12);
     func_01d436();
     do {
         func_00cc82();
         while (VBLANK_FLAG_2)
             ;
-    } while (!first->sprite_reset || !second->sprite_reset);
+    } while (!first->sprite_ready || !second->sprite_ready);
     ClearSkipVHBlankFlags();
     func_01326e(first);
     func_008c5c();
     for (band = 0; band < 4; ++band)
         for (row = 0; row < 8; ++row) {
-            VDP_CONTROL = (((band << 3) + row) << 23) + 0x60000002L;
+            VDP_COMMAND = (((band << 3) + row) << 23) + 0x60000002L;
             for (repeat = 0; repeat < 6; ++repeat)
                 for (column = 0; column < 8; ++column) {
                     tile = ShipRelatedData[row][column] + 0x2001;
@@ -677,11 +603,11 @@ struct elevator_record *elevator;
     func_013160();
     func_00b95c(2);
     ram_ffda72 = 0;
-    VDP_CONTROL = 0x40000010L;
+    VDP_COMMAND = 0x40000010L;
     VDP_DATA = ram_ffda74;
     ram_ffda76 = 128;
     ram_ffda78 = 1024;
-    VDP_CONTROL = 0x7c000003L;
+    VDP_COMMAND = 0x7c000003L;
     VDP_DATA = 0xffff;
     TIME_COUNTER = 0;
     gVBlankFunc = ElevatorRideVBlank;
@@ -701,7 +627,7 @@ void func_01370e()
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     CopyPaletteToCRAMSlot(PaletteGameLine2, 1);
-    VDP_CONTROL = 0x40000000L;
+    VDP_COMMAND = 0x40000000L;
     MoveDataToVRAM(LevelTiles, 1040);
 }
 

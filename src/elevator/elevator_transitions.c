@@ -1,45 +1,16 @@
-struct elevator_entity {
-    short x, y, elevation;
-    short velocity_x, velocity_y, velocity_z;
-    short acceleration_x, acceleration_y, acceleration_z;
-    unsigned char fraction_x, fraction_y, fraction_z, movement_lock;
-    void (*process)();
-    char *sequence, *frames;
-    char reserved22[4];
-    char frame, frame_period, frame_ticks;
-    unsigned char half_width, height;
-    char tile_count;
-    unsigned short tile_base;
-    char sprite_count;
-    unsigned char flags;
-    char reserved30[24];
-    char primary_sprite, secondary_sprite, sprite_reset, sprite_state, level;
-    char state_flags;
-    long identity;
-    unsigned long sprite_mask;
-    char reserved56[4];
-    struct elevator_entity *next;
-    char character;
-    char reserved5f[33];
-};
-struct elevator_record {
-    short x, y;
-    char level, state, entity, timer;
-};
-extern struct elevator_entity gPlayerInfo[40];
-extern struct elevator_record ELEVATOR_LOCATION[][2];
-extern char ELEVATOR_FLAG[], ram_ffda82[];
-extern unsigned char P1_PROCESSED_INPUT[];
-extern char DEPARTING_ELEV_CYCLES, DEPARTING_ELEV_TIME;
-extern char ARRIVING_ELEV_LEVEL, ram_ffda66, ARRIVING_ELEV_TIME;
-extern char gPlayerLives[], gPlayer2Lives, P1_MENU_OPEN[], HBLANK_FLAG_1;
-extern char ram_ffda6c, VBLANK_FLAG_8, VBLANK_FLAG_7, gHighestLevel;
-/* ORIGINAL BUG: this file calls func_001262 as int (implicit declaration in the original [INFERENCE]); its definition in core/main_loop.c returns short. Only the low byte is used. */
-extern int func_001262();
-extern long abs();
-extern void PlaySound(), func_03e43c(), func_03e40e();
-extern void func_012694(), func_013786();
+#define TJE_LOCAL_FUNC_001262
 
+#include "entities.h"
+#include "elevator.h"
+#include "ram.h"
+#include "core_calls.h"
+#include "elevator_calls.h"
+#include "romcalls.h"
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_001262,
+ * whose canonical return is short. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_001262();
 /* Report input or nearby players on this elevator's level, marking nearby
  * players in ram_ffda82 before the elevator changes state. */
 int func_013a3e(elevator, flag)
@@ -48,7 +19,7 @@ char flag;
 {
     short player, distance_y;
     int occupied = 0;
-    struct elevator_entity *entity;
+    struct object_state *entity;
 
     for (player = 0; player <= 1; ++player) {
         entity = &gPlayerInfo[player];
@@ -75,12 +46,12 @@ char flag;
 int func_013af8(elevator)
 struct elevator_record *elevator;
 {
-    struct elevator_entity *entity;
+    struct object_state *entity;
 
     if (--DEPARTING_ELEV_TIME <= 0) {
         entity = &gPlayerInfo[elevator->entity + 2];
-        if ((entity->elevation += 4) > 28) {
-            entity->elevation = 0;
+        if ((entity->height += 4) > 28) {
+            entity->height = 0;
             --DEPARTING_ELEV_CYCLES;
             PlaySound(17, 50);
         }
@@ -98,7 +69,7 @@ void ProcessElevatorStep1()
     short elevator_number, player, distance_or_frame, distance_y;
     char flag, state, next_state;
     struct elevator_record *elevator;
-    struct elevator_entity *entity;
+    struct object_state *entity;
 
     for (elevator_number = 0; elevator_number <= 1; ++elevator_number) {
         flag = elevator_number * 2 + 1;
@@ -119,21 +90,21 @@ void ProcessElevatorStep1()
                     entity->y = elevator->y + 12;
             }
         } else if (state == 10) {
-            if (elevator->entity && !gPlayerInfo[elevator->entity].frame_ticks) {
+            if (elevator->entity && !gPlayerInfo[elevator->entity].frame_duration) {
                 if (flag == ELEVATOR_FLAG[0]) {
                     next_state = 1;
-                    gPlayerInfo[0].state_flags &= ~64;
+                    gPlayerInfo[0].flags_4d &= ~64;
                 } else if (flag == ELEVATOR_FLAG[1]) {
-                    gPlayerInfo[1].state_flags &= ~64;
+                    gPlayerInfo[1].flags_4d &= ~64;
                     next_state = 1;
                 } else
                     next_state = 0;
             }
         } else if (state == 2) {
-            if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_ticks)
+            if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration)
                 next_state = 3;
         } else if (state == 4) {
-            if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_ticks) {
+            if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration) {
                 if (flag == ELEVATOR_FLAG[0] || flag == ELEVATOR_FLAG[1])
                     next_state = 1;
                 else
@@ -143,7 +114,7 @@ void ProcessElevatorStep1()
             if (!elevator->entity)
                 continue;
             distance_or_frame = gPlayerInfo[elevator->entity + 2].frame;
-            if (!gPlayerInfo[elevator->entity + 2].frame_ticks) {
+            if (!gPlayerInfo[elevator->entity + 2].frame_duration) {
                 next_state = 5;
                 DEPARTING_ELEV_CYCLES = 5;
                 DEPARTING_ELEV_TIME = 2;
@@ -161,7 +132,7 @@ void ProcessElevatorStep1()
                 PlaySound(3, 65);
             }
         } else if (state == 7) {
-            if (elevator->entity && !gPlayerInfo[elevator->entity].frame_ticks) {
+            if (elevator->entity && !gPlayerInfo[elevator->entity].frame_duration) {
                 if (gPlayerInfo[0].level == gPlayerInfo[1].level &&
                     ELEVATOR_FLAG[0] != ELEVATOR_FLAG[1])
                     next_state = 10;
@@ -182,9 +153,9 @@ void ProcessElevatorStep1()
                 ram_ffda6c = 1;
                 next_state = 6;
                 if (flag == ELEVATOR_FLAG[0])
-                    gPlayerInfo[0].state_flags |= 64;
+                    gPlayerInfo[0].flags_4d |= 64;
                 if (flag == ELEVATOR_FLAG[1])
-                    gPlayerInfo[1].state_flags |= 64;
+                    gPlayerInfo[1].flags_4d |= 64;
             }
         } else if (func_013a3e(elevator, flag)) {
             if (state != 3 && state != 2) {
@@ -199,7 +170,7 @@ void ProcessElevatorStep1()
             if (flag == ELEVATOR_FLAG[player]) {
                 entity = &gPlayerInfo[player];
                 if (!entity->sprite_state && entity->frame == 1)
-                    entity->frame_ticks = 0;
+                    entity->frame_duration = 0;
                 entity->x = elevator->x;
             }
         }
@@ -217,7 +188,7 @@ void ProcessElevatorStep2()
     short elevator_number, player, distance_x, distance_y;
     char flag, state, next_state;
     struct elevator_record *elevator;
-    struct elevator_entity *entity;
+    struct object_state *entity;
 
     for (elevator_number = 0; elevator_number <= 1; ++elevator_number) {
         flag = elevator_number * 2 + 2;
@@ -227,15 +198,15 @@ void ProcessElevatorStep2()
             continue;
         next_state = -1;
         if (state == 8) {
-            if (elevator->entity && !gPlayerInfo[elevator->entity].frame_ticks) {
+            if (elevator->entity && !gPlayerInfo[elevator->entity].frame_duration) {
                 next_state = 1;
                 entity = 0;
                 if (flag == ELEVATOR_FLAG[0])
-                    gPlayerInfo[0].state_flags &= ~64;
+                    gPlayerInfo[0].flags_4d &= ~64;
                 else if (gPlayerInfo[0].level == elevator->level)
                     entity = &gPlayerInfo[0];
                 if (flag == ELEVATOR_FLAG[1])
-                    gPlayerInfo[1].state_flags &= ~64;
+                    gPlayerInfo[1].flags_4d &= ~64;
                 else if (gPlayerInfo[1].level == elevator->level)
                     entity = &gPlayerInfo[1];
                 if (entity) {
@@ -249,10 +220,10 @@ void ProcessElevatorStep2()
                     VBLANK_FLAG_7 = func_001262(gHighestLevel);
             }
         } else if (state == 2) {
-            if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_ticks)
+            if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration)
                 next_state = 3;
         } else if (state == 4) {
-            if (!elevator->entity || !gPlayerInfo[elevator->entity + 2].frame_ticks) {
+            if (!elevator->entity || !gPlayerInfo[elevator->entity + 2].frame_duration) {
                 if (flag == ELEVATOR_FLAG[0] || flag == ELEVATOR_FLAG[1])
                     next_state = 1;
                 else if (!elevator->entity)
@@ -265,7 +236,7 @@ void ProcessElevatorStep2()
         } else if (state == 0 && --ARRIVING_ELEV_TIME <= 0)
             next_state = 9;
         else if (state == 9) {
-            if (!elevator->entity || !gPlayerInfo[elevator->entity].frame_ticks)
+            if (!elevator->entity || !gPlayerInfo[elevator->entity].frame_duration)
                 next_state = 11;
         } else if (func_013a3e(elevator, flag)) {
             if (state != 3 && state != 2) {
@@ -280,7 +251,7 @@ void ProcessElevatorStep2()
             if (flag == ELEVATOR_FLAG[player]) {
                 entity = &gPlayerInfo[player];
                 if (!entity->sprite_state && entity->frame == 1)
-                    entity->frame_ticks = 0;
+                    entity->frame_duration = 0;
                 entity->x = elevator->x;
             }
         }

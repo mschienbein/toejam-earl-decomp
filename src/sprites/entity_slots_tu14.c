@@ -1,23 +1,6 @@
-/* The offsets below are accessed by the slot allocation and release routines.
- * The entity stride is 128 bytes; the two viewport lists hold 12 bytes each. */
-struct slot_entity {
-    short x, y, elevation;
-    char reserved06[35];
-    unsigned char half_width, height, tile_count;
-    unsigned short tile;
-    unsigned char sprite_count, flags;
-    char primary_slots[12], secondary_slots[12];
-    char primary_sprite, secondary_sprite, sprite_reset, sprite_state, level;
-    unsigned char allocation_flags;
-    char reserved4e[50];
-};
-extern struct slot_entity gPlayerInfo[40];
-extern char gLevel912C;
-extern char ram_ffd940[54];
-extern char ram_ffd976[80];
-extern char ram_ffd9c6[34];
-extern int func_00d406();
-
+#include "entities.h"
+#include "ram.h"
+#include "sprite_calls.h"
 /* Select unused slots first, then reusable slots when requested. The returned
  * identifiers are the flag-array indices plus 25. */
 int func_00d406(count, selection_mode, include_secondary, output)
@@ -159,21 +142,21 @@ short tile, count;
 
 /* Drop cached sprite identifiers whose slot is no longer marked secondary. */
 void Process2FEntityBit6(entity)
-struct slot_entity *entity;
+struct object_state *entity;
 {
-    if (entity->primary_sprite && !func_00d612(entity->primary_sprite)) {
-        func_00d5fa(entity->primary_sprite);
-        entity->primary_sprite = 0;
+    if (entity->primary_shadow && !func_00d612(entity->primary_shadow)) {
+        func_00d5fa(entity->primary_shadow);
+        entity->primary_shadow = 0;
     }
-    if (entity->secondary_sprite && !func_00d612(entity->secondary_sprite)) {
-        func_00d5fa(entity->secondary_sprite);
-        entity->secondary_sprite = 0;
+    if (entity->secondary_shadow && !func_00d612(entity->secondary_shadow)) {
+        func_00d5fa(entity->secondary_shadow);
+        entity->secondary_shadow = 0;
     }
 }
 
 /* Allocate the tile range when necessary, then a viewport's sprite slots. */
 void func_00d776(entity, viewport)
-struct slot_entity *entity;
+struct object_state *entity;
 short viewport;
 {
     char viewport_bit;
@@ -181,7 +164,7 @@ short viewport;
     char *slots;
 
     tile_count = entity->tile_count;
-    if (!(entity->flags & 6) && !(entity->allocation_flags & 4)) {
+    if (!(entity->draw_flags & 6) && !(entity->flags_4d & 4)) {
         tile = func_00d630(tile_count);
         if (!tile)
             return;
@@ -190,14 +173,14 @@ short viewport;
     }
     if (!viewport) {
         viewport_bit = 2;
-        slots = entity->primary_slots;
+        slots = entity->primary_sprites;
     } else {
         viewport_bit = 4;
-        slots = entity->secondary_slots;
+        slots = entity->secondary_sprites;
     }
     if (!func_00d406(entity->sprite_count, viewport, 1, slots))
-        entity->flags |= viewport_bit;
-    else if (!(entity->flags & 6))
+        entity->draw_flags |= viewport_bit;
+    else if (!(entity->draw_flags & 6))
         /* ORIGINAL BUG: With allocation_flags bit 2 set and no viewport
          * active, a selector failure reads tile without assigning it. */
         func_00d6b2(tile, tile_count);
@@ -205,30 +188,30 @@ short viewport;
 
 /* Release one viewport's slots and, after the last viewport, its tile range. */
 void OpeningPresents7(entity, viewport)
-struct slot_entity *entity;
+struct object_state *entity;
 short viewport;
 {
     char *slots;
 
-    if (!(entity->flags & 1))
+    if (!(entity->draw_flags & 1))
         return;
     if (!viewport) {
-        entity->flags &= 0xfd;
-        slots = entity->primary_slots;
-        if (entity->primary_sprite && !func_00d612(entity->primary_sprite)) {
-            func_00d5fa(entity->primary_sprite);
-            entity->primary_sprite = 0;
+        entity->draw_flags &= 0xfd;
+        slots = entity->primary_sprites;
+        if (entity->primary_shadow && !func_00d612(entity->primary_shadow)) {
+            func_00d5fa(entity->primary_shadow);
+            entity->primary_shadow = 0;
         }
     } else {
-        entity->flags &= 0xfb;
-        slots = entity->secondary_slots;
-        if (entity->secondary_sprite && !func_00d612(entity->secondary_sprite)) {
-            func_00d5fa(entity->secondary_sprite);
-            entity->secondary_sprite = 0;
+        entity->draw_flags &= 0xfb;
+        slots = entity->secondary_sprites;
+        if (entity->secondary_shadow && !func_00d612(entity->secondary_shadow)) {
+            func_00d5fa(entity->secondary_shadow);
+            entity->secondary_shadow = 0;
         }
     }
     func_00d5c0(entity->sprite_count, slots);
-    if (!(entity->flags & 6) && !(entity->allocation_flags & 4)) {
+    if (!(entity->draw_flags & 6) && !(entity->flags_4d & 4)) {
         short tile_count, tile;
 
         tile_count = entity->tile_count;
@@ -261,7 +244,7 @@ short func_00d904()
             ram_ffd9c6[index] = 1;
             count = index + 6;
             func_00d8f2(&gPlayerInfo[count]);
-            gPlayerInfo[count].flags = 1;
+            gPlayerInfo[count].draw_flags = 1;
             return count;
         }
     }
@@ -272,17 +255,17 @@ short func_00d904()
 void func_00d970(entity_number)
 short entity_number;
 {
-    struct slot_entity *entity;
+    struct object_state *entity;
 
     if (entity_number <= 1)
         return;
     entity = &gPlayerInfo[entity_number];
-    if (entity->flags & 1) {
-        if (entity->flags & 2)
+    if (entity->draw_flags & 1) {
+        if (entity->draw_flags & 2)
             OpeningPresents7(entity, 0);
-        if (entity->flags & 4)
+        if (entity->draw_flags & 4)
             OpeningPresents7(entity, 1);
-        entity->flags = 0;
+        entity->draw_flags = 0;
         if (entity_number >= 6)
             ram_ffd9c6[entity_number - 6] = 0;
     }

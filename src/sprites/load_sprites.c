@@ -1,9 +1,7 @@
-extern unsigned char ram_ffb65a[640];
-extern char ram_ffb8da[8192];
-extern unsigned short ram_ffd8dc[40];   /* word queue; [INFERENCE] capacity: 40 suffices to match, not proved */
-extern unsigned short SPRITE_STATE_TABLE;
-extern unsigned char ram_ffd92e, VBLANK_FLAG_2, ram_ffd932, ram_ffd934;
-extern void VDPWritesRoutine1();
+#include "sprites.h"
+#include "ram.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
 
 /* Transfer the sprite table unless suppressed, then the queued tile runs. */
 void SpriteLoadingStuff(force, tiles_only)
@@ -17,8 +15,8 @@ short force, tiles_only;
         return;
     if (!tiles_only) {
         VDPWritesRoutine1(ram_ffb65a, 0xf800, 320);
-        ram_ffd932 = ram_ffb65a[0xbb];
-        ram_ffd934 = ram_ffb65a[0xc3];
+        ram_ffd932 = ram_ffb65a[23].link;
+        ram_ffd934 = ram_ffb65a[24].link;
     }
     tile_source = (unsigned short *)ram_ffb8da;
     for (queue_index = 0; queue_index < ram_ffd92e; queue_index += 2) {

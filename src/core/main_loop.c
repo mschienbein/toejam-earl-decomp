@@ -1,53 +1,22 @@
-#define VDP_CONTROL (*(unsigned short *)0xc00004)
-#define VDP_COMMAND (*(unsigned long *)0xc00004)
-#define VDP_DATA (*(unsigned short *)0xc00000)
+#include "entities.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "core_calls.h"
+#include "earthling_calls.h"
+#include "elevator_calls.h"
+#include "graphics_calls.h"
+#include "map_calls.h"
+#include "random.h"
+#include "player.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 
-struct input_entity {
-    short x, y, elevation;
-    char reserved06[36];
-    unsigned char height;
-    char reserved2b[32];
-    char state, map_index;
-    char reserved4d[5];
-    long flags;
-    char reserved56[42];
-};
-extern struct input_entity gPlayerInfo[40];
-extern unsigned char P1_PROCESSED_INPUT[], P1_PREV_PROCESSED_INPUT[], ram_ff8021;
-extern char gPlayerLives[], gPlayer2Lives;
-extern unsigned short gPlayerPoints[];
-/* [INFERENCE] 26 seven-byte rows precede the same-format table at 0xff92a2;
- * DisplayMap accesses both tables with an identical row-times-seven stride. */
-extern unsigned char ram_ff91ec[26][7];
-extern char P1_MENU_OPEN[], HBLANK_FLAG_1;
-extern unsigned char gMode2RegSoftcopy;
-extern char SKIP_VBLANK_FLAG, SKIP_HBLANK_FLAG, SPLIT_SCREEN, gLevel912C;
-extern char VBLANK_FLAG_2, VBLANK_FLAG_3, VBLANK_FLAG_4, VBLANK_FLAG_5;
-extern char VBLANK_FLAG_6, VBLANK_FLAG_7, VBLANK_FLAG_8, ram_ff8024;
-extern char INPUT_READING_FLAG_LO;
-extern short P1_CAMERA_X, P1_CAMERA_Y, P2_CAMERA_X, P2_CAMERA_Y;
-extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY, EARL_CAMERA_NEWX, EARL_CAMERA_NEWY;
-extern unsigned short P1_PAD_INPUT, P2_PAD_INPUT, TIME_COUNTER;
-extern short WAIT_FOR_VBLANK_FLAG;
-extern void (*gVBlankFunc)();
-extern void func_00cfba(), func_00059e(), func_00f69e(), func_008cf8();
-extern void func_00d022(), func_00d04e(), func_00d00e();
-extern void SpriteLoadingStuff(), func_00b3e4(), DrawHUD(), DrawLevelGraphics();
-extern int func_008be4();
-extern void UpdateCameraY(), UpdateCameraX(), func_00b18c(), func_00d152();
-extern void func_03e46a(), MassiveRoutine();
-extern int GetCtrl1Input(), GetCtrl2Input();
-extern long MovePadInputIntoD0();
-extern void GamePaused(), GetPlayerInput(), CheckAButton(), CheckBButton(), DrawGameMap();
-extern int CheckStartButton();
-extern void SpriteChecks(), func_002608(), ClearSkipVHBlankFlags(), SetSkipVHBlankFlags();
-extern void func_00b95c(), func_002e6a(), func_00300a(), ForceTextBackgroundColorToBlack();
-extern void func_008c5c(), CopyPaletteToCRAMSlot();
-extern unsigned short PaletteGameLine1[], PaletteShipScreen_bank3[];
-extern void func_000ee6(), func_000c2e(), func_000d7e(), DelayRoutine1();
-extern char ram_ff8026, ram_ff8028;
-extern short PaletteAnimationFramesA[4][4], PaletteAnimationFramesB[4][4];
-
+/* Preserve the observed signed/unsigned value views of shared storage.
+ * These casts do not imply a different record layout; historical spelling
+ * is unknown [INFERENCE]. */
 /* Cycle four CRAM colours once every four calls. */
 void DrawLevelGraphics()
 {
@@ -126,16 +95,16 @@ void HandleVBlank()
             }
             if (SPLIT_SCREEN || P1_MENU_OPEN[0] || P1_MENU_OPEN[1]) {
                 func_00cfba(1);
-                VDP_CONTROL = 0x8a70;
+                VDP_CONTROL_WORD = 0x8a70;
             } else {
                 func_00cfba(0);
-                VDP_CONTROL = 0x8ab6;
+                VDP_CONTROL_WORD = 0x8ab6;
             }
-            VDP_CONTROL = 0x8014;
+            VDP_CONTROL_WORD = 0x8014;
             if (P1_MENU_OPEN[0])
-                VDP_CONTROL = 0x920e;
+                VDP_CONTROL_WORD = 0x920e;
             else {
-                VDP_CONTROL = 0x8228;
+                VDP_CONTROL_WORD = 0x8228;
                 VDP_COMMAND = 0x40000010;
                 VDP_DATA = P1_CAMERA_Y;
                 VDP_COMMAND = 0x7c000003;
@@ -200,9 +169,9 @@ void HandleHBlank()
         func_00059e(1);
         if (SPLIT_SCREEN || HBLANK_FLAG_1) {
             if (HBLANK_FLAG_1)
-                VDP_CONTROL = 0x928e;
+                VDP_CONTROL_WORD = 0x928e;
             else {
-                VDP_CONTROL = 0x8230;
+                VDP_CONTROL_WORD = 0x8230;
                 VDP_COMMAND = 0x40000010;
                 VDP_DATA = P2_CAMERA_Y - 112;
                 VDP_COMMAND = 0x7c000003;
@@ -213,29 +182,29 @@ void HandleHBlank()
                 VDP_DATA = -P2_CAMERA_X / 2;
             }
         }
-        VDP_CONTROL = 0x8aff;
+        VDP_CONTROL_WORD = 0x8aff;
     }
 }
 
 void GetPlayerInput()
 {
     short player;
-    struct input_entity *entity;
+    struct object_state *entity;
     entity = gPlayerInfo;
     for (player = 0; player <= 1; ++player) {
         P1_PREV_PROCESSED_INPUT[player] = P1_PROCESSED_INPUT[player];
         if (gPlayerLives[player] >= 0) {
             P1_PROCESSED_INPUT[player] = MovePadInputIntoD0(player);
-            if ((entity->flags & 0x20000) || entity->state == 79 ||
-                entity->state == 78 || entity->state == 5 || entity->state == 6)
+            if (((long)entity->flags_52 & 0x20000) || entity->sprite_state == 79 ||
+                entity->sprite_state == 78 || entity->sprite_state == 5 || entity->sprite_state == 6)
                 P1_PROCESSED_INPUT[player] &= 0x80;
         } else
             P1_PROCESSED_INPUT[player] = 0;
-        if (entity->flags & 0x20000000)
+        if ((long)entity->flags_52 & 0x20000000)
             P1_PROCESSED_INPUT[player] &= 0x8f;
-        else if (entity->flags & 0x60)
+        else if ((long)entity->flags_52 & 0x60)
             P1_PROCESSED_INPUT[player] &= 0xcf;
-        else if ((entity->flags & 0x7800000) || entity->state == 2)
+        else if (((long)entity->flags_52 & 0x7800000) || entity->sprite_state == 2)
             P1_PROCESSED_INPUT[player] &= 0xef;
         entity = &gPlayerInfo[1];
     }
@@ -258,7 +227,7 @@ void ProcessInput()
 {
     unsigned char input1, input2, mask;
     short player, x, y;
-    struct input_entity *entity;
+    struct object_state *entity;
     unsigned char *map_cell;
     GetPlayerInput();
     CheckAButton();
@@ -287,7 +256,7 @@ void ProcessInput()
             x = entity->x - 72;
             y = entity->y - 8;
             if (x >= 0 && y >= 0 && x < 2560 && y < 1792) {
-                map_cell = &ram_ff91ec[entity->map_index][y >> 8];
+                map_cell = &ram_ff91ec[entity->level][y >> 8];
                 mask = 0x80 >> (x / 320);
                 if (!(*map_cell & mask)) {
                     *map_cell |= mask;
@@ -314,7 +283,7 @@ char animate;
         while (VBLANK_FLAG_2)
             ;
         ClearSkipVHBlankFlags();
-        VDP_CONTROL = 0x9200;
+        VDP_CONTROL_WORD = 0x9200;
         func_00b95c(2);
         if (animate) {
             func_002e6a();
@@ -323,15 +292,15 @@ char animate;
     }
     SPLIT_SCREEN = 1;
     if (!P1_MENU_OPEN[0]) {
-        y = gPlayerInfo[0].y - gPlayerInfo[0].height / 2 - 56;
-        if (gPlayerInfo[0].elevation > 0 && (gPlayerInfo[0].flags & 0x4008000))
-            y -= gPlayerInfo[0].elevation / 2;
+        y = gPlayerInfo[0].y - gPlayerInfo[0].height_pixels / 2 - 56;
+        if (gPlayerInfo[0].height > 0 && ((long)gPlayerInfo[0].flags_52 & 0x4008000))
+            y -= gPlayerInfo[0].height / 2;
         func_002608(0, gPlayerInfo[0].x - 160, y);
     }
     if (!HBLANK_FLAG_1) {
-        y = gPlayerInfo[1].y - gPlayerInfo[1].height / 2 - 56;
-        if (gPlayerInfo[1].elevation > 0 && (gPlayerInfo[1].flags & 0x4008000))
-            y -= gPlayerInfo[1].elevation / 2;
+        y = gPlayerInfo[1].y - gPlayerInfo[1].height_pixels / 2 - 56;
+        if (gPlayerInfo[1].height > 0 && ((long)gPlayerInfo[1].flags_52 & 0x4008000))
+            y -= gPlayerInfo[1].height / 2;
         func_002608(1, gPlayerInfo[1].x - 160, y);
         P2_CAMERA_X = EARL_CAMERA_NEWX;
         P2_CAMERA_Y = EARL_CAMERA_NEWY;
@@ -355,13 +324,13 @@ short distance_y, distance_x;
         x = gPlayerInfo[0].x;
     x += distance_x / 2 - 160;
     if (gPlayerInfo[0].y > gPlayerInfo[1].y) {
-        y = gPlayerInfo[1].y - gPlayerInfo[1].height / 2;
-        if (gPlayerInfo[1].elevation > 0 && (gPlayerInfo[1].flags & 0x4008000))
-            y -= gPlayerInfo[1].elevation;
+        y = gPlayerInfo[1].y - gPlayerInfo[1].height_pixels / 2;
+        if (gPlayerInfo[1].height > 0 && ((long)gPlayerInfo[1].flags_52 & 0x4008000))
+            y -= gPlayerInfo[1].height;
     } else {
-        y = gPlayerInfo[0].y - gPlayerInfo[0].height / 2;
-        if (gPlayerInfo[0].elevation > 0 && (gPlayerInfo[0].flags & 0x4008000))
-            y -= gPlayerInfo[0].elevation;
+        y = gPlayerInfo[0].y - gPlayerInfo[0].height_pixels / 2;
+        if (gPlayerInfo[0].height > 0 && ((long)gPlayerInfo[0].flags_52 & 0x4008000))
+            y -= gPlayerInfo[0].height;
     }
     y += distance_y / 2 - 96;
     display_enabled = gMode2RegSoftcopy & 0x40;
@@ -369,7 +338,7 @@ short distance_y, distance_x;
         func_008c5c();
         ClearSkipVHBlankFlags();
         gMode2RegSoftcopy &= 0x3c;
-        VDP_CONTROL = 0x8104 | gMode2RegSoftcopy;
+        VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     }
     SPLIT_SCREEN = 0;
     func_002608(0, x, y);
@@ -383,7 +352,7 @@ short distance_y, distance_x;
     if (display_enabled) {
         ForceTextBackgroundColorToBlack(0);
         gMode2RegSoftcopy |= 0x40;
-        VDP_CONTROL = 0x8104 | gMode2RegSoftcopy;
+        VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
         SetSkipVHBlankFlags();
     }
 }
@@ -391,26 +360,26 @@ short distance_y, distance_x;
 void func_000ee6(player)
 short player;
 {
-    struct input_entity *entity;
+    struct object_state *entity;
     short y;
     char display_enabled;
     entity = &gPlayerInfo[player];
-    y = entity->y - entity->height / 2 - 112;
-    if (entity->elevation > 0 && (entity->flags & 0x4008000))
-        y -= entity->elevation / 2;
+    y = entity->y - entity->height_pixels / 2 - 112;
+    if (entity->height > 0 && ((long)entity->flags_52 & 0x4008000))
+        y -= entity->height / 2;
     display_enabled = gMode2RegSoftcopy & 0x40;
     if (display_enabled) {
         func_008c5c();
         ClearSkipVHBlankFlags();
         gMode2RegSoftcopy &= 0x3c;
-        VDP_CONTROL = 0x8104 | gMode2RegSoftcopy;
+        VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     }
     func_002608(0, entity->x - 160, y);
     if (display_enabled) {
         ForceTextBackgroundColorToBlack(0);
         VBLANK_FLAG_5 = 1;
         gMode2RegSoftcopy |= 0x40;
-        VDP_CONTROL = 0x8104 | gMode2RegSoftcopy;
+        VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
         SetSkipVHBlankFlags();
     } else
         DrawHUD();
@@ -421,7 +390,7 @@ int func_000fb6()
     short distance_y, distance_x;
     if (gPlayerLives[0] < 0 || gPlayer2Lives < 0)
         return 0;
-    if (gPlayerInfo[0].map_index != gPlayerInfo[1].map_index)
+    if (gPlayerInfo[0].level != gPlayerInfo[1].level)
         return 1;
     distance_y = gPlayerInfo[0].y - gPlayerInfo[1].y;
     if (distance_y < 0)
@@ -429,12 +398,12 @@ int func_000fb6()
     distance_x = gPlayerInfo[0].x - gPlayerInfo[1].x;
     if (distance_x < 0)
         distance_x = -distance_x;
-    if (gPlayerInfo[0].elevation > 0 && (gPlayerInfo[0].flags & 0x4008000) &&
+    if (gPlayerInfo[0].height > 0 && ((long)gPlayerInfo[0].flags_52 & 0x4008000) &&
         gPlayerInfo[0].y < gPlayerInfo[1].y)
-        distance_y += gPlayerInfo[0].elevation;
-    else if (gPlayerInfo[1].elevation > 0 && (gPlayerInfo[1].flags & 0x4008000) &&
+        distance_y += gPlayerInfo[0].height;
+    else if (gPlayerInfo[1].height > 0 && ((long)gPlayerInfo[1].flags_52 & 0x4008000) &&
              gPlayerInfo[1].y < gPlayerInfo[0].y)
-        distance_y += gPlayerInfo[1].elevation;
+        distance_y += gPlayerInfo[1].height;
     if (distance_y > 124 || distance_x > 220)
         return 1;
     return 0;
@@ -450,14 +419,14 @@ char force;
             func_000ee6(1);
         else if (gPlayer2Lives < 0)
             func_000ee6(0);
-        else if (gPlayerInfo[0].map_index != gPlayerInfo[1].map_index)
+        else if (gPlayerInfo[0].level != gPlayerInfo[1].level)
             func_000c2e(0);
         else
             handled = 0;
         if (handled)
             return;
     } else if (gPlayerLives[0] < 0 || gPlayer2Lives < 0 ||
-               gPlayerInfo[0].map_index != gPlayerInfo[1].map_index)
+               gPlayerInfo[0].level != gPlayerInfo[1].level)
         return;
     distance_y = gPlayerInfo[0].y - gPlayerInfo[1].y;
     if (distance_y < 0)
@@ -465,12 +434,12 @@ char force;
     distance_x = gPlayerInfo[0].x - gPlayerInfo[1].x;
     if (distance_x < 0)
         distance_x = -distance_x;
-    if (gPlayerInfo[0].elevation > 0 && (gPlayerInfo[0].flags & 0x4008000) &&
+    if (gPlayerInfo[0].height > 0 && ((long)gPlayerInfo[0].flags_52 & 0x4008000) &&
         gPlayerInfo[0].y < gPlayerInfo[1].y)
-        distance_y += gPlayerInfo[0].elevation;
-    else if (gPlayerInfo[1].elevation > 0 && (gPlayerInfo[1].flags & 0x4008000) &&
+        distance_y += gPlayerInfo[0].height;
+    else if (gPlayerInfo[1].height > 0 && ((long)gPlayerInfo[1].flags_52 & 0x4008000) &&
              gPlayerInfo[1].y < gPlayerInfo[0].y)
-        distance_y += gPlayerInfo[1].elevation;
+        distance_y += gPlayerInfo[1].height;
     if (force) {
         if (distance_y > 124 || distance_x > 220 || P1_MENU_OPEN[0] || HBLANK_FLAG_1)
             func_000c2e(0);
@@ -499,14 +468,14 @@ short iterations;
 
 void InitialiseTheZ80()
 {
-    char *destination = (char *)0xa00000;
+    char *destination = Z80_RAM;
     /* The zero reset value is kept across all six delay calls in D2. */
     short reset = 0;
-    *(short *)0xa11200 = reset;
+    Z80_RESET = reset;
     DelayRoutine1(10);
-    *(short *)0xa11100 = 0x100;
+    Z80_BUS_REQUEST = 0x100;
     DelayRoutine1(10);
-    *(short *)0xa11200 = 0x100;
+    Z80_RESET = 0x100;
     DelayRoutine1(10);
     /* Install the six-byte Z80 bootstrap through its mapped RAM port.
      * These are the original hardware writes, not replacement 68000 code. */
@@ -516,11 +485,11 @@ void InitialiseTheZ80()
     *destination++ = 0xc3;
     *destination++ = 3;
     *destination++ = reset;
-    *(short *)0xa11200 = reset;
+    Z80_RESET = reset;
     DelayRoutine1(10);
-    *(short *)0xa11100 = reset;
+    Z80_BUS_REQUEST = reset;
     DelayRoutine1(10);
-    *(short *)0xa11200 = 0x100;
+    Z80_RESET = 0x100;
     DelayRoutine1(10);
 }
 /* Convert a one-based selection to a repeating zero-based six-entry index.
@@ -530,25 +499,6 @@ short selection;
 {
     return (selection - 1) % 6;
 }
-
-extern void MoveDataToVRAM(), VDPWritesRoutine1(), RAMWritesRoutine1();
-extern void InitialiseTheZ80(), LoadSoundDriverToZ80(), EnableAllInterrupts(), WaitForNextVBlank();
-extern long StackBasedRandom();
-extern void PreGenerateRandoms(), ClearColourRAM(), ClearSRAM(), ClearVideoRAM();
-extern void func_008b98(), SetRAMIndexes(), SEGAAndIntroVideoRoutine(), NewGameMainMenu();
-extern void func_00046a(), LoadLevel1Tiles(), SetupPlayer(), SetupTheMainGame();
-extern void SetPositionOnNewLevel(), ToggleLOC_00FF8196(), func_00105a();
-extern void GenerateLevelSeeds(), SetupInitialElevator(), SetupInitialInventory(), SetupInitialEarthlings();
-extern void func_0028f6(), ProcessLand(), func_00cc82(), func_00219c();
-extern void ProcessEarthlings(), func_012a56(), ProcessElevators(), func_015a38(), ProcessTomatoRain();
-extern void UpdateLandAroundPlayer(), ProcessInput(), ProcessPlayers(), Process2FEntityFlag();
-extern void ProcessMovement(), func_00bfc6(), func_00cb54(), func_01e4e4();
-extern unsigned short GetRandomNumber();
-extern short FontDataSize, StarryBackgroundSize, LevelTilesSize;
-extern short InventoryLabelIdentifySize, InventoryLabelOpenSize;
-extern char ImageTextBase[], ImgStarfieldLarge[], LevelTiles[];
-extern char InventoryLabelOpen[], InventoryLabelIdentify[], HUDAdditionalTiles[], HUDAdditionalTilesSmall[];
-extern unsigned short PaletteGameLine2[], PaletteGameLine3[], PaletteGameLine4[];
 
 void FurtherInitialisation()
 {
@@ -569,7 +519,7 @@ void FurtherInitialisation()
     EnableAllInterrupts();
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     StackBasedRandom(12345);
     PreGenerateRandoms();
     ClearColourRAM();
@@ -617,7 +567,7 @@ void FurtherInitialisation()
     EARL_CAMERA_NEWX = TOEJAM_CAMERA_NEWX;
     EARL_CAMERA_NEWY = TOEJAM_CAMERA_NEWY;
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
     SetSkipVHBlankFlags();
     for (;;) {
         time = TIME_COUNTER;

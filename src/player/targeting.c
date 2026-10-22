@@ -1,30 +1,7 @@
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4], frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-extern struct object_state gPlayerInfo[40];
-extern char ram_ffde58[], ELEVATOR_FLAG[], ram_ffe1dc[];
-extern char gPlayerInventory[][16];
-extern int abs(), func_01ae92();
-extern char func_01b02e(), func_01afb8(), func_01af04();
-extern void func_01b078();
-
+#include "entities.h"
+#include "ram.h"
+#include "player.h"
+#include "romcalls.h"
 /* Consider two object-index slots first, then the two player records. Squared
  * quarter-coordinate distances choose the nearer eligible target. Modes 12
  * and 7 select steering helpers; mode 14 may call func_01b078 first and then
@@ -44,7 +21,7 @@ char mode;
     distance[0] = 0x7fff;
     distance[1] = 0x7fff;
     separation >>= 2;
-    if (state->sprite == 2)
+    if (state->sprite_state == 2)
         maximum_distance = 0x400;
     else
         maximum_distance <<= 8;
@@ -140,11 +117,11 @@ char mode;
 int func_01ae92(state, target)
 struct object_state *state, *target;
 {
-    if ((state->sprite != 2 &&
-         ((target->flags_52 & 0x400b8L) || target->sprite == 0 ||
-          target->sprite == 4 || (target->flags_52 & 0x20400000L) ||
-          target->sprite == 76 || target->sprite == 78 || target->sprite == 77)) ||
-        target->sprite == 3 || target->sprite == 7 ||
+    if ((state->sprite_state != 2 &&
+         ((target->flags_52 & 0x400b8L) || target->sprite_state == 0 ||
+          target->sprite_state == 4 || (target->flags_52 & 0x20400000L) ||
+          target->sprite_state == 76 || target->sprite_state == 78 || target->sprite_state == 77)) ||
+        target->sprite_state == 3 || target->sprite_state == 7 ||
         (target->flags_52 & 0x0fb57f44L))
         return 1;
     return 0;

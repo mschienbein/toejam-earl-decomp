@@ -1,5 +1,5 @@
-extern char ram_ffe1ee[4];
-
+#include "ram.h"
+#include "engine_calls.h"
 /* Test whether an ordinary object is held by one of the four effect slots. */
 int func_01dee8(object_number)
 short object_number;

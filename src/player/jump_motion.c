@@ -1,33 +1,10 @@
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4], frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-extern char ram_ffda28[], ram_ffda26[], TOEJAM_JUMP_COUNTER[], gPlayer1Powerup[];
-extern char ram_ffda24[], TOEJAM_FALL_STATE[], ELEVATOR_FLAG[], ram_ffda36[];
-extern char ram_ffe238[], ram_ffe1dc[], ram_ffda38[], Sfx_Splash[];
-extern unsigned char P1_PROCESSED_INPUT[];
-extern int abs(), GetActivePresentSprite();
-extern int func_01cc62();
-extern void PlaySound(), PlaySoundEffect(), SetSprite(), SetToejamFalling();
-extern short GenerateSpeech();
-extern void func_011dd8();
-
+#include "entities.h"
+#include "ram.h"
+#include "assets.h"
+#include "player.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
 /* Advance the alternating jump phase, handle landing and water/space,
  * and delegate the input-dependent horizontal velocity update. */
 void func_011ac0(state, terrain)
@@ -37,7 +14,7 @@ unsigned short terrain;
     short player;
     char direction, phase, jump;
 
-    player = state->value_5e;
+    player = state->entity_number;
     if (gPlayer1Powerup[player])
         return;
     if (!ram_ffda24[player] && (state->flags_52 & 12)) {
@@ -46,12 +23,12 @@ unsigned short terrain;
         return;
     }
     if (TOEJAM_FALL_STATE[player] ||
-        !(state->sprite == 0 || state->sprite == 4 ||
-          (state->flags_52 & 0x20400000) || state->sprite == 76 ||
+        !(state->sprite_state == 0 || state->sprite_state == 4 ||
+          (state->flags_52 & 0x20400000) || state->sprite_state == 76 ||
           (state->flags_52 & 0x8000)) || ELEVATOR_FLAG[player] ||
         (ram_ffda24[player] && state->height < -4))
         return;
-    direction = state->sprite & 3;
+    direction = state->sprite_state & 3;
     phase = -1;
     jump = P1_PROCESSED_INPUT[player] & 0x40;
     if (!jump) {
@@ -60,8 +37,8 @@ unsigned short terrain;
     }
     if (ram_ffe238[player])
         return;
-    if (state->sprite == 0 || state->sprite == 4 ||
-        (state->flags_52 & 0x20400000) || state->sprite == 76) {
+    if (state->sprite_state == 0 || state->sprite_state == 4 ||
+        (state->flags_52 & 0x20400000) || state->sprite_state == 76) {
         if (!jump || !ram_ffda36[player])
             return;
         phase = 1;

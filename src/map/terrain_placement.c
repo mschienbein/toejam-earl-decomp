@@ -1,18 +1,9 @@
-extern unsigned short LevelMetatileMaps[122][8][16];
-extern unsigned char PlayerTilePropertyLookup[398];
-extern unsigned short GetRandomNumber();
-extern unsigned short gMapDataA[26][19], gMapDataB[26][19];
-extern char gPlayerLives[], gPlayer2Lives;
-extern int func_012db8();
-
-struct placement_entity {
-    short x, y;
-    char reserved04[72];
-    char level;
-    char reserved4d[51];
-};
-extern struct placement_entity gPlayerInfo[40];
-
+#include "entities.h"
+#include "ram.h"
+#include "assets.h"
+#include "elevator_calls.h"
+#include "map_calls.h"
+#include "random.h"
 /* Search all rectangle origins, beginning at a random origin. Bit 7 of the
  * metatile mirrors the returned X coordinate; flags select tile properties. */
 int TerrainValidation(metatile, width, height, position_x, position_y, flags)
@@ -79,7 +70,6 @@ unsigned char flags;
     } while (origin_y != start_y);
     return 0;
 }
-
 
 /* Try ten random unmarked metatiles, then scan cyclically from a random
  * metatile. Mode 2 places both players, separated by 64 world X units. */

@@ -1,9 +1,6 @@
-extern unsigned short ram_ff804e[2][45];
-extern unsigned short ram_ff8196;
-extern char ram_ff8108[], ram_ff8106[];
-extern unsigned short LevelMetatileMaps[122][8][16];
-extern unsigned short OverlayMetatileMaps[15][8][16];
-
+#include "ram.h"
+#include "assets.h"
+#include "graphics_calls.h"
 /* Fill one 45-word transfer row and mark it ready. */
 void func_0015a8(camera)
 short camera;

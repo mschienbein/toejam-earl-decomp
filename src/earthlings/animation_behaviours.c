@@ -1,52 +1,9 @@
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4], frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[26], value_4a, sprite_state, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct earthling_state {
-    char reserved, object, reserved_2, state;
-    short timer;
-    char reserved_06[4];
-    short terrain;
-    char reserved_0c[2], state_delay, reserved_0f, phase_timer;
-    unsigned char flags_11;
-};
-struct earthling_definition {
-    char reserved_00[21], target_chance;
-    unsigned char target_distance;
-    char turn_chance;
-    unsigned char movement_flags;
-    char reserved_19[4];
-    unsigned char target_time_min, target_time_max;
-    unsigned char turn_time_min, turn_time_max;
-    unsigned char move_time_min, move_time_max;
-    char state_delay, reserved_24[2];
-};
-extern struct object_state gPlayerInfo[40];
-extern struct earthling_definition EARTHLING_DATA[24];
-extern unsigned short PREGEN_RANDOMS[59], ram_ff91e0;
-extern char P1_MENU_OPEN[], HBLANK_FLAG_1;
-/* ORIGINAL BUG: these callers read word results from func_0196b0 and
- * func_01aa20, although both definitions return char and sign-extend to long.
- * The normalized state values used here are unaffected. */
-extern int func_0196b0(), func_01aa20();
-extern void SetEarthlingState(), func_0180fe();
-
+#include "entities.h"
+#include "earthlings.h"
+#include "ram.h"
+#include "assets.h"
+#include "earthling_calls.h"
+#include "player.h"
 #define NEXT_RANDOM PREGEN_RANDOMS[ram_ff91e0 == 58 ? (ram_ff91e0 = 0) : ++ram_ff91e0]
 
 /* Reverse blocked horizontal motion, probabilistically acquire a target,
@@ -62,7 +19,7 @@ struct earthling_state *earthling;
 
     if (earthling->object) {
         object = &gPlayerInfo[earthling->object];
-        definition = &EARTHLING_DATA[earthling->reserved];
+        definition = &EARTHLING_DATA[earthling->kind];
         if (!object->sprite_state && earthling->state && earthling->state != 2) {
             object->velocity_x = -object->velocity_x;
             if (NEXT_RANDOM & 1)
@@ -80,7 +37,7 @@ struct earthling_state *earthling;
                 previous_velocity_x = object->velocity_x;
                 previous_velocity_y = object->velocity_y;
                 next_state = func_01aa20(object, definition->target_distance, 0,
-                                        earthling->reserved);
+                                        earthling->kind);
                 if (next_state != -1) {
                     if (earthling->state != 2 && (object->draw_flags & 6) &&
                         ((earthling->state ^ next_state) & 1)) {
@@ -207,7 +164,7 @@ struct earthling_state *earthling;
     if (!earthling->object)
         return;
     object = &gPlayerInfo[earthling->object];
-    definition = &EARTHLING_DATA[earthling->reserved];
+    definition = &EARTHLING_DATA[earthling->kind];
     if (earthling->state == 2) {
         if (!object->frame_duration)
             func_0180fe(earthling);
@@ -227,17 +184,17 @@ struct earthling_state *earthling;
                 if (next_state != -1) {
                     object->frame = -1;
                     object->frame_duration = 1;
-                    object->value_4a = 0;
+                    object->sprite_ready = 0;
                     object->flags_4d &= 0xbf;
                 }
                 earthling->timer = 3;
             } else if (!object->frame_duration) {
                 SetEarthlingState(earthling, 4);
                 earthling->timer = 0;
-                earthling->phase_timer = 7;
+                earthling->reserved_10[0] = 7;
             } else
                 earthling->timer = 1;
-        } else if (--earthling->phase_timer < 0 || next_state == -1) {
+        } else if (--earthling->reserved_10[0] < 0 || next_state == -1) {
             SetEarthlingState(earthling, 2);
             object->frame = -1;
         }

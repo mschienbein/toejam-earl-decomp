@@ -1,39 +1,17 @@
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4], frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct animation_descriptor {
-    char *sequence;
-    char **frames;
-};
-extern struct object_state gPlayerInfo[40];
-extern char ProjectilePlacementTriples[][2][4][3];
-extern struct animation_descriptor AnimationDescriptors_0AEFF6[];
-extern char ram_ffe1c0[4], ram_ffe1cc[4], ELEVATOR_FLAG[], gPlayer1Powerup[];
-extern unsigned char P1_PROCESSED_INPUT[];
-/* ORIGINAL BUG: this file calls func_00d904 as int (an implicit declaration in the original
- * [INFERENCE]); its definition in sprites/entity_slots_tu14.c returns short. The caller keeps
- * the low byte, so behaviour is unaffected. */
-extern int func_00d904();
-extern int GetActivePresentSprite();
-extern void func_03e4f8(), SetSprite();
+#define TJE_LOCAL_FUNC_00D904
 
+#include "entities.h"
+#include "sprites.h"
+#include "ram.h"
+#include "assets.h"
+#include "player.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
+ * whose canonical return is short. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_00d904();
 /* Find an unused projectile slot, then use the player's facing, input, and
  * selected powerup to set its origin and launch velocity. */
 void func_01befa(player, player_number, powerup)
@@ -56,7 +34,7 @@ short player_number, powerup;
     if (ram_ffe1c0[slot] = func_00d904()) {
         ram_ffe1cc[slot] = player_number;
         projectile = &gPlayerInfo[ram_ffe1c0[slot]];
-        direction = player->sprite & 3;
+        direction = player->sprite_state & 3;
         powerup_index = powerup;
         powerup_index -= 3;
         projectile->x = player->x + ProjectilePlacementTriples[powerup_index][player_number][direction][0];
@@ -65,7 +43,7 @@ short player_number, powerup;
         /* The facing index is now replaced by a movement-direction bitmask. */
         direction = P1_PROCESSED_INPUT[player_number];
         direction &= 15;
-        facing = player->sprite & 3;
+        facing = player->sprite_state & 3;
         if (facing == 0 && !(direction & 1))
             direction = 1;
         else if (facing == 1 && !(direction & 2))
@@ -103,15 +81,15 @@ short player_number, powerup;
         projectile->level = player->level;
         projectile->width = 9;
         projectile->height_pixels = 7;
-        projectile->draw_attribute = 1;
-        projectile->draw_offset = 16;
+        projectile->sprite_count = 1;
+        projectile->tile_count = 16;
         projectile->tile = 0x8000;
         animation = AnimationDescriptors_0AEFF6;
         projectile->sequence = animation->sequence;
         projectile->frames = animation->frames;
         projectile->frame_phase = 0;
         projectile->draw_flags |= 64;
-        projectile->sprite = -1;
+        projectile->sprite_state = -1;
     }
 }
 
@@ -124,7 +102,7 @@ short unused;
     short player_number;
     char shooting_sprite, direction;
 
-    player_number = player->value_5e;
+    player_number = player->entity_number;
     if (player->flags_52 & 0x100000L) {
         if (player->frame == 1) {
             func_01befa(player, player_number, 3);
@@ -142,7 +120,7 @@ short unused;
     if (!ELEVATOR_FLAG[player_number] && (player->flags_52 & 4) &&
         (P1_PROCESSED_INPUT[player_number] & 64) &&
         (P1_PROCESSED_INPUT[player_number] & 15)) {
-        direction = player->sprite & 3;
+        direction = player->sprite_state & 3;
         if (gPlayer1Powerup[player_number] == 3)
             shooting_sprite = direction + 80;
         if (gPlayer1Powerup[player_number] == 4)

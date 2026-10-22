@@ -1,21 +1,14 @@
-extern unsigned short gMapDataA[26][19], gMapDataB[26][19];
-extern unsigned char gMapDataD[52][19];
-struct map_generation_tables {
-    unsigned char tiles[16];
-    unsigned char edge_plain[20], edge_alternate[20];
-    unsigned char filled_plain[32], filled_alternate[32];
-    unsigned char remaining[76];
-};
-extern struct map_generation_tables MapGenerationLookupTables;
-extern unsigned char dat_08bf5a[20], dat_08bf6e[20];
-extern char ram_ff91ea;
-extern unsigned short GetRandomNumber();
-extern unsigned long func_004f50();
-struct map_transition_descriptor {
-    unsigned char bank, flags;
-    unsigned char *shapes, *alternatives;
-};
-extern struct map_transition_descriptor MapTransitionDescriptors[16];
+#define TJE_LOCAL_TILEALTERNATIVEPOINTERS
+#include "map.h"
+#include "ram.h"
+#include "assets.h"
+#include "map_calls.h"
+#include "random.h"
+#include "romcalls.h"
+
+/* Compiler bound qualification: the compatible incomplete-array view
+ * preserves the observed long index arithmetic. The shared complete bound
+ * changes index width. Historical declaration spelling is unknown [INFERENCE]. */
 extern unsigned char *TileAlternativePointers[];
 
 /* Refine marked map cells using the low-byte shapes of adjacent cells. */
@@ -354,5 +347,3 @@ void func_00433e()
             gMapDataD[row][column] |= saved_mask >> 4;
         }
 }
-
-

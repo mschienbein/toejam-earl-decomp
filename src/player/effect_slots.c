@@ -1,37 +1,17 @@
-struct object_state {
-    short x, y, height;
-    short velocity_x, velocity_y, velocity_height;
-    short acceleration_x, acceleration_y, acceleration_height;
-    char reserved_12[3], mode_15, reserved_16[4];
-    char *sequence;
-    char **frames;
-    char reserved_22[4];
-    char frame, frame_phase, frame_duration;
-    unsigned char width, height_pixels;
-    char draw_offset;
-    unsigned short tile;
-    char draw_attribute;
-    unsigned char draw_flags;
-    char reserved_30[27], sprite, level;
-    unsigned char flags_4d;
-    char reserved_4e[4];
-    unsigned long flags_52;
-    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
-    char reserved_5f[33];
-};
-struct timed_animation {
-    char *sequence;
-    char **frames;
-    char period, spare;
-};
-extern struct object_state gPlayerInfo[40];
-extern struct timed_animation dat_0af036;
-extern char ram_ffe1be[];
-/* ORIGINAL BUG: the allocator is consumed as int, although its accepted
- * definition returns short. Only the low byte of the result is retained. */
-extern int func_00d904();
-extern void PlaySound(), func_00d970();
+#define TJE_LOCAL_FUNC_00D904
 
+#include "entities.h"
+#include "sprites.h"
+#include "ram.h"
+#include "assets.h"
+#include "player.h"
+#include "sprite_calls.h"
+#include "romcalls.h"
+
+/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
+ * whose canonical return is short. The observed caller omits that
+ * narrowing; the historical missing declaration is [INFERENCE]. */
+extern int func_00d904();
 /* Report whether either of the two effect slots is available. */
 int func_01bdd0()
 {
@@ -63,8 +43,8 @@ short x, y, level;
         effect->level = level;
         effect->width = 32;
         effect->height_pixels = 32;
-        effect->draw_attribute = 1;
-        effect->draw_offset = 16;
+        effect->sprite_count = 1;
+        effect->tile_count = 16;
         effect->tile |= 0x8000;
         animation = &dat_0af036;
         effect->sequence = animation->sequence;

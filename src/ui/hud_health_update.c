@@ -1,26 +1,9 @@
-#define VDP_CONTROL (*(unsigned short *)0xc00004L)
-#define VDP_COMMAND (*(long *)0xc00004L)
-#define VDP_DATA (*(unsigned short *)0xc00000L)
-#define VRAM_WRITE(address) (0x40000000L + (((address) & 0x3fff) << 16) + (((address) & 0xc000) >> 14))
-
-struct hud_sprite {
-    short y;
-    unsigned char size, link;
-    unsigned short tile;
-    short x;
-};
-struct hud_player {
-    char reserved00[75];
-    char sprite_state;
-    char reserved4c[52];
-};
-extern struct hud_sprite ram_ffb65a[80];
-extern struct hud_player gPlayerInfo[40];
-extern char gPlayerLives[], ram_ffa256[], gPlayerRank[];
-extern char TOEJAMS_HEALTH[], TOEJAMS_MAX_HEALTH[], TOEJAM_RESTORE_HEALTH[];
-extern char P1_MENU_OPEN[], SPLIT_SCREEN, gLevel912C;
-extern void func_00b3e4(), func_00b590();
-
+#include "entities.h"
+#include "sprites.h"
+#include "hardware.h"
+#include "ram.h"
+#include "ui_calls.h"
+#include "romcalls.h"
 /* Position the two health-bar sprites for the active HUD arrangement. */
 void func_00b0cc(player_number)
 short player_number;
@@ -96,7 +79,7 @@ short player_number;
         vram_base = 0xf680;
     else
         vram_base = 0xfa80;
-    VDP_CONTROL = 0x8f04;
+    VDP_CONTROL_WORD = 0x8f04;
     tile_offset = (displayed_health / 8) * 32 + ((displayed_health >> 1) & 2);
     pixel_pattern = 0xdddd;
     if (displayed_health <= maximum_health - 4) {
@@ -118,5 +101,5 @@ short player_number;
     VDP_DATA = pixel_pattern;
     VDP_DATA = pixel_pattern;
     VDP_DATA = pixel_pattern;
-    VDP_CONTROL = 0x8f02;
+    VDP_CONTROL_WORD = 0x8f02;
 }

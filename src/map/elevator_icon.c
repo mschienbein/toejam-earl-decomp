@@ -1,24 +1,15 @@
-#define VDP_COMMAND (*(unsigned long *)0xc00004)
-
-struct map_sprite {
-    short y;
-    unsigned char size, link;
-    unsigned short tile;
-    short x;
-};
-struct elevator_record {
-    short x, y;
-    char level, state, entity, timer;
-};
-extern struct elevator_record ELEVATOR_LOCATION[][2];
-extern unsigned short ElevatorMapIcon[16];
-extern void MoveDataToVRAM();
-
+#include "elevator.h"
+#include "sprites.h"
+#include "hardware.h"
+#include "ram.h"
+#include "assets.h"
+#include "map_calls.h"
+#include "romcalls.h"
 /* Upload and position the first elevator icon on the requested level,
  * except for elevators in state 13. */
 void Map_DrawElevator(level, sprite)
 short level;
-struct map_sprite *sprite;
+struct hardware_sprite *sprite;
 {
     short elevator_number, world_x, world_y, tile;
     struct elevator_record *elevator;

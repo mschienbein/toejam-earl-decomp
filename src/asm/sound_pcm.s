@@ -5,16 +5,16 @@
 
 | Retry entry owned by AudioSubmitPendingPcmSample: release the bus so the Z80 can snapshot its PCM mailbox.
 | Delay 24 DBRA iterations and fall through to the normal request entry.
-.globl loc_03f61c
-.type loc_03f61c, @function
-loc_03f61c:
+.globl AudioRetryPendingPcmMailbox
+.type AudioRetryPendingPcmMailbox, @function
+AudioRetryPendingPcmMailbox:
     move.w #Z80_BUS_RELEASE,(Z80_BUS_REQUEST).l
     moveq #PCM_RETRY_DELAY_MINUS1,%d0
 .L_pcm_retry_delay:
     dbra %d0,.L_pcm_retry_delay
-.size loc_03f61c, .-loc_03f61c
+.size AudioRetryPendingPcmMailbox, .-AudioRetryPendingPcmMailbox
 
-| Submit gMusicUnknownE480's direct PCM pointer/count when the mailbox snapshot lock is clear.
+| Submit gPendingPcmSample's direct PCM pointer/count when the mailbox snapshot lock is clear.
 | An accepted request starts the speech timer and clears the pending pointer; timeout retains it.
 .globl AudioSubmitPendingPcmSample
 .type AudioSubmitPendingPcmSample, @function
@@ -30,10 +30,10 @@ AudioSubmitPendingPcmSample:
 
     | A nonzero lock requires releasing the bus and trying again, not holding the Z80 stopped.
     move.b (Z80_PCM_MAILBOX_LOCK).l,%d0
-    bne.s loc_03f61c
+    bne.s AudioRetryPendingPcmMailbox
 
     | Copy the direct PCM pointer and length into the little-endian mailbox fields.
-    movea.l (gMusicUnknownE480).l,%a0
+    movea.l (gPendingPcmSample).l,%a0
     move.w (%a0)+,%d1
     moveq #0,%d2
     move.w %d1,%d2
@@ -56,14 +56,14 @@ AudioSubmitPendingPcmSample:
     addq.w #PCM_SPEECH_EXTRA_TICKS,%d2
     move.w %d2,(gPcmEffectCooldownTicks).l
     move.w #Z80_BUS_RELEASE,(Z80_BUS_REQUEST).l
-    move.w #SOUND_REQUEST_NONE,(gMusicUnknownE47E).l
-    clr.l (gMusicUnknownE480).l
+    move.w #SOUND_REQUEST_NONE,(gPendingPsgEffect).l
+    clr.l (gPendingPcmSample).l
     rts
 
     | Bus timeout: release the bus and cancel only the queued PSG request.
 .L_pcm_bus_timeout:
     move.w #Z80_BUS_RELEASE,(Z80_BUS_REQUEST).l
-    move.w #SOUND_REQUEST_NONE,(gMusicUnknownE47E).l
+    move.w #SOUND_REQUEST_NONE,(gPendingPsgEffect).l
     rts
 .size AudioSubmitPendingPcmSample, .-AudioSubmitPendingPcmSample
 

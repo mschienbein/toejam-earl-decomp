@@ -30,7 +30,7 @@ struct telephone_state *telephone;
 
     if (telephone->object = (int)AllocateEntityWithEviction(0)) {
         object = &gPlayerInfo[telephone->object];
-        animation = AnimationDescriptors_0AF0A8;
+        animation = TelephoneAnimations;
         object->frames = animation->frames;
         object->sequence = SingleFrameHoldAnimation;
         object->frame_phase = 0;
@@ -60,7 +60,7 @@ struct telephone_state *telephone;
     gTelephoneTimeToRing[telephone_number] = 60;
     if (telephone->object) {
         object = &gPlayerInfo[telephone->object];
-        object->sequence = AnimationDescriptors_0AF0A8[0].sequence;
+        object->sequence = TelephoneAnimations[0].sequence;
         object->frame = -1;
         object->frame_duration = 1;
         object->frame_phase = 3;
@@ -77,16 +77,16 @@ short telephone_number;
     short player_number, screen_x, screen_y;
     short earl_screen_x, earl_screen_y;
 
-    telephone = &TELEPHONE_1[telephone_number];
+    telephone = &gTelephoneStates[telephone_number];
     if (!telephone->level)
         return;
-    screen_x = telephone->x - TOEJAM_CAMERA_NEWX;
-    screen_y = telephone->y - TOEJAM_CAMERA_NEWY;
-    earl_screen_x = telephone->x - EARL_CAMERA_NEWX;
-    earl_screen_y = telephone->y - EARL_CAMERA_NEWY;
-    if ((telephone->level == gLevel912C && screen_x + 20 > 0 &&
+    screen_x = telephone->x - gCamera1PendingX;
+    screen_y = telephone->y - gCamera1PendingY;
+    earl_screen_x = telephone->x - gCamera2PendingX;
+    earl_screen_y = telephone->y - gCamera2PendingY;
+    if ((telephone->level == gPlayer1MapLevel && screen_x + 20 > 0 &&
          screen_x < 340 && screen_y + 20 > 0 && screen_y < 244) ||
-        (telephone->level == gLevel912E && SPLIT_SCREEN &&
+        (telephone->level == gPlayer2MapLevel && gSplitScreenEnabled &&
          earl_screen_x + 20 > 0 && earl_screen_x < 340 &&
          earl_screen_y + 20 > 0 && earl_screen_y < 132)) {
         if (!telephone->object)

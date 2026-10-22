@@ -2,7 +2,7 @@
 #include "player_animation_groups.h"
 #include "psg_effects.h"
 #include "hardware.h"
-#define TJE_LOCAL_FUNC_00BDD8
+#define TJE_LOCAL_ISENTITYVISIBLEINVIEWPORT
 
 #include "entities.h"
 #include "earthlings.h"
@@ -54,7 +54,7 @@ struct object_state *mole;
         effect->sprite_count = 1;
         effect->tile_count = 8;
         effect->tile = VDP_TILE_PRIORITY;
-        animation = &AnimationDescriptors_0AF094[0];
+        animation = &MoleEffectAnimations[0];
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = 6;
@@ -106,7 +106,7 @@ struct earthling_state *earthling;
         }
     } else if ((earthling->state & 252) == 4) {
         if (santa->height > 20 && !santa->velocity_x && !santa->velocity_y) {
-            next_state = (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+            next_state = (gCachedRandomValues[gRandomCacheIndex == 58 ?
                 (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) + 4;
             switch (next_state) {
             case 5:
@@ -125,7 +125,7 @@ struct earthling_state *earthling;
                 break;
             }
             if (santa->velocity_y) {
-                if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                if (gCachedRandomValues[gRandomCacheIndex == 58 ?
                     (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1) {
                     santa->velocity_x = -256;
                     santa->acceleration_x = -16;
@@ -141,7 +141,7 @@ struct earthling_state *earthling;
             santa->velocity_height = 0;
         }
         {
-            /* Compiler-spelling qualification: the scoped assignment and
+            /* MATCHING QUALIFICATION: the scoped assignment and
              * unsigned mask preserve the original byte-promotion copy and
              * scratch register selection throughout this routine. */
             int flags;
@@ -169,7 +169,7 @@ struct earthling_state *earthling;
             next_state = 0;
     } else if (!earthling->state) {
         if (EntityIsWithinRange(santa, toejam, 125, 75)) {
-            if (gPlayer1BurpsLeft[0])
+            if (gPlayerBurpsLeft[0])
                 next_state = 2;
             else if (toejam->animation_group_mask & PLAYER_GROUP_SNEAK) {
                 if (GetRandomNumber() % 100 < 10)
@@ -217,9 +217,9 @@ struct earthling_state *earthling;
         player->x = earthling->x;
         player->y = earthling->y;
         if (!player_number)
-            nearby_land = &LAND_NEAR_TOEJAM[0][0];
+            nearby_land = &gPlayer1NearbyTerrain[0][0];
         else
-            nearby_land = &LAND_NEAR_EARL[0][0];
+            nearby_land = &gPlayer2NearbyTerrain[0][0];
         for (index = 0; index < 25; ++index)
             saved_land[index] = nearby_land[index];
         UpdateLandAroundPlayer(player_number);

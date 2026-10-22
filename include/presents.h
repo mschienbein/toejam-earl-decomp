@@ -1,5 +1,5 @@
-#ifndef PRESENTS_H
-#define PRESENTS_H
+#ifndef TJE_PRESENTS_H
+#define TJE_PRESENTS_H
 
 /* Target layouts retain two-byte shorts and four-byte pointers. */
 struct present_info {

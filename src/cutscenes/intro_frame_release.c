@@ -14,8 +14,8 @@ void IntroReleaseFrameEntitiesAndRefresh()
             FreeEntity(object_number);
         gIntroComponentEntities[index] = 0;
     }
-    VBLANK_FLAG_2 = 0;
+    gSpriteGraphicsUploadPending = 0;
     UpdateAndQueueEntitySprites();
     WaitForNextVBlank(1);
-    SpriteLoadingStuff(0, 0);
+    UploadQueuedSpriteGraphics(0, 0);
 }

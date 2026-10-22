@@ -2,6 +2,7 @@
 #include "player.h"
 #include "random.h"
 
+/* Set unit X/Y velocities toward the delta and return the resulting facing animation. */
 char EntitySetVelocityTowardDelta(state, delta_x, delta_y)
 struct object_state *state;
 short delta_x, delta_y;
@@ -38,6 +39,7 @@ short delta_x, delta_y;
     return direction;
 }
 
+/* Steer toward a target while preserving or choosing horizontal drift during vertical motion. */
 char EntitySteerWithHorizontalDrift(state, target, delta_x, delta_y)
 struct object_state *state, *target;
 short delta_x, delta_y;
@@ -46,7 +48,7 @@ short delta_x, delta_y;
     char facing;
 
     previous_x = state->velocity_x;
-    /* QUALIFICATION: retain the discarded facing result in a named local.
+    /* MATCHING QUALIFICATION: retain the discarded facing result in a named local.
      * MCC68K then flushes argument cleanup before the following velocity test;
      * ignoring the return emits the same two instructions in reverse order. */
     facing = EntitySetVelocityTowardDelta(state, delta_x, delta_y);

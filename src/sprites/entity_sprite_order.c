@@ -26,11 +26,11 @@ struct object_state *entity;
         else
             entity->tile &= 0x7fff;
     } else if (entity->owner == -1) {
-        entity->x = TOEJAM_CAMERA_NEWX + (unsigned char)entity->attachment_x_or_latch;
-        entity->y = TOEJAM_CAMERA_NEWY + (unsigned char)entity->attachment_y_or_latch;
+        entity->x = gCamera1PendingX + (unsigned char)entity->attachment_x_or_latch;
+        entity->y = gCamera1PendingY + (unsigned char)entity->attachment_y_or_latch;
     } else if (entity->owner == -2) {
-        entity->x = EARL_CAMERA_NEWX + (unsigned char)entity->attachment_x_or_latch;
-        entity->y = EARL_CAMERA_NEWY + (unsigned char)entity->attachment_y_or_latch;
+        entity->x = gCamera2PendingX + (unsigned char)entity->attachment_x_or_latch;
+        entity->y = gCamera2PendingY + (unsigned char)entity->attachment_y_or_latch;
     }
 }
 
@@ -56,11 +56,11 @@ struct object_state *first_entity;
         if (!entity->sprite_ready)
             continue;
         frame = entity->current_frame;
-        piece_count = frame->count;
+        piece_count = frame->piece_count;
         elevation = entity->height;
         if (entity->draw_flags & ENTITY_PRIMARY_VIEW) {
-            screen_x = entity->x + 128 - TOEJAM_CAMERA_NEWX;
-            screen_y = entity->y + 128 - TOEJAM_CAMERA_NEWY;
+            screen_x = entity->x + 128 - gCamera1PendingX;
+            screen_y = entity->y + 128 - gCamera1PendingY;
             for (piece_number = 0; piece_number < piece_count; ++piece_number) {
                 sprite_number = entity->primary_sprites[piece_number];
                 if (entity->behavior_flags & ENTITY_HIDDEN)
@@ -91,8 +91,8 @@ struct object_state *first_entity;
             }
         }
         if (entity->draw_flags & ENTITY_SECONDARY_VIEW) {
-            screen_x = entity->x + 128 - EARL_CAMERA_NEWX;
-            screen_y = entity->y + 240 - EARL_CAMERA_NEWY;
+            screen_x = entity->x + 128 - gCamera2PendingX;
+            screen_y = entity->y + 240 - gCamera2PendingY;
             for (piece_number = 0; piece_number < piece_count; ++piece_number) {
                 sprite_number = entity->secondary_sprites[piece_number];
                 if (entity->behavior_flags & ENTITY_HIDDEN)
@@ -135,7 +135,7 @@ void BuildViewportSpriteLinks()
 
     for (entity = gEntityDrawListHead; entity; entity = entity->next) {
         if (entity->sprite_ready) {
-            sprite_count = entity->current_frame->count;
+            sprite_count = entity->current_frame->piece_count;
             if (entity->draw_flags & ENTITY_PRIMARY_VIEW)
                 for (piece_number = 0; piece_number < sprite_count; ++piece_number)
                     primary_sprites[primary_count++] = entity->primary_sprites[piece_number];
@@ -154,7 +154,7 @@ void BuildViewportSpriteLinks()
     }
     for (entity = gInventoryDrawListHead; entity; entity = entity->next) {
         if ((entity->draw_flags & ENTITY_ACTIVE) && entity->sprite_ready) {
-            sprite_count = entity->current_frame->count;
+            sprite_count = entity->current_frame->piece_count;
             if (entity->draw_flags & ENTITY_PRIMARY_VIEW)
                 for (piece_number = 0; piece_number < sprite_count; ++piece_number)
                     primary_sprites[primary_count++] = entity->primary_sprites[piece_number];
@@ -190,7 +190,7 @@ void SortEntitiesForSpriteDraw()
     struct object_state *entity, *previous, *current;
     short entity_number, entity_count;
 
-    if (gLevel912C == 26)
+    if (gPlayer1MapLevel == 26)
         entity_count = 40;
     else
         entity_count = 26;

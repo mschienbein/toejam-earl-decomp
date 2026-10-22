@@ -1,5 +1,5 @@
-#ifndef EARTHLINGS_H
-#define EARTHLINGS_H
+#ifndef TJE_EARTHLINGS_H
+#define TJE_EARTHLINGS_H
 
 struct timed_animation;
 
@@ -19,7 +19,7 @@ struct earthling_state {
     char health_visibility[2];       /* 10/11: health/phase countdown and viewport bits 2/4; AI/loader write. */
 };
 
-/* MCC68K target layout: 38 bytes; immutable EARTHLING_DATA ROM records.
+/* MCC68K target layout: 38 bytes; immutable EarthlingDefinitions ROM records.
  * Record 24's unused byte also begins EarthlingCoordinatePairs. */
 struct earthling_definition {
     struct timed_animation *states;  /* 00: kind-specific animation table; ROM-authored. */

@@ -23,11 +23,11 @@ void CutsceneCreateDriftingEntities()
         frame = CutsceneDriftingEntityFrames[object_number];
         if (slot = AllocateEntity()) {
             object = &gPlayerInfo[slot];
-            object->sprite_count = frame->count;
+            object->sprite_count = frame->piece_count;
             object->tile_count = 0;
             /* Counts are 2,4,1,1,1,1,1,1: four is this consumer's
              * maximum payload bound, not a fixed complete-frame stride. */
-            for (piece_number = 0; piece_number < frame->count; piece_number++)
+            for (piece_number = 0; piece_number < frame->piece_count; piece_number++)
                 object->tile_count +=
                     ((struct render_piece (*)[4])(frame + 1))[0][piece_number].width *
                     ((struct render_piece (*)[4])(frame + 1))[0][piece_number].height;

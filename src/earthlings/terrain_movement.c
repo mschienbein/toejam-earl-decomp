@@ -1,6 +1,6 @@
 #include "earthling_types.h"
 #include "terrain.h"
-#define TJE_LOCAL_FUNC_00D9DC
+#define TJE_LOCAL_GETMAPTERRAINATWORLDPOSITION
 
 #include "entities.h"
 #include "earthlings.h"
@@ -45,9 +45,9 @@ struct object_state *object;
     earthling = object->earthling;
     if (EarthlingIsUpdateBlocked(object->earthling) || earthling->state == 99)
         return;
-    if (object->level == gLevel912C)
+    if (object->level == gPlayer1MapLevel)
         player_number = PLAYER_TOEJAM;
-    else if (object->level == gLevel912E)
+    else if (object->level == gPlayer2MapLevel)
         player_number = 1;
     else
         return;
@@ -109,8 +109,8 @@ int EarthlingIsUpdateBlocked(earthling)
 struct earthling_state *earthling;
 {
     if (earthling) {
-        if (((earthling->health_visibility[1] & 2) && !P1_MENU_OPEN[PLAYER_TOEJAM]) ||
-            ((earthling->health_visibility[1] & 4) && !HBLANK_FLAG_1))
+        if (((earthling->health_visibility[1] & 2) && !gPlayerInventoryOpen[PLAYER_TOEJAM]) ||
+            ((earthling->health_visibility[1] & 4) && !gPlayer2InventoryOpen))
             return 0;
         else
             return 1;
@@ -124,9 +124,9 @@ struct object_state *object;
 {
     short player_number;
 
-    if (object->level == gLevel912C)
+    if (object->level == gPlayer1MapLevel)
         player_number = PLAYER_TOEJAM;
-    else if (object->level == gLevel912E)
+    else if (object->level == gPlayer2MapLevel)
         player_number = 1;
     else
         return;
@@ -152,9 +152,9 @@ struct object_state *object;
         (object->behavior_flags & ENTITY_HIDDEN) ||
         (earthling->kind == EARTHLING_CUPID && earthling->state == 3))
         return;
-    if (object->level == gLevel912C)
+    if (object->level == gPlayer1MapLevel)
         player_number = PLAYER_TOEJAM;
-    else if (object->level == gLevel912E)
+    else if (object->level == gPlayer2MapLevel)
         player_number = 1;
     else
         return;

@@ -13,35 +13,35 @@ extern char gPlayer2Bucks;
 extern unsigned short gPlayerPoints[2];
 extern char gPlayerRank[];
 extern char gPlayer2Rank;
-extern char TOEJAMS_HEALTH[];
-extern char EARLS_HEALTH;
+extern char gPlayerHealth[];
+extern char gPlayer2Health;
 extern char gHudDisplayedHealth[];
 extern char gHudDisplayedLives[];
-extern char TOEJAM_RESTORE_HEALTH[];
-extern char EARL_RESTORE_HEALTH;
-extern char PLAYER_INDICATOR;
+extern char gPlayerHealthBeforeSwimming[];
+extern char gPlayer2HealthBeforeSwimming;
+extern char gPlayerSelection;
 
-/* Forty shared 128-byte object records. gEarlPositionX is the existing
+/* Forty shared 128-byte object records. gPlayer2Entity is the existing
  * record-one alias; gToejamLevel and gEarlLevel name the level bytes of
  * records zero and one. Inventory views of records 26..39 are in ram_ui.h. */
 extern struct object_state gPlayerInfo[40];
-extern struct object_state gEarlPositionX;
+extern struct object_state gPlayer2Entity;
 extern char gToejamLevel;
 extern char gEarlLevel;
 
 /* The LAND_UNDER scalars alias the centers, [2][2], of the existing
  * five-by-five per-player terrain neighborhoods. */
-extern unsigned char LAND_NEAR_TOEJAM[5][5];
-extern unsigned char LAND_UNDER_TOEJAM;
-extern unsigned char LAND_NEAR_EARL[5][5];
-extern unsigned char LAND_UNDER_EARL;
+extern unsigned char gPlayer1NearbyTerrain[5][5];
+extern unsigned char gPlayer1TerrainUnderfoot;
+extern unsigned char gPlayer2NearbyTerrain[5][5];
+extern unsigned char gPlayer2TerrainUnderfoot;
 
 /* Per-player movement, falling and sleep state. Incomplete outer
  * bounds are retained where no finite allocation is established.
- * gPlayer2FallState is the existing scalar alias of TOEJAM_FALL_STATE[1]. */
+ * gPlayer2FallState is the existing scalar alias of gPlayerFallStates[1]. */
 extern char gPlayerPreDeathSpriteState[];
-extern char TOEJAM_JUMP_COUNTER[];
-extern char TOEJAM_FALL_STATE[];
+extern char gPlayerJumpCounters[];
+extern char gPlayerFallStates[];
 extern char gPlayer2FallState;
 extern char gPlayerTerrainSinking[];
 extern char gPlayerPhasedJumpPhase[];
@@ -55,17 +55,17 @@ extern char gPlayerRocketTurnDelay[];
 extern char gPlayerBookSleepDelay[];
 extern char gPlayerWakeEffectsLeft[];
 extern char gPlayerWakeEffectEntityHandles[];
-extern short P1_IDLE_COUNTER[];
+extern short gPlayerIdleTicks[];
 
 /* Hula contact/dance state retains its existing byte-array views. */
-extern char HULA_DANCE[];
-extern char HULA_DANCE_TIMER[];
+extern char gPlayerHulaDanceTicks[];
+extern char gPlayerHulaContactDelay[];
 extern char gHulaSpeechCooldown;
 
-/* Additional selected final-batch storage and resource interfaces. */
-extern char TOEJAM_SPRITE;
-extern char ram_ffda2a[];
-extern char ram_ffda2e;
-extern short ram_ffda3c;
+/* First-player animation alias, respawn suppression, and shared speech/sound latches. */
+extern char gPlayer1SpriteState;
+extern char gPlayerRespawnSuppressionTicks[];
+extern char gSinkingHelpSpeechDelay;
+extern short gTerrainEdgeMeepPending;
 
 #endif

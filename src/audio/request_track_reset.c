@@ -4,5 +4,5 @@
 /* Request the six music pointer slots to be cleared by the driver. */
 void MusicRequestTrackPointerReset()
 {
-    gMusicUnknownE47A = 1;
+    gMusicTrackResetRequested = 1;
 }

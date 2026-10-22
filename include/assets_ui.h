@@ -4,8 +4,7 @@
 #include "sprites.h"
 #include "ui.h"
 
-/* Shared font, HUD, inventory, and text ROM assets. Address-spelled names
- * retain their REV 02 identities in both revision builds. */
+/* Shared font, HUD, inventory, and text ROM assets, translated for each revision. */
 extern unsigned char FontBackgroundByteMap[32][40];
 extern short FontDataSize;
 extern char HUDAdditionalTiles[];
@@ -40,9 +39,9 @@ extern struct ride_speech SpeechStringPointers[14];
 extern struct render_piece *Spr_ActionIcons[10];
 extern unsigned char CombinedHudBackgroundByteMap[4][40];
 /* Four-byte prefix of the observed 44-byte runtime text frame (four pieces). */
-extern struct render_frame RuntimeTextMetasprite_0AFADC;
+extern struct render_frame SpeechBubbleTextFrame;
 
-/* Additional selected final-batch storage and resource interfaces. */
+/* Main-menu definitions and the two runtime cutscene-text frame layouts. */
 extern short MenuControllerOptionsItemCount;
 extern struct menu_item MenuControllerOptionsItems[];
 extern char MenuCursorAnimation[];
@@ -54,8 +53,8 @@ extern struct menu_item MenuWhatItems[];
 extern short MenuWhoItemCount;
 extern struct menu_item MenuWhoItems[];
 extern char RuntimeTextFontTiles[];
-extern struct render_frame RuntimeTextMetasprite_0AFB08;
-extern struct render_frame RuntimeTextMetasprite_0AFB5C;
+extern struct render_frame CutsceneRemappedTextFrame;
+extern struct render_frame CutsceneOriginalPaletteTextFrame;
 extern struct render_frame *Spr_MenuCursor[];
 extern struct render_frame *Spr_MenuHeader[];
 

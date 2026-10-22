@@ -8,7 +8,7 @@
 #include "ram_system.h"
 #include "ram_ui.h"
 
-#define NEXT_RANDOM PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
+#define NEXT_RANDOM gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
 /* Reverse blocked horizontal motion, probabilistically acquire a target,
  * otherwise continue a timed horizontal wander with a random vertical drift. */
@@ -23,7 +23,7 @@ struct earthling_state *earthling;
 
     if (earthling->object) {
         object = &gPlayerInfo[earthling->object];
-        definition = &EARTHLING_DATA[earthling->kind];
+        definition = &EarthlingDefinitions[earthling->kind];
         if (!object->sprite_state && earthling->state && earthling->state != 2) {
             object->velocity_x = -object->velocity_x;
             if (NEXT_RANDOM & 1)
@@ -140,7 +140,7 @@ struct earthling_state *earthling;
     object = &gPlayerInfo[earthling->object];
     if (!object->sprite_state && earthling->state >= 2)
         next_state = EarthlingSelectTurnState(earthling);
-    else if (earthling->state <= 1 && P1_MENU_OPEN[PLAYER_TOEJAM] != 3 && HBLANK_FLAG_1 != 3) {
+    else if (earthling->state <= 1 && gPlayerInventoryOpen[PLAYER_TOEJAM] != 3 && gPlayer2InventoryOpen != 3) {
         if (object->velocity_x > 0) {
             next_state = 2;
             object->velocity_x = -320;
@@ -168,7 +168,7 @@ struct earthling_state *earthling;
     if (!earthling->object)
         return;
     object = &gPlayerInfo[earthling->object];
-    definition = &EARTHLING_DATA[earthling->kind];
+    definition = &EarthlingDefinitions[earthling->kind];
     if (earthling->state == 2) {
         if (!object->frame_duration)
             EarthlingRestoreSavedPosition(earthling);

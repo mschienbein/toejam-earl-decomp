@@ -4,13 +4,13 @@
 #include "sprites.h"
 
 /* Exact observed views; unspecified outer bounds do not claim allocations. */
-extern struct render_frame *CompositeFrames_0389D0[1];
-extern struct render_frame *CompositeFrames_038AA2[2];
-extern struct render_frame *CompositeFrames_038E2A[1];
-extern struct render_frame *CompositeFrames_0393E8[2];
-extern struct render_frame *CompositeFrames_0396EA[3];
-extern struct render_frame *CompositeFrames_03A33A[28];
-extern struct render_frame *CompositeFrames_03A3AA[37];
+extern struct render_frame *EndingStationaryCompositeFrames[1];
+extern struct render_frame *EndingPoseCompositeFrames[2];
+extern struct render_frame *EndingSixPieceCompositeFrames[1];
+extern struct render_frame *EndingRightOffsetCompositeFrames[2];
+extern struct render_frame *EndingElevatedCompositeFrames[3];
+extern struct render_frame *EndingPlayer2Frames[28];
+extern struct render_frame *EndingPlayer1Frames[37];
 extern char EndingFrameIndexStreams[254];
 extern unsigned short SEGALogoTileMap[];
 extern char SplashSegaLogo[];

@@ -1,5 +1,5 @@
 #include "hardware.h"
-#define TJE_LOCAL_FUNC_00D904
+#define TJE_LOCAL_ALLOCATEENTITY
 
 #include "entities.h"
 #include "assets_cutscene.h"
@@ -37,8 +37,8 @@ void EndingCreatePoseComposite()
     if (gEndingPoseCompositeEntity = AllocateEntity()) {
         object = &gPlayerInfo[gEndingPoseCompositeEntity];
         object->tile = 0;
-        object->current_frame = CompositeFrames_038AA2[0];
-        object->frames = CompositeFrames_038AA2;
+        object->current_frame = EndingPoseCompositeFrames[0];
+        object->frames = EndingPoseCompositeFrames;
         object->tile_count = 30;
         object->sprite_count = 3;
         object->x = 104;
@@ -88,8 +88,8 @@ void EndingCreateSixPieceComposite()
 
     if (gEndingSixPieceCompositeEntity = AllocateEntity()) {
         object = &gPlayerInfo[gEndingSixPieceCompositeEntity];
-        object->current_frame = CompositeFrames_038E2A[0];
-        object->frames = CompositeFrames_038E2A;
+        object->current_frame = EndingSixPieceCompositeFrames[0];
+        object->frames = EndingSixPieceCompositeFrames;
         object->tile_count = 69;
         object->sprite_count = 6;
         object->x = 104;
@@ -134,8 +134,8 @@ void EndingCreateRightOffsetComposite()
     if (gEndingRightOffsetCompositeEntity = AllocateEntity()) {
         object = &gPlayerInfo[gEndingRightOffsetCompositeEntity];
         object->tile = 0;
-        object->current_frame = CompositeFrames_0393E8[0];
-        object->frames = CompositeFrames_0393E8;
+        object->current_frame = EndingRightOffsetCompositeFrames[0];
+        object->frames = EndingRightOffsetCompositeFrames;
         object->tile_count = 43;
         object->sprite_count = 4;
         object->x = 104;
@@ -224,8 +224,8 @@ unsigned short x, y;
     if (gEndingElevatedThreePieceCompositeEntity = AllocateEntity()) {
         object = &gPlayerInfo[gEndingElevatedThreePieceCompositeEntity];
         object->tile = 0;
-        object->current_frame = CompositeFrames_0396EA[0];
-        object->frames = CompositeFrames_0396EA;
+        object->current_frame = EndingElevatedCompositeFrames[0];
+        object->frames = EndingElevatedCompositeFrames;
         object->tile = VDP_TILE_PRIORITY;
         object->tile_count = 30;
         object->sprite_count = 3;

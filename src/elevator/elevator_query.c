@@ -10,7 +10,7 @@ char elevator_number;
 
     elevator_number -= 1;
     record_number = elevator_number >> 1;
-    if (ELEVATOR_LOCATION[record_number][elevator_number & 1].state == 3)
+    if (gElevatorRecords[record_number][elevator_number & 1].state == 3)
         return 1;
     return 0;
 }

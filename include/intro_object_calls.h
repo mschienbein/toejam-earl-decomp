@@ -8,7 +8,7 @@ extern void IntroCreateCollisionSceneEntities();
 extern void IntroReleaseCollisionSceneEntities();
 extern void EndingCreateActivePlayerEntities();
 extern void EndingReleaseActivePlayerEntities();
-#ifndef TJE_LOCAL_FUNC_0289DA
+#ifndef TJE_LOCAL_ENDINGGETFIRSTPLAYERANIMATIONFRAME
 extern short EndingGetFirstPlayerAnimationFrame();
 #endif
 extern void IntroCreateHiddenFrameEntities();

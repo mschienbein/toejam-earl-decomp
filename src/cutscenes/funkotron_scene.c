@@ -63,18 +63,18 @@ void FunkatronUpdateSceneEntities()
         }
         if (gFunkatronUpdatePhase != (descriptor_number & 3))
             continue;
-        if (descriptor_number == 28 && PLAYER_INDICATOR != 1)
+        if (descriptor_number == 28 && gPlayerSelection != 1)
             continue;
-        if (descriptor_number == 29 && PLAYER_INDICATOR != 0)
+        if (descriptor_number == 29 && gPlayerSelection != 0)
             continue;
         half_width = descriptor->width / 2;
         half_width += 5;
         maximum_y = descriptor->height;
         maximum_y += 224;
         screen_x = FunkatronScenePlacements[placement_number].x;
-        screen_x -= TOEJAM_CAMERA_NEWX;
+        screen_x -= gCamera1PendingX;
         screen_y = FunkatronScenePlacements[placement_number].y;
-        screen_y -= TOEJAM_CAMERA_NEWY;
+        screen_y -= gCamera1PendingY;
         object_number = gFunkatronPlacementEntities[placement_number];
         if (screen_x + half_width > 0 && screen_x < half_width + 320 &&
             screen_y + 5 > 0 && screen_y < maximum_y) {

@@ -5,20 +5,20 @@
  * remaining ROM-only declarations describe the observed ABI, not a uniquely
  * recovered historical C spelling. */
 extern int CheckStartButton();
-extern void ClearSkipVHBlankFlags();
-extern void DelayRoutine1();
+extern void DisableBlankingGraphics();
+extern void DelayIterations();
 extern void DrawLevelGraphics();
 extern void FurtherInitialisation();
 extern void GetPlayerInput();
-extern int GetSkipVBlankFlag();
+extern int GetVBlankGraphicsEnabled();
 extern void HandleHBlank();
 extern void HandleVBlank();
 extern void InitialiseTheZ80();
-extern long MovePadInputIntoD0();
+extern long ReadMappedPlayerInput();
 extern void ProcessInput();
 extern void ResetVDP();
-extern void SetSkipVHBlankFlags();
-extern void ToggleLOC_00FF8196();
+extern void EnableBlankingGraphics();
+extern void SetCameraTilePriorityEnabled();
 extern void VDPInitialisation();
 extern void WaitForNextVBlank();
 extern void SelectViewportSpriteChain();

@@ -18,7 +18,7 @@ GameProgram:
     | a four-byte PC-relative JSR followed by this explicit two-byte NOP.
     nop
 InitialiseTheMegadrive_InitialiseRAM:
-    movea.l #ram_ff0000,%a0
+    movea.l #gWorkRamStart,%a0
     move.w #WORK_RAM_LONGS_MINUS1,%d0
 GameClearRAMLoop:
     move.l #0,(%a0)+

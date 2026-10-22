@@ -26,22 +26,22 @@ unsigned short terrain;
     char direction, phase, jump;
 
     player = state->entity_index;
-    if (gPlayer1Powerup[player])
+    if (gPlayerPowerups[player])
         return;
     if (!gPlayerTerrainSinking[player] && (state->animation_group_mask & (PLAYER_GROUP_WALK | PLAYER_GROUP_SNEAK))) {
         state->height = 0;
         state->draw_flags &= ~ENTITY_SHADOW;
         return;
     }
-    if (TOEJAM_FALL_STATE[player] ||
+    if (gPlayerFallStates[player] ||
         !(state->sprite_state == PLAYER_ANIM_IDLE || state->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
           (state->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || state->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
-          (state->animation_group_mask & PLAYER_GROUP_ICARUS_FLY)) || ELEVATOR_FLAG[player] ||
+          (state->animation_group_mask & PLAYER_GROUP_ICARUS_FLY)) || gPlayerElevatorFlags[player] ||
         (gPlayerTerrainSinking[player] && state->height < -4))
         return;
     direction = state->sprite_state & DIRECTION_MASK;
     phase = -1;
-    jump = P1_PROCESSED_INPUT[player] & 0x40;
+    jump = gPlayerProcessedInput[player] & 0x40;
     if (!jump) {
         gPlayerPhasedJumpArmed[player] = 1;
         gPlayerChoiceActionReleaseLatches[player] = 0;
@@ -73,7 +73,7 @@ unsigned short terrain;
             state->draw_flags &= ~ENTITY_SHADOW;
             if (terrain >= TERRAIN_WATER) {
                 if (terrain == TERRAIN_VOID)
-                    TOEJAM_JUMP_COUNTER[player] = 0;
+                    gPlayerJumpCounters[player] = 0;
                 else {
                     phase = direction + PLAYER_ANIM_FALL_SPLASH_UP;
                     PlaySoundEffect((long)Sfx_Splash, 50, 0);
@@ -88,12 +88,12 @@ unsigned short terrain;
                 phase = -1;
             }
         } else if (terrain == TERRAIN_VOID) {
-            if (TOEJAM_JUMP_COUNTER[player] > 10)
+            if (gPlayerJumpCounters[player] > 10)
                 PlayerStartFalling(state, player);
             else if (gPlayerPhasedJumpPhaseTicks[player] > 1) {
                 phase = gPlayerPhasedJumpPhase[player] ^ 1;
                 gPlayerPhasedJumpPhaseTicks[player] = 0;
-                ++TOEJAM_JUMP_COUNTER[player];
+                ++gPlayerJumpCounters[player];
             }
         }
         if (phase == -1)
@@ -127,7 +127,7 @@ char phase, jump;
     if (gPlayerControlRemapEntities[player])
         input = PlayerRemapDirectionalInput(player);
     else
-        input = P1_PROCESSED_INPUT[player];
+        input = gPlayerProcessedInput[player];
     velocity_x = state->velocity_x;
     velocity_y = state->velocity_y;
     left = input & 4;

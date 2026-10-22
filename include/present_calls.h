@@ -18,7 +18,7 @@ extern void OpenDecoy();
 extern int OpenSelectedPresent();
 extern void OpenTelephone();
 extern void PerformPromotion();
-extern void PlaceStuffInLevel();
+extern void LoadLevelItemBank();
 extern void PresentIsDoorway();
 extern void PresentIsRainCloud();
 extern void ProcessPresents();
@@ -43,7 +43,7 @@ extern void PresentClearWorldEntityReadiness();
 extern void MapUpdateItemsAndPresents();
 extern int PresentStartTransientEffect();
 extern int PresentUpdateTransientEffect();
-#ifndef TJE_LOCAL_FUNC_015DA6
+#ifndef TJE_LOCAL_PRESENTREGISTERDECOYHIT
 extern short PresentRegisterDecoyHit();
 #endif
 extern void PresentUpdateDecoy();

@@ -38,7 +38,7 @@ void SEGAVideo()
     short palette_frame, character_x, character_y;
     unsigned short palette_time, start_time, frame;
 
-    SEGA_PAL_LOAD_FLAG = 0;
+    gSegaPaletteUploadPending = 0;
     gSegaVBlankSpriteUpdatesEnabled = 0;
     gVBlankFunc = SegaLogoVBlank;
     SegaLogoClearVideoPlanes();
@@ -47,37 +47,37 @@ void SEGAVideo()
     VDP_COMMAND = VDP_WRITE_VRAM_BASE;
     MoveDataToVRAM(SplashSegaLogo, 784);
     UploadVramWordRectangle(0xa51c, SEGALogoTileMap, 12, 4, 64);
-    SEGA_PAL_TO_LOAD = SegaLogo_Pal;
-    SEGA_PAL_LOAD_FLAG = 1;
+    gSegaPaletteUploadSource = SegaLogo_Pal;
+    gSegaPaletteUploadPending = 1;
     gSegaVBlankSpriteUpdatesEnabled = 1;
-    frame = TIME_COUNTER;
-    while (frame == TIME_COUNTER)
+    frame = gFrameCounter;
+    while (frame == gFrameCounter)
         ;
     gMode2RegSoftcopy |= 64;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
 #if REVISION >= 2
-    TIME_COUNTER = 0;
+    gFrameCounter = 0;
 #endif
-    palette_time = TIME_COUNTER;
-    start_time = TIME_COUNTER;
+    palette_time = gFrameCounter;
+    start_time = gFrameCounter;
     palette_frame = 0;
-    while (TIME_COUNTER < start_time + 120) {
-        if (TIME_COUNTER >= palette_time + 3) {
-            palette_time = TIME_COUNTER;
-            SEGA_PAL_TO_LOAD += 16;
+    while (gFrameCounter < start_time + 120) {
+        if (gFrameCounter >= palette_time + 3) {
+            palette_time = gFrameCounter;
+            gSegaPaletteUploadSource += 16;
             if (++palette_frame >= 20) {
-                SEGA_PAL_TO_LOAD = SegaLogo_Pal;
+                gSegaPaletteUploadSource = SegaLogo_Pal;
                 palette_frame = 0;
             }
-            SEGA_PAL_LOAD_FLAG = 1;
+            gSegaPaletteUploadPending = 1;
         }
     }
     if (!gSegaRocketPassShown) {
-        frame = TIME_COUNTER;
-        while (frame == TIME_COUNTER)
+        frame = gFrameCounter;
+        while (frame == gFrameCounter)
             ;
         gSegaVBlankSpriteUpdatesEnabled = 0;
-        SEGA_PAL_LOAD_FLAG = 0;
+        gSegaPaletteUploadPending = 0;
         SegaLogoCreateTrademarkEntity();
         CutsceneAllocateRocketshipPair();
         CopyPaletteToCRAMSlot(PaletteSpaceScreen_bank2, 2);
@@ -85,11 +85,11 @@ void SEGAVideo()
         character_y = 150;
         CutsceneSetRocketshipPairPose(0, character_x, character_y);
         gSegaVBlankSpriteUpdatesEnabled = 1;
-        palette_time = TIME_COUNTER;
+        palette_time = gFrameCounter;
         while (character_x > -50) {
             UpdateAndQueueEntitySprites();
-            frame = TIME_COUNTER;
-            while (frame == TIME_COUNTER)
+            frame = gFrameCounter;
+            while (frame == gFrameCounter)
                 ;
             if (character_x == 257)
                 PlaySoundEffect((long)Sfx_Achoo, 50, 0);
@@ -101,22 +101,22 @@ void SEGAVideo()
                     PlaySound(PSG_TONE_RISE, 99);
             }
             CutscenePositionRocketshipPair(--character_x, character_y);
-            if (TIME_COUNTER >= palette_time + 3) {
-                palette_time = TIME_COUNTER;
-                SEGA_PAL_TO_LOAD += 16;
+            if (gFrameCounter >= palette_time + 3) {
+                palette_time = gFrameCounter;
+                gSegaPaletteUploadSource += 16;
                 if (++palette_frame >= 20) {
-                    SEGA_PAL_TO_LOAD = SegaLogo_Pal;
+                    gSegaPaletteUploadSource = SegaLogo_Pal;
                     palette_frame = 0;
                 }
-                SEGA_PAL_LOAD_FLAG = 1;
+                gSegaPaletteUploadPending = 1;
             }
         }
         CutsceneReleaseRocketshipPair();
         SegaLogoReleaseTrademarkEntity();
         gSegaRocketPassShown = 1;
     }
-    frame = TIME_COUNTER;
-    while (frame == TIME_COUNTER)
+    frame = gFrameCounter;
+    while (frame == gFrameCounter)
         ;
     gVBlankFunc = 0;
 }

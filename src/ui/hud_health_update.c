@@ -25,9 +25,9 @@ short player_number;
         sprite_number = 17;
         y = 332;
     }
-    if (P1_MENU_OPEN[player_number])
+    if (gPlayerInventoryOpen[player_number])
         x = 230;
-    else if (SPLIT_SCREEN || P1_MENU_OPEN[player_number ^ 1]) {
+    else if (gSplitScreenEnabled || gPlayerInventoryOpen[player_number ^ 1]) {
         if (player_number == PLAYER_TOEJAM)
             y = 142;
         else
@@ -63,22 +63,22 @@ short player_number;
     /* (&gPlayerInfo[i])->field rather than gPlayerInfo[i].field: the two compile differently
      * here and only this spelling reproduces the ROM. */
     if (gPlayerLives[player_number] < 0 || (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_GHOST ||
-        (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST || gLevel912C == 26)
+        (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST || gPlayer1MapLevel == 26)
         return;
     if (player_number == PLAYER_TOEJAM)
         maximum_health = 23;
     else
         maximum_health = 31;
     maximum_health += gPlayerRank[player_number] * 4;
-    if (TOEJAMS_HEALTH[player_number] < 0)
-        TOEJAMS_HEALTH[player_number] = 0;
-    if (TOEJAMS_HEALTH[player_number] > maximum_health)
-        TOEJAMS_HEALTH[player_number] = maximum_health;
-    if (TOEJAM_RESTORE_HEALTH[player_number] > maximum_health)
-        TOEJAM_RESTORE_HEALTH[player_number] = maximum_health;
-    if (TOEJAMS_HEALTH[player_number] > gHudDisplayedHealth[player_number])
+    if (gPlayerHealth[player_number] < 0)
+        gPlayerHealth[player_number] = 0;
+    if (gPlayerHealth[player_number] > maximum_health)
+        gPlayerHealth[player_number] = maximum_health;
+    if (gPlayerHealthBeforeSwimming[player_number] > maximum_health)
+        gPlayerHealthBeforeSwimming[player_number] = maximum_health;
+    if (gPlayerHealth[player_number] > gHudDisplayedHealth[player_number])
         gHudDisplayedHealth[player_number]++;
-    else if (TOEJAMS_HEALTH[player_number] < gHudDisplayedHealth[player_number])
+    else if (gPlayerHealth[player_number] < gHudDisplayedHealth[player_number])
         gHudDisplayedHealth[player_number]--;
     else
         return;

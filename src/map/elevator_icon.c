@@ -16,7 +16,7 @@ struct hardware_sprite *sprite;
     struct elevator_record *elevator;
 
     for (elevator_number = 0; elevator_number <= 1; ++elevator_number) {
-        elevator = &ELEVATOR_LOCATION[elevator_number][0];
+        elevator = &gElevatorRecords[elevator_number][0];
         if (elevator->level != level || elevator->state == 13)
             continue;
         world_x = elevator->x;

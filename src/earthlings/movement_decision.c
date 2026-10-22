@@ -25,7 +25,7 @@ struct earthling_state *earthling;
         return 0;
     if (earthling->state == 7)
         return 1;
-    if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+    if (gCachedRandomValues[gRandomCacheIndex == 58 ?
         (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
         return 0;
     return 1;

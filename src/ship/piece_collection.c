@@ -40,7 +40,7 @@ struct earthling_state *ship_piece;
     ship_piece->kind = -1;
     ship_piece->object = 0;
     ShowShipPieces(piece_number, player_number);
-    if (player_number == PLAYER_TOEJAM || !SPLIT_SCREEN)
+    if (player_number == PLAYER_TOEJAM || !gSplitScreenEnabled)
         StartDialogue(2);
     else
         GenerateSpeech(1, "Jammin", 1);
@@ -57,24 +57,24 @@ void ShipUpdatePendingPieceIndicator()
     active_object = &gShipPieceIndicatorEntity;
     if (*active_object) {
         object = &gPlayerInfo[*active_object];
-        if (object->y - TOEJAM_CAMERA_NEWY != 224) {
+        if (object->y - gCamera1PendingY != 224) {
             FreeEntity(*active_object);
             *active_object = 0;
         }
     } else if (gShipScreenState[4]) {
-        if (!SPLIT_SCREEN) {
+        if (!gSplitScreenEnabled) {
             *active_object = (int)AllocateEntityWithEviction(0);
             object = &gPlayerInfo[*active_object];
-            object->x = TOEJAM_CAMERA_NEWX + 160;
-            object->y = TOEJAM_CAMERA_NEWY + 224;
+            object->x = gCamera1PendingX + 160;
+            object->y = gCamera1PendingY + 224;
             object->height = 112;
-            object->level = gLevel912C;
+            object->level = gPlayer1MapLevel;
             object->width = 96;
             object->height_pixels = 32;
             object->sprite_count = 3;
             object->tile_count = 48;
             object->tile |= VDP_TILE_PRIORITY;
-            animation = &AnimationDescriptors_0AF048;
+            animation = &ShipPieceCollectionAnimation;
             object->sequence = animation->sequence;
             object->frames = animation->frames;
             object->frame_duration = 1;

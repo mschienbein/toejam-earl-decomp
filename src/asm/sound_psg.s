@@ -4,14 +4,14 @@
 .include "sound.inc"
 
 | Retry entry owned by AudioSubmitPendingIndexedCommand: release the bus, delay 124 iterations, then try again.
-.globl loc_03f79c
-.type loc_03f79c, @function
-loc_03f79c:
+.globl AudioRetryPendingPsgMailbox
+.type AudioRetryPendingPsgMailbox, @function
+AudioRetryPendingPsgMailbox:
     move.w #Z80_BUS_RELEASE,(Z80_BUS_REQUEST).l
     moveq #PSG_RETRY_DELAY_MINUS1,%d0
 .L_psg_retry_delay:
     dbra %d0,.L_psg_retry_delay
-.size loc_03f79c, .-loc_03f79c
+.size AudioRetryPendingPsgMailbox, .-AudioRetryPendingPsgMailbox
 
 | Submit the pending PSG effect ID using command 1 once the PCM mailbox lock is clear.
 | Mark the request consumed even on bus timeout; an accepted command starts the 15-tick status timer.
@@ -29,17 +29,17 @@ AudioSubmitPendingIndexedCommand:
 
     | Let the Z80 finish a PCM-mailbox snapshot before posting a PSG command.
     move.b (Z80_PCM_MAILBOX_LOCK).l,%d0
-    bne.s loc_03f79c
+    bne.s AudioRetryPendingPsgMailbox
 
     | Post the effect ID and command 1, then start the status countdown.
-    move.w (gMusicUnknownE47E).l,%d0
+    move.w (gPendingPsgEffect).l,%d0
     move.b %d0,(Z80_PSG_EFFECT_ID).l
     move.b #Z80_CMD_PSG,(Z80_COMMAND).l
-    move.w #PSG_STATUS_TICKS,(gMusicUnknownE46E).l
+    move.w #PSG_STATUS_TICKS,(gPsgEffectStatus).l
 
     | Release the bus and consume the pending effect request, including the timeout path.
 .L_psg_release:
     move.w #Z80_BUS_RELEASE,(Z80_BUS_REQUEST).l
-    move.w #SOUND_REQUEST_NONE,(gMusicUnknownE47E).l
+    move.w #SOUND_REQUEST_NONE,(gPendingPsgEffect).l
     rts
 .size AudioSubmitPendingIndexedCommand, .-AudioSubmitPendingIndexedCommand

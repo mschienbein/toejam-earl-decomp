@@ -149,12 +149,12 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
                 sprite += PLAYER_ANIM_SPRING_SHOES_UP;
             else if (player->animation_group_mask & (long)PLAYER_GROUP_ICARUS_FLY)
                 sprite += PLAYER_ANIM_ICARUS_FLY_UP;
-            else if ((input & 64) && !ELEVATOR_FLAG[player_number] &&
-                     gPlayer1Powerup[player_number] == PRESENT_SUPER_HITOPS) {
+            else if ((input & 64) && !gPlayerElevatorFlags[player_number] &&
+                     gPlayerPowerups[player_number] == PRESENT_SUPER_HITOPS) {
                 sprite += PLAYER_ANIM_HITOPS_UP;
                 if (!(player->animation_group_mask & (long)PLAYER_GROUP_HITOPS))
                     PlaySoundEffect((long)Sfx_Running, 50, 0);
-            } else if ((input & 64) && gPlayer1Powerup[player_number] == PRESENT_NONE)
+            } else if ((input & 64) && gPlayerPowerups[player_number] == PRESENT_NONE)
                 sprite += PLAYER_ANIM_SNEAK_UP;
             else {
                 sprite += PLAYER_ANIM_WALK_UP;
@@ -165,9 +165,9 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
     } else if (sprite == -1) {
         if (input & 64) {
             if (player->animation_group_mask & PLAYER_GROUP_WALK) {
-                if (gPlayer1Powerup[player_number] == PRESENT_NONE)
+                if (gPlayerPowerups[player_number] == PRESENT_NONE)
                     sprite = player->sprite_state + 4;
-                else if (gPlayer1Powerup[player_number] == PRESENT_SUPER_HITOPS && !ELEVATOR_FLAG[player_number]) {
+                else if (gPlayerPowerups[player_number] == PRESENT_SUPER_HITOPS && !gPlayerElevatorFlags[player_number]) {
                     sprite = (player->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_HITOPS_UP;
                     PlaySoundEffect((long)Sfx_Running, 50, 0);
                 }

@@ -26,14 +26,14 @@ void AnimatePlayersIntoSplitViews()
     primary_y = (long)gPlayerInfo[PLAYER_TOEJAM].y << 6;
     secondary_x = (long)gPlayerInfo[PLAYER_EARL].x << 6;
     secondary_y = (long)gPlayerInfo[PLAYER_EARL].y << 6;
-    primary_target_x = (long)(TOEJAM_CAMERA_NEWX + 160);
+    primary_target_x = (long)(gCamera1PendingX + 160);
     primary_target_x *= 64;
-    primary_target_y = (long)((TOEJAM_CAMERA_NEWY + 56) +
+    primary_target_y = (long)((gCamera1PendingY + 56) +
         gPlayerInfo[PLAYER_TOEJAM].height_pixels / 2 + gPlayerInfo[PLAYER_TOEJAM].height / 2);
     primary_target_y *= 64;
-    secondary_target_x = (long)(TOEJAM_CAMERA_NEWX + 160);
+    secondary_target_x = (long)(gCamera1PendingX + 160);
     secondary_target_x *= 64;
-    secondary_target_y = (long)((TOEJAM_CAMERA_NEWY + 168) +
+    secondary_target_y = (long)((gCamera1PendingY + 168) +
         gPlayerInfo[PLAYER_EARL].height_pixels / 2 + gPlayerInfo[PLAYER_EARL].height / 2);
     secondary_target_y *= 64;
     primary_dx = primary_target_x - primary_x;
@@ -57,7 +57,7 @@ void AnimatePlayersIntoSplitViews()
         finished = 1;
         PositionEntitySprites(gEntityDrawListHead);
         WaitForNextVBlank(1);
-        SpriteLoadingStuff(1, 0);
+        UploadQueuedSpriteGraphics(1, 0);
         distance = primary_target_x - primary_x;
         if (primary_dx && distance && (distance ^ primary_dx) >= 0) {
             finished = 0;

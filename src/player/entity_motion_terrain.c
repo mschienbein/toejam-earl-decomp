@@ -35,10 +35,10 @@ struct movement_destination *destination;
     short saved_x, saved_y;
 
     if (!player)
-        terrain = LAND_NEAR_TOEJAM[0];
+        terrain = gPlayer1NearbyTerrain[0];
     else
-        terrain = LAND_NEAR_EARL[0];
-    if (gLevel912C == 26 &&
+        terrain = gPlayer2NearbyTerrain[0];
+    if (gPlayer1MapLevel == 26 &&
         (entity->x != destination->x || entity->y != destination->y)) {
         saved_x = entity->x;
         saved_y = entity->y;
@@ -112,9 +112,9 @@ struct movement_destination *destination;
         if (entity->velocity_y < 0 && (terrain[2] >= TERRAIN_WATER || terrain[7] >= TERRAIN_WATER))
             sprite = PLAYER_ANIM_LEAN_UP;
         if (sprite != -1) {
-            if (alternate || gPlayer1Powerup[player] == PRESENT_SPRING_SHOES) {
+            if (alternate || gPlayerPowerups[player] == PRESENT_SPRING_SHOES) {
                 sprite += 12;
-                if (gPlayer1Powerup[player] != PRESENT_SPRING_SHOES) {
+                if (gPlayerPowerups[player] != PRESENT_SPRING_SHOES) {
                     if (sprite & 2)
                         entity->velocity_y = 0;
                     else
@@ -123,14 +123,12 @@ struct movement_destination *destination;
             }
             SetSprite(entity, sprite);
             entity->draw_flags |= (ENTITY_BLOCKED_X | ENTITY_BLOCKED_Y_OR_HEIGHT);
-            TOEJAM_JUMP_COUNTER[player] = 0;
+            gPlayerJumpCounters[player] = 0;
         }
     }
 }
 
-/* StopPlayer (name from RyanFae's disassembly) leaves the first six bytes alone and
- * clears two interleaved groups of three 16-bit components, in component
- * order. [INFERENCE] They are the motion components of a player record. */
+/* Clear all three velocity and acceleration components without changing position. */
 
 void StopPlayer(state)
 struct object_state *state;
@@ -143,13 +141,14 @@ struct object_state *state;
     state->acceleration_height = 0;
 }
 
-/* Process callbacks installed by SetupPlayer for the two player records. */
+/* Apply terrain motion to the first player using the supplied direction byte. */
 void Player1ProcessTerrainMotion(direction)
 char *direction;
 {
     PlayerProcessTerrainMotion(0, direction);
 }
 
+/* Apply terrain motion to the second player using the supplied direction byte. */
 void Player2ProcessTerrainMotion(direction)
 char *direction;
 {

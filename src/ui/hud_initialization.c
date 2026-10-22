@@ -63,13 +63,13 @@ short player_number;
     if (gPlayerLives[player_number] < 0) {
         y = 1;
         x = 1;
-    } else if (P1_MENU_OPEN[player_number]) {
+    } else if (gPlayerInventoryOpen[player_number]) {
         if (player_number == PLAYER_TOEJAM)
             y = 218;
         else
             y = 321;
         x = 348;
-    } else if (SPLIT_SCREEN || P1_MENU_OPEN[player_number ^ 1]) {
+    } else if (gSplitScreenEnabled || gPlayerInventoryOpen[player_number ^ 1]) {
         if (player_number == PLAYER_TOEJAM)
             y = 136;
         else
@@ -109,19 +109,19 @@ short player_number;
         sprite_number = 22;
         tile_number = 0x7f5;
     }
-    powerup = gPlayer1Powerup[player_number];
+    powerup = gPlayerPowerups[player_number];
     if (powerup != -1)
         icon = Spr_ActionIcons[powerup + 2];
     else
         icon = Spr_ActionIcons[player_number];
-    if (GetSkipVBlankFlag())
-        while (VBLANK_FLAG_2)
+    if (GetVBlankGraphicsEnabled())
+        while (gSpriteGraphicsUploadPending)
             ;
     QueueSpritePieceTiles(icon, tile_number);
-    attributes = ((icon->format & 3) << 13) + 0x8000;
+    attributes = ((icon->tile_format & 3) << 13) + 0x8000;
     gHardwareSpriteTable[sprite_number].size = 5;
     gHardwareSpriteTable[sprite_number].tile = tile_number + attributes;
-    VBLANK_FLAG_2 = 1;
+    gSpriteGraphicsUploadPending = 1;
 }
 
 /* Position the action icon, including the icon's signed origin offsets. */
@@ -131,10 +131,10 @@ short player_number;
     short x, icon_number, y;
     struct render_piece *icon;
 
-    if (gPlayer1Powerup[player_number] == PRESENT_NONE)
+    if (gPlayerPowerups[player_number] == PRESENT_NONE)
         icon_number = player_number;
     else
-        icon_number = gPlayer1Powerup[player_number] + 2;
+        icon_number = gPlayerPowerups[player_number] + 2;
     icon = Spr_ActionIcons[icon_number];
     if (player_number == PLAYER_TOEJAM) {
         icon_number = 21;
@@ -146,12 +146,12 @@ short player_number;
     if (gPlayerLives[player_number] < 0) {
         y = 1;
         x = 1;
-    } else if (P1_MENU_OPEN[player_number])
+    } else if (gPlayerInventoryOpen[player_number])
         x = 208;
-    else if (SPLIT_SCREEN || P1_MENU_OPEN[player_number ^ 1]) {
+    else if (gSplitScreenEnabled || gPlayerInventoryOpen[player_number ^ 1]) {
         x = 392;
         y = 1;
-        if (gPlayer1Powerup[player_number] != PRESENT_NONE) {
+        if (gPlayerPowerups[player_number] != PRESENT_NONE) {
             if (player_number == PLAYER_TOEJAM)
                 y = 136;
             else

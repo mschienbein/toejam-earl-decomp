@@ -47,7 +47,7 @@ char restart;
         for (part_number = 0; part_number < 4; ++part_number) {
             /* These transition frames have exactly four payload pieces. */
             part = &((struct render_piece (*)[4])(frame + 1))[0][part_number];
-            packing = part->format;
+            packing = part->tile_format;
             if (packing < 0)
                 SpriteUnpackInterleavedRLE(part, 16);
             else
@@ -57,7 +57,7 @@ char restart;
         gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 1;
         gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 64;
         WaitForNextVBlank(1);
-        SpriteLoadingStuff(1, 1);
+        UploadQueuedSpriteGraphics(1, 1);
         gSceneBackgroundFramePhase = frame_phase;
         VDP_CONTROL_WORD = 0x8228;
     } else
@@ -74,7 +74,7 @@ void InitializeTitleTransitionTilemap()
             VDP_COMMAND = VDP_WRITE_PLANE_A + ((band * 8 + row) << 23);
             for (repeat_number = 0; repeat_number < 8; ++repeat_number)
                 for (column = 0; column < 8; ++column) {
-                    tile = ShipRelatedData[row][column];
+                    tile = TransitionBackgroundTileOffsets[row][column];
                     ++tile;
                     VDP_DATA = gCameraTileAttributes + 0x2000 + tile;
                 }
@@ -246,18 +246,18 @@ unsigned short advance_period;
 short animate_objects;
 {
     AnimateTitleTransitionBackground(0);
-    VBLANK_FLAG_2 = 0;
+    gSpriteGraphicsUploadPending = 0;
     UpdateAndQueueEntitySprites();
     WaitForNextVBlank(1);
-    SpriteLoadingStuff(0, 0);
+    UploadQueuedSpriteGraphics(0, 0);
     SelectViewportSpriteChain(0);
     ++gSceneUpdateCounter;
-    if (!gMusicUnknownE488)
+    if (!gMusicAnimationEvent)
         return 1;
-    gMusicUnknownE488 = 0;
-    if (TIME_COUNTER - gSceneLastMusicEventTime < 10)
+    gMusicAnimationEvent = 0;
+    if (gFrameCounter - gSceneLastMusicEventTime < 10)
         return 1;
-    gSceneLastMusicEventTime = TIME_COUNTER;
+    gSceneLastMusicEventTime = gFrameCounter;
     if (animate_objects)
         IntroSetLargePlayerPartSequence(2, &IntroFrameIndexLists[67], 6);
     if (gSceneUpdateCounter > 51) {
@@ -297,19 +297,19 @@ unsigned short TitleScreenVideo()
     gCameraTileAttributes = 0;
     InitializeTitleTransitionTilemap();
     TitleDrawSelectedLogo();
-    gMusicUnknownE489 = 2;
+    gMusicAnimationChannel = 2;
     gSceneBackgroundAdvanceCounter = 0;
     start_pressed = 0;
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
 #if REVISION >= 2
-    TIME_COUNTER = 0;
+    gFrameCounter = 0;
     gSceneLastMusicEventTime = 0;
-    while (TIME_COUNTER < 1200) {
+    while (gFrameCounter < 1200) {
 #else
-    start_time = TIME_COUNTER;
-    gSceneLastMusicEventTime = TIME_COUNTER;
-    while (TIME_COUNTER - start_time < 1200) {
+    start_time = gFrameCounter;
+    gSceneLastMusicEventTime = gFrameCounter;
+    while (gFrameCounter - start_time < 1200) {
 #endif
         /* Preserve the observed discarded word read after advancing the RNG. */
         random_word = GetRandomNumber();
@@ -335,7 +335,7 @@ void SEGAAndIntroVideoRoutine()
 {
     short show_intro;
     show_intro = 1;
-    VBLANK_FLAG_6 = 1;
+    gVBlankAudioInputOverride = 1;
     for (;;) {
         SEGAVideo();
         if (TitleScreenVideo())
@@ -351,6 +351,6 @@ void SEGAAndIntroVideoRoutine()
     CopyPaletteToCRAMSlot(PaletteGameLine2, 1);
     CopyPaletteToCRAMSlot(PaletteGameLine3, 2);
     CopyPaletteToCRAMSlot(PaletteGameLine4, 3);
-    VBLANK_FLAG_6 = 0;
+    gVBlankAudioInputOverride = 0;
     VDP_CONTROL_WORD = 0x8c89;
 }

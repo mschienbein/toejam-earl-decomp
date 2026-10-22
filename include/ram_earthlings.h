@@ -3,15 +3,15 @@
 
 #include "earthlings.h"
 
-/* Two twenty-record earthling banks. EARTHLINGS_IN_LEVEL_COPY is the
- * existing record-array alias of EARTHLINGS_IN_LEVEL[1]. The load-flag
- * copy likewise aliases EARTHLING_LOAD_FLAG[1]; incomplete outer bounds
+/* Two twenty-record earthling banks. gEarthlingBank2Records is the
+ * existing record-array alias of gEarthlingBanks[1]. The load-flag
+ * copy likewise aliases gEarthlingBankUsers[1]; incomplete outer bounds
  * retain the canonical views rather than an adjacent-symbol estimate. */
-extern struct earthling_state EARTHLINGS_IN_LEVEL[2][20];
-extern struct earthling_state EARTHLINGS_IN_LEVEL_COPY[20];
-extern char EARTHLING_LOAD_FLAG[];
-extern char EARTHLING_LOAD_FLAG_COPY;
-extern char EARTHLING_LEVEL[];
+extern struct earthling_state gEarthlingBanks[2][20];
+extern struct earthling_state gEarthlingBank2Records[20];
+extern char gEarthlingBankUsers[];
+extern char gEarthlingBank2Users;
+extern char gEarthlingBankLevels[];
 
 /* Per-level spawn masks and bank processing phase. */
 extern unsigned long gEarthlingSpawnFailureMasks[26];

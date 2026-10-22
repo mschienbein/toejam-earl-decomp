@@ -1,5 +1,5 @@
-#ifndef UI_H
-#define UI_H
+#ifndef TJE_UI_H
+#define TJE_UI_H
 
 /* Sixteen-byte ROM exchange: two optional second lines accompany the first
  * character's line and the replying character's line. */

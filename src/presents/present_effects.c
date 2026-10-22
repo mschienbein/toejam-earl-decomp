@@ -234,27 +234,27 @@ struct object_state *player;
 {
     short camera_x, camera_y;
 
-    camera_x = TOEJAM_CAMERA_NEWX;
-    camera_y = TOEJAM_CAMERA_NEWY;
-    if (gPlayerLives[PLAYER_TOEJAM] >= 0 && player_number == PLAYER_EARL && SPLIT_SCREEN) {
-        camera_x = EARL_CAMERA_NEWX;
-        camera_y = EARL_CAMERA_NEWY;
+    camera_x = gCamera1PendingX;
+    camera_y = gCamera1PendingY;
+    if (gPlayerLives[PLAYER_TOEJAM] >= 0 && player_number == PLAYER_EARL && gSplitScreenEnabled) {
+        camera_x = gCamera2PendingX;
+        camera_y = gCamera2PendingY;
     }
     do {
         SetPositionOnNewLevel(player_number);
     } while (EntityFindNarrowCollisionAtPosition(player, player->x, player->y, 2));
-    if (!SPLIT_SCREEN && player->x > camera_x + 20 &&
+    if (!gSplitScreenEnabled && player->x > camera_x + 20 &&
         player->x < camera_x + 320 - 20 && player->y > camera_y + 40 &&
         player->y < camera_y + 224 - 40)
         return;
     WaitForVBlankWithGraphicsPaused();
-    ClearSkipVHBlankFlags();
+    DisableBlankingGraphics();
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     UpdateScreenSplitMode(1);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
-    SetSkipVHBlankFlags();
+    EnableBlankingGraphics();
 }
 
 /* Reveal the doorway, track a player aligned with it, and teleport on entry. */
@@ -271,7 +271,7 @@ short doorway_owner;
         object = &gPlayerInfo[object_number];
         if (object->behavior_flags & ENTITY_HIDDEN)
             object->behavior_flags &= ~ENTITY_HIDDEN;
-        if (!(object->draw_flags & ENTITY_EITHER_VIEW) && !P1_MENU_OPEN[PLAYER_TOEJAM] && !HBLANK_FLAG_1) {
+        if (!(object->draw_flags & ENTITY_EITHER_VIEW) && !gPlayerInventoryOpen[PLAYER_TOEJAM] && !gPlayer2InventoryOpen) {
             FreeEntity(object_number);
             gPlayerDoorwayEntities[doorway_owner] = 0;
         } else {
@@ -374,11 +374,11 @@ unsigned short terrain;
             (promotion == PRESENT_PROMOTION && (gPlayerRank[player_number] - 2) % 3 == 0)) {
             if (gPlayerLives[player_number] < 8) {
                 ++gPlayerLives[player_number];
-                VBLANK_FLAG_5 = 1;
+                gHudRedrawPending = 1;
             }
         } else if (promotion == PRESENT_TOTAL_BUMMER) {
             PlaySound(PSG_TONE_NOISE_BURSTS, 40);
-            TOEJAMS_HEALTH[player_number] = 0;
+            gPlayerHealth[player_number] = 0;
         }
         if (promotion == PRESENT_PROMOTION) {
             /* ORIGINAL BUG: this path passes the object pointer where other
@@ -407,13 +407,13 @@ unsigned short terrain;
     display->level = player->level;
     if (display->frame_duration) {
         if (display->sprite_state == PRESENT_TOTAL_BUMMER) {
-            if (TOEJAMS_HEALTH[player_number] > 1)
-                --TOEJAMS_HEALTH[player_number];
+            if (gPlayerHealth[player_number] > 1)
+                --gPlayerHealth[player_number];
             PlaySound(PSG_TONE_NOISE_BURSTS, 40);
         } else if (display->sprite_state == PRESENT_EXTRA_LIFE && gPcmEffectCooldownTicks < 4)
             PlaySoundEffect((long)Sfx_ExtraLifeGlitz, 87, 0);
         else if (display->sprite_state == PRESENT_PROMOTION &&
-                 (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                 (gCachedRandomValues[gRandomCacheIndex == 58 ?
                   (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 2)) {
             phase = display->frame % 14;
             if (phase == 12 || (phase > 1 && phase < 11 && phase != 7))
@@ -423,11 +423,11 @@ unsigned short terrain;
         if (display->sprite_state == PRESENT_EXTRA_LIFE) {
             if (gPlayerLives[player_number] < 8) {
                 ++gPlayerLives[player_number];
-                VBLANK_FLAG_5 = 1;
+                gHudRedrawPending = 1;
             }
         } else if (display->sprite_state == PRESENT_TOTAL_BUMMER) {
             if (player->sprite_state != PLAYER_ANIM_GHOST && player->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST) {
-                TOEJAMS_HEALTH[player_number] = 0;
+                gPlayerHealth[player_number] = 0;
                 GenerateSpeech(player_number, "Bogus", 0);
             }
         } else if (display->sprite_state == PRESENT_PROMOTION) {
@@ -448,16 +448,16 @@ unsigned short terrain;
 void PresentUpdateBurps(player_number)
 short player_number;
 {
-    if (gPlayer1BurpsLeft[player_number]) {
-        if (gPlayer1BurpTimer[player_number] == -1) {
+    if (gPlayerBurpsLeft[player_number]) {
+        if (gPlayerBurpTimers[player_number] == -1) {
             StartDialogue(24, player_number);
             AudioRequestChannelTemplateEffect(FM_EFFECT_BURP);
-            gPlayer1BurpTimer[player_number] = 50;
-        } else if (--gPlayer1BurpTimer[player_number] < 0) {
+            gPlayerBurpTimers[player_number] = 50;
+        } else if (--gPlayerBurpTimers[player_number] < 0) {
             EarthlingResetStateTwoByDrawMask(gPlayerInfo[player_number].draw_flags & ENTITY_EITHER_VIEW);
             GenerateSpeech(player_number, "Burp", 1);
-            --gPlayer1BurpsLeft[player_number];
-            gPlayer1BurpTimer[player_number] = 20 + GetRandomNumber() % 81;
+            --gPlayerBurpsLeft[player_number];
+            gPlayerBurpTimers[player_number] = 20 + GetRandomNumber() % 81;
             if (!gPcmEffectCooldownTicks)
                 PlaySoundEffect((long)Sfx_Burp, 50, 0);
         }
@@ -471,9 +471,9 @@ short player_number;
     struct object_state *cloud, *player;
     struct timed_animation *animation;
 
-    if (!gPlayer1RainCloudState[player_number]) {
-        if (gPlayer1RainCloudState[player_number] = (int)AllocateEntityWithEviction(0)) {
-            cloud = &gPlayerInfo[gPlayer1RainCloudState[player_number]];
+    if (!gPlayerRainCloudStates[player_number]) {
+        if (gPlayerRainCloudStates[player_number] = (int)AllocateEntityWithEviction(0)) {
+            cloud = &gPlayerInfo[gPlayerRainCloudStates[player_number]];
             player = &gPlayerInfo[player_number];
             cloud->level = player->level;
             cloud->behavior_flags |= ENTITY_ATTACHED;
@@ -493,7 +493,7 @@ short player_number;
             cloud->frame_duration = 1;
         }
     }
-    gPlayer1RainCloudTimer[player_number] = GetRandomNumber() % 101 + 400;
+    gPlayerRainCloudTimers[player_number] = GetRandomNumber() % 101 + 400;
 }
 
 /* Advance the cloud animation, applying its strike to eligible player sprites. */
@@ -505,27 +505,27 @@ short player_number;
     struct object_state *cloud, *player;
     short cloud_number;
 
-    if (!(cloud_number = gPlayer1RainCloudState[player_number]))
+    if (!(cloud_number = gPlayerRainCloudStates[player_number]))
         return;
     cloud = &gPlayerInfo[cloud_number];
     player = &gPlayerInfo[player_number];
     cloud->level = player->level;
-    if (ELEVATOR_FLAG[player_number] || P1_MENU_OPEN[player_number]) {
+    if (gPlayerElevatorFlags[player_number] || gPlayerInventoryOpen[player_number]) {
         if (cloud->sprite_state) {
             animation = &animations[0];
             cloud->sprite_state = 0;
-            TOEJAMS_HEALTH[player_number] -= 2;
+            gPlayerHealth[player_number] -= 2;
         }
-    } else if (--gPlayer1RainCloudTimer[player_number] <= 0 ||
+    } else if (--gPlayerRainCloudTimers[player_number] <= 0 ||
                gPlayerLives[player_number] < 0 ||
                player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST) {
         FreeEntity(cloud_number);
-        gPlayer1RainCloudState[player_number] = 0;
+        gPlayerRainCloudStates[player_number] = 0;
     } else if (cloud->sprite_state) {
         if (!cloud->frame_duration) {
             animation = &animations[0];
             cloud->sprite_state = 0;
-            if (!TOEJAM_FALL_STATE[player_number] &&
+            if (!gPlayerFallStates[player_number] &&
                 (player->sprite_state == PLAYER_ANIM_IDLE || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
                  (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
                  (player->animation_group_mask & 0x0834d06c))) {
@@ -536,7 +536,7 @@ short player_number;
                 player->acceleration_height = 0;
                 PlaySound(PSG_TONE_NOISE_BURSTS, 40);
             } else if (player->animation_group_mask & (PLAYER_GROUP_JUMP_WINDUP | PLAYER_GROUP_JUMP_TAKEOFF | PLAYER_GROUP_JUMP_DESCEND))
-                TOEJAMS_HEALTH[player_number] -= 2;
+                gPlayerHealth[player_number] -= 2;
         }
     } else if ((GetRandomNumber() & 63) == 1) {
         animation = &animations[1];
@@ -571,7 +571,7 @@ short player_number;
         box->sprite_count = 1;
         box->tile_count = 16;
         box->tile |= VDP_TILE_PRIORITY;
-        animation = AnimationDescriptors_0AF0D0;
+        animation = BoomBoxAnimations;
         box->sequence = animation->sequence;
         box->frames = animation->frames;
         box->frame_phase = 2;
@@ -579,7 +579,7 @@ short player_number;
         box->behavior_flags |= ENTITY_COLLIDABLE;
         PresentStartTransientEffect(player_number, box->x, box->y + 1, 1, box->level);
         gPlayerBoomBoxTimers[player_number] = 300;
-        VBLANK_FLAG_7 = MUSIC_BOOMBOX;
+        gRequestedMusicSelection = MUSIC_BOOMBOX;
         gBoomBoxMusicTemplateHold = 1;
     }
 }
@@ -598,13 +598,13 @@ short player_number;
             FreeEntity(gPlayerBoomBoxEntities[player_number]);
             gPlayerBoomBoxEntities[player_number] = 0;
             if (!gPlayerBoomBoxEntities[player_number ^ 1]) {
-                VBLANK_FLAG_7 = (int)GetLevelMusicIndex(gHighestLevel);
+                gRequestedMusicSelection = (int)GetLevelMusicIndex(gHighestLevel);
                 gBoomBoxMusicTemplateHold = 0;
             }
-        } else if (gMusicUnknownE488) {
+        } else if (gMusicAnimationEvent) {
             box->frame = -1;
             box->frame_duration = 1;
-            gMusicUnknownE488 = 0;
+            gMusicAnimationEvent = 0;
         }
     }
 }
@@ -635,9 +635,9 @@ short player_number, present_number;
     unsigned short terrain;
 
     player = &gPlayerInfo[player_number];
-    if (ELEVATOR_FLAG[player_number] || player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST)
+    if (gPlayerElevatorFlags[player_number] || player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST)
         return 1;
-    terrain = player_number == PLAYER_TOEJAM ? LAND_UNDER_TOEJAM : LAND_UNDER_EARL;
+    terrain = player_number == PLAYER_TOEJAM ? gPlayer1TerrainUnderfoot : gPlayer2TerrainUnderfoot;
     if (present_number == PRESENT_BONUS_HITOPS)
         present_number = PRESENT_SUPER_HITOPS;
     else if (present_number == PRESENT_DECOY) {
@@ -656,9 +656,9 @@ short player_number, present_number;
         else
             EatYuckyFood(player_number);
     } else if (present_number == PRESENT_ROOTBEER) {
-        gPlayer1BurpTimer[player_number] = -1;
-        gPlayer1BurpsLeft[player_number] += GetRandomNumber() % 7 + 12;
-        TOEJAMS_HEALTH[player_number] += 4;
+        gPlayerBurpTimers[player_number] = -1;
+        gPlayerBurpsLeft[player_number] += GetRandomNumber() % 7 + 12;
+        gPlayerHealth[player_number] += 4;
     } else if (present_number == PRESENT_TOMATO_RAIN) {
         SetTomatoRainTomatoes(player_number);
         GenerateSpeech(player_number, "Uh oh?!?", 1);
@@ -712,11 +712,11 @@ unsigned short terrain;
     char sprite;
 
     if (present_number < 8 && present_number != PRESENT_ROCKET_SKATES && player->height > 0) {
-        if (!gPlayer1Powerup[player_number] && (player->animation_group_mask & PLAYER_GROUP_ICARUS_FLY) &&
+        if (!gPlayerPowerups[player_number] && (player->animation_group_mask & PLAYER_GROUP_ICARUS_FLY) &&
             present_number != PRESENT_ICARUS_WINGS)
             PresentTryEndActivePowerup(player_number);
-        else if (gPlayer1Powerup[player_number] == PRESENT_SPRING_SHOES &&
-                 !TOEJAM_FALL_STATE[player_number] &&
+        else if (gPlayerPowerups[player_number] == PRESENT_SPRING_SHOES &&
+                 !gPlayerFallStates[player_number] &&
                  (player->animation_group_mask & PLAYER_GROUP_FALL) && present_number != PRESENT_SPRING_SHOES) {
             StopPlayer(player);
             player->acceleration_height = -32;
@@ -726,15 +726,15 @@ unsigned short terrain;
     gPlayerPoints[player_number] += 2;
     if (present_number >= 8)
         return;
-    gPlayer1Powerup[player_number] = present_number;
+    gPlayerPowerups[player_number] = present_number;
     HudLoadActionIconSprite(player_number);
-    gPlayer1PowerupTimer[player_number] = 1000;
+    gPlayerPowerupTimers[player_number] = 1000;
     sprite = -1;
     switch (present_number) {
     case PRESENT_ROCKET_SKATES:
-        gPlayer1PowerupTimer[player_number] >>= 2;
+        gPlayerPowerupTimers[player_number] >>= 2;
 #if REVISION >= 2
-        if (!TOEJAM_FALL_STATE[player_number]) {
+        if (!gPlayerFallStates[player_number]) {
 #endif
             PlaySound(PSG_START_BACKGROUND_NOISE, 94);
             OpenRocketSkates(player, player_number, terrain);
@@ -743,7 +743,7 @@ unsigned short terrain;
 #endif
         break;
     case PRESENT_ICARUS_WINGS:
-        gPlayer1PowerupTimer[player_number] >>= 1;
+        gPlayerPowerupTimers[player_number] >>= 1;
         PlayerInitializePhasedJumpMotion(player_number);
         break;
     case PRESENT_TOMATOES:
@@ -756,7 +756,7 @@ unsigned short terrain;
         GenerateSpeech(player_number, "rosebushes!", 1);
         break;
     case PRESENT_SUPER_HITOPS:
-        gPlayer1PowerupTimer[player_number] = 750;
+        gPlayerPowerupTimers[player_number] = 750;
         StartDialogue(28, player_number);
         break;
     }

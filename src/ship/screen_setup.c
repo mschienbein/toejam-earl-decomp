@@ -2,7 +2,7 @@
 #include "psg_effects.h"
 #include "fm_effects.h"
 #include "music_ids.h"
-#define TJE_LOCAL_RAM_FFB8DA
+#define TJE_LOCAL_GSPRITETILEUPLOADBUFFER
 
 #include "entities.h"
 #include "sprites.h"
@@ -77,13 +77,13 @@ char force_frame;
     if (frame_number) {
         /* Only pointer-word slot one is known to hold a frame table; the
          * other ROM pointer remains opaque. */
-        frame = ((struct render_frame **)AnimationPointerWords_AF040[1])
+        frame = ((struct render_frame **)IntroAndShipAnimationPointers[1])
             [frame_number + 9];
         for (part_number = 0; part_number < 8; ++part_number) {
             /* Compiler view: retain the renderer's twelve-slot word-index
              * capacity, not a fixed twelve-piece extent on each ROM frame. */
             part = &((struct render_piece (*)[12])(frame + 1))[0][part_number];
-            packing = part->format;
+            packing = part->tile_format;
             if (packing < 0)
                 SpriteUnpackInterleavedRLE(part, 16);
             else
@@ -94,7 +94,7 @@ char force_frame;
         gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 128;
         WaitForNextVBlank(1);
         TextAnimateFontBanks(8);
-        SpriteLoadingStuff(1, 1);
+        UploadQueuedSpriteGraphics(1, 1);
         gShipScreenState[0] = frame_number;
     } else {
         WaitForNextVBlank(1);
@@ -116,12 +116,12 @@ void RestoreGameplayGraphics()
     VDP_COMMAND = 0x79a00000L;
     MoveDataToVRAM(InventoryLabelIdentify, InventoryLabelIdentifySize << 4);
     DrawHUD();
-    VDPWritesRoutine1(gHardwareSpriteTable, 0xf800L, 320);
+    DmaCopyWordsToVram(gHardwareSpriteTable, 0xf800L, 320);
     CopyPaletteToCRAMSlot(PaletteGameLine1, 0);
     CopyPaletteToCRAMSlot(PaletteGameLine2, 1);
     CopyPaletteToCRAMSlot(PaletteGameLine3, 2);
     CopyPaletteToCRAMSlot(PaletteGameLine4, 3);
-    ClearVHBlankFlag2();
+    DisableTextFontAnimationIfMenusClosed();
     VDP_CONTROL_WORD = 0x8c89;
 }
 
@@ -148,7 +148,7 @@ short background_number;
             /* Compiler view: four transition payloads retain the original
              * bounded word-index arithmetic after the four-byte prefix. */
             part = &((struct render_piece (*)[4])(frame + 1))[0][part_number];
-            packing = part->format;
+            packing = part->tile_format;
             if (packing < 0)
                 SpriteUnpackInterleavedRLE(part, 16);
             else
@@ -159,7 +159,7 @@ short background_number;
         gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 64;
         WaitForNextVBlank(1);
         TextAnimateFontBanks(8);
-        SpriteLoadingStuff(1, 1);
+        UploadQueuedSpriteGraphics(1, 1);
         gShipScreenState[0] = frame_number;
     } else {
         WaitForNextVBlank(1);
@@ -184,7 +184,7 @@ short player_number;
             VDP_COMMAND = VDP_WRITE_WINDOW + ((page * 8 + row) << 23);
             for (repeat = 0; repeat < 6; ++repeat) {
                 for (column = 0; column < 8; ++column) {
-                    tile = ShipRelatedData[row][column] + 1;
+                    tile = TransitionBackgroundTileOffsets[row][column] + 1;
                     VDP_DATA = tile + 0xa000L;
                 }
             }
@@ -204,7 +204,7 @@ short player_number;
             }
         }
     }
-    TIME_COUNTER = 0;
+    gFrameCounter = 0;
     gShipBackgroundAnimationTimer = 0;
     gShipScreenState[0] = 1;
     AnimateTransitionBackground(20);
@@ -213,16 +213,16 @@ short player_number;
     PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
     AudioRequestChannelTemplateEffect(FM_EFFECT_CLEAR);
     WaitForNextVBlank(1);
-    VBLANK_FLAG_8 = MUSIC_TRANSITION;
-    VBLANK_FLAG_7 = MUSIC_TRANSITION;
+    gCurrentMusicSelection = MUSIC_TRANSITION;
+    gRequestedMusicSelection = MUSIC_TRANSITION;
     AudioRequestFmChannelRelease();
     MusicRequestTrackPointerReset();
     PlaySoundEffect((long)Sfx_JamClap, 90, 0);
-    while (TIME_COUNTER < 480) {
+    while (gFrameCounter < 480) {
         AnimateTransitionBackground(20);
-        if ((sound_stage == 1 && TIME_COUNTER > 20) ||
+        if ((sound_stage == 1 && gFrameCounter > 20) ||
             (sound_stage == 2 && !gPcmEffectCooldownTicks) ||
-            (sound_stage == 3 && TIME_COUNTER > 60)) {
+            (sound_stage == 3 && gFrameCounter > 60)) {
             PlaySoundEffect((long)Sfx_JamClap, 90, 0);
             ++sound_stage;
         } else if (sound_stage == 4 && !gPcmEffectCooldownTicks) {
@@ -232,19 +232,19 @@ short player_number;
             PlaySoundEffect((long)Sfx_Jammin, 90, 0);
             ++sound_stage;
         } else if (sound_stage == 6 && !gPcmEffectCooldownTicks)
-            VBLANK_FLAG_7 = 0;
+            gRequestedMusicSelection = 0;
     }
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     RestoreGameplayGraphics();
-    if (P1_MENU_OPEN[player_number ^ 1]) {
+    if (gPlayerInventoryOpen[player_number ^ 1]) {
         InventoryDeactivateDisplayEntities(player_number ^ 1);
-        P1_MENU_OPEN[player_number ^ 1] = 0;
+        gPlayerInventoryOpen[player_number ^ 1] = 0;
     }
     SelectSpriteChainStart(0);
-    SPLIT_SCREEN = 0;
+    gSplitScreenEnabled = 0;
     HudHidePlayerSprites(2);
-    gPlayer1Powerup[PLAYER_TOEJAM] = PRESENT_NONE;
+    gPlayerPowerups[PLAYER_TOEJAM] = PRESENT_NONE;
     gPlayer2Powerup = PRESENT_NONE;
     VDP_CONTROL_WORD = 0x9100;
     VDP_CONTROL_WORD = 0x9200;
@@ -271,7 +271,7 @@ void InitializeShipScreenTilemapAndPalettes()
                 first_tile = ((page ^ repeat) & 1) << 6;
                 ++first_tile;
                 for (column = 0; column < 8; ++column) {
-                    tile = ShipRelatedData[row][column] + first_tile;
+                    tile = TransitionBackgroundTileOffsets[row][column] + first_tile;
                     VDP_DATA = tile + 0xa000L;
                 }
             }
@@ -298,7 +298,7 @@ void InitializeShipScreenTilemapAndPalettes()
     CopyPaletteToCRAMSlot(PaletteShipLine3, 2);
     CopyPaletteToCRAMSlot(PaletteAllBlack, 3);
     VDP_CONTROL_WORD = 0x8c81;
-    SetVHBlankFlag2();
+    EnableTextFontAnimation();
     AnimateShipScreenBackground(1);
 }
 

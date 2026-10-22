@@ -17,7 +17,7 @@ extern unsigned char gPrimaryViewportSentinelLink;
 /* gSpriteTileUploadBuffer[8192] is the existing bounded byte view. Its capacity is an
  * inferred available span to the adjacent state word, not a recovered
  * independent allocator bound. */
-#ifndef TJE_LOCAL_RAM_FFB8DA
+#ifndef TJE_LOCAL_GSPRITETILEUPLOADBUFFER
 extern char gSpriteTileUploadBuffer[8192];
 #endif
 
@@ -43,7 +43,7 @@ extern char gDynamicEntitySlotAllocated[34];
 extern char gFunkatronPlacementEntities[277];
 extern char gFunkatronUpdatePhase;
 
-/* Additional selected final-batch storage and resource interfaces. */
+/* Enable copying of sprite pieces that share previously uploaded tile data. */
 extern short gSharedTileSpriteCopiesEnabled;
 
 #endif

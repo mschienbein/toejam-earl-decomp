@@ -203,8 +203,8 @@ SpriteUnpackRLE_CopyDirect:
     rts
 .size SpriteUnpackRLE, .-SpriteUnpackRLE
 
-| Copy 32 bytes (eight longwords) per tile from render_piece.data into the staging buffer.
-| The canonical loop name says Copy8Bytes, but each iteration actually copies eight longs.
+| Copy 32 bytes (eight longwords) per tile from render_piece.tile_data into the staging buffer.
+| The loop transfers eight longwords per tile.
 .globl SpriteUnpackRaw
 .type SpriteUnpackRaw, @function
 SpriteUnpackRaw:
@@ -215,7 +215,7 @@ SpriteUnpackRaw:
     movea.l #gSpriteTileUploadBuffer,%a0
     adda.w %d1,%a0
     subq.w #0x1,%d0
-SpriteUnpackRaw_Copy8Bytes:
+SpriteUnpackRaw_CopyTileLongwords:
     move.l (%a1)+,(%a0)+
     move.l (%a1)+,(%a0)+
     move.l (%a1)+,(%a0)+
@@ -224,6 +224,6 @@ SpriteUnpackRaw_Copy8Bytes:
     move.l (%a1)+,(%a0)+
     move.l (%a1)+,(%a0)+
     move.l (%a1)+,(%a0)+
-    dbra %d0,SpriteUnpackRaw_Copy8Bytes
+    dbra %d0,SpriteUnpackRaw_CopyTileLongwords
     rts
 .size SpriteUnpackRaw, .-SpriteUnpackRaw

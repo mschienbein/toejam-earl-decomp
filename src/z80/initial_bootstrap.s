@@ -7,6 +7,7 @@
 .equ JP_HL_OPCODE, 0xe9
 
 .text
+; Clear unused Z80 RAM, reset both register banks, then enter the cartridge idle loop.
 .globl InitialiseTheMegadrive_Z80SetupValues
 InitialiseTheMegadrive_Z80SetupValues:
     xor a

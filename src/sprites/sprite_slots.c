@@ -89,8 +89,7 @@ char *slots;
     }
 }
 
-/* The selection helper at 0x00d406 scans 54 flag bytes.
- * Public item identifiers start at 25; bit 1 is queried by the second routine. */
+/* Clear the allocation and lock flags for a sprite handle numbered from 25. */
 void FreeSpriteSlot(item)
 char item;
 {
@@ -98,6 +97,7 @@ char item;
     gViewportSpriteSlotFlags[item] = 0;
 }
 
+/* Return whether the selected viewport sprite slot has its lock bit set. */
 int IsSpriteSlotLocked(item)
 int item;
 {
@@ -239,7 +239,7 @@ short AllocateEntity()
 {
     short count, index;
 
-    if (gLevel912C == 26)
+    if (gPlayer1MapLevel == 26)
         count = 34;
     else
         count = 20;

@@ -1,5 +1,5 @@
-#ifndef ENTITIES_H
-#define ENTITIES_H
+#ifndef TJE_ENTITIES_H
+#define TJE_ENTITIES_H
 
 struct earthling_state;
 struct render_frame;

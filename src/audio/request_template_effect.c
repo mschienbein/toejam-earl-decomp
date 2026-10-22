@@ -5,5 +5,5 @@
 void AudioRequestChannelTemplateEffect(effect_number)
 short effect_number;
 {
-    gMusicUnknownE47C = effect_number;
+    gPendingFmEffect = effect_number;
 }

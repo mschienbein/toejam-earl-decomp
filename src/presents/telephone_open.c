@@ -19,10 +19,10 @@ short player_number;
         other_player = &gPlayerInfo[player_number ^ 1];
     else
         other_player = 0;
-    if (TELEPHONE_1[player_number].level == player->level ||
-        TELEPHONE_1[player_number ^ 1].level == player->level)
+    if (gTelephoneStates[player_number].level == player->level ||
+        gTelephoneStates[player_number ^ 1].level == player->level)
         return;
-    telephone = &TELEPHONE_1[player_number];
+    telephone = &gTelephoneStates[player_number];
     do {
         MapFindItemPlacementPosition(&telephone_x, &telephone_y, player->level, 0);
     } while ((abs(player->x - telephone_x) < 480 &&
@@ -44,9 +44,9 @@ short player_number;
     short telephone_number;
 
     player = &gPlayerInfo[player_number];
-    if (!TELEPHONE_1[player_number].level)
+    if (!gTelephoneStates[player_number].level)
         telephone_number = player_number;
-    else if (!TELEPHONE_1[player_number ^ 1].level)
+    else if (!gTelephoneStates[player_number ^ 1].level)
         telephone_number = player_number ^ 1;
     else if (!gTelephoneActivated[player_number])
         telephone_number = player_number;
@@ -54,7 +54,7 @@ short player_number;
         telephone_number = player_number ^ 1;
     else
         telephone_number = player_number;
-    telephone = &TELEPHONE_1[telephone_number];
+    telephone = &gTelephoneStates[telephone_number];
     telephone->level = player->level;
     telephone->x = player->x;
     telephone->y = player->y + 10;

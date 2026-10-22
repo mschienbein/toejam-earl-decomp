@@ -1,8 +1,8 @@
-#ifndef MAP_H
-#define MAP_H
+#ifndef TJE_MAP_H
+#define TJE_MAP_H
 
-/* Complete 196-byte lookup bank at REV 02 08bf4a. The final three tables
- * are also addressed by region_walk, level_item_setup and projectile_effects. */
+/* Complete 196-byte map-generation lookup bank at REV 02 08bf4a.
+ * Its terrain-exclusion and directional-input views are shared below. */
 struct map_generation_tables {
     unsigned char tiles[16];                         /* 00: shape-to-metatile IDs; ROM-authored. */
     unsigned char edge_plain[20], edge_alternate[20]; /* 10/24: boundary shape lookups; ROM-authored. */
@@ -16,7 +16,7 @@ struct map_generation_tables {
 /* Ten bytes with two-byte target alignment: pointer fields are at 02/06.
  * shapes points to a count byte followed by that many shape bytes. */
 struct map_transition_descriptor {
-    unsigned char bank, flags;                       /* 00/01: shape-bank selector and chain flags; ROM-authored. */
+    unsigned char bank, chain_flags;                 /* 00/01: shape-bank selector and chain flags; ROM-authored. */
     unsigned char *shapes, *alternatives;             /* 02/06: counted shapes and replacement IDs; ROM-authored. */
 };
 

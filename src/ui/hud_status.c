@@ -38,9 +38,9 @@ short player;
         y = 329;
     }
     lives = gPlayerLives[player];
-    if (P1_MENU_OPEN[player])
+    if (gPlayerInventoryOpen[player])
         x = 298;
-    else if (SPLIT_SCREEN || P1_MENU_OPEN[player ^ 1]) {
+    else if (gSplitScreenEnabled || gPlayerInventoryOpen[player ^ 1]) {
         /* MATCHING QUALIFICATION: the redundant default-only switch keeps
          * the observed TST/BNE.S/BRA.W join. This is compiler coaxing, not
          * evidence that the historical source used this control structure. */
@@ -74,12 +74,12 @@ short player;
 /* Print each active player's rank and the absent player's vacation label. */
 void HudDrawRankLabels()
 {
-    if (PLAYER_INDICATOR == 2) {
+    if (gPlayerSelection == 2) {
         VDP_COMMAND = 0x5c160003;
         TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_TOEJAM]]);
         VDP_COMMAND = 0x5c400003;
         TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_EARL]]);
-    } else if (PLAYER_INDICATOR == 0) {
+    } else if (gPlayerSelection == 0) {
         VDP_COMMAND = 0x5c160003;
         TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_TOEJAM]]);
         VDP_COMMAND = 0x5c3c0003;
@@ -103,11 +103,11 @@ void DrawHUD()
     short row, column;
     unsigned short tile;
 
-    if (gLevel912C == 26) {
-        VBLANK_FLAG_5 = 0;
+    if (gPlayer1MapLevel == 26) {
+        gHudRedrawPending = 0;
         return;
     }
-    if (!SPLIT_SCREEN && !P1_MENU_OPEN[PLAYER_TOEJAM] && !P1_MENU_OPEN[PLAYER_EARL]) {
+    if (!gSplitScreenEnabled && !gPlayerInventoryOpen[PLAYER_TOEJAM] && !gPlayerInventoryOpen[PLAYER_EARL]) {
         for (row = 0; row < 5; row++) {
             VDP_COMMAND = VDP_WRITE_WINDOW + ((row + 23) << 23);
             if (row < 4) {
@@ -127,7 +127,7 @@ void DrawHUD()
         VDP_CONTROL_WORD = 0x9297;
         HudDrawRankLabels();
     } else {
-        if (!P1_MENU_OPEN[PLAYER_TOEJAM] && !P1_MENU_OPEN[PLAYER_EARL])
+        if (!gPlayerInventoryOpen[PLAYER_TOEJAM] && !gPlayerInventoryOpen[PLAYER_EARL])
             VDP_CONTROL_WORD = 0x9200;
         HudPositionLevelNumberSprites(1);
     }
@@ -141,8 +141,8 @@ void DrawHUD()
     HudPositionHealthBarSprites(1);
     HudPositionLivesSprite(0);
     HudPositionLivesSprite(1);
-    VDPWritesRoutine1(gHudHardwareSpriteBytes, 0xf858, 48);
-    VBLANK_FLAG_5 = 0;
+    DmaCopyWordsToVram(gHudHardwareSpriteBytes, 0xf858, 48);
+    gHudRedrawPending = 0;
 }
 
 /* Sum the promotion thresholds below rank eight. */
@@ -160,6 +160,7 @@ short rank;
     return score;
 }
 
+/* Advance an eligible player's rank when its score reaches the next threshold. */
 int CheckPromotionScore(player_number)
 short player_number;
 {
@@ -170,17 +171,17 @@ short player_number;
     rank = gPlayerRank[player_number];
     if (rank < 8 && gPlayerPoints[player_number] >= GetScoreForPromo(rank)) {
         ++gPlayerRank[player_number];
-        while (VBLANK_FLAG_2)
+        while (gSpriteGraphicsUploadPending)
             ;
         HudInitializeHealthBar(player_number, 0);
-        if (!SPLIT_SCREEN)
-            VBLANK_FLAG_5 = 1;
+        if (!gSplitScreenEnabled)
+            gHudRedrawPending = 1;
         return 1;
     }
     return 0;
 }
 
-/* Hide the selected player_number's HUD sprites in VRAM and the sprite shadow. */
+/* Hide the selected player's HUD sprites in VRAM and the sprite shadow. */
 void HudHidePlayerSprites(player_number)
 short player_number;
 {
@@ -236,37 +237,38 @@ short player_number;
     while (gPlayerPoints[player_number] >= GetScoreForPromo(gPlayerRank[player_number]))
         ++gPlayerRank[player_number];
     gPlayerBucks[player_number] = 0;
-    if (PLAYER_INDICATOR == 2)
+    if (gPlayerSelection == 2)
         gPlayerLives[player_number] = 0;
     else {
         gPlayerLives[player_number] = 3;
         gPlayerBucks[player_number] = 3;
     }
-    TOEJAMS_HEALTH[player_number] = PlayerGetMaximumHealth(player_number);
-    TOEJAM_RESTORE_HEALTH[player_number] = -1;
-    gPlayer1Powerup[player_number] = PRESENT_NONE;
+    gPlayerHealth[player_number] = PlayerGetMaximumHealth(player_number);
+    gPlayerHealthBeforeSwimming[player_number] = -1;
+    gPlayerPowerups[player_number] = PRESENT_NONE;
     HudInitializeHealthBar(player_number, 1);
     HudLoadActionIconSprite(player_number);
     HudLoadLivesSpriteTiles(player_number);
 }
 
+/* Initialize living players' level-one resources and both players' HUD sprite state. */
 void SetupTheMainGame()
 {
     if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
         gToejamLevel = 1;
-        TOEJAMS_HEALTH[PLAYER_TOEJAM] = 23;
+        gPlayerHealth[PLAYER_TOEJAM] = 23;
         gPlayerLives[PLAYER_TOEJAM] = 3;
         gPlayerBucks[PLAYER_TOEJAM] = 3;
     }
     if (gPlayerLives[PLAYER_EARL] >= 0) {
         gEarlLevel = 1;
-        EARLS_HEALTH = 31;
+        gPlayer2Health = 31;
         gPlayerLives[PLAYER_EARL] = 3;
         gPlayer2Bucks = 3;
     }
-    EARL_RESTORE_HEALTH = -1;
-    TOEJAM_RESTORE_HEALTH[PLAYER_TOEJAM] = -1;
-    gPlayer1Powerup[PLAYER_TOEJAM] = PRESENT_NONE;
+    gPlayer2HealthBeforeSwimming = -1;
+    gPlayerHealthBeforeSwimming[PLAYER_TOEJAM] = -1;
+    gPlayerPowerups[PLAYER_TOEJAM] = PRESENT_NONE;
     gPlayer2Powerup = PRESENT_NONE;
     HudInitializeHealthBar(0, 1);
     HudInitializeHealthBar(1, 1);
@@ -280,38 +282,38 @@ void SetupTheMainGame()
 
 /* Apply death, preserve/restore health around the observed state/mask cases,
  * and check promotion. */
-void HealthAndLivesChecks(entity, terrain_class)
+void PlayerUpdateHealthAndLives(entity, terrain_class)
 struct object_state *entity;
 unsigned short terrain_class;
 {
     short player_number = entity->entity_index;
 
     if (entity->sprite_state == PLAYER_ANIM_GHOST || entity->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST ||
-        ((long)entity->animation_group_mask & PLAYER_GROUP_REACTION) || gLevel912C == 26 ||
+        ((long)entity->animation_group_mask & PLAYER_GROUP_REACTION) || gPlayer1MapLevel == 26 ||
         gPlayerPromotionDisplayEntities[player_number])
         return;
-    if (!gHudDisplayedHealth[player_number] && TOEJAMS_HEALTH[player_number] <= 0) {
+    if (!gHudDisplayedHealth[player_number] && gPlayerHealth[player_number] <= 0) {
         KillThePlayer(player_number);
         if (--gPlayerLives[player_number] < 0) {
             ++gPlayerLives[player_number];
-            TOEJAM_RESTORE_HEALTH[player_number] = -1;
+            gPlayerHealthBeforeSwimming[player_number] = -1;
         } else {
-            TOEJAMS_HEALTH[player_number] = 100;
-            if (TOEJAM_RESTORE_HEALTH[player_number] != -1)
-                TOEJAM_RESTORE_HEALTH[player_number] = 100;
+            gPlayerHealth[player_number] = 100;
+            if (gPlayerHealthBeforeSwimming[player_number] != -1)
+                gPlayerHealthBeforeSwimming[player_number] = 100;
         }
         return;
     }
     if (((long)entity->animation_group_mask & PLAYER_GROUP_SWIM) || entity->sprite_state == PLAYER_ANIM_SWIM_IDLE ||
         entity->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE) {
-        if (TOEJAM_RESTORE_HEALTH[player_number] == -1)
-            TOEJAM_RESTORE_HEALTH[player_number] = TOEJAMS_HEALTH[player_number];
-        if (!(TIME_COUNTER & 12) && TOEJAMS_HEALTH[player_number] > 0)
-            --TOEJAMS_HEALTH[player_number];
+        if (gPlayerHealthBeforeSwimming[player_number] == -1)
+            gPlayerHealthBeforeSwimming[player_number] = gPlayerHealth[player_number];
+        if (!(gFrameCounter & 12) && gPlayerHealth[player_number] > 0)
+            --gPlayerHealth[player_number];
     } else {
-        if (TOEJAM_RESTORE_HEALTH[player_number] != -1)
-            TOEJAMS_HEALTH[player_number] = TOEJAM_RESTORE_HEALTH[player_number];
-        TOEJAM_RESTORE_HEALTH[player_number] = -1;
+        if (gPlayerHealthBeforeSwimming[player_number] != -1)
+            gPlayerHealth[player_number] = gPlayerHealthBeforeSwimming[player_number];
+        gPlayerHealthBeforeSwimming[player_number] = -1;
     }
     if ((entity->draw_flags & ENTITY_DRAW_LATE) && entity->sprite_state != PLAYER_ANIM_FLATTENED)
         entity->draw_flags &= ~ENTITY_DRAW_LATE;

@@ -5,10 +5,10 @@
  * remaining ROM-only declarations describe the observed ABI, not a uniquely
  * recovered historical C spelling. */
 extern void LoadSoundDriverToZ80();
-extern void MassiveRoutine();
+extern void MusicUpdateSequencer();
 extern void PlaySound();
 extern void PlaySoundEffect();
-extern void RAMWritesRoutine1();
+extern void MusicRestoreInitialState();
 extern void MusicRequestTrackPointerReset();
 extern void MusicClearTrackPointers();
 extern void AudioRequestFmChannelRelease();

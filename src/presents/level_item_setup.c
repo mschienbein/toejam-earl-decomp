@@ -5,7 +5,7 @@
 #include "ram_system.h"
 
 #include "entities.h"
-#define TJE_LOCAL_FUNC_00D9DC
+#define TJE_LOCAL_GETMAPTERRAINATWORLDPOSITION
 
 #include "presents.h"
 #include "elevator.h"
@@ -60,13 +60,13 @@ void SetupInitialInventory()
     for (slot = 0; slot < 32; ++slot) {
         gDroppedPresentTable[slot].kind = -1;
         gObjectTable[0][slot].kind = -1;
-        LEVEL_ITEMS_2[slot].kind = -1;
+        gItemBank2Records[slot].kind = -1;
     }
-    LEVEL_LOADED_1[0] = -1;
-    LEVEL_LOADED_2 = -1;
+    gItemBankLevels[0] = -1;
+    gItemBank2Level = -1;
     SetupPresentIdentities();
     if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
-        PlaceStuffInLevel(1);
+        LoadLevelItemBank(1);
         gPlayerInventory[PLAYER_TOEJAM][0] = 27;
         gPlayerInventory[PLAYER_TOEJAM][1] = 27;
         if (gPlayer2Lives < 0) {
@@ -75,7 +75,7 @@ void SetupInitialInventory()
         }
     }
     if (gPlayer2Lives >= 0) {
-        PlaceStuffInLevel(1);
+        LoadLevelItemBank(1);
         gPlayerInventory[PLAYER_EARL][0] = 27;
         gPlayerInventory[PLAYER_EARL][1] = 27;
         if (gPlayerLives[PLAYER_TOEJAM] < 0) {
@@ -93,10 +93,10 @@ short level;
     char object;
 
     for (bank = 0; bank < 2; ++bank) {
-        if (LEVEL_PLAYERS_FLAG_1[bank] && LEVEL_LOADED_1[bank] == level) {
-            --LEVEL_PLAYERS_FLAG_1[bank];
-            if (!LEVEL_PLAYERS_FLAG_1[bank]) {
-                LEVEL_LOADED_1[bank] = -1;
+        if (gItemBankUsers[bank] && gItemBankLevels[bank] == level) {
+            --gItemBankUsers[bank];
+            if (!gItemBankUsers[bank]) {
+                gItemBankLevels[bank] = -1;
                 for (item_number = 0; item_number < 32; ++item_number) {
                     object = gObjectTable[bank][item_number].object;
                     gObjectTable[bank][item_number].kind = -1;
@@ -121,8 +121,8 @@ short world_x, world_y, level;
     if (level == 1)
         return 1;
     for (elevator_number = 0; elevator_number < 2; ++elevator_number) {
-        map_x = ELEVATOR_POS_TABLE[elevator_number].x;
-        map_y = ELEVATOR_POS_TABLE[elevator_number].y;
+        map_x = gLevelAnchorPositions[elevator_number].x;
+        map_y = gLevelAnchorPositions[elevator_number].y;
         elevator_x = (map_x + 2) * 16 * 8;
         elevator_x -= 16;
         elevator_y = (map_y + 2) * 8 * 8;
@@ -159,10 +159,10 @@ short level, large;
     short column, row, search_counter;
     register unsigned short random;
 
-    if (gLevel912C == level)
-        map = gMapDataA[0];
+    if (gPlayer1MapLevel == level)
+        map = gPlayer1LevelMap[0];
     else
-        map = gMapDataB[0];
+        map = gPlayer2LevelMap[0];
     if (large) {
         width = 4;
         height = 2;
@@ -229,7 +229,7 @@ short level;
     short position_x, position_y, item_number, blocked;
     char map_x, map_y;
 
-    if (gLevel912C == level)
+    if (gPlayer1MapLevel == level)
         map_index = 0;
     else
         map_index = 1;
@@ -262,8 +262,8 @@ short level;
             if (blocked)
                 continue;
             for (item_number = 0; item_number < 2; ++item_number) {
-                map_x = ELEVATOR_POS_TABLE[item_number].x;
-                map_y = ELEVATOR_POS_TABLE[item_number].y;
+                map_x = gLevelAnchorPositions[item_number].x;
+                map_y = gLevelAnchorPositions[item_number].y;
                 current_x = (map_x + 2) * 16 * 8;
                 current_x -= 16;
                 current_y = (map_y + 2) * 8 * 8;
@@ -321,7 +321,7 @@ int SelectRandomPresent()
 }
 
 /* Reuse an already loaded item bank or populate a free bank from its level seed. */
-void PlaceStuffInLevel(level)
+void LoadLevelItemBank(level)
 short level;
 {
     short bank, slot, count;
@@ -332,13 +332,13 @@ short level;
     if (level >= 26)
         return;
     for (bank = 0; bank < 2; ++bank) {
-        if (LEVEL_PLAYERS_FLAG_1[bank] && LEVEL_LOADED_1[bank] == level) {
-            ++LEVEL_PLAYERS_FLAG_1[bank];
+        if (gItemBankUsers[bank] && gItemBankLevels[bank] == level) {
+            ++gItemBankUsers[bank];
             return;
         }
     }
     bank = 0;
-    if (LEVEL_PLAYERS_FLAG_1[0])
+    if (gItemBankUsers[0])
         bank = 1;
     saved_seed = StackBasedRandom(gLevelSeeds[level]);
     if (gPlayerLives[PLAYER_TOEJAM] < 0 || gPlayer2Lives < 0)
@@ -390,8 +390,8 @@ get_present:
             &gObjectTable[bank][28]);
     else if (level != 1)
         MapPlaceLargeLevelItems(gObjectTable[bank], level);
-    ++LEVEL_PLAYERS_FLAG_1[bank];
-    LEVEL_LOADED_1[bank] = level;
+    ++gItemBankUsers[bank];
+    gItemBankLevels[bank] = level;
     StackBasedRandom(saved_seed);
 }
 
@@ -421,15 +421,15 @@ short player_number, present;
         player->sprite_state == PLAYER_ANIM_SWIM_IDLE || player->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE)
         return;
     if (player_number == PLAYER_TOEJAM)
-        land = &LAND_NEAR_TOEJAM[0][0];
+        land = &gPlayer1NearbyTerrain[0][0];
     else
-        land = &LAND_NEAR_EARL[0][0];
+        land = &gPlayer2NearbyTerrain[0][0];
     destination = &gDroppedPresentTable[gDroppedPresentTableIdx];
     if (destination->kind != PRESENT_NONE && destination->object) {
         FreeEntity(destination->object);
         destination->object = 0;
     }
-    random = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+    random = gCachedRandomValues[gRandomCacheIndex == 58 ?
         (gRandomCacheIndex = 0) : ++gRandomCacheIndex];
     for (pass = 0; pass < 2; ++pass)
         for (row = 0; row < 5; ++row)

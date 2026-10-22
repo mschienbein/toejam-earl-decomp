@@ -9,14 +9,14 @@
 /* Upload a queued logo palette and sprites, service sound, and count frames. */
 void SegaLogoVBlank()
 {
-    if (SEGA_PAL_LOAD_FLAG) {
-        SEGA_PAL_LOAD_FLAG = 0;
-        CopyPaletteToCRAMSlot(SEGA_PAL_TO_LOAD, 3);
+    if (gSegaPaletteUploadPending) {
+        gSegaPaletteUploadPending = 0;
+        CopyPaletteToCRAMSlot(gSegaPaletteUploadSource, 3);
     }
     if (gSegaVBlankSpriteUpdatesEnabled) {
-        SpriteLoadingStuff(0, 0);
+        UploadQueuedSpriteGraphics(0, 0);
         SelectViewportSpriteChain(0);
     }
-    MassiveRoutine();
-    ++TIME_COUNTER;
+    MusicUpdateSequencer();
+    ++gFrameCounter;
 }

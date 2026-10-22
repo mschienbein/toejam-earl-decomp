@@ -48,7 +48,7 @@ short player_number, powerup;
         projectile->y = player->y + ProjectilePlacementTriples[powerup_index][player_number][direction][1];
         projectile->height = player->height + ProjectilePlacementTriples[powerup_index][player_number][direction][2];
         /* The facing index is now replaced by a movement-direction bitmask. */
-        direction = P1_PROCESSED_INPUT[player_number];
+        direction = gPlayerProcessedInput[player_number];
         direction &= 15;
         facing = player->sprite_state & DIRECTION_MASK;
         if (facing == DIRECTION_UP && !(direction & 1))
@@ -91,7 +91,7 @@ short player_number, powerup;
         projectile->sprite_count = 1;
         projectile->tile_count = 16;
         projectile->tile = VDP_TILE_PRIORITY;
-        animation = AnimationDescriptors_0AEFF6;
+        animation = TomatoProjectileAnimations;
         projectile->sequence = animation->sequence;
         projectile->frames = animation->frames;
         projectile->frame_phase = 0;
@@ -124,13 +124,13 @@ short unused;
             SetSprite(player, GetActivePresentSprite(player));
     }
     shooting_sprite = -1;
-    if (!ELEVATOR_FLAG[player_number] && (player->animation_group_mask & PLAYER_GROUP_WALK) &&
-        (P1_PROCESSED_INPUT[player_number] & 64) &&
-        (P1_PROCESSED_INPUT[player_number] & 15)) {
+    if (!gPlayerElevatorFlags[player_number] && (player->animation_group_mask & PLAYER_GROUP_WALK) &&
+        (gPlayerProcessedInput[player_number] & 64) &&
+        (gPlayerProcessedInput[player_number] & 15)) {
         direction = player->sprite_state & DIRECTION_MASK;
-        if (gPlayer1Powerup[player_number] == PRESENT_TOMATOES)
+        if (gPlayerPowerups[player_number] == PRESENT_TOMATOES)
             shooting_sprite = direction + PLAYER_ANIM_THROW_TOMATO_UP;
-        if (gPlayer1Powerup[player_number] == PRESENT_SLING_SHOT)
+        if (gPlayerPowerups[player_number] == PRESENT_SLING_SHOT)
             shooting_sprite = direction + PLAYER_ANIM_SLING_SHOT_UP;
         if (shooting_sprite != -1)
             SetSprite(player, shooting_sprite);

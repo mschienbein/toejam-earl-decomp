@@ -70,9 +70,9 @@ void ClearTransientEntities()
             FreeEntity(gPlayerDoorwayEntities[slot]);
             gPlayerDoorwayEntities[slot] = 0;
         }
-        if (gPlayer1RainCloudState[slot]) {
-            FreeEntity(gPlayer1RainCloudState[slot]);
-            gPlayer1RainCloudState[slot] = 0;
+        if (gPlayerRainCloudStates[slot]) {
+            FreeEntity(gPlayerRainCloudStates[slot]);
+            gPlayerRainCloudStates[slot] = 0;
         }
         if (gTimedEffectEntities[slot]) {
             FreeEntity(gTimedEffectEntities[slot]);
@@ -96,7 +96,7 @@ void ClearTransientEntities()
             gPlayerInteractionChoiceActive[slot] = 0;
             gPlayerInteractionResponses[slot] = 0;
         }
-        gPlayer1TomatoRainTimer[slot] = 0;
+        gPlayerTomatoRainTicks[slot] = 0;
     }
     PresentReleaseDroppedEntities();
     TelephoneClearAll();
@@ -179,7 +179,7 @@ void DrawPresentDisplayPanel()
 
     if (gPresentDisplayPanelDrawn)
         return;
-    ClearSkipVHBlankFlags();
+    DisableBlankingGraphics();
     for (row = 0; row < 5; ++row) {
         VDP_COMMAND = 0x60140003L + ((row + 5) << 23);
         for (column = 0; column < 19; ++column) {
@@ -191,7 +191,7 @@ void DrawPresentDisplayPanel()
             VDP_DATA = 0xc1d2 + tile;
         }
     }
-    SetSkipVHBlankFlags();
+    EnableBlankingGraphics();
     gPresentDisplayPanelDrawn = 1;
 }
 
@@ -202,7 +202,7 @@ short selection;
     short row, column;
     unsigned short tile_base;
 
-    ClearSkipVHBlankFlags();
+    DisableBlankingGraphics();
     /* The original subtracts this negative tile offset; adding 465 emits ADDI instead. */
     tile_base = InventoryAuxiliaryTileCounts[1] - -465;
     for (row = 0; row < 6; ++row) {
@@ -214,5 +214,5 @@ short selection;
                 VDP_DATA = 0x8000 + InventoryVDPTilemap[selection][row][column] + tile_base;
         }
     }
-    SetSkipVHBlankFlags();
+    EnableBlankingGraphics();
 }

@@ -8,16 +8,16 @@
 extern struct present_info gPresentInfo[28];
 extern char gPlayerInventory[2][16];
 
-/* Two 32-record world-item banks. LEVEL_ITEMS_2 is the existing alias
+/* Two 32-record world-item banks. gItemBank2Records is the existing alias
  * of gObjectTable[1], not another bank allocation. The scalar loaded
  * and player flags likewise alias element one of their byte-array views.
  * Incomplete outer bounds are retained where capacity is not established. */
 extern struct level_item gObjectTable[2][32];
-extern struct level_item LEVEL_ITEMS_2[32];
-extern char LEVEL_PLAYERS_FLAG_1[];
-extern char LEVEL_PLAYERS_FLAG_2;
-extern char LEVEL_LOADED_1[];
-extern char LEVEL_LOADED_2;
+extern struct level_item gItemBank2Records[32];
+extern char gItemBankUsers[];
+extern char gItemBank2Users;
+extern char gItemBankLevels[];
+extern char gItemBank2Level;
 
 /* Dropped-present records and the existing per-level item mask. */
 extern struct level_item gDroppedPresentTable[32];
@@ -25,12 +25,12 @@ extern unsigned long gCollectedLevelItemBits[26];
 
 /* Two eight-byte telephone records and separate ringing state.
  * Existing incomplete state-array bounds are not promoted to guessed sizes. */
-extern struct telephone_state TELEPHONE_1[2];
+extern struct telephone_state gTelephoneStates[2];
 extern char gTelephoneActivated[];
 extern char gTelephoneRingsLeft[];
 extern char gTelephoneTimeToRing[];
 
-/* Additional selected final-batch storage and resource interfaces. */
+/* Current insertion position in the dropped-present table. */
 extern char gDroppedPresentTableIdx;
 
 #endif

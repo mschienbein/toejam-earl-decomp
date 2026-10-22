@@ -34,6 +34,6 @@ FurtherZ80Initialisation_Loop2:
     mulu.w %d1,%d0
 FurtherZ80Initialisation_End:
     movem.l (%sp)+,%d2
-    move.w #SOUND_STARTUP_TICKS,(ram_ffe486).l
+    move.w #SOUND_STARTUP_TICKS, (gMusicTemplateRestartState).l
     rts
 .size LoadSoundDriverToZ80, .-LoadSoundDriverToZ80

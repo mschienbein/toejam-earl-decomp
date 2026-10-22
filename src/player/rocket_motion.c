@@ -32,7 +32,7 @@ unsigned short terrain;
         direction = 1;
     else if (velocity_y < 0 && direction != 0)
         direction = 0;
-    jump = P1_PROCESSED_INPUT[player] & 0x40;
+    jump = gPlayerProcessedInput[player] & 0x40;
     if (jump && terrain <= TERRAIN_WALKABLE_MAX && (state->animation_group_mask & PLAYER_GROUP_SKATES))
         sprite = direction + PLAYER_ANIM_SKATES_CROUCH_UP;
     else if (!jump && (state->animation_group_mask & PLAYER_GROUP_SKATES_CROUCH)) {
@@ -181,8 +181,8 @@ unsigned short terrain;
     unsigned char input;
 
     player = state->entity_index;
-    if (TOEJAM_FALL_STATE[player] || !(state->animation_group_mask & PLAYER_GROUP_ALL_SKATES) ||
-        ELEVATOR_FLAG[player])
+    if (gPlayerFallStates[player] || !(state->animation_group_mask & PLAYER_GROUP_ALL_SKATES) ||
+        gPlayerElevatorFlags[player])
         return;
     if ((state->velocity_height < 0 && state->height <= 0) ||
         (state->velocity_height > 0 && !state->acceleration_height && state->height >= 0)) {
@@ -191,7 +191,7 @@ unsigned short terrain;
         state->acceleration_height = 0;
         state->draw_flags |= ENTITY_SHADOW;
     }
-    if ((P1_PROCESSED_INPUT[player] & 15) != (P1_PREV_PROCESSED_INPUT[player] & 15)) {
+    if ((gPlayerProcessedInput[player] & 15) != (gPlayerPreviousProcessedInput[player] & 15)) {
         changed_direction = 1;
         gPlayerRocketTurnDelay[player] = 0;
     } else if (gPlayerRocketTurnDelay[player] && gPlayerRocketTurnDelay[player]--)
@@ -199,12 +199,12 @@ unsigned short terrain;
     if (gPlayerControlRemapEntities[player])
         input = PlayerRemapDirectionalInput(player);
     else
-        input = P1_PROCESSED_INPUT[player];
+        input = gPlayerProcessedInput[player];
     if (state->velocity_y && (state->draw_flags & ENTITY_BLOCKED_Y_OR_HEIGHT)) {
         input &= 0xfc;
         changed_direction = 1;
         if (!(input & 12)) {
-            if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
+            if (gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
                 input |= 1;
             else
                 input |= 2;
@@ -214,7 +214,7 @@ unsigned short terrain;
         input &= 0xf3;
         changed_direction = 1;
         if (!(input & 3)) {
-            if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
+            if (gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
                 input |= 4;
             else
                 input |= 8;

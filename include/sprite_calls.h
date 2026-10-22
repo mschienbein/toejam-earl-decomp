@@ -8,13 +8,13 @@ extern void AppendSpriteTilesToBuffer();
 extern void ReleaseEntityViewportSprites();
 extern void UpdateEntityShadows();
 extern void ReleaseEntityShadows();
-extern void Process2FEntityFlag();
+extern void UpdateAllEntityShadows();
 extern void SetRAMIndexes();
 extern void SetSprite();
-extern void SpriteLoadingStuff();
+extern void UploadQueuedSpriteGraphics();
 extern void SpriteUnpackInterleavedRLE();
 extern void SpriteUnpackRLE();
-#ifndef TJE_LOCAL_FUNC_00BDD8
+#ifndef TJE_LOCAL_ISENTITYVISIBLEINVIEWPORT
 extern short IsEntityVisibleInViewport();
 #endif
 extern void UpdateEntityViewportSprites();
@@ -45,7 +45,7 @@ extern short AllocateSpriteTileRun();
 extern void FreeSpriteTileRun();
 extern void AllocateEntityViewportSprites();
 extern void ResetEntityRuntimeState();
-#ifndef TJE_LOCAL_FUNC_00D904
+#ifndef TJE_LOCAL_ALLOCATEENTITY
 extern short AllocateEntity();
 #endif
 extern void FreeEntity();

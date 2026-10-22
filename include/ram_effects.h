@@ -4,10 +4,10 @@
 /* Active present and effect state retains its independent parallel
  * arrays, not a speculative record layout. Incomplete outer bounds are
  * retained where consumers do not establish a finite allocation.
- * gPlayer2Powerup keeps its scalar alias of gPlayer1Powerup[1]. */
-extern char gPlayer1Powerup[];
+ * gPlayer2Powerup keeps its scalar alias of gPlayerPowerups[1]. */
+extern char gPlayerPowerups[];
 extern char gPlayer2Powerup;
-extern unsigned short gPlayer1PowerupTimer[];
+extern unsigned short gPlayerPowerupTimers[];
 extern char gPlayerTransientEffectEntities[];
 extern char gPlayerDecoyEntities[];
 extern char gPlayerPromotionDisplayEntities[];
@@ -19,10 +19,10 @@ extern char gDoorwayPlayerContactFlags[];
 extern char gSecondDoorwayPlayerContactFlags;
 
 /* Burp, rain-cloud and other present effect handles and timers. */
-extern char gPlayer1BurpsLeft[];
-extern char gPlayer1BurpTimer[];
-extern char gPlayer1RainCloudState[];
-extern short gPlayer1RainCloudTimer[];
+extern char gPlayerBurpsLeft[];
+extern char gPlayerBurpTimers[];
+extern char gPlayerRainCloudStates[];
+extern short gPlayerRainCloudTimers[];
 extern char gPlayerBoomBoxEntities[];
 extern short gPlayerBoomBoxTimers[];
 
@@ -42,13 +42,13 @@ extern short gPlayerControlRemapTimers[];
 extern char gPlayerControlRemapIndices[];
 extern char gPlayerActiveTerrainEffectEntities[];
 extern char gPlayerOneShotTerrainEffectEntities[];
-extern char gPlayer1TomatoRainTimer[2];
-extern char TOMATO_RAIN_TIMER[2];
+extern char gPlayerTomatoRainTicks[2];
+extern char gPlayerTomatoRainSpawnDelay[2];
 
 /* Six mole-effect object handles shared with land/effect cleanup. */
 extern char gMoleEffectEntities[6];
 
-/* Additional selected final-batch storage and resource interfaces. */
+/* Second-player burp-count alias and per-player lemonade reward state. */
 extern char gPlayer2BurpsLeft;
 extern char gPlayerLemonadeRewardStates[];
 

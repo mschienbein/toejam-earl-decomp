@@ -69,18 +69,18 @@ short release_first;
                 return (short)AllocateEntity();
             }
     for (bank = 0; bank < 2; ++bank)
-        if (EARTHLING_LOAD_FLAG[bank]) {
+        if (gEarthlingBankUsers[bank]) {
             for (entry = 0; entry < 20; ++entry)
-                if (object_number = EARTHLINGS_IN_LEVEL[bank][entry].second_object) {
+                if (object_number = gEarthlingBanks[bank][entry].second_object) {
                     FreeEntity(object_number);
-                    EARTHLINGS_IN_LEVEL[bank][entry].second_object = 0;
+                    gEarthlingBanks[bank][entry].second_object = 0;
                     return (short)AllocateEntity();
                 }
             for (entry = 0; entry < 20; ++entry)
-                if (EARTHLINGS_IN_LEVEL[bank][entry].kind &&
-                    (object_number = EARTHLINGS_IN_LEVEL[bank][entry].object)) {
+                if (gEarthlingBanks[bank][entry].kind &&
+                    (object_number = gEarthlingBanks[bank][entry].object)) {
                     FreeEntity(object_number);
-                    EARTHLINGS_IN_LEVEL[bank][entry].object = 0;
+                    gEarthlingBanks[bank][entry].object = 0;
                     return (short)AllocateEntity();
                 }
         }
@@ -136,9 +136,9 @@ unsigned char MapGetBankPathDirections(bank, row, column)
 short bank, row, column;
 {
     if (!bank)
-        return gMapDataD[row][column] & 15;
+        return gMapPathDirectionBanks[row][column] & 15;
     else
-        return gMapDataD[row][column] >> 4;
+        return gMapPathDirectionBanks[row][column] >> 4;
 }
 
 /* Remove the pending direction from a marked cell and choose an alternative
@@ -155,9 +155,9 @@ short bank, row, column;
     short alternative;
 
     if (!bank)
-        map = &gMapDataA[0][0];
+        map = &gPlayer1LevelMap[0][0];
     else
-        map = &gMapDataB[0][0];
+        map = &gPlayer2LevelMap[0][0];
     cell = map[row * 19 + column];
     if (!(cell & 0x4000))
         return -1;
@@ -226,11 +226,11 @@ short bank, row, column;
         directions &= ~shape;
         shape = MapGenerationLookupTables.tiles[shape];
         if (!bank) {
-            gMapDataD[row][column] &= 0xf0;
-            gMapDataD[row][column] |= directions;
+            gMapPathDirectionBanks[row][column] &= 0xf0;
+            gMapPathDirectionBanks[row][column] |= directions;
         } else {
-            gMapDataD[row][column] &= 15;
-            gMapDataD[row][column] |= directions << 4;
+            gMapPathDirectionBanks[row][column] &= 15;
+            gMapPathDirectionBanks[row][column] |= directions << 4;
         }
     }
     alternatives = TileAlternativePointers[shape];
@@ -324,7 +324,7 @@ short camera, x, y;
                 object->x += (short)(GetRandomNumber() % 97) + 16;
             else
                 object->y += (short)(GetRandomNumber() % 33) + 16;
-            if (!SPLIT_SCREEN || !P1_MENU_OPEN[camera])
+            if (!gSplitScreenEnabled || !gPlayerInventoryOpen[camera])
                 object->behavior_flags &= ~ENTITY_HIDDEN;
             PlaySound(PSG_SHORT_NOISE_FADE_RATE2, 50);
             break;
@@ -344,11 +344,11 @@ short camera, row, column;
     short sweep_step, effect_offset;
 
     if (!camera) {
-        cell = gMapDataA[row][column];
+        cell = gPlayer1LevelMap[row][column];
         first_row = gCamera1TileRowCursor;
         first_column = gCamera1TileColumnCursor;
     } else {
-        cell = gMapDataB[row][column];
+        cell = gPlayer2LevelMap[row][column];
         first_row = gCamera2TileRowCursor;
         first_column = gCamera2TileColumnCursor;
     }
@@ -411,9 +411,9 @@ short camera, row, column;
     while (gCameraRowUploadPending[camera] || gCameraColumnUploadPending[camera])
         ;
     if (!camera)
-        level = gLevel912C;
+        level = gPlayer1MapLevel;
     else
-        level = gLevel912E;
+        level = gPlayer2MapLevel;
     for (animation = 0; animation < 8; ++animation) {
         object_number = AllocateEntityWithEviction(0);
         gLandPathAnimationEntities[animation] = object_number;
@@ -484,15 +484,15 @@ short camera, row, column;
             object = &gPlayerInfo[object_number];
             while (object->frame_duration) {
                 UpdateAndQueueEntitySprites();
-                while (VBLANK_FLAG_2)
+                while (gSpriteGraphicsUploadPending)
                     ;
             }
             FreeEntity(object_number);
             gLandPathAnimationEntities[animation] = 0;
         }
-        if (gLevel912C != gLevel912E)
+        if (gPlayer1MapLevel != gPlayer2MapLevel)
             break;
-        if (!SPLIT_SCREEN) {
+        if (!gSplitScreenEnabled) {
             CopyLevelBetweenPlayers(camera);
             break;
         }
@@ -511,9 +511,9 @@ short player;
     unsigned char *terrain;
 
     if (!player)
-        terrain = LAND_NEAR_TOEJAM[0];
+        terrain = gPlayer1NearbyTerrain[0];
     else
-        terrain = LAND_NEAR_EARL[0];
+        terrain = gPlayer2NearbyTerrain[0];
     if (terrain[7] >= 0x50 || terrain[11] >= 0x50 ||
         terrain[13] >= 0x50 || terrain[17] >= 0x50)
         return 1;
@@ -529,16 +529,16 @@ void ProcessLand()
     struct object_state *player;
 
     if (gPlayerLives[PLAYER_TOEJAM] >= 0 && gPlayerInfo[PLAYER_TOEJAM].height <= 4 &&
-        gPlayerInfo[PLAYER_TOEJAM].level > 1 && !ELEVATOR_FLAG[PLAYER_TOEJAM]) {
+        gPlayerInfo[PLAYER_TOEJAM].level > 1 && !gPlayerElevatorFlags[PLAYER_TOEJAM]) {
         row = (gPlayerInfo[PLAYER_TOEJAM].y >> 6) - 1;
         column = (gPlayerInfo[PLAYER_TOEJAM].x >> 7) - 1;
         if (row >= 0 && column >= 0 && row < 26 && column < 19 &&
-            (gMapDataA[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(0)) {
+            (gPlayer1LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(0)) {
             MapAnimateMarkedLandPaths(0, row, column);
-            EarthlingDamageOnHazardTerrain(0, gLevel912C);
+            EarthlingDamageOnHazardTerrain(0, gPlayer1MapLevel);
             player = &gPlayerInfo[PLAYER_TOEJAM];
             UpdateLandAroundPlayer(0);
-            if (LAND_UNDER_TOEJAM == TERRAIN_VOID && !gPlayerInfo[PLAYER_TOEJAM].height &&
+            if (gPlayer1TerrainUnderfoot == TERRAIN_VOID && !gPlayerInfo[PLAYER_TOEJAM].height &&
 #if REVISION >= 2
                 player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
 #endif
@@ -549,17 +549,17 @@ void ProcessLand()
         }
     }
     if (gPlayerLives[PLAYER_EARL] >= 0 && gPlayerInfo[PLAYER_EARL].height <= 4 &&
-        gPlayerInfo[PLAYER_EARL].level > 1 && !ELEVATOR_FLAG[PLAYER_EARL]) {
+        gPlayerInfo[PLAYER_EARL].level > 1 && !gPlayerElevatorFlags[PLAYER_EARL]) {
         row = (gPlayerInfo[PLAYER_EARL].y >> 6) - 1;
         column = (gPlayerInfo[PLAYER_EARL].x >> 7) - 1;
         if (row >= 0 && column >= 0 && row < 26 && column < 19) {
-            if (SPLIT_SCREEN) {
-                if ((gMapDataB[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(1)) {
+            if (gSplitScreenEnabled) {
+                if ((gPlayer2LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(1)) {
                     MapAnimateMarkedLandPaths(1, row, column);
-                    EarthlingDamageOnHazardTerrain(1, gLevel912E);
+                    EarthlingDamageOnHazardTerrain(1, gPlayer2MapLevel);
                     player = &gPlayerInfo[PLAYER_EARL];
                     UpdateLandAroundPlayer(1);
-                    if (LAND_UNDER_EARL == TERRAIN_VOID && !gPlayerInfo[PLAYER_EARL].height &&
+                    if (gPlayer2TerrainUnderfoot == TERRAIN_VOID && !gPlayerInfo[PLAYER_EARL].height &&
 #if REVISION >= 2
                         player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
 #endif
@@ -569,12 +569,12 @@ void ProcessLand()
                     }
                 }
             } else {
-                if ((gMapDataA[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(1)) {
+                if ((gPlayer1LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(1)) {
                     MapAnimateMarkedLandPaths(0, row, column);
-                    EarthlingDamageOnHazardTerrain(0, gLevel912C);
+                    EarthlingDamageOnHazardTerrain(0, gPlayer1MapLevel);
                     player = &gPlayerInfo[PLAYER_EARL];
                     UpdateLandAroundPlayer(1);
-                    if (LAND_UNDER_EARL == TERRAIN_VOID && !gPlayerInfo[PLAYER_EARL].height &&
+                    if (gPlayer2TerrainUnderfoot == TERRAIN_VOID && !gPlayerInfo[PLAYER_EARL].height &&
 #if REVISION >= 2
                         player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
 #endif

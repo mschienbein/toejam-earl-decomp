@@ -1,35 +1,35 @@
 #ifndef TJE_RAM_SYSTEM_H
 #define TJE_RAM_SYSTEM_H
 
-/* Frame synchronization and interrupt override. INPUT_READING_FLAG_LO
- * is the low-byte alias of TIME_COUNTER on the big-endian target. */
-extern unsigned short TIME_COUNTER;
-extern char INPUT_READING_FLAG_LO;
+/* Frame synchronization and interrupt override. gFrameCounterLowByte
+ * is the low-byte alias of gFrameCounter on the big-endian target. */
+extern unsigned short gFrameCounter;
+extern char gFrameCounterLowByte;
 extern void (*gVBlankFunc)();
-extern char SKIP_HBLANK_FLAG;
-extern char SKIP_VBLANK_FLAG;
-extern unsigned char VBLANK_FLAG_2;
-extern char VBLANK_FLAG_3;
-extern char VBLANK_FLAG_4;
-extern char VBLANK_FLAG_5;
-extern char VBLANK_FLAG_6;
-extern char VBLANK_FLAG_7;
-extern char VBLANK_FLAG_8;
-extern char VHBLANK_FLAG_2;
-extern short WAIT_FOR_VBLANK_FLAG;
+extern char gHBlankGraphicsEnabled;
+extern char gVBlankGraphicsEnabled;
+extern unsigned char gSpriteGraphicsUploadPending;
+extern char gVBlankGraphicsPaused;
+extern char gInventoryRedrawPhase;
+extern char gHudRedrawPending;
+extern char gVBlankAudioInputOverride;
+extern char gRequestedMusicSelection;
+extern char gCurrentMusicSelection;
+extern char gTextFontAnimationEnabled;
+extern short gTerrainPriorityUpdatePending;
 
-/* Existing scalar byte alias of P1_MENU_OPEN[1] in ram_ui.h; this is
+/* Existing scalar byte alias of gPlayerInventoryOpen[1] in ram_ui.h; this is
  * not a separate interrupt-state allocation. */
-extern char HBLANK_FLAG_1;
+extern char gPlayer2InventoryOpen;
 
 /* Input state keeps its existing byte-array and word views. Incomplete
  * outer bounds are retained; no adjacent-symbol guess establishes capacity.
- * gPlayer2PreviousProcessedInput also names P1_PREV_PROCESSED_INPUT[1]. */
-extern unsigned short P1_PAD_INPUT;
-extern unsigned short P2_PAD_INPUT;
-extern unsigned char P1_PROCESSED_INPUT[];
-extern unsigned char P1_PREV_PROCESSED_INPUT[];
-extern unsigned char P1_KEYDOWN[];
+ * gPlayer2PreviousProcessedInput also names gPlayerPreviousProcessedInput[1]. */
+extern unsigned short gController1RawInput;
+extern unsigned short gController2RawInput;
+extern unsigned char gPlayerProcessedInput[];
+extern unsigned char gPlayerPreviousProcessedInput[];
+extern unsigned char gPlayerSleepPreviousInput[];
 extern char gControllerPortsSwapped;
 extern unsigned char gPlayer2PreviousProcessedInput;
 extern char gControllerButtonsAcSwapped;
@@ -41,20 +41,20 @@ extern char gLevelPaletteAnimationFrame;
 extern char gLevelPaletteAnimationDelay;
 
 /* Shared random cache, its current index and generator state. */
-extern unsigned short PREGEN_RANDOMS[59];
+extern unsigned short gCachedRandomValues[59];
 extern unsigned short gRandomCacheIndex;
 extern long gRNGState;
 
 /* Existing shared sound-driver state views. */
-extern short gMusicUnknownE472;
+extern short gFmEffectTemplateStatus;
 extern short gBoomBoxMusicTemplateHold;
-extern char gMusicUnknownE488;
+extern char gMusicAnimationEvent;
 
-/* Additional selected final-batch storage and resource interfaces. */
-extern short gMusicUnknownE478;
-extern short gMusicUnknownE47A;
-extern short gMusicUnknownE47C;
-extern char gMusicUnknownE489;
+/* Deferred FM requests, animation-event channel, and second-player input alias. */
+extern short gFmChannelReleaseRequested;
+extern short gMusicTrackResetRequested;
+extern short gPendingFmEffect;
+extern char gMusicAnimationChannel;
 extern unsigned char gPlayer2ProcessedInput;
 
 #endif

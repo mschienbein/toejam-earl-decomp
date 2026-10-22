@@ -26,21 +26,21 @@ int IntroVideo()
 {
     short interrupted;
 
-    VBLANK_FLAG_7 = 0;
+    gRequestedMusicSelection = 0;
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
-    gMusicUnknownE489 = 0;
-    TOEJAM_CAMERA_NEWX = 0;
-    TOEJAM_CAMERA_NEWY = 0;
+    gMusicAnimationChannel = 0;
+    gCamera1PendingX = 0;
+    gCamera1PendingY = 0;
     VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
-    VDP_DATA = TOEJAM_CAMERA_NEWY;
+    VDP_DATA = gCamera1PendingY;
     VDP_COMMAND = 0x7c000003;
-    VDP_DATA = TOEJAM_CAMERA_NEWX;
+    VDP_DATA = gCamera1PendingX;
     VDP_COMMAND = 0x40020010;
-    VDP_DATA = TOEJAM_CAMERA_NEWY;
+    VDP_DATA = gCamera1PendingY;
     VDP_COMMAND = 0x7c020003;
-    VDP_DATA = TOEJAM_CAMERA_NEWX;
+    VDP_DATA = gCamera1PendingX;
     ClearUpperVramTilemap();
     gCameraTileAttributes = 0x8000;
     VDP_COMMAND = 0x70000002;
@@ -67,16 +67,16 @@ int IntroVideo()
     ClearUpperVramTilemap();
     ClearLowerVramTilemap();
     CutsceneReleaseFlaggedEntityRange();
-    TOEJAM_CAMERA_NEWX = 0;
-    TOEJAM_CAMERA_NEWY = 0;
+    gCamera1PendingX = 0;
+    gCamera1PendingY = 0;
     VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
-    VDP_DATA = TOEJAM_CAMERA_NEWY;
+    VDP_DATA = gCamera1PendingY;
     VDP_COMMAND = 0x7c000003;
-    VDP_DATA = TOEJAM_CAMERA_NEWX;
+    VDP_DATA = gCamera1PendingX;
     VDP_COMMAND = 0x40020010;
-    VDP_DATA = TOEJAM_CAMERA_NEWY;
+    VDP_DATA = gCamera1PendingY;
     VDP_COMMAND = 0x7c020003;
-    VDP_DATA = TOEJAM_CAMERA_NEWX;
+    VDP_DATA = gCamera1PendingX;
     return interrupted;
 }
 
@@ -362,7 +362,7 @@ short IntroPart2()
             break;
         case 9:
             CutsceneReleaseTextEntities();
-            VBLANK_FLAG_7 = MUSIC_TRANSITION;
+            gRequestedMusicSelection = MUSIC_TRANSITION;
             advance_period = 1;
             gCutsceneScriptCountdown = 306;
             break;
@@ -384,7 +384,7 @@ short IntroPart3()
     short advance_scene;
 
     IntroBeginLargePlayerScene(7);
-    VBLANK_FLAG_7 = 0;
+    gRequestedMusicSelection = 0;
     gCutsceneScriptCountdown = 17;
     gCutsceneMusicActorAnimationEnabled = 1;
     advance_scene = 0;
@@ -475,7 +475,7 @@ short IntroPart4()
             WaitForNextVBlank(1);
             VDP_COMMAND = 0x7c020003;
             VDP_DATA = scroll_position / 4;
-            SpriteLoadingStuff(0, 0);
+            UploadQueuedSpriteGraphics(0, 0);
             SelectViewportSpriteChain(0);
             WaitForNextVBlank(1);
             CutsceneUpdateDriftingEntities(scroll_position);
@@ -731,25 +731,25 @@ short IntroPart7()
         AnimateTitleTransitionBackground(0);
         if (shake_phase) {
             if (shake_phase == 1) {
-                TOEJAM_CAMERA_NEWX += 5;
-                TOEJAM_CAMERA_NEWY += 5;
+                gCamera1PendingX += 5;
+                gCamera1PendingY += 5;
                 shake_phase = 2;
             } else if (shake_phase == 2) {
-                TOEJAM_CAMERA_NEWX -= 5;
-                TOEJAM_CAMERA_NEWY -= 5;
+                gCamera1PendingX -= 5;
+                gCamera1PendingY -= 5;
                 shake_phase = 1;
             }
         }
-        VBLANK_FLAG_2 = 0;
+        gSpriteGraphicsUploadPending = 0;
         UpdateAndQueueEntitySprites();
         WaitForNextVBlank(1);
         if (shake_phase) {
             VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
-            VDP_DATA = TOEJAM_CAMERA_NEWY;
+            VDP_DATA = gCamera1PendingY;
             VDP_COMMAND = 0x7c000003;
-            VDP_DATA = -TOEJAM_CAMERA_NEWX;
+            VDP_DATA = -gCamera1PendingX;
         }
-        SpriteLoadingStuff(0, 0);
+        UploadQueuedSpriteGraphics(0, 0);
         SelectViewportSpriteChain(0);
         IntroUpdateFlyingEntityMotion(driving_pose);
         if (scroll_direction) {
@@ -802,14 +802,14 @@ short IntroPart7()
     IntroReleaseAsteroidEntity();
     IntroReleaseFlyingEntitySlots();
     IntroReleaseDrivingParts();
-    TOEJAM_CAMERA_NEWX = 0;
-    TOEJAM_CAMERA_NEWY = 0;
+    gCamera1PendingX = 0;
+    gCamera1PendingY = 0;
     VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
-    VDP_DATA = TOEJAM_CAMERA_NEWY;
+    VDP_DATA = gCamera1PendingY;
     VDP_COMMAND = 0x7c000003;
-    VDP_DATA = TOEJAM_CAMERA_NEWX;
+    VDP_DATA = gCamera1PendingX;
     VDP_COMMAND = 0x7c020003;
-    VDP_DATA = TOEJAM_CAMERA_NEWX;
+    VDP_DATA = gCamera1PendingX;
     CutsceneStepFrameAndMusicCadence(0, 0);
     return gCutsceneScriptState != -1;
 }

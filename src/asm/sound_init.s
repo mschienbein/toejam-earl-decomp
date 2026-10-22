@@ -5,17 +5,17 @@
 
 .equ MUSIC_INITIAL_STATE_BYTES, 0x114
 
-| Copy 276 bytes starting at gMusicPointer1. The explicit long counter load,
+| Copy 276 bytes starting at gMusicFmChannelOwners. The explicit long counter load,
 | word predecrement, and byte-at-a-time DBRA loop preserve the original code.
-.globl RAMWritesRoutine1
-.type RAMWritesRoutine1, @function
-RAMWritesRoutine1:
-    lea (RAMWritesRoutine1ValuesA,%pc),%a0
-    lea (gMusicPointer1).l,%a1
+.globl MusicRestoreInitialState
+.type MusicRestoreInitialState, @function
+MusicRestoreInitialState:
+    lea (MusicInitialState,%pc),%a0
+    lea (gMusicFmChannelOwners).l,%a1
     move.l #MUSIC_INITIAL_STATE_BYTES,%d0
     subq.w #0x1,%d0
-RAMWritesRoutine1_Loop:
+MusicRestoreInitialState_CopyBytes:
     move.b (%a0)+,(%a1)+
-    dbra %d0,RAMWritesRoutine1_Loop
+    dbra %d0,MusicRestoreInitialState_CopyBytes
     rts
-.size RAMWritesRoutine1, .-RAMWritesRoutine1
+.size MusicRestoreInitialState, .-MusicRestoreInitialState

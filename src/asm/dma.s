@@ -10,9 +10,9 @@
 
 | Arguments: source address, VRAM byte address, DMA length in words (all stack longs).
 | Program the mode-2 shadow, DMA count/source registers, then issue the split VRAM command.
-.globl VDPWritesRoutine1
-.type VDPWritesRoutine1, @function
-VDPWritesRoutine1:
+.globl DmaCopyWordsToVram
+.type DmaCopyWordsToVram, @function
+DmaCopyWordsToVram:
     movem.l %d2-%d4,-(%sp)
     move.l (0x10,%sp),%d3
     move.l (0x14,%sp),%d2
@@ -66,11 +66,11 @@ VDPWritesRoutine1:
     asl.l %d2,%d1
     addi.l #VDP_DMA_VRAM_WRITE,%d1
     add.l %d1,%d0
-    move.l %d0,(USED_BY_VDP_1).l
-    move.w (USED_BY_VDP_1).l,(VDP_CONTROL).l
+    move.l %d0,(gVdpDmaCommand).l
+    move.w (gVdpDmaCommand).l,(VDP_CONTROL).l
     nop
-    move.w (USED_BY_VDP_2).l,(VDP_CONTROL).l
+    move.w (gVdpDmaCommandLowWord).l,(VDP_CONTROL).l
     nop
     movem.l (%sp)+,%d2-%d4
     rts
-.size VDPWritesRoutine1, .-VDPWritesRoutine1
+.size DmaCopyWordsToVram, .-DmaCopyWordsToVram

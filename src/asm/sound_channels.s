@@ -16,6 +16,6 @@ AudioReleaseAllFmChannels:
     movem.l (%sp)+,%d1
     dbra %d1,.L_write_channel_masks
     movem.l (%sp)+,%d3/%a5
-    clr.w (gMusicUnknownE478).l
+    clr.w (gFmChannelReleaseRequested).l
     rts
 .size AudioReleaseAllFmChannels, .-AudioReleaseAllFmChannels

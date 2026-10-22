@@ -46,7 +46,7 @@ short force_black;
 void TextCopyFontBanksToRam()
 {
     long *source = ImageTextChars1;
-    long *destination = (long *)TEXT_SPRITE_DATA_START;
+    long *destination = (long *)gTextFontBuffers;
     short bank, word;
 
     for (bank = 0; bank < 2; bank++) {
@@ -56,30 +56,31 @@ void TextCopyFontBanksToRam()
     }
 }
 
-void SetVHBlankFlag2()
+/* Enable alternate font-bank animation for inventory text. */
+void EnableTextFontAnimation()
 {
-    VHBLANK_FLAG_2 = 1;
+    gTextFontAnimationEnabled = 1;
 }
 
 /* Keep text animation enabled while either menu uses it. */
-void ClearVHBlankFlag2()
+void DisableTextFontAnimationIfMenusClosed()
 {
-    if (!P1_MENU_OPEN[PLAYER_TOEJAM] && !HBLANK_FLAG_1)
-        VHBLANK_FLAG_2 = 0;
+    if (!gPlayerInventoryOpen[PLAYER_TOEJAM] && !gPlayer2InventoryOpen)
+        gTextFontAnimationEnabled = 0;
 }
 
 /* Alternate the two RAM font banks on every rate-th animation tick. */
 int TextAnimateFontBanks(rate)
 short rate;
 {
-    if (!VHBLANK_FLAG_2) {
-        if (!P1_TEXT_WIGGLE)
+    if (!gTextFontAnimationEnabled) {
+        if (!gTextFontBank)
             return 0;
-        P1_MENU_COUNTER = 0;
+        gTextFontAnimationTick = 0;
     }
-    if (!(P1_MENU_COUNTER++ % rate)) {
-        P1_TEXT_WIGGLE ^= 1;
-        VDPWritesRoutine1(TEXT_SPRITE_DATA_START[P1_TEXT_WIGGLE], 0xb680, 944);
+    if (!(gTextFontAnimationTick++ % rate)) {
+        gTextFontBank ^= 1;
+        DmaCopyWordsToVram(gTextFontBuffers[gTextFontBank], 0xb680, 944);
         return 1;
     }
     return 0;
@@ -88,9 +89,9 @@ short rate;
 /* Bracket a single vertical blank with the graphics update flag. */
 void WaitForVBlankWithGraphicsPaused()
 {
-    VBLANK_FLAG_3 = 1;
+    gVBlankGraphicsPaused = 1;
     WaitForNextVBlank(1);
-    VBLANK_FLAG_3 = 0;
+    gVBlankGraphicsPaused = 0;
 }
 
 /* Hide active sprite links belonging to the requested viewport. */
@@ -101,7 +102,7 @@ long viewport;
     char viewport_mask;
     struct object_state *object;
 
-    while (VBLANK_FLAG_2)
+    while (gSpriteGraphicsUploadPending)
         ;
     if (viewport == 0)
         viewport_mask = 2;
@@ -114,7 +115,7 @@ long viewport;
     }
     PositionEntitySprites(gEntityDrawListHead);
     BuildViewportSpriteLinks();
-    VBLANK_FLAG_2 = 1;
+    gSpriteGraphicsUploadPending = 1;
     WaitForNextVBlank(1);
 }
 
@@ -124,9 +125,9 @@ void InventoryServiceRedrawPhase()
     short column, row, row_end;
     unsigned short tile;
 
-    if (VBLANK_FLAG_4 >= 3) {
+    if (gInventoryRedrawPhase >= 3) {
         if (!gInventoryRedrawPlayer) {
-            if (VBLANK_FLAG_4 == 4) {
+            if (gInventoryRedrawPhase == 4) {
                 row = 0;
                 row_end = 7;
             } else {
@@ -134,7 +135,7 @@ void InventoryServiceRedrawPhase()
                 row_end = 14;
             }
         } else {
-            if (VBLANK_FLAG_4 == 4) {
+            if (gInventoryRedrawPhase == 4) {
                 row = 14;
                 row_end = 21;
             } else {
@@ -154,19 +155,19 @@ void InventoryServiceRedrawPhase()
                 VDP_DATA = tile + 0x8580;
             }
         }
-    } else if (VBLANK_FLAG_4 == 2) {
+    } else if (gInventoryRedrawPhase == 2) {
         ForceTextBackgroundColorToBlack(1);
         InventoryDrawPlayerStats(gInventoryRedrawPlayer);
         InventoryDrawActionBanner(gInventoryRedrawPlayer, gInventoryBannerMode[gInventoryRedrawPlayer], 1);
         DrawHUD();
-    } else if (P1_MENU_OPEN[gInventoryRedrawPlayer] == 2)
+    } else if (gPlayerInventoryOpen[gInventoryRedrawPlayer] == 2)
         InventoryDrawMailOrderOffers(gInventoryRedrawPlayer);
     else {
         LoadPresentsIntoInventory(gInventoryRedrawPlayer);
-        if (P1_MENU_OPEN[gInventoryRedrawPlayer] == 3)
+        if (gPlayerInventoryOpen[gInventoryRedrawPlayer] == 3)
             InventoryDrawBucks(gInventoryRedrawPlayer);
     }
-    VBLANK_FLAG_4--;
+    gInventoryRedrawPhase--;
 }
 
 /* Pick three distinct non-excluded mailbox gifts and prices with a level seed. */
@@ -179,13 +180,13 @@ short player_number, level;
     for (slot = 0; slot < 3; slot++) {
         present = SelectRandomPresent();
         if (present == PRESENT_EXTRA_LIFE || present == PRESENT_PROMOTION || present == PRESENT_JACKPOT ||
-            (slot > 0 && gPlayer1MailboxItems[player_number][0] == present) ||
-            (slot > 1 && gPlayer1MailboxItems[player_number][1] == present)) {
+            (slot > 0 && gPlayerMailboxItems[player_number][0] == present) ||
+            (slot > 1 && gPlayerMailboxItems[player_number][1] == present)) {
             slot--;
             continue;
         }
-        gPlayer1MailboxItems[player_number][slot] = present;
-        gPlayer1MailboxPrices[player_number][slot] = GetRandomNumber() % 3 + 3;
+        gPlayerMailboxItems[player_number][slot] = present;
+        gPlayerMailboxPrices[player_number][slot] = GetRandomNumber() % 3 + 3;
     }
     StackBasedRandom(saved_random);
 }
@@ -202,7 +203,7 @@ short player_number, menu_kind;
     else
         viewport = 1;
     player = &gPlayerInfo[player_number];
-    if (SPLIT_SCREEN) {
+    if (gSplitScreenEnabled) {
         EntityClearViewportSprites(viewport);
         player->behavior_flags |= ENTITY_PLAYER_SUPPRESSED;
         player->frame_duration = 0;
@@ -215,48 +216,48 @@ short player_number, menu_kind;
     } else
         gInventoryBannerMode[player_number] = 3;
 #if REVISION >= 2
-    P1_IDLE_COUNTER[player_number] = 0;
+    gPlayerIdleTicks[player_number] = 0;
 #endif
     InventoryInitializeDisplayEntities(player_number);
     gInventoryRedrawPlayer = player_number;
-    VBLANK_FLAG_4 = 4;
-    while (VBLANK_FLAG_4) {
-        if (!P1_MENU_OPEN[player_number] && VBLANK_FLAG_4 <= 2)
-            P1_MENU_OPEN[player_number] = menu_kind;
+    gInventoryRedrawPhase = 4;
+    while (gInventoryRedrawPhase) {
+        if (!gPlayerInventoryOpen[player_number] && gInventoryRedrawPhase <= 2)
+            gPlayerInventoryOpen[player_number] = menu_kind;
     }
-    if (!SPLIT_SCREEN) {
-        EARL_CAMERA_NEWX = 0;
-        EARL_CAMERA_NEWY = 112;
+    if (!gSplitScreenEnabled) {
+        gCamera2PendingX = 0;
+        gCamera2PendingY = 112;
     }
-    SetVHBlankFlag2();
+    EnableTextFontAnimation();
 }
 
 /* Save and replace the open inventory cameras, or restore their positions. */
 void InventorySetCameraSuspension(suspend)
 int suspend;
 {
-    if (!SPLIT_SCREEN)
+    if (!gSplitScreenEnabled)
         return;
-    if (P1_MENU_OPEN[PLAYER_TOEJAM]) {
+    if (gPlayerInventoryOpen[PLAYER_TOEJAM]) {
         if (suspend) {
-            gInventorySavedCamera1X = TOEJAM_CAMERA_NEWX;
-            gInventorySavedCamera1Y = TOEJAM_CAMERA_NEWY;
-            TOEJAM_CAMERA_NEWX = 0;
-            TOEJAM_CAMERA_NEWY = 0;
+            gInventorySavedCamera1X = gCamera1PendingX;
+            gInventorySavedCamera1Y = gCamera1PendingY;
+            gCamera1PendingX = 0;
+            gCamera1PendingY = 0;
         } else {
-            TOEJAM_CAMERA_NEWX = gInventorySavedCamera1X;
-            TOEJAM_CAMERA_NEWY = gInventorySavedCamera1Y;
+            gCamera1PendingX = gInventorySavedCamera1X;
+            gCamera1PendingY = gInventorySavedCamera1Y;
         }
     }
-    if (HBLANK_FLAG_1) {
+    if (gPlayer2InventoryOpen) {
         if (suspend) {
-            gInventorySavedCamera2X = EARL_CAMERA_NEWX;
-            gInventorySavedCamera2Y = EARL_CAMERA_NEWY;
-            EARL_CAMERA_NEWX = 0;
-            EARL_CAMERA_NEWY = 112;
+            gInventorySavedCamera2X = gCamera2PendingX;
+            gInventorySavedCamera2Y = gCamera2PendingY;
+            gCamera2PendingX = 0;
+            gCamera2PendingY = 112;
         } else {
-            EARL_CAMERA_NEWX = gInventorySavedCamera2X;
-            EARL_CAMERA_NEWY = gInventorySavedCamera2Y;
+            gCamera2PendingX = gInventorySavedCamera2X;
+            gCamera2PendingY = gInventorySavedCamera2Y;
         }
     }
 }
@@ -266,8 +267,8 @@ void InventoryRedrawSynchronously(player_number)
 int player_number;
 {
     gInventoryRedrawPlayer = player_number;
-    VBLANK_FLAG_4 = 4;
-    while (VBLANK_FLAG_4)
+    gInventoryRedrawPhase = 4;
+    while (gInventoryRedrawPhase)
         InventoryServiceRedrawPhase();
 }
 
@@ -275,11 +276,11 @@ int player_number;
 void InventoryRefreshContentsAndWait(player_number)
 short player_number;
 {
-    while (VBLANK_FLAG_4)
+    while (gInventoryRedrawPhase)
         ;
     gInventoryRedrawPlayer = player_number;
-    VBLANK_FLAG_4 = 1;
-    while (VBLANK_FLAG_4)
+    gInventoryRedrawPhase = 1;
+    while (gInventoryRedrawPhase)
         ;
 }
 
@@ -289,34 +290,34 @@ short player_number;
 {
     struct object_state *object;
 
-    if (P1_MENU_OPEN[player_number]) {
+    if (gPlayerInventoryOpen[player_number]) {
         InventoryDeactivateDisplayEntities(player_number);
-        if (SPLIT_SCREEN) {
-            P1_MENU_OPEN[player_number] = 0;
-            if (!P1_MENU_OPEN[player_number ^ 1] && !PlayersRequireSeparateViews())
+        if (gSplitScreenEnabled) {
+            gPlayerInventoryOpen[player_number] = 0;
+            if (!gPlayerInventoryOpen[player_number ^ 1] && !PlayersRequireSeparateViews())
                 UpdateScreenSplitMode(1);
             else
-                VBLANK_FLAG_5 = 1;
+                gHudRedrawPending = 1;
             object = &gPlayerInfo[player_number];
             object->behavior_flags &= ~ENTITY_PLAYER_SUPPRESSED;
             if (object->frame_phase)
                 object->frame_duration = 1;
             UpdateEntityViewportSprites(player_number);
         } else {
-            if (!P1_MENU_OPEN[player_number ^ 1]) {
-                EARL_CAMERA_NEWX = TOEJAM_CAMERA_NEWX;
-                EARL_CAMERA_NEWY = TOEJAM_CAMERA_NEWY;
+            if (!gPlayerInventoryOpen[player_number ^ 1]) {
+                gCamera2PendingX = gCamera1PendingX;
+                gCamera2PendingY = gCamera1PendingY;
             }
-            P1_MENU_OPEN[player_number] = 0;
+            gPlayerInventoryOpen[player_number] = 0;
             WaitForVBlankWithGraphicsPaused();
-            ClearSkipVHBlankFlags();
+            DisableBlankingGraphics();
             DrawHUD();
-            if (!P1_MENU_OPEN[player_number ^ 1])
+            if (!gPlayerInventoryOpen[player_number ^ 1])
                 ForceTextBackgroundColorToBlack(0);
-            SetSkipVHBlankFlags();
+            EnableBlankingGraphics();
         }
-        ClearVHBlankFlag2();
-    } else if (!ELEVATOR_FLAG[player_number] || !gElevatorDepartureInProgress)
+        DisableTextFontAnimationIfMenusClosed();
+    } else if (!gPlayerElevatorFlags[player_number] || !gElevatorDepartureInProgress)
         DrawInventory(player_number, 1);
 }
 
@@ -336,7 +337,7 @@ short *opening;
     if (present && gPlayerLives[player_number ^ 1] >= 0) {
         if (!PlayersRequireSeparateViews()) {
             --present;
-            if (P1_MENU_OPEN[player_number ^ 1])
+            if (gPlayerInventoryOpen[player_number ^ 1])
                 ToggleInventory(player_number ^ 1);
             if (present != PRESENT_DOORWAY && present != PRESENT_DECOY && present != PRESENT_TOGETHERNESS &&
                 present != PRESENT_TELEPHONE && present != PRESENT_EARTHLING && present != PRESENT_BOOMBOX) {
@@ -344,7 +345,7 @@ short *opening;
                     present == PRESENT_TOTAL_BUMMER)
                     GenerateSpeech(player_number ^ 1, "Thanks a lot", 1);
             }
-        } else if (P1_MENU_OPEN[player_number ^ 1])
+        } else if (gPlayerInventoryOpen[player_number ^ 1])
             InventoryRefreshContentsAndWait(player_number ^ 1);
     }
 }
@@ -370,7 +371,7 @@ int player_number;
     SetupPresentIdentities();
     InventoryRefreshContentsAndWait(player_number);
     if (gPlayerLives[player_number ^ 1] >= 0) {
-        if (!P1_MENU_OPEN[player_number ^ 1]) {
+        if (!gPlayerInventoryOpen[player_number ^ 1]) {
             DrawInventory(player_number ^ 1, 1);
             InventoryUpdateSelectorEntity(player_number ^ 1);
             close_other = 1;
@@ -410,34 +411,34 @@ void ProcessInventory()
         if (gPlayerLives[player_number] < 0 || object->sprite_state == 5 ||
             object->sprite_state == 6)
             continue;
-        if (!(P1_PREV_PROCESSED_INPUT[player_number] & 16) &&
-            (P1_PROCESSED_INPUT[player_number] & 16)) {
+        if (!(gPlayerPreviousProcessedInput[player_number] & 16) &&
+            (gPlayerProcessedInput[player_number] & 16)) {
             ToggleInventory(player_number);
             return;
         }
-        if (P1_MENU_OPEN[player_number]) {
-            if (P1_MENU_OPEN[player_number] == 1 &&
-                !(P1_PREV_PROCESSED_INPUT[player_number] & 32) &&
-                (P1_PROCESSED_INPUT[player_number] & 32)) {
+        if (gPlayerInventoryOpen[player_number]) {
+            if (gPlayerInventoryOpen[player_number] == 1 &&
+                !(gPlayerPreviousProcessedInput[player_number] & 32) &&
+                (gPlayerProcessedInput[player_number] & 32)) {
                 gInventoryBannerMode[player_number] ^= 1;
                 InventoryDrawActionBanner(player_number, gInventoryBannerMode[player_number], 0);
                 PlaySound(PSG_TONE_PULSE, 50);
-            } else if (!(P1_PREV_PROCESSED_INPUT[player_number] & 64) &&
-                       (P1_PROCESSED_INPUT[player_number] & 64)) {
-                if (P1_MENU_OPEN[player_number] == 2) {
+            } else if (!(gPlayerPreviousProcessedInput[player_number] & 64) &&
+                       (gPlayerProcessedInput[player_number] & 64)) {
+                if (gPlayerInventoryOpen[player_number] == 2) {
                     ToggleInventory(player_number);
                     InventoryBuySelectedMailOrderPresent(player_number);
-                } else if (P1_MENU_OPEN[player_number] == 3) {
+                } else if (gPlayerInventoryOpen[player_number] == 3) {
                     if (InventoryIdentifySelectedPresent(player_number)) {
                         InventoryRefreshContentsAndWait(player_number);
-                        if (P1_MENU_OPEN[player_number ^ 1])
+                        if (gPlayerInventoryOpen[player_number ^ 1])
                             InventoryRefreshContentsAndWait(player_number ^ 1);
                     }
                 } else if (gInventoryBannerMode[player_number] == 1) {
                     InventoryDropSelectedPresent(player_number);
                     InventoryRefreshContentsAndWait(player_number);
                 } else {
-                    P1_PREV_PROCESSED_INPUT[player_number] |= 64;
+                    gPlayerPreviousProcessedInput[player_number] |= 64;
                     if (InventoryGetSelectedPresent(player_number) == 18)
                         RandomizePresents(player_number);
                     else {
@@ -445,31 +446,31 @@ void ProcessInventory()
                         opening[player_number] = 1;
                     }
                 }
-            } else if (!(P1_PREV_PROCESSED_INPUT[player_number] & 15) &&
-                       (P1_PROCESSED_INPUT[player_number] & 15)) {
-                if (P1_PROCESSED_INPUT[player_number] & 1) {
-                    if (P1_MENU_SEL_ROW[player_number] > 0)
-                        --P1_MENU_SEL_ROW[player_number];
-                    else if (P1_MENU_OPEN[player_number] != 2 &&
-                             P1_MENU_SCROLL[player_number] > 0) {
-                        --P1_MENU_SCROLL[player_number];
+            } else if (!(gPlayerPreviousProcessedInput[player_number] & 15) &&
+                       (gPlayerProcessedInput[player_number] & 15)) {
+                if (gPlayerProcessedInput[player_number] & 1) {
+                    if (gPlayerInventorySelectionRow[player_number] > 0)
+                        --gPlayerInventorySelectionRow[player_number];
+                    else if (gPlayerInventoryOpen[player_number] != 2 &&
+                             gPlayerInventoryScrollRow[player_number] > 0) {
+                        --gPlayerInventoryScrollRow[player_number];
                         InventoryRefreshContentsAndWait(player_number);
                     }
-                } else if (P1_PROCESSED_INPUT[player_number] & 2) {
-                    if (P1_MENU_SEL_ROW[player_number] < 2)
-                        ++P1_MENU_SEL_ROW[player_number];
-                    else if (P1_MENU_OPEN[player_number] != 2 &&
-                             P1_MENU_SCROLL[player_number] < 5 &&
+                } else if (gPlayerProcessedInput[player_number] & 2) {
+                    if (gPlayerInventorySelectionRow[player_number] < 2)
+                        ++gPlayerInventorySelectionRow[player_number];
+                    else if (gPlayerInventoryOpen[player_number] != 2 &&
+                             gPlayerInventoryScrollRow[player_number] < 5 &&
                              gPlayerInventory[player_number]
-                                 [(P1_MENU_SCROLL[player_number] + 3) * 2] != -1) {
-                        ++P1_MENU_SCROLL[player_number];
+                                 [(gPlayerInventoryScrollRow[player_number] + 3) * 2] != -1) {
+                        ++gPlayerInventoryScrollRow[player_number];
                         InventoryRefreshContentsAndWait(player_number);
                     }
-                } else if (P1_MENU_OPEN[player_number] != 2)
-                    P1_MENU_SEL_COL[player_number] ^= 1;
+                } else if (gPlayerInventoryOpen[player_number] != 2)
+                    gPlayerInventorySelectionColumn[player_number] ^= 1;
                 PlaySound(PSG_TONE_PULSE, 50);
             }
-            if (P1_MENU_OPEN[player_number])
+            if (gPlayerInventoryOpen[player_number])
                 InventoryUpdateSelectorEntity(player_number);
             if (opening[player_number])
                 break;
@@ -478,7 +479,7 @@ void ProcessInventory()
     CheckIfOpenForBoth(opening);
     if (gPendingUnfallPlayer) {
         player_number = gPendingUnfallPlayer - 1;
-        if (P1_MENU_OPEN[player_number ^ 1])
+        if (gPlayerInventoryOpen[player_number ^ 1])
             ToggleInventory(player_number ^ 1);
         PlayerRelocateToPartnerOrNextLevel(player_number);
         gPendingUnfallPlayer = 0;
@@ -492,8 +493,8 @@ void CheckBButton()
     short frame;
 
     ProcessInventory();
-    if ((P1_MENU_OPEN[PLAYER_TOEJAM] || P1_MENU_OPEN[PLAYER_EARL]) && !SPLIT_SCREEN) {
-        while (P1_MENU_OPEN[PLAYER_TOEJAM] || P1_MENU_OPEN[PLAYER_EARL]) {
+    if ((gPlayerInventoryOpen[PLAYER_TOEJAM] || gPlayerInventoryOpen[PLAYER_EARL]) && !gSplitScreenEnabled) {
+        while (gPlayerInventoryOpen[PLAYER_TOEJAM] || gPlayerInventoryOpen[PLAYER_EARL]) {
             if (++frame % 3 == 0)
                 UpdateAndQueueEntitySprites();
             else
@@ -509,8 +510,8 @@ void InventoryOpenMailOrderMenu(player_number)
 short player_number;
 {
     DrawInventory(player_number, 2);
-    P1_PROCESSED_INPUT[player_number] = 64;
-    P1_PREV_PROCESSED_INPUT[player_number] = 64;
+    gPlayerProcessedInput[player_number] = 64;
+    gPlayerPreviousProcessedInput[player_number] = 64;
     CheckBButton();
 }
 
@@ -520,8 +521,8 @@ void InventoryOpenIdentificationMenu(player)
 short player;
 {
     DrawInventory(player, 3);
-    P1_PROCESSED_INPUT[player] = 64;
-    P1_PREV_PROCESSED_INPUT[player] = 64;
+    gPlayerProcessedInput[player] = 64;
+    gPlayerPreviousProcessedInput[player] = 64;
     CheckBButton();
 }
 
@@ -531,8 +532,8 @@ int player;
 {
     char slot;
 
-    slot = (P1_MENU_SCROLL[player] + P1_MENU_SEL_ROW[player]) * 2 +
-           P1_MENU_SEL_COL[player];
+    slot = (gPlayerInventoryScrollRow[player] + gPlayerInventorySelectionRow[player]) * 2 +
+           gPlayerInventorySelectionColumn[player];
     return gPlayerInventory[player][slot];
 }
 
@@ -542,8 +543,8 @@ short player;
 {
     char slot, present;
 
-    slot = (P1_MENU_SCROLL[player] + P1_MENU_SEL_ROW[player]) * 2 +
-           P1_MENU_SEL_COL[player];
+    slot = (gPlayerInventoryScrollRow[player] + gPlayerInventorySelectionRow[player]) * 2 +
+           gPlayerInventorySelectionColumn[player];
     present = gPlayerInventory[player][slot];
     while (present == PRESENT_MYSTERY)
         present = SelectRandomPresent();
@@ -567,12 +568,12 @@ short player;
 {
     char slot, present;
 
-    if (ELEVATOR_FLAG[player]) {
+    if (gPlayerElevatorFlags[player]) {
         PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
         return;
     }
-    slot = (P1_MENU_SCROLL[player] + P1_MENU_SEL_ROW[player]) * 2 +
-           P1_MENU_SEL_COL[player];
+    slot = (gPlayerInventoryScrollRow[player] + gPlayerInventorySelectionRow[player]) * 2 +
+           gPlayerInventorySelectionColumn[player];
     present = gPlayerInventory[player][slot];
     while (slot < 15 && gPlayerInventory[player][slot + 1] != -1) {
         gPlayerInventory[player][slot] = gPlayerInventory[player][slot + 1];
@@ -591,10 +592,10 @@ short player;
 
     for (slot = 0; slot < 16 && gPlayerInventory[player][slot] != -1; ++slot)
         ;
-    selection = P1_MENU_SEL_ROW[player];
-    if (slot < 16 && gPlayerBucks[player] >= gPlayer1MailboxPrices[player][selection]) {
-        gPlayerBucks[player] -= gPlayer1MailboxPrices[player][selection];
-        gPlayerInventory[player][slot] = gPlayer1MailboxItems[player][selection];
+    selection = gPlayerInventorySelectionRow[player];
+    if (slot < 16 && gPlayerBucks[player] >= gPlayerMailboxPrices[player][selection]) {
+        gPlayerBucks[player] -= gPlayerMailboxPrices[player][selection];
+        gPlayerInventory[player][slot] = gPlayerMailboxItems[player][selection];
         GenerateSpeech(player, "Got it!", 1);
     } else {
         PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
@@ -612,8 +613,8 @@ short player;
     int changed = 0;
     char slot, present;
 
-    slot = (P1_MENU_SCROLL[player] + P1_MENU_SEL_ROW[player]) * 2 +
-           P1_MENU_SEL_COL[player];
+    slot = (gPlayerInventoryScrollRow[player] + gPlayerInventorySelectionRow[player]) * 2 +
+           gPlayerInventorySelectionColumn[player];
     present = gPlayerInventory[player][slot];
     if (gPlayerBucks[player] < 2 || present == PRESENT_NONE) {
         PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
@@ -651,7 +652,7 @@ char character;
         character += 36 - '0';
     else switch (character) {
     case '?':
-        character = (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+        character = (gCachedRandomValues[gRandomCacheIndex == 58 ?
                      (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) + 27;
         break;
     case '.': character = 31; break;
@@ -785,20 +786,20 @@ short player_number;
     char exhausted = 0;
     struct object_state *selector;
 
-    if (P1_MENU_OPEN[player_number] != 2) {
+    if (gPlayerInventoryOpen[player_number] != 2) {
         while (gPlayerInventory[player_number]
-               [(P1_MENU_SCROLL[player_number] + P1_MENU_SEL_ROW[player_number]) * 2 +
-                P1_MENU_SEL_COL[player_number]] == -1) {
-            if (P1_MENU_SEL_ROW[player_number] == 0 &&
-                P1_MENU_SEL_COL[player_number] == 0) {
+               [(gPlayerInventoryScrollRow[player_number] + gPlayerInventorySelectionRow[player_number]) * 2 +
+                gPlayerInventorySelectionColumn[player_number]] == -1) {
+            if (gPlayerInventorySelectionRow[player_number] == 0 &&
+                gPlayerInventorySelectionColumn[player_number] == 0) {
                 exhausted = 1;
                 break;
             }
-            if (P1_MENU_SEL_COL[player_number] > 0)
-                --P1_MENU_SEL_COL[player_number];
+            if (gPlayerInventorySelectionColumn[player_number] > 0)
+                --gPlayerInventorySelectionColumn[player_number];
             else {
-                --P1_MENU_SEL_ROW[player_number];
-                ++P1_MENU_SEL_COL[player_number];
+                --gPlayerInventorySelectionRow[player_number];
+                ++gPlayerInventorySelectionColumn[player_number];
             }
         }
     }
@@ -807,8 +808,8 @@ short player_number;
     else
         selector = &gPlayer2InventorySelectorEntity;
     if (!exhausted) {
-        selector->x = P1_MENU_SEL_COL[player_number] * 160 + 7;
-        selector->y = P1_MENU_SEL_ROW[player_number] * 16 + 63;
+        selector->x = gPlayerInventorySelectionColumn[player_number] * 160 + 7;
+        selector->y = gPlayerInventorySelectionRow[player_number] * 16 + 63;
         selector->behavior_flags &= ~64;
         if (player_number == PLAYER_EARL)
             selector->y += 104;
@@ -824,14 +825,14 @@ short player_number;
     char ready_mask;
     struct object_state *object;
 
-    P1_MENU_SEL_ROW[player_number] = 0;
-    P1_MENU_SEL_COL[player_number] = 0;
-    P1_MENU_SCROLL[player_number] = 0;
+    gPlayerInventorySelectionRow[player_number] = 0;
+    gPlayerInventorySelectionColumn[player_number] = 0;
+    gPlayerInventoryScrollRow[player_number] = 0;
     group = 1;
     ready_mask = 4;
     if (player_number == PLAYER_TOEJAM) {
         first_object = 26;
-        if (SPLIT_SCREEN) {
+        if (gSplitScreenEnabled) {
             group = 0;
             ready_mask = 2;
         }
@@ -860,7 +861,7 @@ short player_number;
     group = 1;
     if (player_number == PLAYER_TOEJAM) {
         first_object = 26;
-        if (SPLIT_SCREEN)
+        if (gSplitScreenEnabled)
             group = 0;
     } else
         first_object = 33;
@@ -890,7 +891,7 @@ short player_number;
     }
     for (row = 0; row < 3; ++row) {
         for (column = 0; column < 2; ++column, ++object) {
-            present_number = P1_MENU_SCROLL[player_number] * 2 + row * 2 + column;
+            present_number = gPlayerInventoryScrollRow[player_number] * 2 + row * 2 + column;
             present_number = gPlayerInventory[player_number][present_number];
             if (present_number != PRESENT_NONE) {
                 present_sprite = gPresentInfo[present_number].appearance;
@@ -914,7 +915,7 @@ short player_number;
                             VDP_DATA = 0x85b4 + *name++;
                     } else {
                         for (character = 0; character < 5; ++character)
-                            VDP_DATA = 0x85b4 + (char)((PREGEN_RANDOMS[
+                            VDP_DATA = 0x85b4 + (char)((gCachedRandomValues[
                                 gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) + 27);
                         for (; character < 13; ++character)
                             VDP_DATA = 0x85b4;
@@ -944,7 +945,7 @@ short player_number;
         object = gPlayer2InventoryItemEntities;
     }
     for (row = 0; row < 3; ++row, ++object) {
-        present_number = gPlayer1MailboxItems[player_number][row];
+        present_number = gPlayerMailboxItems[player_number][row];
         present_sprite = gPresentInfo[present_number].appearance;
         object->frames = &PresentSpriteTable[present_sprite];
         object->sprite_ready = 0;
@@ -962,7 +963,7 @@ short player_number;
             } else
                 TextWriteStringTiles("????? .......");
             TextWriteStringTiles("...............  ");
-            TextWriteDecimalTiles(gPlayer1MailboxPrices[player_number][row]);
+            TextWriteDecimalTiles(gPlayerMailboxPrices[player_number][row]);
         }
     }
 }
@@ -977,7 +978,7 @@ short player_number, menu, already_blanked;
     base_row = player_number == PLAYER_TOEJAM ? 1 : 14;
     if (!already_blanked) {
         WaitForVBlankWithGraphicsPaused();
-        ClearSkipVHBlankFlags();
+        DisableBlankingGraphics();
         for (row = 0; row < 3; ++row) {
             VDP_COMMAND = ((base_row + row) << 23) + 0x501c0003L;
             for (character = 0; character < 13; ++character)
@@ -1034,6 +1035,6 @@ short player_number, menu, already_blanked;
         }
     }
     if (!already_blanked)
-        SetSkipVHBlankFlags();
+        EnableBlankingGraphics();
     gInventoryBannerMode[player_number] = menu;
 }

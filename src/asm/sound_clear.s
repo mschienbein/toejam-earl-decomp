@@ -7,14 +7,14 @@
 .globl MusicClearTrackPointers
 .type MusicClearTrackPointers, @function
 MusicClearTrackPointers:
-    lea (gMusicPointer1).l,%a0
-    lea (gMusicChannel1Ptr1).l,%a1
+    lea (gMusicFmChannelOwners).l,%a0
+    lea (gMusicChannels).l,%a1
     moveq #MUSIC_CHANNEL_COUNT_MINUS1,%d0
 .L_clear_music_channels:
     clr.l (%a0)+
     clr.l (MUSIC_STREAM,%a1)
     adda.w #MUSIC_CHANNEL_SIZE,%a1
     dbra %d0,.L_clear_music_channels
-    clr.w (gMusicUnknownE47A).l
+    clr.w (gMusicTrackResetRequested).l
     rts
 .size MusicClearTrackPointers, .-MusicClearTrackPointers

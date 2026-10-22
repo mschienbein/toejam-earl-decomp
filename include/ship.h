@@ -20,7 +20,7 @@ extern void WaitForShipScreenAcknowledgement();
 extern void ShipUpdatePendingPieceIndicator();
 extern void ShowRandomUncollectedShipPiece();
 extern int EarthlingIsMailOrderMailbox();
-#ifndef TJE_LOCAL_FUNC_020EAA
+#ifndef TJE_LOCAL_EARTHLINGCONFIGUREMAILBOXLEVELBANK
 extern char EarthlingConfigureMailboxLevelBank();
 #endif
 

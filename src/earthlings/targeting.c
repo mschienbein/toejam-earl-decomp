@@ -68,7 +68,7 @@ char mode;
     }
     if (distance[0] == 0x7fff && distance[1] == 0x7fff) {
         special_target = 0;
-        if (state->level == gPlayerInfo[PLAYER_TOEJAM].level && !ELEVATOR_FLAG[PLAYER_TOEJAM] &&
+        if (state->level == gPlayerInfo[PLAYER_TOEJAM].level && !gPlayerElevatorFlags[PLAYER_TOEJAM] &&
             (mode != 7 || !gPlayerControlRemapEntities[0])) {
             target = &gPlayerInfo[PLAYER_TOEJAM];
             if ((mode != EARTHLING_MOLE || (gPlayerInventory[PLAYER_TOEJAM][0] != -1 && !state->attachment_x_or_latch)) &&
@@ -83,7 +83,7 @@ char mode;
                     distance[0] = delta_x[0] * delta_x[0] + delta_y[0] * delta_y[0];
             }
         }
-        if (state->level == gPlayerInfo[PLAYER_EARL].level && !ELEVATOR_FLAG[PLAYER_EARL] &&
+        if (state->level == gPlayerInfo[PLAYER_EARL].level && !gPlayerElevatorFlags[PLAYER_EARL] &&
             (mode != 7 || !gPlayerControlRemapEntities[1])) {
             target = &gPlayerInfo[PLAYER_EARL];
             if ((mode != EARTHLING_MOLE || (gPlayerInventory[PLAYER_EARL][0] != -1 && !state->attachment_y_or_latch)) &&

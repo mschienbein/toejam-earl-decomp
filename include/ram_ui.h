@@ -5,13 +5,13 @@
 
 /* Inventory control and text state keeps its canonical byte views.
  * Incomplete outer bounds are retained, not inferred from adjacent symbols.
- * P1_MENU_OPEN[1] also has the scalar HBLANK_FLAG_1 name in ram_system.h. */
-extern char P1_TEXT_WIGGLE;
-extern char P1_MENU_COUNTER;
-extern char P1_MENU_OPEN[];
-extern char P1_MENU_SCROLL[];
-extern char P1_MENU_SEL_ROW[];
-extern char P1_MENU_SEL_COL[];
+ * gPlayerInventoryOpen[1] also has the scalar gPlayer2InventoryOpen name in ram_system.h. */
+extern char gTextFontBank;
+extern char gTextFontAnimationTick;
+extern char gPlayerInventoryOpen[];
+extern char gPlayerInventoryScrollRow[];
+extern char gPlayerInventorySelectionRow[];
+extern char gPlayerInventorySelectionColumn[];
 extern char gInventoryBannerMode[];
 extern char gPendingUnfallPlayer;
 extern short gInventorySavedCamera1X;
@@ -19,10 +19,10 @@ extern short gInventorySavedCamera1Y;
 extern short gInventorySavedCamera2X;
 extern short gInventorySavedCamera2Y;
 extern char gInventoryRedrawPlayer;
-extern char gPlayer1MailboxItems[][3];
-extern char gPlayer1MailboxPrices[][3];
+extern char gPlayerMailboxItems[][3];
+extern char gPlayerMailboxPrices[][3];
 extern char gInventoryLabelsSuppressed;
-extern char TEXT_SPRITE_DATA_START[][1888];
+extern char gTextFontBuffers[][1888];
 
 /* Existing inventory-object aliases within gPlayerInfo[40]: selector
  * records 26 and 33, and six visible-item records 27..32 and 34..39.
@@ -49,8 +49,8 @@ extern char gPlayerChoiceActionReleaseLatches[];
 extern short gLifeRequestPending;
 extern short gLifeRequestDisplayEntity;
 
-/* Additional selected final-batch storage and resource interfaces. */
-extern short gMenuCursorObjId;
-extern short gMenuHeaderObjId;
+/* Entity handles for the main-menu cursor and heading. */
+extern short gMenuCursorEntity;
+extern short gMenuHeaderEntity;
 
 #endif

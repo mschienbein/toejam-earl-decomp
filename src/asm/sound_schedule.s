@@ -10,7 +10,7 @@
 .globl MusicSelectSongTemplateBank
 .type MusicSelectSongTemplateBank, @function
 MusicSelectSongTemplateBank:
-    move.w #SOUND_STARTUP_TICKS,(ram_ffe486).l
+    move.w #SOUND_STARTUP_TICKS, (gMusicTemplateRestartState).l
     tst.w (gMusicAlternateTemplateBankEnabled).l
     beq.s MusicLoadSongChannelTemplates
     addq.w #SOUND_NEXT_SELECTION_BIAS,(0x6,%sp)
@@ -23,12 +23,12 @@ MusicSelectSongTemplateBank:
 .type MusicLoadSongChannelTemplates, @function
 MusicLoadSongChannelTemplates:
     jsr (AudioReleaseAllFmChannels,%pc)
-    jsr (RAMWritesRoutine1,%pc)
+    jsr (MusicRestoreInitialState,%pc)
     move.l (0x4,%sp),%d0
     mulu.w #SONG_TEMPLATE_BYTES,%d0
     lea (SongChannelTemplates,%pc),%a0
     adda.l %d0,%a0
-    lea (gMusicChannel1Ptr1).l,%a1
+    lea (gMusicChannels).l,%a1
     move.l #SONG_TEMPLATE_BYTES,%d0
     subq.w #0x1,%d0
 .L_copy_song_template_bytes:
@@ -44,10 +44,10 @@ MusicLoadSongChannelTemplates:
 MusicProcessTemplateRestartHook:
     clr.l (MUSIC_CALLBACK,%a0)
     moveq #0,%d0
-    move.b (VBLANK_FLAG_8).l,%d0
-    subq.w #0x1,(ram_ffe486).l
+    move.b (gCurrentMusicSelection).l,%d0
+    subq.w #0x1,(gMusicTemplateRestartState).l
     beq.s .L_schedule_next
-    move.w (ram_ffe486).l,%d1
+    move.w (gMusicTemplateRestartState).l,%d1
     cmpi.w #SOUND_RESTART_SENTINEL,%d1
     beq.s .L_schedule_restart
     rts
@@ -71,6 +71,6 @@ MusicProcessTemplateRestartHook:
     addq.l #0x4,%sp
     rts
 .L_schedule_defer:
-    move.w #0x1,(ram_ffe486).l
+    move.w #0x1,(gMusicTemplateRestartState).l
     rts
 .size MusicProcessTemplateRestartHook, .-MusicProcessTemplateRestartHook

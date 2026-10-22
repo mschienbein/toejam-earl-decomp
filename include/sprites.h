@@ -1,5 +1,5 @@
-#ifndef SPRITES_H
-#define SPRITES_H
+#ifndef TJE_SPRITES_H
+#define TJE_SPRITES_H
 
 /* Sequence command bytes, compared through the caller's existing byte view. */
 #define ANIMATION_HOLD 254
@@ -17,14 +17,14 @@ struct hardware_sprite {
 /* Ten-byte ROM sprite piece; signed format preserves the compression high-bit test. */
 struct render_piece {
     unsigned char width, height;     /* 00/01: 8x8 tile dimensions; ROM-authored. */
-    char x, y, flipped_x, format;     /* 02..05: pixel offsets and compression/palette flags; ROM-authored. */
-    char *data;                       /* 06: packed/raw tile stream; ROM-authored. */
+    char x, y, flipped_x, tile_format;/* 02..05: pixel offsets and compression/palette flags; ROM-authored. */
+    char *tile_data;                 /* 06: packed/raw tile stream; ROM-authored. */
 };
 
-/* Four-byte prefix followed by count ten-byte pieces, not a fixed-array stride. */
+/* Four-byte prefix followed by piece_count ten-byte pieces, not a fixed-array stride. */
 struct render_frame {
-    unsigned char count;             /* 00: hardware-piece count; ROM-authored (runtime text also writes). */
-    char motion_x, motion_y, reusable;/* 01..03: velocity multipliers and tile-reuse flag; ROM-authored. */
+    unsigned char piece_count;       /* 00: hardware-piece count; ROM-authored (runtime text also writes). */
+    char motion_x, motion_y, reuse_tiles; /* 01..03: velocity multipliers and tile-reuse flag; ROM-authored. */
 };
 
 /* Eight-byte sequence/frame-table pair, distinct from timed_animation. */

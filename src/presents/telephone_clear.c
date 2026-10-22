@@ -10,7 +10,7 @@ void TelephoneClearAll()
     struct telephone_state *telephone;
 
     for (telephone_number = 0; telephone_number <= 1; ++telephone_number) {
-        telephone = &TELEPHONE_1[telephone_number];
+        telephone = &gTelephoneStates[telephone_number];
         if (telephone->level) {
             if (telephone->object) {
                 FreeEntity(telephone->object);

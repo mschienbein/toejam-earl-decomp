@@ -19,12 +19,12 @@ short priority, stop_channels;
     sizeof(&sample);
     sizeof(&stop_channels);
 
-    if (!(gPcmEffectCooldownTicks || gMusicUnknownE46E) ||
-        priority >= ram_ffe484) {
-        gMusicUnknownE480 = sample;
-        ram_ffe484 = priority;
+    if (!(gPcmEffectCooldownTicks || gPsgEffectStatus) ||
+        priority >= gSoundEffectPriority) {
+        gPendingPcmSample = sample;
+        gSoundEffectPriority = priority;
         if (stop_channels) {
-            gMusicUnknownE470 = 1;
+            gPcmBlocksSequencer = 1;
             AudioRequestFmChannelRelease();
         }
     }

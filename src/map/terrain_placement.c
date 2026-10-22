@@ -103,9 +103,9 @@ register int player;
         height = 8;
     }
     if (player == 1 && gPlayerLives[PLAYER_TOEJAM] >= 0)
-        map = gMapDataB[0];
+        map = gPlayer2LevelMap[0];
     else
-        map = gMapDataA[0];
+        map = gPlayer1LevelMap[0];
     for (search_counter = 0; search_counter < 10; ++search_counter) {
         random = GetRandomNumber();
         row = random % 26;

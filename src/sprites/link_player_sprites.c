@@ -11,7 +11,8 @@ void LinkPlayerSpritesForSplitWipe()
     char index, sprite_count, sprite_number, next_sprite;
     char *sprite_list;
 
-    sprite_count = gPlayerInfo[PLAYER_TOEJAM].current_frame->count;
+    sprite_count = gPlayerInfo[PLAYER_TOEJAM].current_frame
+        ->piece_count;
     sprite_list = gPlayerInfo[PLAYER_TOEJAM].primary_sprites;
     sprite_number = *sprite_list;
     gHardwareSpriteTable[23].link = sprite_number;
@@ -22,7 +23,7 @@ void LinkPlayerSpritesForSplitWipe()
         next_sprite = sprite_list[index + 1];
         gHardwareSpriteTable[sprite_number].link = next_sprite;
     }
-    sprite_count = gPlayerInfo[PLAYER_EARL].current_frame->count;
+    sprite_count = gPlayerInfo[PLAYER_EARL].current_frame->piece_count;
     sprite_list = gPlayerInfo[PLAYER_EARL].primary_sprites;
     gHardwareSpriteTable[sprite_number].link = *sprite_list;
     for (index = 0; index < sprite_count; ++index) {
@@ -33,5 +34,5 @@ void LinkPlayerSpritesForSplitWipe()
             next_sprite = 79;
         gHardwareSpriteTable[sprite_number].link = next_sprite;
     }
-    VDPWritesRoutine1(gHardwareSpriteTable, 0xf800, 320);
+    DmaCopyWordsToVram(gHardwareSpriteTable, 0xf800, 320);
 }

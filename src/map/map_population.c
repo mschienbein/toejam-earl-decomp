@@ -11,55 +11,55 @@
 int MapFindRouteToSecondAnchor(map_y, map_x)
 short map_y, map_x;
 {
-    if (gMapDataA[map_y][map_x] & 0x0800)
+    if (gPlayer1LevelMap[map_y][map_x] & 0x0800)
         return 0;
-    gMapDataA[map_y][map_x] |= 0x0800;
-    if (ELEVATOR_POS_TABLE[1].y == map_y && ELEVATOR_POS_TABLE[1].x == map_x)
+    gPlayer1LevelMap[map_y][map_x] |= 0x0800;
+    if (gLevelAnchorPositions[1].y == map_y && gLevelAnchorPositions[1].x == map_x)
         return 1;
-    if ((gMapDataA[map_y][map_x] & 0x3000) == 0x1000) {
+    if ((gPlayer1LevelMap[map_y][map_x] & 0x3000) == 0x1000) {
         if (map_y > 0 &&
-            (gMapDataA[map_y - 1][map_x] ==
-                 (gMapDataA[map_y][map_x] & ~0x0800) ||
-             (gMapDataA[map_y - 1][map_x] & 4)) &&
+            (gPlayer1LevelMap[map_y - 1][map_x] ==
+                 (gPlayer1LevelMap[map_y][map_x] & ~0x0800) ||
+             (gPlayer1LevelMap[map_y - 1][map_x] & 4)) &&
             MapFindRouteToSecondAnchor(map_y - 1, map_x))
             return 1;
         if (map_y < 25 &&
-            (gMapDataA[map_y + 1][map_x] ==
-                 (gMapDataA[map_y][map_x] & ~0x0800) ||
-             (gMapDataA[map_y + 1][map_x] & 1)) &&
+            (gPlayer1LevelMap[map_y + 1][map_x] ==
+                 (gPlayer1LevelMap[map_y][map_x] & ~0x0800) ||
+             (gPlayer1LevelMap[map_y + 1][map_x] & 1)) &&
             MapFindRouteToSecondAnchor(map_y + 1, map_x))
             return 1;
         if (map_x > 0 &&
-            (gMapDataA[map_y][map_x - 1] ==
-                 (gMapDataA[map_y][map_x] & ~0x0800) ||
-             (gMapDataA[map_y][map_x - 1] & 2)) &&
+            (gPlayer1LevelMap[map_y][map_x - 1] ==
+                 (gPlayer1LevelMap[map_y][map_x] & ~0x0800) ||
+             (gPlayer1LevelMap[map_y][map_x - 1] & 2)) &&
             MapFindRouteToSecondAnchor(map_y, map_x - 1))
             return 1;
         if (map_x < 18 &&
-            (gMapDataA[map_y][map_x + 1] ==
-                 (gMapDataA[map_y][map_x] & ~0x0800) ||
-             (gMapDataA[map_y][map_x + 1] & 8)) &&
+            (gPlayer1LevelMap[map_y][map_x + 1] ==
+                 (gPlayer1LevelMap[map_y][map_x] & ~0x0800) ||
+             (gPlayer1LevelMap[map_y][map_x + 1] & 8)) &&
             MapFindRouteToSecondAnchor(map_y, map_x + 1))
             return 1;
-    } else if ((gMapDataA[map_y][map_x] & 0x3000) == 0x2000) {
-        if ((gMapDataA[map_y][map_x] & 1) &&
-            ((gMapDataA[map_y - 1][map_x] & 0x3000) == 0x1000 ||
-             (gMapDataA[map_y - 1][map_x] & 4)) &&
+    } else if ((gPlayer1LevelMap[map_y][map_x] & 0x3000) == 0x2000) {
+        if ((gPlayer1LevelMap[map_y][map_x] & 1) &&
+            ((gPlayer1LevelMap[map_y - 1][map_x] & 0x3000) == 0x1000 ||
+             (gPlayer1LevelMap[map_y - 1][map_x] & 4)) &&
             MapFindRouteToSecondAnchor(map_y - 1, map_x))
             return 1;
-        if ((gMapDataA[map_y][map_x] & 4) &&
-            ((gMapDataA[map_y + 1][map_x] & 0x3000) == 0x1000 ||
-             (gMapDataA[map_y + 1][map_x] & 1)) &&
+        if ((gPlayer1LevelMap[map_y][map_x] & 4) &&
+            ((gPlayer1LevelMap[map_y + 1][map_x] & 0x3000) == 0x1000 ||
+             (gPlayer1LevelMap[map_y + 1][map_x] & 1)) &&
             MapFindRouteToSecondAnchor(map_y + 1, map_x))
             return 1;
-        if ((gMapDataA[map_y][map_x] & 8) &&
-            ((gMapDataA[map_y][map_x - 1] & 0x3000) == 0x1000 ||
-             (gMapDataA[map_y][map_x - 1] & 2)) &&
+        if ((gPlayer1LevelMap[map_y][map_x] & 8) &&
+            ((gPlayer1LevelMap[map_y][map_x - 1] & 0x3000) == 0x1000 ||
+             (gPlayer1LevelMap[map_y][map_x - 1] & 2)) &&
             MapFindRouteToSecondAnchor(map_y, map_x - 1))
             return 1;
-        if ((gMapDataA[map_y][map_x] & 2) &&
-            ((gMapDataA[map_y][map_x + 1] & 0x3000) == 0x1000 ||
-             (gMapDataA[map_y][map_x + 1] & 8)) &&
+        if ((gPlayer1LevelMap[map_y][map_x] & 2) &&
+            ((gPlayer1LevelMap[map_y][map_x + 1] & 0x3000) == 0x1000 ||
+             (gPlayer1LevelMap[map_y][map_x + 1] & 8)) &&
             MapFindRouteToSecondAnchor(map_y, map_x + 1))
             return 1;
     }
@@ -69,7 +69,7 @@ short map_y, map_x;
 /* Return nonzero when the elevator coordinate cannot reach ff911c/d. */
 int MapIsAnchorConnectionMissing()
 {
-    if (MapFindRouteToSecondAnchor(ELEVATOR_POS_TABLE[0].y, ELEVATOR_POS_TABLE[0].x))
+    if (MapFindRouteToSecondAnchor(gLevelAnchorPositions[0].y, gLevelAnchorPositions[0].x))
         return 0;
     else
         return 1;

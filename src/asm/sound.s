@@ -7,40 +7,40 @@
 .globl AudioLoadPendingChannelTemplateEffect
 .type AudioLoadPendingChannelTemplateEffect, @function
 AudioLoadPendingChannelTemplateEffect:
-    tst.l (ram_ffff18).l
+    tst.l (gFmEffectChannel1CurrentStream).l
     beq.s .L_reset_channel3
     move.w #0x2,%d1
     jsr (AudioWriteFmChannelReleaseMask,%pc)
     nop
-    clr.l (gMusicPointer3).l
+    clr.l (gMusicFmChannel2Owner).l
 
     | Clear the next auxiliary stream if it was active.
 .L_reset_channel3:
-    tst.l (ram_ffff3e).l
+    tst.l (gFmEffectChannel2CurrentStream).l
     beq.s .L_reset_channel1
     move.w #0x3,%d1
     jsr (AudioWriteFmChannelReleaseMask,%pc)
     nop
-    clr.l (gMusicPointer4).l
+    clr.l (gMusicFmChannel3Owner).l
 
     | Clear the remaining auxiliary stream if it was active.
 .L_reset_channel1:
-    tst.l (ram_ffff64).l
+    tst.l (gFmEffectChannel3CurrentStream).l
     beq.s .L_clear_sfx_channels
     move.w #0x1,%d1
     jsr (AudioWriteFmChannelReleaseMask,%pc)
     nop
-    clr.l (gMusicPointer2).l
+    clr.l (gMusicFmChannel1Owner).l
 
     | Zero all three 38-byte auxiliary channel records.
 .L_clear_sfx_channels:
     move.w #SFX_CLEAR_WORDS_MINUS1,%d0
-    lea (ram_ffff14).l,%a0
+    lea (gFmEffectChannels).l,%a0
 .L_clear_sfx_words:
     clr.w (%a0)+
     dbra %d0,.L_clear_sfx_words
-    move.w (gMusicUnknownE47C).l,%d0
-    move.w %d0,(gMusicUnknownE472).l
+    move.w (gPendingFmEffect).l,%d0
+    move.w %d0,(gFmEffectTemplateStatus).l
     beq.s .L_reset_sfx_request
 
     | Select a template pointer/count by request index and copy complete 38-byte channel records.
@@ -52,14 +52,14 @@ AudioLoadPendingChannelTemplateEffect:
     movea.l (%a0,%d0.w),%a1
     mulu.w #SFX_CHANNEL_WORDS,%d1
     subq.w #0x1,%d1
-    lea (ram_ffff14).l,%a0
+    lea (gFmEffectChannels).l,%a0
 .L_copy_sfx_template:
     move.w (%a1)+,(%a0)+
     dbra %d1,.L_copy_sfx_template
 
     | Consume the template request.
 .L_reset_sfx_request:
-    move.w #SOUND_REQUEST_NONE,(gMusicUnknownE47C).l
+    move.w #SOUND_REQUEST_NONE,(gPendingFmEffect).l
     rts
 .size AudioLoadPendingChannelTemplateEffect, .-AudioLoadPendingChannelTemplateEffect
 
@@ -69,9 +69,9 @@ AudioLoadPendingChannelTemplateEffect:
 .globl SetupYM2612
 .type SetupYM2612, @function
 SetupYM2612:
-    cmp.b (gMusicUnknownE489).l,%d1
+    cmp.b (gMusicAnimationChannel).l,%d1
     bne.s .L_patch_validate_channel
-    move.b #0x1,(gMusicUnknownE488).l
+    move.b #0x1,(gMusicAnimationEvent).l
 
     | Reject channel indices >= 6 and locate the 38-byte FM patch record.
 .L_patch_validate_channel:
@@ -83,7 +83,7 @@ SetupYM2612:
     lea (FMPatches,%pc),%a4
     adda.l %d3,%a4
     ext.w %d1
-    lea (ram_fffe28).l,%a5
+    lea (gFmChannelKeyMasks).l,%a5
     move.b (FM_PATCH_KEY_MASK,%a4),(%a5,%d1.w)
 
     | Port 0 handles channels 0..2; port 1 handles channels 3..5 with key-on codes 4..6.
@@ -670,7 +670,7 @@ SetupYM2612_Return:
 AudioWriteFmChannelReleaseMask:
     cmpi.w #YM_CHANNEL_COUNT,%d1
     bge.s .L_key_mask_return
-    lea (ram_fffe28).l,%a5
+    lea (gFmChannelKeyMasks).l,%a5
     move.b (%a5,%d1.w),%d3
     cmpi.w #YM_BANK_CHANNELS,%d1
     blt.s .L_key_mask_pack
@@ -757,55 +757,55 @@ YM2612UpdateFrequency_Return:
 
 | Per-tick music interpreter: service requests/timers, choose channel owners, then process each stream.
 | The signed byte at MUSIC_PRIORITY decides ownership; higher-or-equal values replace the prior owner.
-.globl MassiveRoutine
-.type MassiveRoutine, @function
-MassiveRoutine:
+.globl MusicUpdateSequencer
+.type MusicUpdateSequencer, @function
+MusicUpdateSequencer:
     movem.l %d2-%d7/%a2-%a6,-(%sp)
-    tst.w (gMusicUnknownE478).l
+    tst.w (gFmChannelReleaseRequested).l
     beq.s .L_update_clear_request
     jsr (AudioReleaseAllFmChannels,%pc)
 
     | Service channel-clear, template, PCM, and PSG requests in their original priority order.
 .L_update_clear_request:
-    tst.w (gMusicUnknownE47A).l
+    tst.w (gMusicTrackResetRequested).l
     beq.s .L_update_sfx_request
     jsr (MusicClearTrackPointers,%pc)
 .L_update_sfx_request:
-    tst.w (gMusicUnknownE47C).l
+    tst.w (gPendingFmEffect).l
     blt.s .L_update_pcm_request
     jsr (AudioLoadPendingChannelTemplateEffect,%pc)
 .L_update_pcm_request:
-    tst.l (gMusicUnknownE480).l
+    tst.l (gPendingPcmSample).l
     beq.s .L_update_psg_request
     jsr (AudioSubmitPendingPcmSample).l
     bra.s .L_update_psg_timer
 .L_update_psg_request:
-    tst.w (gMusicUnknownE47E).l
+    tst.w (gPendingPsgEffect).l
     blt.s .L_update_psg_timer
     jsr (AudioSubmitPendingIndexedCommand).l
 
     | Tick the PSG status countdown.
 .L_update_psg_timer:
-    tst.w (gMusicUnknownE46E).l
+    tst.w (gPsgEffectStatus).l
     beq.s .L_update_speech_timer
-    subq.w #0x1,(gMusicUnknownE46E).l
+    subq.w #0x1,(gPsgEffectStatus).l
 
     | Tick speech; an active speech-block flag skips channel processing until the final tick.
 .L_update_speech_timer:
     tst.w (gPcmEffectCooldownTicks).l
     beq.s .L_choose_channel_owners
     subq.w #0x1,(gPcmEffectCooldownTicks).l
-    tst.w (gMusicUnknownE470).l
+    tst.w (gPcmBlocksSequencer).l
     beq.s .L_choose_channel_owners
     tst.w (gPcmEffectCooldownTicks).l
     bne.w .L_update_return
-    move.w #0x0,(gMusicUnknownE470).l
+    move.w #0x0,(gPcmBlocksSequencer).l
 
     | Choose one owner for each hardware FM channel by signed priority comparison.
 .L_choose_channel_owners:
-    lea (gMusicPointer1).l,%a3
-    lea (gMusicChannel1Ptr1).l,%a0
-    move.w (gMusicUnknownFE2E).l,%d0
+    lea (gMusicFmChannelOwners).l,%a3
+    lea (gMusicChannels).l,%a0
+    move.w (gMusicChannelScanCountMinusOne).l,%d0
 .L_owner_candidate:
     tst.l (MUSIC_STREAM,%a0)
     beq.s .L_owner_next
@@ -831,8 +831,8 @@ MassiveRoutine:
     dbra %d0,.L_owner_candidate
 
     | Process every live stream record after ownership has been resolved.
-    lea (gMusicChannel1Ptr1).l,%a0
-    move.w (gMusicUnknownFE2E).l,%d0
+    lea (gMusicChannels).l,%a0
+    move.w (gMusicChannelScanCountMinusOne).l,%d0
 .L_vm_channel:
     move.l (MUSIC_STREAM,%a0),%d1
     beq.w .L_vm_next_channel
@@ -860,7 +860,7 @@ MassiveRoutine:
     clr.l (MUSIC_CALLBACK,%a0)
     clr.b (MUSIC_NOTE_ACTIVE,%a0)
     clr.b (MUSIC_SELECTED,%a0)
-    clr.w (gMusicUnknownE472).l
+    clr.w (gFmEffectTemplateStatus).l
     bra.w .L_vm_next_channel
 .L_vm_try_note:
     subq.b #0x1,%d1
@@ -914,7 +914,7 @@ MassiveRoutine:
     | VM 4: translate a patch-selection byte through the current sixteen-entry map.
     move.b (%a1)+,%d1
     ext.w %d1
-    move.b (VBLANK_FLAG_8).l,%d2
+    move.b (gCurrentMusicSelection).l,%d2
     ext.w %d2
     asl.w #SFX_PATCH_MAP_STRIDE_SHIFT,%d2
     add.w %d1,%d2
@@ -1008,7 +1008,7 @@ MassiveRoutine:
     pea (Sfx_JamBassDrum).l
     jsr (AudioTrySubmitSequencerPcmSample).l
     addq.l #0x4,%sp
-    move.b #0x1,(gMusicUnknownE488).l
+    move.b #0x1,(gMusicAnimationEvent).l
     bra.w .L_vm_save_pc
 .L_vm_try_snare:
     subq.b #0x1,%d1
@@ -1050,4 +1050,4 @@ MassiveRoutine:
 .L_update_return:
     movem.l (%sp)+,%d2-%d7/%a2-%a6
     rts
-.size MassiveRoutine, .-MassiveRoutine
+.size MusicUpdateSequencer, .-MusicUpdateSequencer

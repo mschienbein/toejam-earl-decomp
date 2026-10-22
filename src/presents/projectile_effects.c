@@ -4,8 +4,8 @@
 #include "psg_effects.h"
 #include "fm_effects.h"
 #include "hardware.h"
-#define TJE_LOCAL_FUNC_00D9DC
-#define TJE_LOCAL_FUNC_015DA6
+#define TJE_LOCAL_GETMAPTERRAINATWORLDPOSITION
+#define TJE_LOCAL_PRESENTREGISTERDECOYHIT
 
 #include "entities.h"
 #include "earthlings.h"
@@ -98,7 +98,7 @@ struct earthling_state *earthling;
             else
                 projectile->x += 10;
         }
-        /* Compiler-spelling qualification: this explicit narrow expression
+        /* MATCHING QUALIFICATION: this explicit narrow expression
          * keeps speed widening in scratch D1 rather than clobbering D6.
          * The bare speed and simple scalar casts do not reproduce the copy. */
         projectile->velocity_x = GetRandomNumber() % 101 + -50 + (short)(speed_x + 0);
@@ -124,7 +124,7 @@ struct earthling_state *earthling;
         projectile->sprite_count = 1;
         projectile->tile_count = 16;
         projectile->tile = VDP_TILE_PRIORITY;
-        animation = AnimationDescriptors_0AEFF6;
+        animation = TomatoProjectileAnimations;
         projectile->sequence = animation->sequence;
         projectile->frames = animation->frames;
         projectile->frame_phase = 0;
@@ -177,19 +177,19 @@ void ProcessTomatoRain()
                             projectile->sprite_state = 0;
                             projectile->frame = -1;
                             projectile->frame_duration = 1;
-                            if (!gMusicUnknownE472)
+                            if (!gFmEffectTemplateStatus)
                                 AudioRequestChannelTemplateEffect(FM_EFFECT_TOMATO_LAND);
                         }
                     }
                 } else if (projectile->height <= 25) {
                     object_number = ProjectileFindCollisionExcludingOwner(projectile, gSharedProjectileOwners[slot]);
                     if (object_number) {
-                        if (--object_number <= 1 && !ELEVATOR_FLAG[object_number] &&
-                            !P1_MENU_OPEN[object_number] && !gPlayerInteractionChoiceActive[object_number]) {
+                        if (--object_number <= 1 && !gPlayerElevatorFlags[object_number] &&
+                            !gPlayerInventoryOpen[object_number] && !gPlayerInteractionChoiceActive[object_number]) {
                             if (gSharedProjectileOwners[slot] <= 1)
-                                TOEJAMS_HEALTH[object_number] -= 4;
+                                gPlayerHealth[object_number] -= 4;
                             else
-                                TOEJAMS_HEALTH[object_number] -= 6;
+                                gPlayerHealth[object_number] -= 6;
                         } else if (!PresentRegisterDecoyHit(object_number))
                             DamageEarthling(gPlayerInfo[object_number].earthling);
                         projectile->velocity_x = 0;
@@ -220,8 +220,8 @@ void ProcessTomatoRain()
 void SetTomatoRainTomatoes(index)
 int index;
 {
-    gPlayer1TomatoRainTimer[index] = GetRandomNumber() % 31 + 50;
-    TOMATO_RAIN_TIMER[index] = 0;
+    gPlayerTomatoRainTicks[index] = GetRandomNumber() % 31 + 50;
+    gPlayerTomatoRainSpawnDelay[index] = 0;
 }
 
 /* While a player's rain counter is active, allocate a falling tomato after
@@ -233,9 +233,9 @@ int player_number;
     struct object_state *projectile, *player;
     struct animation_descriptor *animation;
 
-    if (!gPlayer1TomatoRainTimer[player_number] || --TOMATO_RAIN_TIMER[player_number] > 0)
+    if (!gPlayerTomatoRainTicks[player_number] || --gPlayerTomatoRainSpawnDelay[player_number] > 0)
         return;
-    TOMATO_RAIN_TIMER[player_number] = GetRandomNumber() % 5 + 4;
+    gPlayerTomatoRainSpawnDelay[player_number] = GetRandomNumber() % 5 + 4;
     slot = 4;
     do {
         if (!gSharedProjectileEntities[slot])
@@ -259,13 +259,13 @@ int player_number;
         projectile->sprite_count = 1;
         projectile->tile_count = 16;
         projectile->tile = VDP_TILE_PRIORITY;
-        animation = AnimationDescriptors_0AEFF6;
+        animation = TomatoProjectileAnimations;
         projectile->sequence = animation->sequence;
         projectile->frames = animation->frames;
         projectile->frame_phase = 0;
         projectile->draw_flags |= ENTITY_SHADOW;
         projectile->sprite_state = -1;
-        --gPlayer1TomatoRainTimer[player_number];
+        --gPlayerTomatoRainTicks[player_number];
     }
 }
 
@@ -384,7 +384,7 @@ short player_number;
             effect->height_pixels = 32;
             effect->sprite_count = 1;
             effect->tile_count = 16;
-            animation = AnimationDescriptors_0AF00E;
+            animation = PlayerControlRemapAnimations;
             effect->sequence = animation->sequence;
             effect->frames = animation->frames;
             effect->frame_phase = animation->period;
@@ -405,7 +405,7 @@ short player_number;
 {
     unsigned char input, direction;
 
-    input = P1_PROCESSED_INPUT[player_number];
+    input = gPlayerProcessedInput[player_number];
     if (!(input & 15))
         return input;
     direction = ControlRemapDirections[gPlayerControlRemapIndices[player_number]][(input & 15) - 1];
@@ -428,7 +428,7 @@ struct object_state *player;
         player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST) {
         FreeEntity(gPlayerControlRemapEntities[player_number]);
         gPlayerControlRemapEntities[player_number] = 0;
-    } else if (!ELEVATOR_FLAG[player_number] && (effect->frame_duration & 2) &&
+    } else if (!gPlayerElevatorFlags[player_number] && (effect->frame_duration & 2) &&
                ((short)GetRandomNumber() & 1)) {
         PlaySound(PSG_DOUBLE_TONE_SWEEP, 20);
     }
@@ -466,7 +466,7 @@ void EarthlingUpdateControlRemapProjectiles()
                     }
                 } else if (projectile->height <= 25) {
                     if (hit = EntityFindProjectileTargetHit(projectile)) {
-                        if (--hit <= 1 && !ELEVATOR_FLAG[hit] && !P1_MENU_OPEN[hit])
+                        if (--hit <= 1 && !gPlayerElevatorFlags[hit] && !gPlayerInventoryOpen[hit])
                             PlayerApplyControlRemapEffect(hit);
                         else
                             PresentRegisterDecoyHit(hit);
@@ -499,7 +499,7 @@ short player_number;
         effect->height_pixels = 20;
         effect->sprite_count = 1;
         effect->tile_count = 16;
-        animation = AnimationDescriptors_0AF076;
+        animation = ActiveTerrainEffectAnimations;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = animation->period;
@@ -574,12 +574,12 @@ unsigned short terrain;
     struct earthling_state source;
 
     player_number = player->entity_index;
-    if (gPlayer1Powerup[player_number] != PRESENT_ROSE_BUSHES || ELEVATOR_FLAG[player_number] ||
+    if (gPlayerPowerups[player_number] != PRESENT_ROSE_BUSHES || gPlayerElevatorFlags[player_number] ||
         player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST) {
         if (gPlayerActiveTerrainEffectEntities[player_number])
             PresentRetireTerrainEffect(player_number);
-    } else if (!(P1_PREV_PROCESSED_INPUT[player_number] & 64) &&
-               (P1_PROCESSED_INPUT[player_number] & 64)) {
+    } else if (!(gPlayerPreviousProcessedInput[player_number] & 64) &&
+               (gPlayerProcessedInput[player_number] & 64)) {
         if (terrain == TERRAIN_GROUND || terrain == TERRAIN_WALKABLE_MAX) {
             if (gPlayerActiveTerrainEffectEntities[player_number])
                 PresentRetireTerrainEffect(player_number);
@@ -594,9 +594,9 @@ unsigned short terrain;
             source.x = effect->x;
             source.y = effect->y;
             source.object = object_number;
-            if (!ELEVATOR_FLAG[player_number] && EntityIsWithinRange(effect, player, 25, 10))
+            if (!gPlayerElevatorFlags[player_number] && EntityIsWithinRange(effect, player, 25, 10))
                 Player_Youch(player_number, &source);
-            if (!ELEVATOR_FLAG[player_number ^ 1] &&
+            if (!gPlayerElevatorFlags[player_number ^ 1] &&
                 EntityIsWithinRange(effect, &gPlayerInfo[player_number ^ 1], 25, 10))
                 Player_Youch(player_number ^ 1, &source);
         }

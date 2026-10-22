@@ -60,8 +60,8 @@ short song;
     if (song) {
         --song;
         WaitForNextVBlank(1);
-        VBLANK_FLAG_8 = !song;
-        VBLANK_FLAG_7 = song;
+        gCurrentMusicSelection = !song;
+        gRequestedMusicSelection = song;
     } else {
         AudioRequestFmChannelRelease();
         MusicRequestTrackPointerReset();
@@ -135,48 +135,48 @@ short song;
     JamOutUpdateLayoutsAndScroll(1);
     ClearLowerVramTilemap();
     WaitForNextVBlank(1);
-    VBLANK_FLAG_8 = 1;
-    VBLANK_FLAG_7 = 0;
+    gCurrentMusicSelection = 1;
+    gRequestedMusicSelection = 0;
     JamOutReleaseCharacterCopies();
     gSharedTileSpriteCopiesEnabled = 0;
     CutsceneReleaseFlaggedEntityRange();
 }
 
 /* Alternate controller polling and route each player's new input to samples
- * or channel-template effects. PLAYER_INDICATOR 1 swaps the routed words. */
+ * or channel-template effects. gPlayerSelection 1 swaps the routed words. */
 void JamOutVBlank()
 {
     unsigned short saved_input;
-    if (VBLANK_FLAG_8 != VBLANK_FLAG_7) {
-        MusicSelectSongTemplateBank(VBLANK_FLAG_7);
-        VBLANK_FLAG_8 = VBLANK_FLAG_7;
+    if (gCurrentMusicSelection != gRequestedMusicSelection) {
+        MusicSelectSongTemplateBank(gRequestedMusicSelection);
+        gCurrentMusicSelection = gRequestedMusicSelection;
     } else
-        MassiveRoutine();
-    ++TIME_COUNTER;
-    if (INPUT_READING_FLAG_LO & 1) {
-        P1_PROCESSED_INPUT[PLAYER_TOEJAM] = gControllerPortsSwapped ? GetCtrl2Input() : GetCtrl1Input();
-        if (P1_PROCESSED_INPUT[PLAYER_TOEJAM] != gJamPlayer1PreviousInput) {
-            gJamAudioRoute1PendingInput = gJamPlayer1PendingAnimationInput = P1_PROCESSED_INPUT[PLAYER_TOEJAM];
-            gJamPlayer1PreviousInput = P1_PROCESSED_INPUT[PLAYER_TOEJAM];
+        MusicUpdateSequencer();
+    ++gFrameCounter;
+    if (gFrameCounterLowByte & 1) {
+        gPlayerProcessedInput[PLAYER_TOEJAM] = gControllerPortsSwapped ? GetCtrl2Input() : GetCtrl1Input();
+        if (gPlayerProcessedInput[PLAYER_TOEJAM] != gJamPlayer1PreviousInput) {
+            gJamAudioRoute1PendingInput = gJamPlayer1PendingAnimationInput = gPlayerProcessedInput[PLAYER_TOEJAM];
+            gJamPlayer1PreviousInput = gPlayerProcessedInput[PLAYER_TOEJAM];
         }
     } else {
-        P1_PROCESSED_INPUT[PLAYER_EARL] = gControllerPortsSwapped ? GetCtrl1Input() : GetCtrl2Input();
-        if (P1_PROCESSED_INPUT[PLAYER_EARL] != gJamPlayer2PreviousInput) {
-            gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = P1_PROCESSED_INPUT[PLAYER_EARL];
-            gJamPlayer2PreviousInput = P1_PROCESSED_INPUT[PLAYER_EARL];
+        gPlayerProcessedInput[PLAYER_EARL] = gControllerPortsSwapped ? GetCtrl1Input() : GetCtrl2Input();
+        if (gPlayerProcessedInput[PLAYER_EARL] != gJamPlayer2PreviousInput) {
+            gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = gPlayerProcessedInput[PLAYER_EARL];
+            gJamPlayer2PreviousInput = gPlayerProcessedInput[PLAYER_EARL];
         }
     }
-    if (PLAYER_INDICATOR == 1) {
+    if (gPlayerSelection == 1) {
         saved_input = gJamAudioRoute1PendingInput;
         gJamAudioRoute1PendingInput = gJamAudioRoute2PendingInput;
         gJamAudioRoute2PendingInput = saved_input;
-        ++TIME_COUNTER;
+        ++gFrameCounter;
     }
-    if (INPUT_READING_FLAG_LO & 1) {
+    if (gFrameCounterLowByte & 1) {
         if (gJamAudioRoute1PendingInput) {
             if (gJamAudioRoute1PendingInput & 64) {
                 if (!gJamSelectedSong)
-                    gMusicUnknownE488 = 1;
+                    gMusicAnimationEvent = 1;
                 PlaySoundEffect((long)Sfx_JamBassDrum, 90, 0);
             }
             if (gJamAudioRoute1PendingInput & 16)
@@ -202,7 +202,7 @@ void JamOutVBlank()
             if (gJamAudioRoute2PendingInput & 64) {
                 AudioRequestChannelTemplateEffect(FM_EFFECT_JAM_BUTTON_A);
                 if (!gJamSelectedSong)
-                    gMusicUnknownE488 = 1;
+                    gMusicAnimationEvent = 1;
             }
             if (gJamAudioRoute2PendingInput & 16)
                 AudioRequestChannelTemplateEffect(FM_EFFECT_JAM_BUTTON_B);
@@ -213,35 +213,35 @@ void JamOutVBlank()
             gJamAudioRoute2PendingInput = 0;
         }
     }
-    if (PLAYER_INDICATOR == 1)
-        --TIME_COUNTER;
+    if (gPlayerSelection == 1)
+        --gFrameCounter;
 }
 
 /* Poll both controllers, select sample groups, and cycle song/template modes. */
 void JamOutRandomSampleVBlank()
 {
     unsigned short saved_input;
-    if (VBLANK_FLAG_8 != VBLANK_FLAG_7) {
-        MusicSelectSongTemplateBank(VBLANK_FLAG_7);
-        VBLANK_FLAG_8 = VBLANK_FLAG_7;
+    if (gCurrentMusicSelection != gRequestedMusicSelection) {
+        MusicSelectSongTemplateBank(gRequestedMusicSelection);
+        gCurrentMusicSelection = gRequestedMusicSelection;
     } else
-        MassiveRoutine();
-    ++TIME_COUNTER;
-    P1_PROCESSED_INPUT[PLAYER_TOEJAM] = gControllerPortsSwapped ? GetCtrl2Input() : GetCtrl1Input();
-    if (P1_PROCESSED_INPUT[PLAYER_TOEJAM] != gJamPlayer1PreviousInput) {
-        gJamAudioRoute1PendingInput = gJamPlayer1PendingAnimationInput = P1_PROCESSED_INPUT[PLAYER_TOEJAM];
-        gJamPlayer1PreviousInput = P1_PROCESSED_INPUT[PLAYER_TOEJAM];
+        MusicUpdateSequencer();
+    ++gFrameCounter;
+    gPlayerProcessedInput[PLAYER_TOEJAM] = gControllerPortsSwapped ? GetCtrl2Input() : GetCtrl1Input();
+    if (gPlayerProcessedInput[PLAYER_TOEJAM] != gJamPlayer1PreviousInput) {
+        gJamAudioRoute1PendingInput = gJamPlayer1PendingAnimationInput = gPlayerProcessedInput[PLAYER_TOEJAM];
+        gJamPlayer1PreviousInput = gPlayerProcessedInput[PLAYER_TOEJAM];
     }
-    P1_PROCESSED_INPUT[PLAYER_EARL] = gControllerPortsSwapped ? GetCtrl1Input() : GetCtrl2Input();
-    if (P1_PROCESSED_INPUT[PLAYER_EARL] != gJamPlayer2PreviousInput) {
-        gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = P1_PROCESSED_INPUT[PLAYER_EARL];
-        gJamPlayer2PreviousInput = P1_PROCESSED_INPUT[PLAYER_EARL];
+    gPlayerProcessedInput[PLAYER_EARL] = gControllerPortsSwapped ? GetCtrl1Input() : GetCtrl2Input();
+    if (gPlayerProcessedInput[PLAYER_EARL] != gJamPlayer2PreviousInput) {
+        gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = gPlayerProcessedInput[PLAYER_EARL];
+        gJamPlayer2PreviousInput = gPlayerProcessedInput[PLAYER_EARL];
     }
-    if (PLAYER_INDICATOR == 1) {
+    if (gPlayerSelection == 1) {
         saved_input = gJamAudioRoute1PendingInput;
         gJamAudioRoute1PendingInput = gJamAudioRoute2PendingInput;
         gJamAudioRoute2PendingInput = saved_input;
-        ++TIME_COUNTER;
+        ++gFrameCounter;
     }
     if (gJamAudioRoute1PendingInput) {
         if (gJamAudioRoute1PendingInput & 128) {
@@ -250,11 +250,11 @@ void JamOutRandomSampleVBlank()
                 MusicRequestTrackPointerReset();
                 gJamSongCycleIndex = 0;
             } else
-                VBLANK_FLAG_7 = gJamSongCycleIndex++;
+                gRequestedMusicSelection = gJamSongCycleIndex++;
         }
         if (gJamAudioRoute1PendingInput & 64) {
             if (!gJamSongCycleIndex)
-                gMusicUnknownE488 = 1;
+                gMusicAnimationEvent = 1;
             PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute1ButtonASampleIndex], 90, 0);
         }
         if (gJamAudioRoute1PendingInput & 16)
@@ -280,13 +280,13 @@ void JamOutRandomSampleVBlank()
                     gMusicAlternateTemplateBankEnabled = 0;
                 else if (gJamTemplateBankCycleIndex == 2)
                     gMusicAlternateTemplateBankEnabled = 1;
-                VBLANK_FLAG_7 = VBLANK_FLAG_8;
-                VBLANK_FLAG_8 = !VBLANK_FLAG_7;
+                gRequestedMusicSelection = gCurrentMusicSelection;
+                gCurrentMusicSelection = !gRequestedMusicSelection;
             }
         }
         if (gJamAudioRoute2PendingInput & 64) {
             if (!gJamSongCycleIndex)
-                gMusicUnknownE488 = 1;
+                gMusicAnimationEvent = 1;
             PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute2ButtonASampleIndex], 90, 0);
         }
         if (gJamAudioRoute2PendingInput & 16)
@@ -300,8 +300,8 @@ void JamOutRandomSampleVBlank()
         }
         gJamAudioRoute2PendingInput = 0;
     }
-    if (PLAYER_INDICATOR == 1)
-        --TIME_COUNTER;
+    if (gPlayerSelection == 1)
+        --gFrameCounter;
 }
 
 /* Alternate completed lead animations and release their input lock. */
@@ -425,7 +425,7 @@ void JamOutSynchronizeEntityCopies()
             object->frame = parent->frame;
             object->sprite_ready = parent->sprite_ready;
             object->current_frame = parent->current_frame;
-            piece_count = object->current_frame->count;
+            piece_count = object->current_frame->piece_count;
             for (piece = 0; piece < piece_count; ++piece) {
                 parent_sprite = &gHardwareSpriteTable[parent->primary_sprites[piece]];
                 sprite = &gHardwareSpriteTable[object->primary_sprites[piece]];
@@ -501,8 +501,9 @@ void JamOutCreateCharacterCopies()
     }
 }
 
-/* QUALIFICATION: assigning the handle to an unused temporary retains the ROM's
- * extra word reloads. This compiler-coaxing spelling is retained as an explicit qualification. */
+/* Release every stored Jam Out character-copy entity.
+ * MATCHING QUALIFICATION: assigning the handle to an unused temporary retains
+ * the ROM's extra word reloads; discarding that assignment changes the code. */
 void JamOutReleaseCharacterCopies()
 {
     short slot, object_number;

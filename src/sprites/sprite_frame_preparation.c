@@ -75,11 +75,11 @@ int reuse_tiles, viewport;
 
     if (entity->entity_index <= PLAYER_EARL)
         elevation = entity->height;
-    for (piece_number = 0; piece_number < frame->count; ++piece_number) {
+    for (piece_number = 0; piece_number < frame->piece_count; ++piece_number) {
         /* Twelve is the entity sprite-list capacity, not a fixed ROM-frame
          * extent; this inherited bounded payload view retains word indexing. */
         piece = &((struct render_piece (*)[12])(frame + 1))[0][piece_number];
-        format = piece->format;
+        format = piece->tile_format;
         tile_count = piece->height;
         tile_count &= 255;
         tile_count *= (int)piece->width;
@@ -154,7 +154,7 @@ void ProcessEntityAnimationMotion()
     struct render_frame *frame;
     unsigned char sequence_entry;
 
-    if (gLevel912C == 26)
+    if (gPlayer1MapLevel == 26)
         entity_count = 40;
     else
         entity_count = 26;
@@ -178,7 +178,7 @@ void ProcessEntityAnimationMotion()
             }
             /* The sequence index is no longer needed; keep the upload predicate in this byte. */
             next_frame_or_needs_tiles = 1;
-            if (frame->reusable && entity->sprite_ready)
+            if (frame->reuse_tiles && entity->sprite_ready)
                 next_frame_or_needs_tiles = 0;
             if (entity->animation_motion_axes & ANIMATION_MOTION_XY)
                 (*entity->process)(frame, entity);

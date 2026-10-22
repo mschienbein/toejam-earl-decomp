@@ -68,11 +68,11 @@ short player;
     /* The selected level byte is read but not used by the drawing loops. */
 
     if (!player) {
-        map = gMapDataA[0];
-        level = gLevel912C;
+        map = gPlayer1LevelMap[0];
+        level = gPlayer1MapLevel;
     } else {
-        map = gMapDataB[0];
-        level = gLevel912E;
+        map = gPlayer2LevelMap[0];
+        level = gPlayer2MapLevel;
     }
     for (row = 0; row < 28; ++row) {
         VDP_COMMAND = 0x60020003 + ((row + 1) << 23);
@@ -104,7 +104,7 @@ short player;
                     palette = 1;
                 else if (tile_number > 101)
                     palette = TileLookupAuxiliary[tile_number - 102];
-                if (gMapDirectionalPathMode && (gMapDataD[row][column] & 15))
+                if (gMapDirectionalPathMode && (gMapPathDirectionBanks[row][column] & 15))
                     palette = 3;
                 left_tile |= palette << 13;
                 right_tile |= palette << 13;
@@ -177,7 +177,7 @@ short level;
                 if (gMapRevealedCoverBits[level][row] & (0x80 >> column))
                     MapAppendCoverBlockSprites(row, column, sprites, 1);
                 else if (revealed < 8 && MapCoverBlockContainsTerrain(map, row, column) &&
-                        PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100 < 25 - revealed) {
+                        gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100 < 25 - revealed) {
                     MapAppendCoverBlockSprites(row, column, sprites, 0);
                     gMapRevealedCoverBits[level][row] |= 0x80 >> column;
                     ++revealed;
@@ -220,11 +220,11 @@ struct hardware_sprite *sprites;
     unsigned short *map;
 
     if (!player) {
-        map = gMapDataA[0];
-        level = gLevel912C;
+        map = gPlayer1LevelMap[0];
+        level = gPlayer1MapLevel;
     } else {
-        map = gMapDataB[0];
-        level = gLevel912E;
+        map = gPlayer2LevelMap[0];
+        level = gPlayer2MapLevel;
     }
     VDP_COMMAND = VDP_WRITE_WINDOW;
     for (column = 0; column < 40; ++column)
@@ -265,8 +265,8 @@ void LoadLevel1Tiles()
 
     for (row = 0; row < 26; ++row) {
         for (column = 0; column < 19; ++column) {
-            gMapDataA[row][column] = Level1MapData[row][column];
-            gMapDataB[row][column] = Level1MapData[row][column];
+            gPlayer1LevelMap[row][column] = Level1MapData[row][column];
+            gPlayer2LevelMap[row][column] = Level1MapData[row][column];
         }
     }
 }
@@ -338,7 +338,7 @@ short player;
 {
     int in_elevator = 0;
 
-    if (ELEVATOR_FLAG[player] && !((ELEVATOR_FLAG[player] - 1) & 1))
+    if (gPlayerElevatorFlags[player] && !((gPlayerElevatorFlags[player] - 1) & 1))
         in_elevator = 1;
     return in_elevator;
 }
@@ -378,16 +378,16 @@ struct hardware_sprite *sprites;
     unsigned short tile;
 
     for (bank = 0; bank < 2; ++bank) {
-        if (!EARTHLING_LOAD_FLAG[bank] || EARTHLING_LEVEL[bank] != level)
+        if (!gEarthlingBankUsers[bank] || gEarthlingBankLevels[bank] != level)
             continue;
-        if (!EARTHLINGS_IN_LEVEL[bank][0].kind)
+        if (!gEarthlingBanks[bank][0].kind)
             piece = 0;
-        else if (!EARTHLINGS_IN_LEVEL[bank][1].kind)
+        else if (!gEarthlingBanks[bank][1].kind)
             piece = 1;
         else
             continue;
-        world_x = EARTHLINGS_IN_LEVEL[bank][piece].x;
-        world_y = EARTHLINGS_IN_LEVEL[bank][piece].y;
+        world_x = gEarthlingBanks[bank][piece].x;
+        world_y = gEarthlingBanks[bank][piece].y;
         tile = sprites[0].tile & VDP_TILE_INDEX_MASK;
         VDP_COMMAND = 0x40000000 + (((tile << 5) & 0x3fff) << 16) + (((tile << 5) & 0xc000) >> 14);
         MoveDataToVRAM(ShipPieceMapIcon, 64);
@@ -409,7 +409,7 @@ void DrawMapCharacters(sprites)
 struct hardware_sprite *sprites;
 {
     WaitForNextVBlank(1);
-    if (TIME_COUNTER & 24) {
+    if (gFrameCounter & 24) {
         VDP_COMMAND = 0x78000003L;
         VDP_DATA = sprites[0].y;
         VDP_COMMAND = 0x78080003L;

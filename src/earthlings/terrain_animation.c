@@ -33,7 +33,7 @@ short next_state;
     } else if (animation == 12) {
         if (earthling->saved_x_or_status >= 80 ||
             EntityIsWithinRange(object, &gPlayerInfo[PLAYER_TOEJAM], 96, 48) ||
-            EntityIsWithinRange(object, &gEarlPositionX, 96, 48))
+            EntityIsWithinRange(object, &gPlayer2Entity, 96, 48))
             next_state += 8;
         else
             next_state += 4;
@@ -67,7 +67,7 @@ struct object_state *object;
     } else if (animation == 12) {
         if (earthling->saved_x_or_status < 80 &&
             !EntityIsWithinRange(object, &gPlayerInfo[PLAYER_TOEJAM], 128, 64) &&
-            !EntityIsWithinRange(object, &gEarlPositionX, 128, 64))
+            !EntityIsWithinRange(object, &gPlayer2Entity, 128, 64))
             next_state = earthling->state - 4;
     }
     if (next_state >= 0) {
@@ -97,7 +97,7 @@ struct earthling_state *earthling;
     }
     if (earthling->object) {
         object = &gPlayerInfo[earthling->object];
-        definition = &EARTHLING_DATA[earthling->kind];
+        definition = &EarthlingDefinitions[earthling->kind];
         if (!object->sprite_state && earthling->state && earthling->state != 2) {
             earthling->timer = 0;
             earthling->state_delay = definition->state_delay;
@@ -109,7 +109,7 @@ struct earthling_state *earthling;
         object->velocity_y = 0;
         if (!earthling->state_delay) {
             if (definition->target_chance >
-                PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                gCachedRandomValues[gRandomCacheIndex == 58 ?
                 (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100) {
                 if (earthling->kind == EARTHLING_CUPID)
                     separation = 85;
@@ -118,7 +118,7 @@ struct earthling_state *earthling;
                 if (next_state != -1) {
                     minimum = definition->target_time_min;
                     maximum = definition->target_time_max;
-                    earthling->timer = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                    earthling->timer = gCachedRandomValues[gRandomCacheIndex == 58 ?
                         (gRandomCacheIndex = 0) : ++gRandomCacheIndex] %
                         (maximum - minimum + 1) + minimum;
                 }
@@ -137,20 +137,20 @@ struct earthling_state *earthling;
             next_state = -1;
         else if (next_state == -1 && earthling->state != 2) {
             if (definition->turn_chance >
-                PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                gCachedRandomValues[gRandomCacheIndex == 58 ?
                 (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100) {
                 next_state = EarthlingSelectTurnState(earthling);
                 minimum = definition->turn_time_min;
                 maximum = definition->turn_time_max;
-                earthling->timer = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                earthling->timer = gCachedRandomValues[gRandomCacheIndex == 58 ?
                     (gRandomCacheIndex = 0) : ++gRandomCacheIndex] %
                     (maximum - minimum + 1) + minimum;
             } else {
-                next_state = (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                next_state = (gCachedRandomValues[gRandomCacheIndex == 58 ?
                     (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) + 4;
                 minimum = definition->move_time_min;
                 maximum = definition->move_time_max;
-                earthling->timer = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                earthling->timer = gCachedRandomValues[gRandomCacheIndex == 58 ?
                     (gRandomCacheIndex = 0) : ++gRandomCacheIndex] %
                     (maximum - minimum + 1) + minimum;
             }

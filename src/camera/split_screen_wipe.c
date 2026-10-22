@@ -26,7 +26,7 @@ void AnimateSplitScreenWipe()
     while (!gPlayerInfo[PLAYER_TOEJAM].sprite_ready || !gPlayerInfo[PLAYER_EARL].sprite_ready) {
         UpdateAndQueueEntitySprites();
         WaitForNextVBlank(1);
-        SpriteLoadingStuff(0, 0);
+        UploadQueuedSpriteGraphics(0, 0);
     }
     WaitForNextVBlank(1);
     LinkPlayerSpritesForSplitWipe();

@@ -52,7 +52,7 @@ short player_number;
         display->height_pixels = 32;
         display->sprite_count = 1;
         display->tile_count = 16;
-        animation = AnimationDescriptors_0AF06E;
+        animation = PlayerInteractionChoiceAnimations;
         display->sequence = animation->sequence;
         display->frames = animation->frames;
         display->frame = -1;
@@ -74,8 +74,8 @@ void CheckAButton()
             choice = display->sprite_state;
             cancel = (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_GHOST ||
                      (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST;
-            if (cancel || ((P1_PROCESSED_INPUT[player_number] & 64) &&
-                           !(P1_PREV_PROCESSED_INPUT[player_number] & 64))) {
+            if (cancel || ((gPlayerProcessedInput[player_number] & 64) &&
+                           !(gPlayerPreviousProcessedInput[player_number] & 64))) {
                 if (cancel)
                     gPlayerInteractionResponses[player_number] = 0;
                 else if (display->sprite_state == 1)
@@ -85,20 +85,20 @@ void CheckAButton()
                 FreeEntity(gPlayerInteractionChoiceEntities[player_number]);
                 gPlayerInteractionChoiceEntities[player_number] = 0;
                 gPlayerInteractionChoiceActive[player_number] = 0;
-                P1_PREV_PROCESSED_INPUT[player_number] = 64;
-                P1_PROCESSED_INPUT[player_number] = 64;
+                gPlayerPreviousProcessedInput[player_number] = 64;
+                gPlayerProcessedInput[player_number] = 64;
                 gPlayerChoiceActionReleaseLatches[player_number] = 1;
             } else {
-                if (P1_PROCESSED_INPUT[player_number] & 1)
+                if (gPlayerProcessedInput[player_number] & 1)
                     choice = 0;
-                else if (P1_PROCESSED_INPUT[player_number] & 2)
+                else if (gPlayerProcessedInput[player_number] & 2)
                     choice = 1;
                 if (choice != display->sprite_state) {
                     display->frame = choice - 1;
                     display->frame_duration = 1;
                     display->sprite_state = choice;
                 }
-                P1_PROCESSED_INPUT[player_number] = 0;
+                gPlayerProcessedInput[player_number] = 0;
             }
         }
     }
@@ -227,8 +227,8 @@ struct earthling_state *earthling;
             }
             gPlayerInteractionResponses[player_number] = 0;
         } else if (gPlayerWizardInteractionStates[player_number] == 3) {
-            if (TOEJAMS_HEALTH[player_number] < PlayerGetMaximumHealth(player_number))
-                ++TOEJAMS_HEALTH[player_number];
+            if (gPlayerHealth[player_number] < PlayerGetMaximumHealth(player_number))
+                ++gPlayerHealth[player_number];
             else {
                 gPlayerWizardInteractionStates[player_number] = 2;
                 next_state = 3;
@@ -284,7 +284,7 @@ struct earthling_state *earthling;
         }
         gPlayerWisemanInteractionStates[player_number] = 3;
         gPlayerInteractionResponses[player_number] = 0;
-    } else if (gPlayerWisemanInteractionStates[player_number] == 3 && !P1_MENU_OPEN[player_number]) {
+    } else if (gPlayerWisemanInteractionStates[player_number] == 3 && !gPlayerInventoryOpen[player_number]) {
         gPlayerWisemanInteractionStates[player_number] = 2;
         next_state = 2;
         object->velocity_x = -320;
@@ -337,7 +337,7 @@ struct earthling_state *earthling;
                 SetSprite(player, PLAYER_ANIM_COVER_EARS);
                 player_number ^= 1;
                 player = &gPlayerInfo[player_number];
-                if (gPlayerLives[player_number] >= 0 && !SPLIT_SCREEN &&
+                if (gPlayerLives[player_number] >= 0 && !gSplitScreenEnabled &&
                     (!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
                      (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
                      (player->animation_group_mask & 0x830400c)))
@@ -358,7 +358,7 @@ struct earthling_state *earthling;
             SetSprite(player, GetActivePresentSprite(player));
             player_number ^= 1;
             player = &gPlayerInfo[player_number];
-            if (gPlayerLives[player_number] >= 0 && !SPLIT_SCREEN &&
+            if (gPlayerLives[player_number] >= 0 && !gSplitScreenEnabled &&
                 player->sprite_state == PLAYER_ANIM_COVER_EARS)
                 SetSprite(player, GetActivePresentSprite(player));
         } else
@@ -395,10 +395,10 @@ short player_number;
 
     if (gLifeRequestDisplayEntity = (int)AllocateEntity()) {
         object = &gPlayerInfo[gLifeRequestDisplayEntity];
-        object->x = TOEJAM_CAMERA_NEWX + 80;
-        object->y = TOEJAM_CAMERA_NEWY + 224;
+        object->x = gCamera1PendingX + 80;
+        object->y = gCamera1PendingY + 224;
         object->height = 112;
-        object->level = gLevel912C;
+        object->level = gPlayer1MapLevel;
         object->width = 32;
         object->height_pixels = 48;
         object->sprite_count = 4;
@@ -428,23 +428,23 @@ short player_number;
     short other_player;
     struct object_state *player;
 
-    if (gLevel912C == 26)
+    if (gPlayer1MapLevel == 26)
         return;
     other_player = player_number ^ 1;
     player = &gPlayerInfo[other_player];
     if (!gLifeRequestDisplayEntity && gPlayerLives[other_player] > 0 &&
-        !gPlayerInteractionChoiceActive[other_player] && !ELEVATOR_FLAG[other_player] &&
+        !gPlayerInteractionChoiceActive[other_player] && !gPlayerElevatorFlags[other_player] &&
         (!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
          (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
          (player->animation_group_mask & (PLAYER_GROUP_WALK | PLAYER_GROUP_SNEAK | PLAYER_GROUP_SPRING_SHOES))) &&
         !(player->animation_group_mask & PLAYER_GROUP_STATIONARY) &&
-        (MovePadInputIntoD0(player_number) & 112) &&
+        (ReadMappedPlayerInput(player_number) & 112) &&
         !PlayerCreateLifeRequestDisplay(player_number)) {
         SetSprite(player, GetActivePresentSprite(player));
         player = &gPlayerInfo[gLifeRequestDisplayEntity];
         player->height += 30;
         SetNextSpeechLifetime(64);
-        if (PLAYER_INDICATOR != 2)
+        if (gPlayerSelection != 2)
             GenerateSpeech(gLifeRequestDisplayEntity, "Can I play?", 0);
         else
             GenerateSpeech(gLifeRequestDisplayEntity, "Got a life?", 0);
@@ -458,17 +458,17 @@ short player_number;
         FreeEntity(gLifeRequestDisplayEntity);
         gLifeRequestDisplayEntity = 0;
         if (gPlayerInteractionResponses[other_player] == 2) {
-            while (VBLANK_FLAG_2)
+            while (gSpriteGraphicsUploadPending)
                 ;
-            ClearSkipVHBlankFlags();
+            DisableBlankingGraphics();
             gMode2RegSoftcopy &= 0x3c;
             VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
-            if (PLAYER_INDICATOR == 2) {
+            if (gPlayerSelection == 2) {
                 --gPlayerLives[other_player];
                 HudLoadLivesSpriteTiles(other_player);
             }
             CopyLevelBetweenPlayers(0);
-            gLevel912E = gLevel912C;
+            gPlayer2MapLevel = gPlayer1MapLevel;
             player = &gPlayerInfo[player_number];
             player->draw_flags = ENTITY_ACTIVE;
             player->behavior_flags = ENTITY_COLLIDABLE;
@@ -476,8 +476,8 @@ short player_number;
             PlayerResetRankAndResources(player_number);
             StopPlayer(player);
             player->animation_motion_axes = ANIMATION_MOTION_NONE;
-            PLAYER_INDICATOR = 2;
-            SPLIT_SCREEN = 1;
+            gPlayerSelection = 2;
+            gSplitScreenEnabled = 1;
             PlayerRelocateToPartnerOrNextLevel(player_number);
         }
         gLifeRequestPending = 0;

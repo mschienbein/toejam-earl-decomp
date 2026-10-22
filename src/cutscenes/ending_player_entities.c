@@ -1,5 +1,5 @@
 #include "hardware.h"
-#define TJE_LOCAL_FUNC_00D904
+#define TJE_LOCAL_ALLOCATEENTITY
 
 #include "entities.h"
 #include "sprites.h"
@@ -27,7 +27,7 @@ unsigned short x, y;
     if (first_active) {
         if (gEndingPlayer1Entity = AllocateEntity()) {
             object = &gPlayerInfo[gEndingPlayer1Entity];
-            frames = CompositeFrames_03A3AA;
+            frames = EndingPlayer1Frames;
             object->sprite_count = 3;
             object->tile_count = 48;
             object->tile = VDP_TILE_PRIORITY;
@@ -49,7 +49,7 @@ unsigned short x, y;
     if (second_active) {
         if (gEndingPlayer2Entity = AllocateEntity()) {
             object = &gPlayerInfo[gEndingPlayer2Entity];
-            frames = CompositeFrames_03A33A;
+            frames = EndingPlayer2Frames;
             object->sprite_count = 3;
             object->tile_count = 48;
             object->tile = VDP_TILE_PRIORITY;

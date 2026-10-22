@@ -3,8 +3,8 @@
 
 
 /* Exact observed views; unspecified outer bounds do not claim allocations. */
-extern short SEGA_PAL_LOAD_FLAG;
-extern unsigned short *SEGA_PAL_TO_LOAD;
+extern short gSegaPaletteUploadPending;
+extern unsigned short *gSegaPaletteUploadSource;
 extern unsigned char gEndingPlayer1Entity;
 extern unsigned char gEndingPlayer2Entity;
 extern char gCutsceneFirstTextEntity;

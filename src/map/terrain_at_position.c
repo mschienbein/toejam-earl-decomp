@@ -22,12 +22,12 @@ short player, world_x, world_y;
     short map_y, map_x, tile_number;
 
     if (!player) {
-        map = gMapDataA[0];
-        if (gLevel912C == 1 || gLevel912C == 26)
+        map = gPlayer1LevelMap[0];
+        if (gPlayer1MapLevel == 1 || gPlayer1MapLevel == 26)
             special_level = 1;
     } else {
-        map = gMapDataB[0];
-        if (gLevel912E == 1 || gLevel912E == 26)
+        map = gPlayer2LevelMap[0];
+        if (gPlayer2MapLevel == 1 || gPlayer2MapLevel == 26)
             special_level = 1;
     }
     tile_y = (world_y >> 3) & 7;
@@ -56,7 +56,7 @@ short player;
     struct object_state *entity;
     unsigned char *land;
     unsigned short *map;
-    /* Matching qualification: reuse the column word for its encoded cell,
+    /* MATCHING QUALIFICATION: reuse the column word for its encoded cell,
      * and one byte for overlay, base, and final terrain. These register
      * qualifications keep the word in d2 and the shared byte in d0;
      * separate byte/word temporaries spill and do not reproduce the ROM. */
@@ -66,17 +66,17 @@ short player;
     short sample_y, center_x, center_y, map_y;
     register unsigned char terrain;
 
-    if (gPlayerLives[player] < 0 || P1_MENU_OPEN[player])
+    if (gPlayerLives[player] < 0 || gPlayerInventoryOpen[player])
         return;
-    map = &gMapDataA[0][0];
+    map = &gPlayer1LevelMap[0][0];
     if (!player) {
         entity = &gPlayerInfo[PLAYER_TOEJAM];
-        land = &LAND_NEAR_TOEJAM[0][0];
+        land = &gPlayer1NearbyTerrain[0][0];
     } else {
-        entity = &gEarlPositionX;
-        land = &LAND_NEAR_EARL[0][0];
-        if (gPlayerLives[PLAYER_TOEJAM] >= 0 && SPLIT_SCREEN)
-            map = &gMapDataB[0][0];
+        entity = &gPlayer2Entity;
+        land = &gPlayer2NearbyTerrain[0][0];
+        if (gPlayerLives[PLAYER_TOEJAM] >= 0 && gSplitScreenEnabled)
+            map = &gPlayer2LevelMap[0][0];
     }
     center_y = entity->y;
     center_y >>= 3;

@@ -13,7 +13,7 @@
 #include "ram_system.h"
 #include "speech.h"
 
-#define NEXT_RANDOM PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
+#define NEXT_RANDOM gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
 /* The byte at +0 is the earthling kind. */
 int EarthlingProcessSpecialThinkStates(earthling, object)
@@ -78,7 +78,7 @@ struct earthling_state *earthling;
     object = &gPlayerInfo[earthling->object];
     if (EarthlingProcessSpecialThinkStates(earthling, object))
         return;
-    definition = &EARTHLING_DATA[earthling->kind];
+    definition = &EarthlingDefinitions[earthling->kind];
     if (!object->sprite_state && earthling->state && earthling->state != 2) {
         earthling->timer = 0;
         earthling->state_delay = definition->state_delay;

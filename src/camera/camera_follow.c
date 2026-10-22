@@ -22,19 +22,19 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
     struct object_state *entity;
     short left, right, top, bottom;
 
-    if (gPlayerLives[player] < 0 || P1_MENU_OPEN[player]) {
+    if (gPlayerLives[player] < 0 || gPlayerInventoryOpen[player]) {
         *delta_x = 0;
         *delta_y = 0;
         return;
     }
     if (player == 0) {
         entity = gPlayerInfo;
-        camera_x = TOEJAM_CAMERA_NEWX;
-        camera_y = TOEJAM_CAMERA_NEWY;
+        camera_x = gCamera1PendingX;
+        camera_y = gCamera1PendingY;
     } else {
-        entity = &gEarlPositionX;
-        camera_x = EARL_CAMERA_NEWX;
-        camera_y = EARL_CAMERA_NEWY;
+        entity = &gPlayer2Entity;
+        camera_x = gCamera2PendingX;
+        camera_y = gCamera2PendingY;
     }
     if (entity->frame_phase && (entity->animation_motion_axes & ANIMATION_MOTION_XY)) {
         for (frame_count = 0; ; frame_count++) {
@@ -59,13 +59,13 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
         velocity_y = 0;
     else if (!(entity->animation_motion_axes & ANIMATION_MOTION_Y)) {
         velocity_y = entity->velocity_y;
-        if (!TOEJAM_FALL_STATE[player])
+        if (!gPlayerFallStates[player])
             velocity_y -= entity->velocity_height / 2;
     }
     if (gPlayerLives[player ^ 1] < 0) {
         left = right = 160;
         top = bottom = 112;
-    } else if (!SPLIT_SCREEN) {
+    } else if (!gSplitScreenEnabled) {
         left = 50;
         right = 270;
         top = 40;
@@ -99,27 +99,27 @@ void UpdateCameraFollowing()
     short combined_velocity, target;
     short *camera_x, *camera_y;
 
-    camera_x = &TOEJAM_CAMERA_NEWX;
-    camera_y = &TOEJAM_CAMERA_NEWY;
+    camera_x = &gCamera1PendingX;
+    camera_y = &gCamera1PendingY;
     primary_x = gPlayerInfo[PLAYER_TOEJAM].x - *camera_x;
     primary_y = gPlayerInfo[PLAYER_TOEJAM].y - *camera_y - gPlayerInfo[PLAYER_TOEJAM].height_pixels / 2;
-    secondary_x = gPlayerInfo[PLAYER_EARL].x - EARL_CAMERA_NEWX;
-    secondary_y = gPlayerInfo[PLAYER_EARL].y - EARL_CAMERA_NEWY - gPlayerInfo[PLAYER_EARL].height_pixels / 2;
+    secondary_x = gPlayerInfo[PLAYER_EARL].x - gCamera2PendingX;
+    secondary_y = gPlayerInfo[PLAYER_EARL].y - gCamera2PendingY - gPlayerInfo[PLAYER_EARL].height_pixels / 2;
     if (gPlayerInfo[PLAYER_TOEJAM].height > 0 && ((long)gPlayerInfo[PLAYER_TOEJAM].animation_group_mask & (PLAYER_GROUP_ICARUS_FLY | PLAYER_GROUP_SKATES_AIR))) {
-        if (SPLIT_SCREEN)
+        if (gSplitScreenEnabled)
             primary_y -= gPlayerInfo[PLAYER_TOEJAM].height / 2;
         else if (gPlayerInfo[PLAYER_TOEJAM].y < gPlayerInfo[PLAYER_EARL].y)
             primary_y -= gPlayerInfo[PLAYER_TOEJAM].height;
     }
     if (gPlayerInfo[PLAYER_EARL].height > 0 && ((long)gPlayerInfo[PLAYER_EARL].animation_group_mask & (PLAYER_GROUP_ICARUS_FLY | PLAYER_GROUP_SKATES_AIR))) {
-        if (SPLIT_SCREEN)
+        if (gSplitScreenEnabled)
             secondary_y -= gPlayerInfo[PLAYER_EARL].height / 2;
         else if (gPlayerInfo[PLAYER_EARL].y < gPlayerInfo[PLAYER_TOEJAM].y)
             secondary_y -= gPlayerInfo[PLAYER_EARL].height;
     }
     GetPlayerCameraVelocity(0, &velocity_x[0], &velocity_y[0], primary_x, primary_y);
     GetPlayerCameraVelocity(1, &velocity_x[1], &velocity_y[1], secondary_x, secondary_y);
-    if (!SPLIT_SCREEN && !P1_MENU_OPEN[PLAYER_TOEJAM] && !HBLANK_FLAG_1 &&
+    if (!gSplitScreenEnabled && !gPlayerInventoryOpen[PLAYER_TOEJAM] && !gPlayer2InventoryOpen &&
             gPlayerLives[PLAYER_TOEJAM] >= 0 && gPlayerLives[PLAYER_EARL] >= 0) {
         if (velocity_x[0] || velocity_x[1]) {
             combined_velocity = 0;
@@ -189,8 +189,8 @@ void UpdateCameraFollowing()
             if (blocked)
                 gCamera1FollowYFixed = *camera_y << 8;
         }
-        EARL_CAMERA_NEWX = *camera_x;
-        EARL_CAMERA_NEWY = *camera_y;
+        gCamera2PendingX = *camera_x;
+        gCamera2PendingY = *camera_y;
     } else if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
         if (velocity_x[0]) {
             gCamera1FollowXFixed += velocity_x[0];
@@ -223,28 +223,28 @@ void UpdateCameraFollowing()
         if (velocity_x[1]) {
             gCamera2FollowXFixed += velocity_x[1];
             target = gCamera2FollowXFixed >> 8;
-            while (target > EARL_CAMERA_NEWX)
+            while (target > gCamera2PendingX)
                 if (blocked = MoveCameraRight(1))
                     break;
-            while (target < EARL_CAMERA_NEWX)
+            while (target < gCamera2PendingX)
                 if (blocked = MoveCameraLeft(1))
                     break;
             if (blocked) {
-                gCamera2FollowXFixed = EARL_CAMERA_NEWX << 8;
+                gCamera2FollowXFixed = gCamera2PendingX << 8;
                 blocked = 0;
             }
         }
         if (velocity_y[1]) {
             gCamera2FollowYFixed += velocity_y[1];
             target = gCamera2FollowYFixed >> 8;
-            while (target > EARL_CAMERA_NEWY)
+            while (target > gCamera2PendingY)
                 if (blocked = MoveCameraDown(1))
                     break;
-            while (target < EARL_CAMERA_NEWY)
+            while (target < gCamera2PendingY)
                 if (blocked = MoveCameraUp(1))
                     break;
             if (blocked)
-                gCamera2FollowYFixed = EARL_CAMERA_NEWY << 8;
+                gCamera2FollowYFixed = gCamera2PendingY << 8;
         }
     } else {
         if (velocity_x[1]) {

@@ -38,7 +38,7 @@ void UpdateSpeechAndDialogue()
             slot = StartDialogue(0, player_number);
             if (slot != -1) {
                 PlaySoundEffect((long)Sfx_Achoo, 50, 0);
-                if (SPLIT_SCREEN)
+                if (gSplitScreenEnabled)
                     gDelayedSpeechReplyTimers[slot] = 0;
             }
         }
@@ -46,7 +46,7 @@ void UpdateSpeechAndDialogue()
     if (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level) {
         distance_x = abs(gPlayerInfo[PLAYER_TOEJAM].x - gPlayerInfo[PLAYER_EARL].x);
         distance_y = abs(gPlayerInfo[PLAYER_TOEJAM].y - gPlayerInfo[PLAYER_EARL].y);
-        if (gReunionDialoguePending && !SPLIT_SCREEN && distance_x < 260 && distance_y < 174) {
+        if (gReunionDialoguePending && !gSplitScreenEnabled && distance_x < 260 && distance_y < 174) {
             /* ORIGINAL BUG: These dialogue calls omit their speaker argument. */
             if (PlayerHasOddElevatorState(0) && !(GetRandomNumber() & 3))
                 StartDialogue(3);

@@ -56,7 +56,7 @@ extern int MapAppendCoverBlockSprites();
 extern void MapInitializeScreenSprites();
 extern int PlayerHasOddElevatorState();
 extern void MapUploadCoverAnimationFrame();
-#ifndef TJE_LOCAL_FUNC_00D9DC
+#ifndef TJE_LOCAL_GETMAPTERRAINATWORLDPOSITION
 extern unsigned char GetMapTerrainAtWorldPosition();
 #endif
 extern short AllocateEntityWithEviction();

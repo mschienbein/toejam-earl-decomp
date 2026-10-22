@@ -33,7 +33,7 @@ unsigned short terrain;
         sprite += 92;
     SetSprite(state, sprite);
     state->animation_motion_axes = ANIMATION_MOTION_NONE;
-    P1_PREV_PROCESSED_INPUT[player] &= 0xf0;
+    gPlayerPreviousProcessedInput[player] &= 0xf0;
     if (state->height >= 0)
         state->draw_flags |= ENTITY_SHADOW;
 }

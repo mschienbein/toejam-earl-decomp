@@ -1,5 +1,5 @@
-#ifndef ELEVATOR_H
-#define ELEVATOR_H
+#ifndef TJE_ELEVATOR_H
+#define TJE_ELEVATOR_H
 
 /* Eight-byte records occur in primary/secondary pairs. The entity byte is
  * a slot in gPlayerInfo; its linked objects use struct object_state. */

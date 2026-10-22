@@ -84,8 +84,8 @@ short x, y;
         object->tile = 0;
         /* ORIGINAL BUG: current_frame receives the frame-table address,
          * not its first frame; dereferencing the table does not match. */
-        object->current_frame = CompositeFrames_0389D0;
-        object->frames = CompositeFrames_0389D0;
+        object->current_frame = EndingStationaryCompositeFrames;
+        object->frames = EndingStationaryCompositeFrames;
         object->tile_count = 72;
         object->sprite_count = 6;
         object->x = x;

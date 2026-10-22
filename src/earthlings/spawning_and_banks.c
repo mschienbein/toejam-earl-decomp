@@ -1,8 +1,8 @@
 #include "earthling_types.h"
 #include "terrain.h"
 #include "hardware.h"
-#define TJE_LOCAL_FUNC_00D9DC
-#define TJE_LOCAL_FUNC_020EAA
+#define TJE_LOCAL_GETMAPTERRAINATWORLDPOSITION
+#define TJE_LOCAL_EARTHLINGCONFIGUREMAILBOXLEVELBANK
 #define TJE_LOCAL_GETRANDOMNUMBER
 
 #include "entities.h"
@@ -60,9 +60,9 @@ short bank, x, y, level;
     if (!ElevatorAllowsWorldPlacement(x, y, level))
         return 0;
     for (record_number = 0; record_number < 20; ++record_number) {
-        earthling = &EARTHLINGS_IN_LEVEL[bank][record_number];
+        earthling = &gEarthlingBanks[bank][record_number];
         if (earthling->kind != EARTHLING_UNUSED) {
-            other_definition = &EARTHLING_DATA[earthling->kind];
+            other_definition = &EarthlingDefinitions[earthling->kind];
             clearance = (short)other_definition->radius << 2;
             clearance += (short)definition->radius << 2;
             if (clearance > abs(x - earthling->x) &&
@@ -80,11 +80,11 @@ short x, y, level;
     short bank, record_number, distance_x, distance_y;
     struct earthling_state *earthling;
 
-    if (EARTHLING_LOAD_FLAG[0] && EARTHLING_LEVEL[0] == level)
+    if (gEarthlingBankUsers[0] && gEarthlingBankLevels[0] == level)
         bank = 0;
     else
         bank = 1;
-    earthling = EARTHLINGS_IN_LEVEL[bank];
+    earthling = gEarthlingBanks[bank];
     for (record_number = 0; record_number < 2; ++record_number, ++earthling) {
         if (!earthling->kind || EarthlingIsMailOrderMailbox(earthling)) {
             distance_x = abs(x - earthling->x);
@@ -111,11 +111,11 @@ short level;
     unsigned char terrain_mask;
     struct earthling_definition *definition;
 
-    if (gLevel912C == level)
-        map = gMapDataA[0];
+    if (gPlayer1MapLevel == level)
+        map = gPlayer1LevelMap[0];
     else
-        map = gMapDataB[0];
-    definition = &EARTHLING_DATA[kind];
+        map = gPlayer2LevelMap[0];
+    definition = &EarthlingDefinitions[kind];
     terrain_mask = 3;
     if (!kind || kind == EARTHLING_NERD_HERD || kind == EARTHLING_ICE_CREAM_TRUCK || kind == EARTHLING_LAWNMOWER || kind == EARTHLING_MOLE) {
         width = 16;
@@ -197,13 +197,13 @@ short level;
     if (level >= 26)
         return;
     for (bank = 0; bank < 2; ++bank) {
-        if (EARTHLING_LOAD_FLAG[bank] && EARTHLING_LEVEL[bank] == level) {
-            ++EARTHLING_LOAD_FLAG[bank];
+        if (gEarthlingBankUsers[bank] && gEarthlingBankLevels[bank] == level) {
+            ++gEarthlingBankUsers[bank];
             return;
         }
     }
     bank = 0;
-    if (EARTHLING_LOAD_FLAG[0])
+    if (gEarthlingBankUsers[0])
         bank = 1;
     saved_random = StackBasedRandom(gLevelSeeds[level]);
     if (level) {
@@ -247,25 +247,25 @@ short level;
                 gEarthlingSpawnFailureMasks[level] |= (unsigned long)0x80000000 >> record_number;
         }
         if (!kind || (kind >= 0 && !(gEarthlingSpawnFailureMasks[level] & ((unsigned long)0x80000000 >> record_number)))) {
-            EARTHLINGS_IN_LEVEL[bank][record_number].kind = kind;
-            EARTHLINGS_IN_LEVEL[bank][record_number].level = level;
-            EARTHLINGS_IN_LEVEL[bank][record_number].x = position_x;
-            EARTHLINGS_IN_LEVEL[bank][record_number].y = position_y;
-            EARTHLINGS_IN_LEVEL[bank][record_number].saved_y = position_y;
+            gEarthlingBanks[bank][record_number].kind = kind;
+            gEarthlingBanks[bank][record_number].level = level;
+            gEarthlingBanks[bank][record_number].x = position_x;
+            gEarthlingBanks[bank][record_number].y = position_y;
+            gEarthlingBanks[bank][record_number].saved_y = position_y;
             if (kind == EARTHLING_ICE_CREAM_TRUCK || kind == EARTHLING_MAILBOX) {
-                EARTHLINGS_IN_LEVEL[bank][record_number].saved_x_or_status = 0;
-                EARTHLINGS_IN_LEVEL[bank][record_number].saved_y = 0;
+                gEarthlingBanks[bank][record_number].saved_x_or_status = 0;
+                gEarthlingBanks[bank][record_number].saved_y = 0;
             } else if (kind == EARTHLING_CUPID)
-                EARTHLINGS_IN_LEVEL[bank][record_number].saved_x_or_status = 1;
+                gEarthlingBanks[bank][record_number].saved_x_or_status = 1;
             else
-                EARTHLINGS_IN_LEVEL[bank][record_number].saved_x_or_status = position_x;
-            EARTHLINGS_IN_LEVEL[bank][record_number].health_visibility[0] = EARTHLING_DATA[kind].health;
-            EARTHLINGS_IN_LEVEL[bank][record_number].health_visibility[1] = 0;
+                gEarthlingBanks[bank][record_number].saved_x_or_status = position_x;
+            gEarthlingBanks[bank][record_number].health_visibility[0] = EarthlingDefinitions[kind].health;
+            gEarthlingBanks[bank][record_number].health_visibility[1] = 0;
         } else
-            EARTHLINGS_IN_LEVEL[bank][record_number].kind = EARTHLING_UNUSED;
+            gEarthlingBanks[bank][record_number].kind = EARTHLING_UNUSED;
     }
-    ++EARTHLING_LOAD_FLAG[bank];
-    EARTHLING_LEVEL[bank] = level;
+    ++gEarthlingBankUsers[bank];
+    gEarthlingBankLevels[bank] = level;
 }
 
 /* Mark both banks empty and request level one for every player with lives. */
@@ -274,8 +274,8 @@ void SetupInitialEarthlings()
     short record_number;
 
     for (record_number = 0; record_number < 20; ++record_number) {
-        EARTHLINGS_IN_LEVEL[0][record_number].kind = EARTHLING_UNUSED;
-        EARTHLINGS_IN_LEVEL_COPY[record_number].kind = EARTHLING_UNUSED;
+        gEarthlingBanks[0][record_number].kind = EARTHLING_UNUSED;
+        gEarthlingBank2Records[record_number].kind = EARTHLING_UNUSED;
     }
     if (gPlayerLives[PLAYER_TOEJAM] >= 0)
         EarthlingRetainLevelBank(1);
@@ -298,7 +298,7 @@ short state;
     earthling->state = state;
     if (!earthling->object)
         return;
-    data = &EARTHLING_DATA[earthling->kind];
+    data = &EarthlingDefinitions[earthling->kind];
     animation = &data->states[state];
     object = &gPlayerInfo[earthling->object];
     object->sequence = animation->sequence;
@@ -331,7 +331,7 @@ struct earthling_state *earthling;
         FreeEntity(earthling->second_object);
         earthling->second_object = 0;
     }
-    if (!EARTHLING_LOAD_FLAG[0] || EARTHLING_LEVEL[0] != earthling->level)
+    if (!gEarthlingBankUsers[0] || gEarthlingBankLevels[0] != earthling->level)
         other_level = 1;
     do {
         FindSpawnLocationForEarthling(earthling->kind, other_level,
@@ -364,7 +364,7 @@ struct earthling_state *earthling;
     struct object_state *object;
     struct timed_animation *animation;
 
-    data = &EARTHLING_DATA[earthling->kind];
+    data = &EarthlingDefinitions[earthling->kind];
     if (earthling->object = (int)AllocateEntity()) {
         object = &gPlayerInfo[earthling->object];
         object->earthling = earthling;
@@ -389,7 +389,7 @@ struct earthling_state *earthling;
         if (earthling->kind != EARTHLING_SHARK)
             object->behavior_flags |= ENTITY_COLLIDABLE;
         if ((data->behavior_flags & 1) &&
-            (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+            (gCachedRandomValues[gRandomCacheIndex == 58 ?
                            (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1) &&
             (earthling->second_object = (int)AllocateEntity())) {
             SetEarthlingState(earthling, 2);
@@ -404,7 +404,7 @@ struct earthling_state *earthling;
             object->sprite_count = 1;
             object->tile_count = 9;
             object->tile = VDP_TILE_PRIORITY;
-            animation = AnimationDescriptors_0AEF9C;
+            animation = EarthlingCompanionAnimations;
             object->sequence = animation->sequence;
             object->frames = animation->frames;
             object->frame_phase = animation->period;
@@ -436,18 +436,18 @@ struct earthling_state *earthlings;
             earthling->x = object->x;
             earthling->y = object->y;
         }
-        toejam_x = earthling->x - TOEJAM_CAMERA_NEWX;
-        toejam_y = earthling->y - TOEJAM_CAMERA_NEWY;
-        earl_x = earthling->x - EARL_CAMERA_NEWX;
-        earl_y = earthling->y - EARL_CAMERA_NEWY;
+        toejam_x = earthling->x - gCamera1PendingX;
+        toejam_y = earthling->y - gCamera1PendingY;
+        earl_x = earthling->x - gCamera2PendingX;
+        earl_y = earthling->y - gCamera2PendingY;
         if (earthling->kind != EARTHLING_UNUSED) {
-            if (earthling->level == gLevel912C &&
+            if (earthling->level == gPlayer1MapLevel &&
                 toejam_x + 160 > 0 && toejam_x < 480 &&
                 toejam_y + 112 > 0 && toejam_y < 336)
                 earthling->health_visibility[1] |= 2;
             else
                 earthling->health_visibility[1] &= ~2;
-            if (earthling->level == gLevel912E && SPLIT_SCREEN &&
+            if (earthling->level == gPlayer2MapLevel && gSplitScreenEnabled &&
                 earl_x + 160 > 0 && earl_x < 480 &&
                 earl_y + 112 > 0 && earl_y < 336)
                 earthling->health_visibility[1] |= 4;
@@ -502,16 +502,16 @@ short terrain;
             break;
     }
     terrain = selection;
-    if (!EARTHLING_LOAD_FLAG[bank] || EARTHLING_LEVEL[bank] != player->level)
+    if (!gEarthlingBankUsers[bank] || gEarthlingBankLevels[bank] != player->level)
         ++bank;
-    earthling = EARTHLINGS_IN_LEVEL[bank];
+    earthling = gEarthlingBanks[bank];
     for (index = 0; index < 20; ++earthling, ++index)
         if (earthling->kind == EARTHLING_UNUSED)
             break;
     /* ORIGINAL BUG: an exhausted scan leaves earthling one past this bank;
      * the original tests that record before looking for an inactive slot. */
     if (earthling->kind != EARTHLING_UNUSED) {
-        earthling = EARTHLINGS_IN_LEVEL[bank];
+        earthling = gEarthlingBanks[bank];
         for (index = 0; index < 20; ++earthling, ++index)
             if (earthling->kind != EARTHLING_SHIP_PIECE && earthling->kind != EARTHLING_MAILBOX &&
                 !earthling->object)
@@ -532,10 +532,10 @@ short terrain;
                 earthling->kind == EARTHLING_WISEMAN || earthling->kind == EARTHLING_WIZARD ||
                 earthling->kind == EARTHLING_MAILBOX) {
                 for (index = 0; index < 20; ++index) {
-                    if (earthling != &EARTHLINGS_IN_LEVEL[bank][index] &&
-                        EARTHLINGS_IN_LEVEL[bank][index].kind == earthling->kind) {
-                        if (!EARTHLINGS_IN_LEVEL[bank][index].object) {
-                            earthling = &EARTHLINGS_IN_LEVEL[bank][index];
+                    if (earthling != &gEarthlingBanks[bank][index] &&
+                        gEarthlingBanks[bank][index].kind == earthling->kind) {
+                        if (!gEarthlingBanks[bank][index].object) {
+                            earthling = &gEarthlingBanks[bank][index];
                             selection = 1;
                         }
                         break;
@@ -564,7 +564,7 @@ short terrain;
         height = 30;
     } else
         earthling->saved_x_or_status = x;
-    earthling->health_visibility[0] = EARTHLING_DATA[earthling->kind].health;
+    earthling->health_visibility[0] = EarthlingDefinitions[earthling->kind].health;
     earthling->health_visibility[1] = 0;
     PresentStartTransientEffect(player_number, earthling->x, earthling->y + 1,
                 height, earthling->level);
@@ -582,12 +582,12 @@ void EarthlingDispatchAbilities()
     struct earthling_definition *data;
 
     for (bank = 0; bank < 2; ++bank) {
-        if (EARTHLING_LOAD_FLAG[bank]) {
+        if (gEarthlingBankUsers[bank]) {
             for (index = gEarthlingUpdateParity; index < 20; index += 2) {
-                earthling = &EARTHLINGS_IN_LEVEL[bank][index];
+                earthling = &gEarthlingBanks[bank][index];
                 if (earthling->kind != EARTHLING_UNUSED && earthling->object &&
                     earthling->state != 99 && !EarthlingIsMailOrderMailbox(earthling)) {
-                    data = &EARTHLING_DATA[earthling->kind];
+                    data = &EarthlingDefinitions[earthling->kind];
                     if (data->ability && !EarthlingIsUpdateBlocked(earthling))
                         (*data->ability)(earthling);
                 }
@@ -606,20 +606,20 @@ void EarthlingDispatchPlayerContacts()
     struct object_state *object, *player;
 
     for (buffer = 0; buffer < 2; ++buffer) {
-        if (EARTHLING_LOAD_FLAG[buffer]) {
+        if (gEarthlingBankUsers[buffer]) {
             for (slot = gEarthlingUpdateParity; slot < 20; slot += 2) {
-                earthling = &EARTHLINGS_IN_LEVEL[buffer][slot];
+                earthling = &gEarthlingBanks[buffer][slot];
                 if (earthling->kind == EARTHLING_UNUSED || !earthling->object ||
                     earthling->state == 99)
                     continue;
-                data = &EARTHLING_DATA[earthling->kind];
+                data = &EarthlingDefinitions[earthling->kind];
                 object = &gPlayerInfo[earthling->object];
-                player_number = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                player_number = gCachedRandomValues[gRandomCacheIndex == 58 ?
                                 (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1;
                 for (trial = 0; trial < 2; ++trial) {
                     player = &gPlayerInfo[player_number];
-                    if (!P1_MENU_OPEN[player_number] &&
-                        !ELEVATOR_FLAG[player_number] &&
+                    if (!gPlayerInventoryOpen[player_number] &&
+                        !gPlayerElevatorFlags[player_number] &&
                         !(player->behavior_flags & ENTITY_PLAYER_SUPPRESSED) &&
                         EntityIsWithinRange(object, player, data->contact_distance_x,
                                     data->contact_distance_y)) {
@@ -649,13 +649,13 @@ void EarthlingApplyNearbySleep()
     for (source = 0; source <= 1; ++source) {
         if (gPlayerBoomBoxEntities[source]) {
             source_object = &gPlayerInfo[gPlayerBoomBoxEntities[source]];
-            if (EARTHLING_LOAD_FLAG[0] &&
-                EARTHLING_LEVEL[0] == source_object->level)
+            if (gEarthlingBankUsers[0] &&
+                gEarthlingBankLevels[0] == source_object->level)
                 buffer = 0;
             else
                 buffer = 1;
             for (slot = gEarthlingUpdateParity; slot < 20; slot += 2) {
-                earthling = &EARTHLINGS_IN_LEVEL[buffer][slot];
+                earthling = &gEarthlingBanks[buffer][slot];
                 if (earthling->kind == EARTHLING_UNUSED || earthling->state == 99 ||
                     !earthling->object || earthling->kind == EARTHLING_SHIP_PIECE ||
                     earthling->kind == EARTHLING_WHIRLWIND || earthling->kind == EARTHLING_SHARK ||
@@ -704,11 +704,11 @@ short level;
     short slot, buffer;
     struct earthling_state *earthling;
 
-    if (EARTHLING_LOAD_FLAG[0] && EARTHLING_LEVEL[0] == level)
+    if (gEarthlingBankUsers[0] && gEarthlingBankLevels[0] == level)
         buffer = 0;
     else
         buffer = 1;
-    earthling = EARTHLINGS_IN_LEVEL[buffer];
+    earthling = gEarthlingBanks[buffer];
     for (slot = 0; slot < 20; ++slot, ++earthling) {
         if (earthling->kind != EARTHLING_UNUSED && earthling->state == 99)
             SetEarthlingState(earthling, 0);
@@ -726,12 +726,12 @@ char draw_mask;
 
     changed = 0;
     for (buffer = 0; buffer < 2; ++buffer) {
-        if (EARTHLING_LOAD_FLAG[buffer]) {
+        if (gEarthlingBankUsers[buffer]) {
             for (slot = 0; slot < 20; ++slot) {
-                earthling = &EARTHLINGS_IN_LEVEL[buffer][slot];
+                earthling = &gEarthlingBanks[buffer][slot];
                 if (earthling->kind != EARTHLING_UNUSED && earthling->object &&
                     earthling->state == 2) {
-                    data = &EARTHLING_DATA[earthling->kind];
+                    data = &EarthlingDefinitions[earthling->kind];
                     if ((data->behavior_flags & 1) &&
                         (gPlayerInfo[earthling->object].draw_flags & draw_mask)) {
                         SetEarthlingState(earthling, 0);
@@ -762,12 +762,12 @@ struct earthling_state *earthling;
     }
     earthling->kind = EARTHLING_UNUSED;
     for (buffer = 0; buffer < 2; ++buffer) {
-        if (EARTHLING_LOAD_FLAG[buffer] &&
-            EARTHLING_LEVEL[buffer] == earthling->level) {
+        if (gEarthlingBankUsers[buffer] &&
+            gEarthlingBankLevels[buffer] == earthling->level) {
             for (slot = 0; slot < 20; ++slot) {
-                if (earthling == &EARTHLINGS_IN_LEVEL[buffer][slot]) {
+                if (earthling == &gEarthlingBanks[buffer][slot]) {
                     short level;
-                    level = EARTHLING_LEVEL[buffer];
+                    level = gEarthlingBankLevels[buffer];
                     gEarthlingSpawnFailureMasks[level] |= (unsigned long)0x80000000 >> slot;
                 }
             }
@@ -806,11 +806,11 @@ short player_number, level;
     short slot, buffer;
     struct earthling_state *earthling;
 
-    if (EARTHLING_LOAD_FLAG[0] && EARTHLING_LEVEL[0] == level)
+    if (gEarthlingBankUsers[0] && gEarthlingBankLevels[0] == level)
         buffer = 0;
     else
         buffer = 1;
-    earthling = EARTHLINGS_IN_LEVEL[buffer];
+    earthling = gEarthlingBanks[buffer];
     for (slot = 0; slot < 20; ++slot, ++earthling) {
         if (earthling->kind > 0 && earthling->object &&
             earthling->kind != EARTHLING_BEES && earthling->kind != EARTHLING_BEES_VARIANT &&
@@ -831,9 +831,9 @@ char draw_mask;
     struct earthling_state *earthling;
 
     for (buffer = 0; buffer < 2; ++buffer) {
-        if (EARTHLING_LOAD_FLAG[buffer]) {
+        if (gEarthlingBankUsers[buffer]) {
             for (slot = 0; slot < 20; ++slot) {
-                earthling = &EARTHLINGS_IN_LEVEL[buffer][slot];
+                earthling = &gEarthlingBanks[buffer][slot];
                 if (earthling->kind != EARTHLING_UNUSED && earthling->kind != EARTHLING_OPERA_SINGER &&
                     earthling->object &&
                     (gPlayerInfo[earthling->object].draw_flags & draw_mask) &&
@@ -851,11 +851,11 @@ struct object_state *player;
     short slot, buffer;
     struct earthling_state *earthling;
 
-    if (EARTHLING_LOAD_FLAG[0] && EARTHLING_LEVEL[0] == player->level)
+    if (gEarthlingBankUsers[0] && gEarthlingBankLevels[0] == player->level)
         buffer = 0;
     else
         buffer = 1;
-    earthling = EARTHLINGS_IN_LEVEL[buffer];
+    earthling = gEarthlingBanks[buffer];
     for (slot = 0; slot < 20; ++slot, ++earthling) {
         if (earthling->kind == EARTHLING_MOLE && earthling->object) {
             if (!player->entity_index)
@@ -869,12 +869,12 @@ struct object_state *player;
 /* Advance loaded earthlings unless both the menu and HBlank flags are set. */
 void ProcessEarthlings()
 {
-    if (P1_MENU_OPEN[PLAYER_TOEJAM] && HBLANK_FLAG_1)
+    if (gPlayerInventoryOpen[PLAYER_TOEJAM] && gPlayer2InventoryOpen)
         return;
-    if (EARTHLING_LOAD_FLAG[0])
-        LoadInEarthlings(EARTHLINGS_IN_LEVEL[0]);
-    if (EARTHLING_LOAD_FLAG_COPY)
-        LoadInEarthlings(EARTHLINGS_IN_LEVEL_COPY);
+    if (gEarthlingBankUsers[0])
+        LoadInEarthlings(gEarthlingBanks[0]);
+    if (gEarthlingBank2Users)
+        LoadInEarthlings(gEarthlingBank2Records);
     EarthlingDispatchAbilities();
     EarthlingDispatchPlayerContacts();
     EarthlingApplyNearbySleep();

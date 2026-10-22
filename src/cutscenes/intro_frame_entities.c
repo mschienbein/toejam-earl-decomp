@@ -19,14 +19,14 @@ void IntroCreateHiddenFrameEntities()
     struct render_frame *frame;
     struct object_state *object;
 
-    frames = AnimationPointerWords_AF040[1];
+    frames = IntroAndShipAnimationPointers[1];
     for (index = 0; index < 10; ++index) {
         frame = frames[index];
         if (object_number = AllocateEntity()) {
             object = &gPlayerInfo[object_number];
-            object->sprite_count = frame->count;
+            object->sprite_count = frame->piece_count;
             object->tile_count = 0;
-            for (piece_number = 0; piece_number < frame->count; ++piece_number)
+            for (piece_number = 0; piece_number < frame->piece_count; ++piece_number)
                 object->tile_count += ((struct render_piece (*)[12])(frame + 1))[0][piece_number].width *
                                       ((struct render_piece (*)[12])(frame + 1))[0][piece_number].height;
             object->current_frame = frame;

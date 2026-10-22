@@ -1,5 +1,5 @@
 #include "music_ids.h"
-#define TJE_LOCAL_FUNC_0289DA
+#define TJE_LOCAL_ENDINGGETFIRSTPLAYERANIMATIONFRAME
 
 #include "hardware.h"
 #include "assets_audio.h"
@@ -27,22 +27,22 @@ extern int EndingGetFirstPlayerAnimationFrame();
 /* Reset both camera scrolls, load the text and level tiles, and play the ending. */
 void PlayEndingSequence()
 {
-    VBLANK_FLAG_7 = 0;
+    gRequestedMusicSelection = 0;
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 60;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
-    ClearSkipVHBlankFlags();
-    TOEJAM_CAMERA_NEWX = 0;
-    TOEJAM_CAMERA_NEWY = 0;
+    DisableBlankingGraphics();
+    gCamera1PendingX = 0;
+    gCamera1PendingY = 0;
     VDP_CONTROL_WORD = 0x8228;
     VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
-    VDP_DATA = TOEJAM_CAMERA_NEWY;
+    VDP_DATA = gCamera1PendingY;
     VDP_COMMAND = 0x7c000003L;
-    VDP_DATA = TOEJAM_CAMERA_NEWX;
+    VDP_DATA = gCamera1PendingX;
     VDP_COMMAND = 0x40020010L;
-    VDP_DATA = TOEJAM_CAMERA_NEWY;
+    VDP_DATA = gCamera1PendingY;
     VDP_COMMAND = 0x7c020003L;
-    VDP_DATA = TOEJAM_CAMERA_NEWX;
+    VDP_DATA = gCamera1PendingX;
     ClearUpperVramTilemap();
     gCameraTileAttributes = 0x8000;
     VDP_COMMAND = 0x70000002L;
@@ -94,14 +94,14 @@ short EndingPlayDialogueAndDeparture()
     gCutsceneScriptCountdown = 34;
     while (gCutsceneScriptState != -1) {
         WaitForNextVBlank(1);
-        SpriteLoadingStuff(0, 0);
+        UploadQueuedSpriteGraphics(0, 0);
         SelectViewportSpriteChain(0);
         WaitForNextVBlank(1);
         UpdateAndQueueEntitySprites();
         switch (gCutsceneScriptState) {
         case 0:
             if (!--gCutsceneScriptCountdown) {
-                if (PLAYER_INDICATOR == 2)
+                if (gPlayerSelection == 2)
                     CutsceneLoadOriginalPaletteTextLine("we did it", 90, 95);
                 else
                     CutsceneLoadOriginalPaletteTextLine("i did it", 90, 95);
@@ -118,7 +118,7 @@ short EndingPlayDialogueAndDeparture()
             }
             break;
         case 2:
-            if (PLAYER_INDICATOR == 2 && !clap_played &&
+            if (gPlayerSelection == 2 && !clap_played &&
                 28 == EndingGetFirstPlayerAnimationFrame()) {
                 clap_played = 1;
                 PlaySoundEffect((long)Sfx_JamClap, 90, 0);
@@ -154,7 +154,7 @@ short EndingPlayDialogueAndDeparture()
                 ++gCutsceneScriptState;
             break;
         case 7:
-            if (PLAYER_INDICATOR == 2)
+            if (gPlayerSelection == 2)
                 CutsceneLoadOriginalPaletteTextLine("crank it earl!", 160, 30);
             else
                 CutsceneLoadOriginalPaletteTextLine(" crank it!", 160, 30);
@@ -169,15 +169,15 @@ short EndingPlayDialogueAndDeparture()
             CutsceneReleaseTextEntities();
             EndingCreateSixPieceComposite();
             EndingPositionSixPieceComposite(character_x, -50);
-            VBLANK_FLAG_7 = MUSIC_TRANSITION;
+            gRequestedMusicSelection = MUSIC_TRANSITION;
             gCutsceneScriptCountdown = 221;
             ++gCutsceneScriptState;
             break;
         case 10:
-            if (gMusicUnknownE488) {
+            if (gMusicAnimationEvent) {
                 EndingPositionSixPieceComposite(character_x, character_y);
                 mouth_timer = 4;
-                gMusicUnknownE488 = 0;
+                gMusicAnimationEvent = 0;
             }
             if (!--mouth_timer)
                 EndingPositionSixPieceComposite(character_x, -50);
@@ -224,7 +224,7 @@ short EndingPlayUpwardRocketshipDeparture()
 
     CutsceneDrawRandomizedScreenBorder(1);
     CutsceneAllocateRocketshipPair();
-    VBLANK_FLAG_7 = 0;
+    gRequestedMusicSelection = 0;
     character_y = 195;
     character_x = 112;
     move_timer = 15;
@@ -253,7 +253,7 @@ short EndingPlayUpwardRocketshipDeparture()
                     move_period = 1;
                 move_timer = move_period;
                 --character_x;
-                if (character_x == 107 && PLAYER_INDICATOR == 2)
+                if (character_x == 107 && gPlayerSelection == 2)
                     CutsceneTextLoad("Can I drive?", character_x + 70,
                                      character_y - 85);
             }
@@ -264,7 +264,7 @@ short EndingPlayUpwardRocketshipDeparture()
         case 2:
             --character_x;
             CutscenePositionRocketshipPair(character_x, character_y);
-            if (character_x == 57 && PLAYER_INDICATOR == 2)
+            if (character_x == 57 && gPlayerSelection == 2)
                 CutsceneTextLoad("No!", character_x + 35, character_y - 80);
             if (character_x <= -30)
                 ++gCutsceneScriptState;
@@ -306,7 +306,7 @@ short EndingPlayScrollingCredits()
         WaitForNextVBlank(1);
         VDP_COMMAND = 0x7c020003L;
         VDP_DATA = scroll / 4;
-        SpriteLoadingStuff(0, 0);
+        UploadQueuedSpriteGraphics(0, 0);
         SelectViewportSpriteChain(0);
         WaitForNextVBlank(1);
         CutsceneUpdateDriftingEntities(scroll);
@@ -491,10 +491,10 @@ short EndingPlayBouncingRocketshipScene()
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 17;
     while (gCutsceneScriptState != -1) {
-        VBLANK_FLAG_2 = 0;
+        gSpriteGraphicsUploadPending = 0;
         UpdateAndQueueEntitySprites();
         WaitForNextVBlank(1);
-        SpriteLoadingStuff(0, 0);
+        UploadQueuedSpriteGraphics(0, 0);
         VDP_COMMAND = 0x7c000003L;
         VDP_DATA = scroll;
         SelectViewportSpriteChain(0);

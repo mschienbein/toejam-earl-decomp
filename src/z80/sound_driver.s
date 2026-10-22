@@ -4,7 +4,7 @@
 ; effects and one unsigned-PCM stream through the YM2612 channel-six DAC.
 ;
 ; 68000 interface (Z80 RAM is mapped at 0xa00000):
-;   AudioSubmitPendingIndexedCommand: command 1, argument = gMusicUnknownE47E (PlaySound's ID).
+;   AudioSubmitPendingIndexedCommand: command 1, argument = gPendingPsgEffect (PlaySound's ID).
 ;   AudioSubmitPendingPcmSample / AudioTrySubmitSequencerPcmSample: command 2, LE24 payload address and LE16 count
 ;     after consuming a sample's big-endian length header on the 68000 side.
 ;   Both take the Z80 bus and inspect Z80MailboxBusy; while it is nonzero they
@@ -49,6 +49,7 @@
 .equ PSG_NOISE_RATE_TONE2,    3
 
 .text
+; Disable interrupts, initialize the stack, and enter sound-driver setup.
 .globl SoundDriverProgram
 SoundDriverProgram:
     im 1
@@ -246,6 +247,7 @@ PCMNextROMBank:
     ld bc,YM2612_ADDRESS
     jp PCMCountSample
 
+; Advance the saved sample address by 32 KiB and program its cartridge ROM bank.
 AdvanceROMBank:
     ld a,(Z80SampleBankBase+1)
     add a,ROM_WINDOW >> 8
@@ -255,6 +257,7 @@ AdvanceROMBank:
     adc a,0
     ld c,a
     ld (Z80SampleBankBaseHi),a
+; Serialize address bits A15..A23 into the Genesis ROM-bank latch.
 SelectROMBank:
     ; Genesis bank latch takes address bits A15..A23, least-significant first.
     ; H supplies A15; C supplies A16..A23. DE (sample count) is preserved.
@@ -273,6 +276,7 @@ SelectROMBankBit:
     djnz SelectROMBankBit
     ret
 
+; Delay C polling units, aborting the current PSG effect when a command arrives.
 WaitForCommand:
     ; Delay C units, each DELAY_SPIN_COUNT polls; preserves HL and DE.
     ; Effects must use EXX around this call when their B/C values are live.
@@ -292,6 +296,7 @@ AbortPSGEffect:
     call SilencePSG
     jp DriverPollCommand
 
+; Mute all four PSG channels and clear the active-effect status byte.
 SilencePSG:
     ld hl,PSG_PORT
     ld (hl),PSG_VOLUME0+PSG_MUTE

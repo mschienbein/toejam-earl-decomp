@@ -35,7 +35,7 @@ short player_number;
     if (!inventory_count)
         return;
     if (--inventory_count > 0)
-        selected_slot = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+        selected_slot = gCachedRandomValues[gRandomCacheIndex == 58 ?
                        (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % (inventory_count + 1);
     else
         selected_slot = 0;
@@ -50,7 +50,7 @@ short player_number;
         present->y = victim->y - 3;
         present->height = 20;
         present->acceleration_height = -32;
-        if (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+        if (gCachedRandomValues[gRandomCacheIndex == 58 ?
             (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
             present->velocity_x = 256;
         else
@@ -88,7 +88,7 @@ struct earthling_state *earthling;
             } else if (!gPlayerStolenPresentEntities[player_number]) {
                 if (!gPlayerMoleTheftCounts[player_number] ||
                     (gPlayerMoleTheftCounts[player_number] < 3 &&
-                     PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+                     gCachedRandomValues[gRandomCacheIndex == 58 ?
                      (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100 < 8))
                     DoMoleAbility(victim, player_number);
             }

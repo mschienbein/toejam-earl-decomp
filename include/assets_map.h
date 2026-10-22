@@ -3,8 +3,7 @@
 
 #include "map.h"
 
-/* Shared map, terrain, and map-screen ROM tables. Address-spelled names
- * always identify REV 02 storage, including when building REV 00. */
+/* Shared map, terrain, and map-screen ROM tables, translated for each revision. */
 extern unsigned short EarlMapIcon[16];
 extern unsigned short ElevatorMapIcon[16];
 extern unsigned short FixedWorldSeeds[26];
@@ -27,15 +26,15 @@ extern unsigned char *TileAlternativePointers[98];
 #endif
 extern unsigned char TileLookupAuxiliary[20];
 extern unsigned short ToejamMapIcon[16];
-/* Address-spelled views retain the lookup bank's current element types
- * and bounds, including its present-terrain and input-direction tables. */
+/* Overlapping views retain the lookup bank's existing element types
+ * and bounds, including its present-terrain and input-direction fields. */
 extern unsigned char MapBoundaryShapesPlain[20];
 extern unsigned char MapBoundaryShapesAlternate[20];
 extern unsigned char MapPathTurnDirections[];
 extern char LargeItemExcludedTerrainIds[23];
 extern unsigned char ControlRemapDirections[4][10];
 
-/* Additional selected final-batch storage and resource interfaces. */
+/* Level-dependent coordinate ranges used during map generation. */
 extern unsigned char MapGenerationRangePairs[8][8][2];
 extern char MapGenerationRangeRow[];
 

@@ -23,7 +23,7 @@ extern unsigned short PaletteShipLine2[];
 extern unsigned short PaletteShipLine3[];
 extern unsigned char PaletteFadeLookup[][8];
 
-/* Additional selected final-batch storage and resource interfaces. */
+/* Ending and menu-header palette sources. */
 extern unsigned short EndingPaletteA[];
 extern unsigned short EndingPaletteB[];
 extern unsigned short MenuHeaderPalette[];

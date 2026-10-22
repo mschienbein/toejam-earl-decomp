@@ -32,27 +32,27 @@ short player_number;
     AudioRequestChannelTemplateEffect(FM_EFFECT_CLEAR);
     AudioRequestFmChannelRelease();
     MusicRequestTrackPointerReset();
-    while (MovePadInputIntoD0(player_number) & 128)
+    while (ReadMappedPlayerInput(player_number) & 128)
         ;
     for (;;) {
-        if (!reset_selected && (MovePadInputIntoD0(player_number) & 2)) {
+        if (!reset_selected && (ReadMappedPlayerInput(player_number) & 2)) {
             DrawPauseChoicePanel(1);
             reset_selected = 1;
             continue;
         }
-        if (reset_selected && (MovePadInputIntoD0(player_number) & 1)) {
+        if (reset_selected && (ReadMappedPlayerInput(player_number) & 1)) {
             DrawPauseChoicePanel(0);
             reset_selected = 0;
             continue;
         }
-        if (MovePadInputIntoD0(player_number) & 192)
+        if (ReadMappedPlayerInput(player_number) & 192)
             break;
     }
     DrawPauseChoicePanel(-1);
     if (reset_selected)
         RestartFromResetEntry();
-    VBLANK_FLAG_8 = MUSIC_SELECTION_INVALID;
-    while (MovePadInputIntoD0(player_number) & 192)
+    gCurrentMusicSelection = MUSIC_SELECTION_INVALID;
+    while (ReadMappedPlayerInput(player_number) & 192)
         ;
 }
 
@@ -69,27 +69,27 @@ short player_number;
     struct object_state *object;
     struct animation_descriptor *animation;
 
-    if (gLevel912C == 26) {
+    if (gPlayer1MapLevel == 26) {
         RunFinalLevelPauseMenu(player_number);
         return;
     }
-    if (P1_MENU_OPEN[player_number])
+    if (gPlayerInventoryOpen[player_number])
         return;
     if (object_number = AllocateEntityWithEviction(0)) {
         object = &gPlayerInfo[object_number];
-        object->x = TOEJAM_CAMERA_NEWX + 160;
-        object->y = TOEJAM_CAMERA_NEWY + 225;
-        object->level = gLevel912C;
+        object->x = gCamera1PendingX + 160;
+        object->y = gCamera1PendingY + 225;
+        object->level = gPlayer1MapLevel;
         viewport = 0;
         viewport_mask = 2;
-        if (SPLIT_SCREEN) {
+        if (gSplitScreenEnabled) {
             if (player_number == PLAYER_TOEJAM)
                 object->height = 168;
             else {
                 object->height = 168;
-                object->level = gLevel912E;
-                object->x = EARL_CAMERA_NEWX + 160;
-                object->y = EARL_CAMERA_NEWY + 225;
+                object->level = gPlayer2MapLevel;
+                object->x = gCamera2PendingX + 160;
+                object->y = gCamera2PendingY + 225;
                 viewport = 1;
                 viewport_mask = 4;
             }
@@ -117,11 +117,11 @@ short player_number;
         AudioRequestChannelTemplateEffect(FM_EFFECT_CLEAR);
         AudioRequestFmChannelRelease();
         MusicRequestTrackPointerReset();
-        while ((MovePadInputIntoD0(0) | MovePadInputIntoD0(1)) & 128)
+        while ((ReadMappedPlayerInput(0) | ReadMappedPlayerInput(1)) & 128)
             ;
         for (;;) {
-            first_input = MovePadInputIntoD0(0);
-            second_input = MovePadInputIntoD0(1);
+            first_input = ReadMappedPlayerInput(0);
+            second_input = ReadMappedPlayerInput(1);
             if ((first_input | second_input) & 128)
                 break;
             switch (input_stage) {
@@ -156,17 +156,17 @@ short player_number;
                             gShipPieceLevelAssignments[entry_number] = 0;
                         ++entry_number;
                     } while (entry_number < 10);
-                    if (gShipPieceLevelAssignments[minimum_entry] != gLevel912C)
-                        gShipPieceLevelAssignments[minimum_entry] = gLevel912C + 1;
+                    if (gShipPieceLevelAssignments[minimum_entry] != gPlayer1MapLevel)
+                        gShipPieceLevelAssignments[minimum_entry] = gPlayer1MapLevel + 1;
                     PlaySound(PSG_TONE_PHRASE, 99);
                     ++input_stage;
                 }
                 continue;
             }
         }
-        VBLANK_FLAG_8 = MUSIC_SELECTION_INVALID;
+        gCurrentMusicSelection = MUSIC_SELECTION_INVALID;
         FreeEntity(object_number);
-        while ((MovePadInputIntoD0(0) | MovePadInputIntoD0(1)) & 128)
+        while ((ReadMappedPlayerInput(0) | ReadMappedPlayerInput(1)) & 128)
             ;
     }
 }

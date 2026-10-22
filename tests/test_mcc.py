@@ -151,7 +151,7 @@ class MatchTest(unittest.TestCase):
         return self.match.match_file(path, "rev02", [])
 
     def test_two_known_functions_match_byte_for_byte(self):
-        reports = self.run_c("pair.c", "void DelayRoutine1(n)\nshort n;\n{\n    while (n)\n        --n;\n}\n")
+        reports = self.run_c("pair.c", "void DelayIterations(n)\nshort n;\n{\n    while (n)\n        --n;\n}\n")
         self.assertEqual([r["status"] for r in reports], ["MATCH"])
         reports = self.run_c("mod.c", "short GetLevelMusicIndex(v)\nshort v;\n{\n    return (v - 1) % 6;\n}\n")
         self.assertEqual([r["status"] for r in reports], ["MATCH"])
@@ -162,17 +162,17 @@ class MatchTest(unittest.TestCase):
         self.assertIn("subq.l #$1", reports[0]["diff"])
 
     def test_names_cannot_be_moved_or_bypassed(self):
-        loop = "void DelayRoutine1(n)\nshort n;\n{\n    while (n)\n        --n;\n}\n"
+        loop = "void DelayIterations(n)\nshort n;\n{\n    while (n)\n        --n;\n}\n"
         with self.assertRaisesRegex(self.match.MatchError, "authoritative"):
-            self.match.match_file(self.dir / "x.c", "rev02", [], defines={"DelayRoutine1": 0x1262})
-        (self.dir / "spelled.c").write_text(loop.replace("DelayRoutine1", "func_0011ca"))
-        with self.assertRaisesRegex(self.match.MatchError, "write DelayRoutine1"):
+            self.match.match_file(self.dir / "x.c", "rev02", [], defines={"DelayIterations": 0x1262})
+        (self.dir / "spelled.c").write_text(loop.replace("DelayIterations", "func_0011ca"))
+        with self.assertRaisesRegex(self.match.MatchError, "write DelayIterations"):
             self.match.match_file(self.dir / "spelled.c", "rev02", [])
 
     def test_a_function_at_the_wrong_place_is_refused(self):
         with self.assertRaisesRegex(self.match.MatchError, "contiguous run"):
             self.run_c("order.c", "short GetLevelMusicIndex(v)\nshort v;\n{\n    return v;\n}\n"
-                                  "void DelayRoutine1(n)\nshort n;\n{\n    while (n) --n;\n}\n")
+                                  "void DelayIterations(n)\nshort n;\n{\n    while (n) --n;\n}\n")
 
 
 if __name__ == "__main__":

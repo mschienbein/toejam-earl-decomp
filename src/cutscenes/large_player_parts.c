@@ -24,9 +24,9 @@ void IntroAllocateLargePlayerParts()
         frame = Spr_TitleBigPlayers[IntroLargePlayerPartInitialFrameIndices[index]];
         if (object_number = (int)AllocateEntity()) {
             entity = &gPlayerInfo[object_number];
-            entity->sprite_count = frame->count;
+            entity->sprite_count = frame->piece_count;
             entity->tile_count = 0;
-            for (piece = 0; piece < frame->count; ++piece)
+            for (piece = 0; piece < frame->piece_count; ++piece)
                 entity->tile_count += ((struct render_piece (*)[12])(frame + 1))[0][piece].width *
                                       ((struct render_piece (*)[12])(frame + 1))[0][piece].height;
             entity->tile = VDP_TILE_PRIORITY;
@@ -132,10 +132,10 @@ void IntroReleaseLargePlayerSpritesAndRefresh()
     IntroReleaseLargePlayerPartSprites(5);
     IntroReleaseLargePlayerPartSprites(6);
     IntroReleaseLargePlayerPartSprites(7);
-    VBLANK_FLAG_2 = 0;
+    gSpriteGraphicsUploadPending = 0;
     UpdateAndQueueEntitySprites();
     WaitForNextVBlank(1);
-    SpriteLoadingStuff(0, 0);
+    UploadQueuedSpriteGraphics(0, 0);
 }
 
 /* Allocate the three driving-scene actors and total their frame tile areas. */
@@ -149,9 +149,9 @@ void IntroAllocateDrivingParts()
         frame = Spr_IntroEarlDriving[IntroDrivingInitialFrameIndices[index]];
         if (object_number = (int)AllocateEntity()) {
             entity = &gPlayerInfo[object_number];
-            entity->sprite_count = frame->count;
+            entity->sprite_count = frame->piece_count;
             entity->tile_count = 0;
-            for (piece = 0; piece < frame->count; ++piece)
+            for (piece = 0; piece < frame->piece_count; ++piece)
                 entity->tile_count += ((struct render_piece (*)[12])(frame + 1))[0][piece].width *
                                       ((struct render_piece (*)[12])(frame + 1))[0][piece].height;
             entity->tile = VDP_TILE_PRIORITY;

@@ -2,17 +2,17 @@
 #define TJE_RAM_CAMERA_H
 
 /* Committed and pending camera coordinates and split-screen selection. */
-extern short P1_CAMERA_X;
-extern short P1_CAMERA_Y;
-extern short P2_CAMERA_X;
-extern short P2_CAMERA_Y;
-extern short TOEJAM_CAMERA_NEWX;
-extern short TOEJAM_CAMERA_NEWY;
-extern short EARL_CAMERA_NEWX;
-extern short EARL_CAMERA_NEWY;
-extern short TOEJAM_CAMERA_X;
-extern short EARL_CAMERA_X;
-extern char SPLIT_SCREEN;
+extern short gCamera1CommittedX;
+extern short gCamera1CommittedY;
+extern short gCamera2CommittedX;
+extern short gCamera2CommittedY;
+extern short gCamera1PendingX;
+extern short gCamera1PendingY;
+extern short gCamera2PendingX;
+extern short gCamera2PendingY;
+extern short gCamera1PendingTileColumn;
+extern short gCamera2PendingTileColumn;
+extern char gSplitScreenEnabled;
 
 /* Scroll positions and pending row/column transfer state. Incomplete
  * outer bounds retain the existing views, not inferred allocations. */

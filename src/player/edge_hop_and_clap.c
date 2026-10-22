@@ -24,9 +24,9 @@ short next_x, next_y;
     unsigned char tile;
 
     if (!state->entity_index)
-        nearby_land = &LAND_NEAR_TOEJAM[0][0];
+        nearby_land = &gPlayer1NearbyTerrain[0][0];
     else
-        nearby_land = &LAND_NEAR_EARL[0][0];
+        nearby_land = &gPlayer2NearbyTerrain[0][0];
     cell_x = next_x >> 3;
     cell_x -= state->x >> 3;
     cell_x += 2;
@@ -42,12 +42,12 @@ short next_x, next_y;
         return 1;
     }
     if (!gPcmEffectCooldownTicks) {
-        if (ram_ffda3c) {
+        if (gTerrainEdgeMeepPending) {
             PlaySoundEffect((long)Sfx_Meep, 40, 0);
-            ram_ffda3c = 0;
+            gTerrainEdgeMeepPending = 0;
         } else if (!(GetRandomNumber() & 0x1ff)) {
             PlaySoundEffect((long)Sfx_Meep, 40, 0);
-            ram_ffda3c = 1;
+            gTerrainEdgeMeepPending = 1;
         }
     }
     return 0;
@@ -62,7 +62,7 @@ void PlayerUpdateHealthSharingClap()
     short average_health, separation_y, separation_x;
 
     toejam = &gPlayerInfo[PLAYER_TOEJAM];
-    earl = &gEarlPositionX;
+    earl = &gPlayer2Entity;
     if (toejam->level != earl->level)
         return;
     if ((toejam->sprite_state & 0xfe) == 90) {
@@ -76,18 +76,18 @@ void PlayerUpdateHealthSharingClap()
     if ((earl->sprite_state & 0xfe) == 90) {
         if (!earl->frame_duration) {
             SetSprite(earl, PLAYER_ANIM_IDLE);
-            average_health = (TOEJAMS_HEALTH[PLAYER_TOEJAM] + TOEJAMS_HEALTH[PLAYER_EARL] + 1) >> 1;
+            average_health = (gPlayerHealth[PLAYER_TOEJAM] + gPlayerHealth[PLAYER_EARL] + 1) >> 1;
             /* ORIGINAL BUG: These branches do not cap the compared player's
              * health to PlayerGetMaximumHealth's result ([INFERENCE] its health limit). */
             if (average_health > PlayerGetMaximumHealth(0)) {
-                TOEJAMS_HEALTH[PLAYER_TOEJAM] = average_health;
-                TOEJAMS_HEALTH[PLAYER_EARL] = (average_health << 1) - PlayerGetMaximumHealth(0);
+                gPlayerHealth[PLAYER_TOEJAM] = average_health;
+                gPlayerHealth[PLAYER_EARL] = (average_health << 1) - PlayerGetMaximumHealth(0);
             } else if (average_health > PlayerGetMaximumHealth(1)) {
-                TOEJAMS_HEALTH[PLAYER_EARL] = average_health;
-                TOEJAMS_HEALTH[PLAYER_TOEJAM] = (average_health << 1) - PlayerGetMaximumHealth(1);
+                gPlayerHealth[PLAYER_EARL] = average_health;
+                gPlayerHealth[PLAYER_TOEJAM] = (average_health << 1) - PlayerGetMaximumHealth(1);
             } else {
-                TOEJAMS_HEALTH[PLAYER_TOEJAM] = average_health;
-                TOEJAMS_HEALTH[PLAYER_EARL] = average_health;
+                gPlayerHealth[PLAYER_TOEJAM] = average_health;
+                gPlayerHealth[PLAYER_EARL] = average_health;
             }
         } else if (earl->frame == 2)
             ++earl->frame;

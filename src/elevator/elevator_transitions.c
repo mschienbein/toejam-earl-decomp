@@ -29,8 +29,8 @@ char flag;
     for (player = 0; player <= 1; ++player) {
         entity = &gPlayerInfo[player];
         if (entity->level == elevator->level) {
-            if (flag == ELEVATOR_FLAG[player]) {
-                if (P1_PROCESSED_INPUT[player] & 3)
+            if (flag == gPlayerElevatorFlags[player]) {
+                if (gPlayerProcessedInput[player] & 3)
                     occupied = 1;
             } else if ((short)abs(entity->x - elevator->x) < 10) {
                 distance_y = entity->y - elevator->y;
@@ -53,16 +53,16 @@ struct elevator_record *elevator;
 {
     struct object_state *entity;
 
-    if (--DEPARTING_ELEV_TIME <= 0) {
+    if (--gDepartureElevatorShakeDelay <= 0) {
         entity = &gPlayerInfo[elevator->entity + 2];
         if ((entity->height += 4) > 28) {
             entity->height = 0;
-            --DEPARTING_ELEV_CYCLES;
+            --gDepartureElevatorShakeCycles;
             PlaySound(PSG_GATED_TONE_SWEEP, 50);
         }
-        DEPARTING_ELEV_TIME = DEPARTING_ELEV_CYCLES / 2;
+        gDepartureElevatorShakeDelay = gDepartureElevatorShakeCycles / 2;
     }
-    if (DEPARTING_ELEV_CYCLES == 0)
+    if (gDepartureElevatorShakeCycles == 0)
         return 1;
     return 0;
 }
@@ -78,13 +78,13 @@ void ProcessElevatorStep1()
 
     for (elevator_number = 0; elevator_number <= 1; ++elevator_number) {
         flag = elevator_number * 2 + 1;
-        elevator = &ELEVATOR_LOCATION[elevator_number][0];
+        elevator = &gElevatorRecords[elevator_number][0];
         state = elevator->state;
         if (state == 11)
             continue;
         next_state = -1;
         if (state == 13) {
-            if (ARRIVING_ELEV_LEVEL != elevator->level + 1 &&
+            if (gPrimaryArrivalElevatorLevel != elevator->level + 1 &&
                 gSecondaryArrivalElevatorLevel != elevator->level + 1) {
                 next_state = 10;
                 entity = gPlayerInfo[PLAYER_TOEJAM].level == elevator->level ?
@@ -96,10 +96,10 @@ void ProcessElevatorStep1()
             }
         } else if (state == 10) {
             if (elevator->entity && !gPlayerInfo[elevator->entity].frame_duration) {
-                if (flag == ELEVATOR_FLAG[PLAYER_TOEJAM]) {
+                if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM]) {
                     next_state = 1;
                     gPlayerInfo[PLAYER_TOEJAM].behavior_flags &= ~64;
-                } else if (flag == ELEVATOR_FLAG[PLAYER_EARL]) {
+                } else if (flag == gPlayerElevatorFlags[PLAYER_EARL]) {
                     gPlayerInfo[PLAYER_EARL].behavior_flags &= ~64;
                     next_state = 1;
                 } else
@@ -110,7 +110,7 @@ void ProcessElevatorStep1()
                 next_state = 3;
         } else if (state == 4) {
             if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration) {
-                if (flag == ELEVATOR_FLAG[PLAYER_TOEJAM] || flag == ELEVATOR_FLAG[PLAYER_EARL])
+                if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM] || flag == gPlayerElevatorFlags[PLAYER_EARL])
                     next_state = 1;
                 else
                     next_state = 0;
@@ -121,11 +121,11 @@ void ProcessElevatorStep1()
             distance_or_frame = gPlayerInfo[elevator->entity + 2].frame;
             if (!gPlayerInfo[elevator->entity + 2].frame_duration) {
                 next_state = 5;
-                DEPARTING_ELEV_CYCLES = 5;
-                DEPARTING_ELEV_TIME = 2;
+                gDepartureElevatorShakeCycles = 5;
+                gDepartureElevatorShakeDelay = 2;
                 PlaySound(PSG_GATED_TONE_SWEEP, 50);
-                if ((gPlayerLives[PLAYER_TOEJAM] < 0 || flag == ELEVATOR_FLAG[PLAYER_TOEJAM]) &&
-                    (gPlayer2Lives < 0 || flag == ELEVATOR_FLAG[PLAYER_EARL])) {
+                if ((gPlayerLives[PLAYER_TOEJAM] < 0 || flag == gPlayerElevatorFlags[PLAYER_TOEJAM]) &&
+                    (gPlayer2Lives < 0 || flag == gPlayerElevatorFlags[PLAYER_EARL])) {
                     AudioRequestFmChannelRelease();
                     MusicRequestTrackPointerReset();
                 }
@@ -139,27 +139,27 @@ void ProcessElevatorStep1()
         } else if (state == 7) {
             if (elevator->entity && !gPlayerInfo[elevator->entity].frame_duration) {
                 if (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level &&
-                    ELEVATOR_FLAG[PLAYER_TOEJAM] != ELEVATOR_FLAG[PLAYER_EARL])
+                    gPlayerElevatorFlags[PLAYER_TOEJAM] != gPlayerElevatorFlags[PLAYER_EARL])
                     next_state = 10;
                 else {
                     next_state = 11;
                     PlaySound(PSG_SILENCE, 98);
                 }
             }
-        } else if ((flag == ELEVATOR_FLAG[PLAYER_TOEJAM] && flag == ELEVATOR_FLAG[PLAYER_EARL] &&
-                    !P1_MENU_OPEN[PLAYER_TOEJAM] && !HBLANK_FLAG_1) ||
-                   (flag == ELEVATOR_FLAG[PLAYER_TOEJAM] && !P1_MENU_OPEN[PLAYER_TOEJAM] &&
+        } else if ((flag == gPlayerElevatorFlags[PLAYER_TOEJAM] && flag == gPlayerElevatorFlags[PLAYER_EARL] &&
+                    !gPlayerInventoryOpen[PLAYER_TOEJAM] && !gPlayer2InventoryOpen) ||
+                   (flag == gPlayerElevatorFlags[PLAYER_TOEJAM] && !gPlayerInventoryOpen[PLAYER_TOEJAM] &&
                     gPlayerInfo[PLAYER_TOEJAM].level < gPlayerInfo[PLAYER_EARL].level) ||
-                   (flag == ELEVATOR_FLAG[PLAYER_EARL] && !HBLANK_FLAG_1 &&
+                   (flag == gPlayerElevatorFlags[PLAYER_EARL] && !gPlayer2InventoryOpen &&
                     gPlayerInfo[PLAYER_EARL].level < gPlayerInfo[PLAYER_TOEJAM].level)) {
             if (state == 3)
                 next_state = 4;
             else if (state == 1) {
                 gElevatorDepartureInProgress = 1;
                 next_state = 6;
-                if (flag == ELEVATOR_FLAG[PLAYER_TOEJAM])
+                if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM])
                     gPlayerInfo[PLAYER_TOEJAM].behavior_flags |= ENTITY_HIDDEN;
-                if (flag == ELEVATOR_FLAG[PLAYER_EARL])
+                if (flag == gPlayerElevatorFlags[PLAYER_EARL])
                     gPlayerInfo[PLAYER_EARL].behavior_flags |= ENTITY_HIDDEN;
             }
         } else if (ElevatorCheckPlayerProximityAndInput(elevator, flag)) {
@@ -172,7 +172,7 @@ void ProcessElevatorStep1()
             PlaySound(PSG_NOISE_ACCENT, 30);
         }
         for (player = 0; player <= 1; ++player) {
-            if (flag == ELEVATOR_FLAG[player]) {
+            if (flag == gPlayerElevatorFlags[player]) {
                 entity = &gPlayerInfo[player];
                 if (!entity->sprite_state && entity->frame == 1)
                     entity->frame_duration = 0;
@@ -187,7 +187,7 @@ void ProcessElevatorStep1()
 }
 
 /* Advance the two arrival elevators, releasing attached player flags and
- * delaying the final close state with ARRIVING_ELEV_TIME. */
+ * delaying the final close state with gArrivalElevatorCloseDelay. */
 void ProcessElevatorStep2()
 {
     short elevator_number, player, distance_x, distance_y;
@@ -197,7 +197,7 @@ void ProcessElevatorStep2()
 
     for (elevator_number = 0; elevator_number <= 1; ++elevator_number) {
         flag = elevator_number * 2 + 2;
-        elevator = &ELEVATOR_LOCATION[elevator_number][1];
+        elevator = &gElevatorRecords[elevator_number][1];
         state = elevator->state;
         if (state == 11)
             continue;
@@ -206,11 +206,11 @@ void ProcessElevatorStep2()
             if (elevator->entity && !gPlayerInfo[elevator->entity].frame_duration) {
                 next_state = 1;
                 entity = 0;
-                if (flag == ELEVATOR_FLAG[PLAYER_TOEJAM])
+                if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM])
                     gPlayerInfo[PLAYER_TOEJAM].behavior_flags &= ~64;
                 else if (gPlayerInfo[PLAYER_TOEJAM].level == elevator->level)
                     entity = &gPlayerInfo[PLAYER_TOEJAM];
-                if (flag == ELEVATOR_FLAG[PLAYER_EARL])
+                if (flag == gPlayerElevatorFlags[PLAYER_EARL])
                     gPlayerInfo[PLAYER_EARL].behavior_flags &= ~64;
                 else if (gPlayerInfo[PLAYER_EARL].level == elevator->level)
                     entity = &gPlayerInfo[PLAYER_EARL];
@@ -221,24 +221,24 @@ void ProcessElevatorStep2()
                         entity->y = elevator->y + 12;
                 }
                 PlaySound(PSG_DUAL_TONE_FADE, 50);
-                if (VBLANK_FLAG_8 == MUSIC_TRANSITION)
-                    VBLANK_FLAG_7 = (int)GetLevelMusicIndex(gHighestLevel);
+                if (gCurrentMusicSelection == MUSIC_TRANSITION)
+                    gRequestedMusicSelection = (int)GetLevelMusicIndex(gHighestLevel);
             }
         } else if (state == 2) {
             if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration)
                 next_state = 3;
         } else if (state == 4) {
             if (!elevator->entity || !gPlayerInfo[elevator->entity + 2].frame_duration) {
-                if (flag == ELEVATOR_FLAG[PLAYER_TOEJAM] || flag == ELEVATOR_FLAG[PLAYER_EARL])
+                if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM] || flag == gPlayerElevatorFlags[PLAYER_EARL])
                     next_state = 1;
                 else if (!elevator->entity)
                     next_state = 11;
                 else {
                     next_state = 0;
-                    ARRIVING_ELEV_TIME = 30;
+                    gArrivalElevatorCloseDelay = 30;
                 }
             }
-        } else if (state == 0 && --ARRIVING_ELEV_TIME <= 0)
+        } else if (state == 0 && --gArrivalElevatorCloseDelay <= 0)
             next_state = 9;
         else if (state == 9) {
             if (!elevator->entity || !gPlayerInfo[elevator->entity].frame_duration)
@@ -253,7 +253,7 @@ void ProcessElevatorStep2()
             PlaySound(PSG_NOISE_ACCENT, 30);
         }
         for (player = 0; player <= 1; ++player) {
-            if (flag == ELEVATOR_FLAG[player]) {
+            if (flag == gPlayerElevatorFlags[player]) {
                 entity = &gPlayerInfo[player];
                 if (!entity->sprite_state && entity->frame == 1)
                     entity->frame_duration = 0;

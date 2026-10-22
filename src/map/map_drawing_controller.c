@@ -26,18 +26,18 @@ short player;
     short map_number, buttons;
 
     map_number = 0;
-    if (player == 1 && SPLIT_SCREEN)
+    if (player == 1 && gSplitScreenEnabled)
         map_number = 1;
 #if REVISION >= 2
     /* REV 02 resets the opening player's idle counter; REV 00 does not. */
-    P1_IDLE_COUNTER[player] = 0;
+    gPlayerIdleTicks[player] = 0;
 #endif
-    if (VBLANK_FLAG_2) {
-        while (VBLANK_FLAG_2)
+    if (gSpriteGraphicsUploadPending) {
+        while (gSpriteGraphicsUploadPending)
             ;
     } else
         WaitForNextVBlank(1);
-    ClearSkipVHBlankFlags();
+    DisableBlankingGraphics();
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     VDP_COMMAND = 0x40200000L;
@@ -60,7 +60,7 @@ short player;
     Map_DrawElevator(map_number, &sprites[6]);
     MapUploadCoverAnimationFrame(sprites, 11, 1);
     MapUploadCoverAnimationFrame(sprites, 0, 0);
-    VDPWritesRoutine1(sprites, 0xf800, 320);
+    DmaCopyWordsToVram(sprites, 0xf800, 320);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     if (gMapRevealMode)
@@ -69,17 +69,17 @@ short player;
             MapUploadCoverAnimationFrame(sprites, map_number, 0);
         }
     PreGenerateRandoms();
-    while (MovePadInputIntoD0(player) & 0x20)
+    while (ReadMappedPlayerInput(player) & 0x20)
         WaitForNextVBlank(1);
-    while (!((buttons = MovePadInputIntoD0(player)) & 0x70))
+    while (!((buttons = ReadMappedPlayerInput(player)) & 0x70))
         DrawMapCharacters(sprites);
     buttons &= 0x70;
-    while (MovePadInputIntoD0(player) & buttons)
+    while (ReadMappedPlayerInput(player) & buttons)
         WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     DrawStarfieldPlane();
-    VDPWritesRoutine1(gHardwareSpriteTable, 0xf800, 320);
+    DmaCopyWordsToVram(gHardwareSpriteTable, 0xf800, 320);
     if (gMapRevealMode || (buttons & 0x20)) {
         VDP_COMMAND = VDP_WRITE_VRAM_BASE;
         MoveDataToVRAM(LevelTiles, (MapScreenTileCount + 41) << 4);
@@ -89,11 +89,11 @@ short player;
         CopyPaletteToCRAMSlot(PaletteGameLine1, 0);
         CopyPaletteToCRAMSlot(PaletteGameLine2, 1);
         CopyPaletteToCRAMSlot(PaletteGameLine3, 2);
-        if (P1_MENU_OPEN[player ^ 1])
+        if (gPlayerInventoryOpen[player ^ 1])
             InventoryRedrawSynchronously(player ^ 1);
     } else
         ShowShipPieces(-1, player);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
-    SetSkipVHBlankFlags();
+    EnableBlankingGraphics();
 }

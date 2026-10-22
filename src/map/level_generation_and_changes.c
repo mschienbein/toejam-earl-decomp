@@ -20,41 +20,41 @@ void MapRefineFilledShapeMasks()
 
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            shape = gMapDataA[row][column];
+            shape = gPlayer1LevelMap[row][column];
             if (shape & 0x800) {
                 shape &= 0xff;
                 if (shape == 3) {
-                    shape = gMapDataA[row][column - 1] & 0xff;
-                    if ((gMapDataA[row][column + 1] & 0xff) != 7 &&
+                    shape = gPlayer1LevelMap[row][column - 1] & 0xff;
+                    if ((gPlayer1LevelMap[row][column + 1] & 0xff) != 7 &&
                         (shape == 11 || shape == 19))
-                        gMapDataA[row][column] |= 0x10;
+                        gPlayer1LevelMap[row][column] |= 0x10;
                 }
             }
         }
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            shape = gMapDataA[row][column];
+            shape = gPlayer1LevelMap[row][column];
             if (shape & 0x800) {
                 shape &= 0xff;
                 if (shape == 12) {
-                    shape = gMapDataA[row][column - 1] & 0xff;
+                    shape = gPlayer1LevelMap[row][column - 1] & 0xff;
                     if (shape == 4 || shape == 28)
-                        gMapDataA[row][column] |= 0x10;
+                        gPlayer1LevelMap[row][column] |= 0x10;
                 }
             }
         }
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            shape = gMapDataA[row][column];
+            shape = gPlayer1LevelMap[row][column];
             if ((shape & 0x800) && (shape & 15) == 15) {
                 upper_right = upper_left = 0;
                 lower_right = lower_left = 0;
-                shape = gMapDataA[row - 1][column] & 31;
+                shape = gPlayer1LevelMap[row - 1][column] & 31;
                 if (shape == 21 || shape == 13 || shape == 12)
                     ++upper_left;
                 if (shape == 14 || shape == 28 || shape == 26)
                     ++upper_right;
-                shape = gMapDataA[row + 1][column] & 31;
+                shape = gPlayer1LevelMap[row + 1][column] & 31;
                 if (shape == 7 || shape == 3)
                     ++lower_left;
                 if (shape == 19 || shape == 11)
@@ -75,8 +75,8 @@ void MapRefineFilledShapeMasks()
                         shape = 20;
                 } else
                     shape = 20;
-                gMapDataA[row][column] &= 0xff00;
-                gMapDataA[row][column] |= shape;
+                gPlayer1LevelMap[row][column] &= 0xff00;
+                gPlayer1LevelMap[row][column] |= shape;
             }
         }
 }
@@ -90,54 +90,54 @@ void MapBuildFilledTerrainShapes()
 
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            shape = gMapDataA[row][column];
+            shape = gPlayer1LevelMap[row][column];
             if ((shape & 0x3000) == 0x3000)
-                gMapDataA[row][column] |= 0x800;
+                gPlayer1LevelMap[row][column] |= 0x800;
             else
-                gMapDataA[row][column] &= 0xf7ff;
+                gPlayer1LevelMap[row][column] &= 0xf7ff;
             if ((shape & 0x3000) != 0x2000)
-                gMapDataD[row][column] &= 0xf0;
+                gMapPathDirectionBanks[row][column] &= 0xf0;
         }
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            shape = gMapDataA[row][column];
+            shape = gPlayer1LevelMap[row][column];
             if (shape & 0x800) {
                 shape = 0;
                 if (row > 0 && column > 0 &&
-                    (gMapDataA[row][column - 1] & 0x800) &&
-                    (gMapDataA[row - 1][column - 1] & 0x800) &&
-                    (gMapDataA[row - 1][column] & 0x800))
+                    (gPlayer1LevelMap[row][column - 1] & 0x800) &&
+                    (gPlayer1LevelMap[row - 1][column - 1] & 0x800) &&
+                    (gPlayer1LevelMap[row - 1][column] & 0x800))
                     shape |= 1;
                 if (row > 0 && column < 18 &&
-                    (gMapDataA[row - 1][column] & 0x800) &&
-                    (gMapDataA[row - 1][column + 1] & 0x800) &&
-                    (gMapDataA[row][column + 1] & 0x800))
+                    (gPlayer1LevelMap[row - 1][column] & 0x800) &&
+                    (gPlayer1LevelMap[row - 1][column + 1] & 0x800) &&
+                    (gPlayer1LevelMap[row][column + 1] & 0x800))
                     shape |= 2;
                 if (row < 25 && column < 18 &&
-                    (gMapDataA[row][column + 1] & 0x800) &&
-                    (gMapDataA[row + 1][column + 1] & 0x800) &&
-                    (gMapDataA[row + 1][column] & 0x800))
+                    (gPlayer1LevelMap[row][column + 1] & 0x800) &&
+                    (gPlayer1LevelMap[row + 1][column + 1] & 0x800) &&
+                    (gPlayer1LevelMap[row + 1][column] & 0x800))
                     shape |= 4;
                 if (row < 25 && column > 0 &&
-                    (gMapDataA[row + 1][column] & 0x800) &&
-                    (gMapDataA[row + 1][column - 1] & 0x800) &&
-                    (gMapDataA[row][column - 1] & 0x800))
+                    (gPlayer1LevelMap[row + 1][column] & 0x800) &&
+                    (gPlayer1LevelMap[row + 1][column - 1] & 0x800) &&
+                    (gPlayer1LevelMap[row][column - 1] & 0x800))
                     shape |= 8;
-                gMapDataA[row][column] |= shape;
+                gPlayer1LevelMap[row][column] |= shape;
             }
         }
     MapRefineFilledShapeMasks();
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            shape = gMapDataA[row][column];
+            shape = gPlayer1LevelMap[row][column];
             if (shape & 0x800) {
                 shape &= 31;
-                gMapDataA[row][column] &= 0xff00;
-                if (gMapDataA[row][column] & 0x8000)
-                    gMapDataA[row][column] |=
+                gPlayer1LevelMap[row][column] &= 0xff00;
+                if (gPlayer1LevelMap[row][column] & 0x8000)
+                    gPlayer1LevelMap[row][column] |=
                         (unsigned short)MapGenerationLookupTables.filled_alternate[shape];
                 else
-                    gMapDataA[row][column] |=
+                    gPlayer1LevelMap[row][column] |=
                         (unsigned short)MapGenerationLookupTables.filled_plain[shape];
             }
         }
@@ -153,52 +153,52 @@ void MapBuildDirectionalPathShapes()
 
     for (row = 1; row < 25; ++row)
         for (column = 1; column < 18; ++column) {
-            shape = gMapDataA[row][column];
+            shape = gPlayer1LevelMap[row][column];
             if ((shape & 0x3000) == 0x1000) {
                 replacement = 0;
-                if ((gMapDataA[row - 1][column] & 0x3004) == 0x2004) {
-                    if (gMapDataD[row - 1][column] & 4)
-                        gMapDataA[row][column] |= 0x4000;
+                if ((gPlayer1LevelMap[row - 1][column] & 0x3004) == 0x2004) {
+                    if (gMapPathDirectionBanks[row - 1][column] & 4)
+                        gPlayer1LevelMap[row][column] |= 0x4000;
                     else
                         replacement = 16;
-                } else if ((gMapDataA[row][column + 1] & 0x3008) == 0x2008) {
-                    if (gMapDataD[row][column + 1] & 8)
-                        gMapDataA[row][column] |= 0x4000;
+                } else if ((gPlayer1LevelMap[row][column + 1] & 0x3008) == 0x2008) {
+                    if (gMapPathDirectionBanks[row][column + 1] & 8)
+                        gPlayer1LevelMap[row][column] |= 0x4000;
                     else
                         replacement = 17;
-                } else if ((gMapDataA[row + 1][column] & 0x3001) == 0x2001) {
-                    if (gMapDataD[row + 1][column] & 1)
-                        gMapDataA[row][column] |= 0x4000;
+                } else if ((gPlayer1LevelMap[row + 1][column] & 0x3001) == 0x2001) {
+                    if (gMapPathDirectionBanks[row + 1][column] & 1)
+                        gPlayer1LevelMap[row][column] |= 0x4000;
                     else
                         replacement = 18;
-                } else if ((gMapDataA[row][column - 1] & 0x3002) == 0x2002) {
-                    if (gMapDataD[row][column - 1] & 2)
-                        gMapDataA[row][column] |= 0x4000;
+                } else if ((gPlayer1LevelMap[row][column - 1] & 0x3002) == 0x2002) {
+                    if (gMapPathDirectionBanks[row][column - 1] & 2)
+                        gPlayer1LevelMap[row][column] |= 0x4000;
                     else
                         replacement = 19;
                 }
                 if (replacement) {
-                    if ((gMapDataA[row][column] &= 0xff00) & 0x8000)
-                        gMapDataA[row][column] |=
+                    if ((gPlayer1LevelMap[row][column] &= 0xff00) & 0x8000)
+                        gPlayer1LevelMap[row][column] |=
                             (unsigned short)MapBoundaryShapesAlternate[replacement];
                     else
-                        gMapDataA[row][column] |=
+                        gPlayer1LevelMap[row][column] |=
                             (unsigned short)MapBoundaryShapesPlain[replacement];
                 }
             }
         }
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            shape = gMapDataA[row][column];
-            corners = gMapDataD[row][column] & 15;
+            shape = gPlayer1LevelMap[row][column];
+            corners = gMapPathDirectionBanks[row][column] & 15;
             if (gMapDirectionalPathMode)
                 corners = 0;
             if ((shape & 0x3000) == 0x2000) {
                 shape ^= (unsigned short)corners;
-                gMapDataA[row][column] =
+                gPlayer1LevelMap[row][column] =
                     MapGenerationLookupTables.tiles[shape & 15] | 0x2000;
                 if (corners)
-                    gMapDataA[row][column] |= 0x4000;
+                    gPlayer1LevelMap[row][column] |= 0x4000;
             }
         }
 }
@@ -213,22 +213,22 @@ void MapScatterTerrainFeatures()
 
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            if (!(gMapDataD[row][column] & 15)) {
-                shape = gMapDataA[row][column] & 0xff;
+            if (!(gMapPathDirectionBanks[row][column] & 15)) {
+                shape = gPlayer1LevelMap[row][column] & 0xff;
                 if (!shape) {
                     nearby_plain = 0;
                     nearby_alternate = 0;
                     nearby_feature = 0;
                     if (row > 0 &&
-                        (shape = gMapDataA[row - 1][column]) != 27 &&
+                        (shape = gPlayer1LevelMap[row - 1][column]) != 27 &&
                         shape != 45 && column > 0 &&
-                        (shape = gMapDataA[row][column - 1]) != 27 &&
+                        (shape = gPlayer1LevelMap[row][column - 1]) != 27 &&
                         shape != 45) {
                         for (scan_row = row - 3; scan_row < row + 3; ++scan_row)
                             for (scan_column = column - 2; scan_column < column + 2; ++scan_column)
                                 if (scan_row >= 0 && scan_column >= 0 &&
                                     scan_row < 26 && scan_column < 19) {
-                                    shape = gMapDataA[scan_row][scan_column];
+                                    shape = gPlayer1LevelMap[scan_row][scan_column];
                                     if ((shape & 0x3000) == 0x1000) {
                                         if (shape & 0x8000)
                                             nearby_alternate = 1;
@@ -247,41 +247,41 @@ void MapScatterTerrainFeatures()
                                 alternate_chance = 20;
                             if (row < 25 && column < 18 &&
                                 GetRandomNumber() % 100 < 50 &&
-                                !gMapDataA[row][column + 1] &&
-                                !gMapDataA[row + 1][column] &&
-                                !gMapDataA[row + 1][column + 1])
+                                !gPlayer1LevelMap[row][column + 1] &&
+                                !gPlayer1LevelMap[row + 1][column] &&
+                                !gPlayer1LevelMap[row + 1][column + 1])
                                 shape = 1;
                             else
                                 shape = 0;
                             if (alternate_chance > GetRandomNumber() % 100) {
                                 if (shape) {
-                                    gMapDataA[row][column] = 0x801e;
-                                    gMapDataA[row][column + 1] = 0x801f;
-                                    gMapDataA[row + 1][column] = 0x801d;
-                                    gMapDataA[row + 1][column + 1] = 0x8020;
+                                    gPlayer1LevelMap[row][column] = 0x801e;
+                                    gPlayer1LevelMap[row][column + 1] = 0x801f;
+                                    gPlayer1LevelMap[row + 1][column] = 0x801d;
+                                    gPlayer1LevelMap[row + 1][column + 1] = 0x8020;
                                 } else
-                                    gMapDataA[row][column] = 45;
+                                    gPlayer1LevelMap[row][column] = 45;
                             } else {
                                 if (shape) {
-                                    gMapDataA[row][column] = 2;
-                                    gMapDataA[row][column + 1] = 3;
-                                    gMapDataA[row + 1][column] = 1;
-                                    gMapDataA[row + 1][column + 1] = 4;
+                                    gPlayer1LevelMap[row][column] = 2;
+                                    gPlayer1LevelMap[row][column + 1] = 3;
+                                    gPlayer1LevelMap[row + 1][column] = 1;
+                                    gPlayer1LevelMap[row + 1][column + 1] = 4;
                                 } else
-                                    gMapDataA[row][column] = 27;
+                                    gPlayer1LevelMap[row][column] = 27;
                             }
                         }
                     }
                 } else if (shape == 46) {
                     if (GetRandomNumber() % 100 < 10)
-                        gMapDataA[row][column] = 0x902f;
+                        gPlayer1LevelMap[row][column] = 0x902f;
                 } else if (GetRandomNumber() % 100 < MapGetRandomGenerationParameter(7)) {
                     if (shape == 75)
-                        gMapDataA[row][column] = 73;
+                        gPlayer1LevelMap[row][column] = 73;
                     else if (shape == 76)
-                        gMapDataA[row][column] = 74;
+                        gPlayer1LevelMap[row][column] = 74;
                     else if (shape == 80)
-                        gMapDataA[row][column] = 77;
+                        gPlayer1LevelMap[row][column] = 77;
                 }
             }
         }
@@ -298,14 +298,14 @@ void MapChooseMetatileAlternatives()
 
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            old_shape = gMapDataA[row][column] & 0xff;
-            new_cell = gMapDataA[row][column] & 0xc000;
-            if (!(gMapDataA[row][column] & 0x1f00)) {
+            old_shape = gPlayer1LevelMap[row][column] & 0xff;
+            new_cell = gPlayer1LevelMap[row][column] & 0xc000;
+            if (!(gPlayer1LevelMap[row][column] & 0x1f00)) {
                 alternatives = TileAlternativePointers[old_shape];
                 choice = GetRandomNumber() % alternatives[0];
                 ++choice;
             } else {
-                transition = (gMapDataA[row][column] & 0x1f00) >> 8;
+                transition = (gPlayer1LevelMap[row][column] & 0x1f00) >> 8;
                 --transition;
                 bank = MapTransitionDescriptors[transition].bank;
                 shapes = MapTransitionDescriptors[transition].shapes;
@@ -327,7 +327,7 @@ void MapChooseMetatileAlternatives()
             new_cell |= (unsigned short)alternatives[choice];
             if (new_cell & 0x4000)
                 new_cell |= 0x2000;
-            gMapDataA[row][column] = new_cell;
+            gPlayer1LevelMap[row][column] = new_cell;
         }
 }
 
@@ -339,12 +339,12 @@ void MapSwapPlayerBanks()
 
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            saved_cell = gMapDataA[row][column];
-            gMapDataA[row][column] = gMapDataB[row][column];
-            gMapDataB[row][column] = saved_cell;
-            saved_mask = gMapDataD[row][column];
-            gMapDataD[row][column] <<= 4;
-            gMapDataD[row][column] |= saved_mask >> 4;
+            saved_cell = gPlayer1LevelMap[row][column];
+            gPlayer1LevelMap[row][column] = gPlayer2LevelMap[row][column];
+            gPlayer2LevelMap[row][column] = saved_cell;
+            saved_mask = gMapPathDirectionBanks[row][column];
+            gMapPathDirectionBanks[row][column] <<= 4;
+            gMapPathDirectionBanks[row][column] |= saved_mask >> 4;
         }
 }
 
@@ -365,20 +365,20 @@ short player;
     unsigned char mask;
 
     if (!player) {
-        source = gMapDataA[0];
-        destination = gMapDataB[0];
+        source = gPlayer1LevelMap[0];
+        destination = gPlayer2LevelMap[0];
     } else {
-        source = gMapDataB[0];
-        destination = gMapDataA[0];
+        source = gPlayer2LevelMap[0];
+        destination = gPlayer1LevelMap[0];
     }
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
             *destination++ = *source++;
-            mask = gMapDataD[row][column];
+            mask = gMapPathDirectionBanks[row][column];
             if (!player)
-                gMapDataD[row][column] = (mask << 4) | (mask & 15);
+                gMapPathDirectionBanks[row][column] = (mask << 4) | (mask & 15);
             else
-                gMapDataD[row][column] = (mask >> 4) | (mask & 0xf0);
+                gMapPathDirectionBanks[row][column] = (mask >> 4) | (mask & 0xf0);
         }
 }
 
@@ -388,27 +388,27 @@ void MapSwapPlayerWithSavedBank(player)
 short player;
 {
     unsigned short row, column, saved_cell;
-    unsigned short *map, *saved_map = gMapDataC[0];
+    unsigned short *map, *saved_map = gSavedLevelMap[0];
     unsigned char mask;
 
     if (!player) {
-        gLevel9130 = gLevel912C;
-        map = gMapDataA[0];
+        gSavedMapLevel = gPlayer1MapLevel;
+        map = gPlayer1LevelMap[0];
     } else {
-        gLevel9130 = gLevel912E;
-        map = gMapDataB[0];
+        gSavedMapLevel = gPlayer2MapLevel;
+        map = gPlayer2LevelMap[0];
     }
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
             saved_cell = *map;
             *map++ = *saved_map;
             *saved_map++ = saved_cell;
-            mask = gMapDataD[row][column];
+            mask = gMapPathDirectionBanks[row][column];
             if (!player) {
-                gMapDataD[row][column] = (mask & 0xf0) | (gSavedMapPathDirections[row][column] & 15);
+                gMapPathDirectionBanks[row][column] = (mask & 0xf0) | (gSavedMapPathDirections[row][column] & 15);
                 gSavedMapPathDirections[row][column] = mask;
             } else {
-                gMapDataD[row][column] = (gSavedMapPathDirections[row][column] << 4) | (mask & 15);
+                gMapPathDirectionBanks[row][column] = (gSavedMapPathDirections[row][column] << 4) | (mask & 15);
                 gSavedMapPathDirections[row][column] = mask >> 4;
             }
         }
@@ -424,9 +424,9 @@ void GenerateLevelSeeds()
             gLevelSeeds[level] = FixedWorldSeeds[level];
         else
             gLevelSeeds[level] = GetRandomNumber();
-    gLevel912C = 1;
-    gLevel912E = 1;
-    gLevel9130 = -1;
+    gPlayer1MapLevel = 1;
+    gPlayer2MapLevel = 1;
+    gSavedMapLevel = -1;
     gHighestLevel = 1;
 }
 
@@ -437,10 +437,10 @@ int MapGenerateSeparatedAnchors()
     short previous, position, min_y, min_x, count, max_y, max_x;
 
     for (position = 0; position < 8; ++position) {
-        ELEVATOR_POS_TABLE[position].x = 0;
-        ELEVATOR_POS_TABLE[position].y = 0;
+        gLevelAnchorPositions[position].x = 0;
+        gLevelAnchorPositions[position].y = 0;
     }
-    if (gLevel912A < 4) {
+    if (gRequestedMapLevel < 4) {
         min_x = 5;
         max_x = 13;
         min_y = 8;
@@ -453,13 +453,13 @@ int MapGenerateSeparatedAnchors()
     }
     count = MapGetRandomGenerationParameter(6);
     for (position = 0; position < count; ++position) {
-        ELEVATOR_POS_TABLE[position].x =
+        gLevelAnchorPositions[position].x =
             GetRandomNumber() % (max_x - min_x + 1) + min_x;
-        ELEVATOR_POS_TABLE[position].y =
+        gLevelAnchorPositions[position].y =
             GetRandomNumber() % (max_y - min_y + 1) + min_y;
         for (previous = position - 1; previous >= 0; --previous)
-            if (abs(ELEVATOR_POS_TABLE[position].x - ELEVATOR_POS_TABLE[previous].x) < 3 &&
-                abs(ELEVATOR_POS_TABLE[position].y - ELEVATOR_POS_TABLE[previous].y) < 5) {
+            if (abs(gLevelAnchorPositions[position].x - gLevelAnchorPositions[previous].x) < 3 &&
+                abs(gLevelAnchorPositions[position].y - gLevelAnchorPositions[previous].y) < 5) {
                 --position;
                 break;
             }
@@ -484,37 +484,37 @@ short count;
 {
     short position, target_x, target_y;
 
-    MapCarveDirectionalPath(ELEVATOR_POS_TABLE[0].y, ELEVATOR_POS_TABLE[0].x,
-               ELEVATOR_POS_TABLE[1].y, ELEVATOR_POS_TABLE[1].x, 20, 60);
-    MapCarveDirectionalPath(ELEVATOR_POS_TABLE[1].y, ELEVATOR_POS_TABLE[1].x,
-               ELEVATOR_POS_TABLE[2].y, ELEVATOR_POS_TABLE[2].x, 20, 60);
+    MapCarveDirectionalPath(gLevelAnchorPositions[0].y, gLevelAnchorPositions[0].x,
+               gLevelAnchorPositions[1].y, gLevelAnchorPositions[1].x, 20, 60);
+    MapCarveDirectionalPath(gLevelAnchorPositions[1].y, gLevelAnchorPositions[1].x,
+               gLevelAnchorPositions[2].y, gLevelAnchorPositions[2].x, 20, 60);
     for (position = 0; position < count; ++position) {
         target_x = ((short)GetRandomNumber() & 3) + 4;
         target_x = target_x;
-        if (ELEVATOR_POS_TABLE[position].x + target_x < 17 &&
+        if (gLevelAnchorPositions[position].x + target_x < 17 &&
             GetRandomNumber() % 100 < 50)
-            target_x += ELEVATOR_POS_TABLE[position].x;
+            target_x += gLevelAnchorPositions[position].x;
         else {
-            if (ELEVATOR_POS_TABLE[position].x - target_x <= 2) {
+            if (gLevelAnchorPositions[position].x - target_x <= 2) {
                 --position;
                 continue;
             }
-            target_x = ELEVATOR_POS_TABLE[position].x - target_x;
+            target_x = gLevelAnchorPositions[position].x - target_x;
         }
         target_y = ((short)GetRandomNumber() & 3) + 5;
         target_y = target_y;
-        if (ELEVATOR_POS_TABLE[position].y + target_y < 24 &&
+        if (gLevelAnchorPositions[position].y + target_y < 24 &&
             GetRandomNumber() % 100 < 50) {
-            target_y += ELEVATOR_POS_TABLE[position].y;
+            target_y += gLevelAnchorPositions[position].y;
             target_y = target_y;
         } else {
-            if (ELEVATOR_POS_TABLE[position].y - target_y <= 2) {
+            if (gLevelAnchorPositions[position].y - target_y <= 2) {
                 --position;
                 continue;
             }
-            target_y = ELEVATOR_POS_TABLE[position].y - target_y;
+            target_y = gLevelAnchorPositions[position].y - target_y;
         }
-        MapCarveDirectionalPath(ELEVATOR_POS_TABLE[position].y, ELEVATOR_POS_TABLE[position].x,
+        MapCarveDirectionalPath(gLevelAnchorPositions[position].y, gLevelAnchorPositions[position].x,
                    target_y, target_x, 1, 0);
     }
 }
@@ -541,59 +541,59 @@ short player;
     unsigned short filled_cells;
     long saved_random;
 
-    saved_random = StackBasedRandom(gLevelSeeds[gLevel912A]);
-    if (gLevel912A > 1)
+    saved_random = StackBasedRandom(gLevelSeeds[gRequestedMapLevel]);
+    if (gRequestedMapLevel > 1)
         position_count = MapGenerateSeparatedAnchors();
     if (!player) {
-        if (gLevel912C == gLevel912A)
+        if (gPlayer1MapLevel == gRequestedMapLevel)
             loaded = 1;
         else {
-            if (gLevel912E == gLevel912A) {
-                if (gLevel912C)
+            if (gPlayer2MapLevel == gRequestedMapLevel) {
+                if (gPlayer1MapLevel)
                     MapSwapPlayerWithSavedBank(0);
                 CopyLevelBetweenPlayers(1);
                 loaded = 1;
-            } else if (gLevel9130 == gLevel912A) {
+            } else if (gSavedMapLevel == gRequestedMapLevel) {
                 MapSwapPlayerWithSavedBank(0);
                 loaded = 1;
             } else {
-                if (gLevel912C > 1)
+                if (gPlayer1MapLevel > 1)
                     MapSwapPlayerWithSavedBank(0);
             }
-            gLevel912C = gLevel912A;
+            gPlayer1MapLevel = gRequestedMapLevel;
         }
     } else {
-        if (gLevel912E == gLevel912A)
+        if (gPlayer2MapLevel == gRequestedMapLevel)
             loaded = 1;
         else {
-            if (gLevel912C == gLevel912A) {
-                if (gLevel912C)
+            if (gPlayer1MapLevel == gRequestedMapLevel) {
+                if (gPlayer1MapLevel)
                     MapSwapPlayerWithSavedBank(1);
                 CopyLevelBetweenPlayers(0);
                 loaded = 1;
-            } else if (gLevel9130 == gLevel912A) {
+            } else if (gSavedMapLevel == gRequestedMapLevel) {
                 MapSwapPlayerWithSavedBank(1);
                 loaded = 1;
             } else {
-                if (gLevel912E > 1)
+                if (gPlayer2MapLevel > 1)
                     MapSwapPlayerWithSavedBank(1);
                 MapSwapPlayerBanks();
             }
-            gLevel912E = gLevel912A;
+            gPlayer2MapLevel = gRequestedMapLevel;
         }
     }
-    if (!loaded && gLevel912A <= 1) {
-        if (!gLevel912A) {
+    if (!loaded && gRequestedMapLevel <= 1) {
+        if (!gRequestedMapLevel) {
             for (row = 0; row < 26; ++row)
                 for (column = 0; column < 19; ++column)
-                    gMapDataA[row][column] = 34;
+                    gPlayer1LevelMap[row][column] = 34;
             for (row = 0; row < 5; ++row)
                 for (column = 0; column < 4; ++column)
-                    gMapDataA[row + 12][column + 9] = Level0MapData[row][column];
+                    gPlayer1LevelMap[row + 12][column + 9] = Level0MapData[row][column];
         } else {
             for (row = 0; row < 26; ++row)
                 for (column = 0; column < 19; ++column)
-                    gMapDataA[row][column] = Level1MapData[row][column];
+                    gPlayer1LevelMap[row][column] = Level1MapData[row][column];
         }
         if (player == 1)
             MapSwapPlayerBanks();
@@ -603,14 +603,14 @@ short player;
         StackBasedRandom(saved_random);
         return 0;
     }
-    while (VBLANK_FLAG_2)
+    while (gSpriteGraphicsUploadPending)
         ;
-    if (gLevel912A > gHighestLevel)
-        gHighestLevel = gLevel912A;
+    if (gRequestedMapLevel > gHighestLevel)
+        gHighestLevel = gRequestedMapLevel;
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            gMapDataA[row][column] = 0;
-            gMapDataD[row][column] &= 0xf0;
+            gPlayer1LevelMap[row][column] = 0;
+            gMapPathDirectionBanks[row][column] &= 0xf0;
         }
     MapConnectAnchorPositions(position_count);
     filled_cells = MapGetRandomGenerationParameter(3);
@@ -618,7 +618,7 @@ short player;
     filled_cells /= 100;
     for (row = 0; row < position_count; ++row)
         MapGrowTerrainRegion(4096, row, (row + 1) * (filled_cells / position_count),
-                    ELEVATOR_POS_TABLE[row].y, ELEVATOR_POS_TABLE[row].x);
+                    gLevelAnchorPositions[row].y, gLevelAnchorPositions[row].x);
     MapStabilizeRegionConnections();
     if (MapIsAnchorConnectionMissing())
         return 1;
@@ -644,10 +644,10 @@ short level;
 
     for (row = 0; row < 26; ++row)
         for (column = 0; column < 19; ++column) {
-            gMapDataA[row][column] = FunkatronMapData[row][column];
-            gMapDataB[row][column] = FunkatronMapData[row][column];
-            gLevel912C = level;
-            gLevel912E = level;
+            gPlayer1LevelMap[row][column] = FunkatronMapData[row][column];
+            gPlayer2LevelMap[row][column] = FunkatronMapData[row][column];
+            gPlayer1MapLevel = level;
+            gPlayer2MapLevel = level;
         }
 }
 
@@ -657,18 +657,18 @@ void MapLoadPlayerLevel(player, level)
 short player, level;
 {
     if (level >= 26) {
-        if (gLevel912C != level)
+        if (gPlayer1MapLevel != level)
             LoadFinalLevel(level);
         return;
     }
     if (gPlayerLives[PLAYER_TOEJAM] < 0)
         player = 0;
-    gLevel912A = level;
+    gRequestedMapLevel = level;
     while (ChangeLevel(player)) {
         gLevelSeeds[level] = GetRandomNumber();
         if (!player)
-            gLevel912C = -1;
+            gPlayer1MapLevel = -1;
         else
-            gLevel912E = -1;
+            gPlayer2MapLevel = -1;
     }
 }

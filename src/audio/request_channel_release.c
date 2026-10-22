@@ -4,5 +4,5 @@
 /* Request the six FM channels to be stopped by the driver. */
 void AudioRequestFmChannelRelease()
 {
-    gMusicUnknownE478 = 1;
+    gFmChannelReleaseRequested = 1;
 }

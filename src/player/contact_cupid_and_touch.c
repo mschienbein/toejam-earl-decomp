@@ -24,7 +24,7 @@
  * uses with correct shared return declarations; exact historical spelling
  * remains unknown [INFERENCE]. */
 
-#define NEXT_RANDOM PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
+#define NEXT_RANDOM gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
 /* Flatten an eligible player, apply direct damage, and play the squish sound. */
 void Player_Squish(player_number, earthling)
@@ -45,7 +45,7 @@ struct earthling_state *earthling;
             player->height = 0;
         if (earthling->state)
             earthling->timer = 30;
-        TOEJAMS_HEALTH[player_number] -= EARTHLING_DATA[earthling->kind].damage;
+        gPlayerHealth[player_number] -= EarthlingDefinitions[earthling->kind].damage;
         PlaySoundEffect((long)Sfx_Squish, 50, 0);
     }
 }
@@ -69,16 +69,16 @@ struct earthling_state *earthling;
          distance_x = abs(dancer->x - player->x),
          distance_y = abs(dancer->y - player->y),
          distance_x <= 100 && distance_y <= 75)) {
-        if (--HULA_DANCE_TIMER[player_number] < 0) {
+        if (--gPlayerHulaContactDelay[player_number] < 0) {
             distance_y += distance_y / 3;
             if (distance_x > distance_y)
                 distance = distance_x;
             else
                 distance = distance_y;
-            if ((PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+            if ((gCachedRandomValues[gRandomCacheIndex == 58 ?
                 (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) == 3) {
                 sprite = PLAYER_ANIM_HULA;
-                HULA_DANCE[player_number] = 28;
+                gPlayerHulaDanceTicks[player_number] = 28;
                 if (distance_x < 20 && distance_y < 15) {
                     if (!gHulaSpeechCooldown) {
                         GenerateSpeech(player_number, "Hubba hubba", 1);
@@ -88,11 +88,11 @@ struct earthling_state *earthling;
                         --gHulaSpeechCooldown;
                 }
             }
-            HULA_DANCE_TIMER[player_number] = (distance >> 5) + 4;
+            gPlayerHulaContactDelay[player_number] = (distance >> 5) + 4;
         }
     } else if (player->sprite_state == PLAYER_ANIM_HULA) {
         sprite = GetActivePresentSprite(player);
-        HULA_DANCE_TIMER[player_number] = 0;
+        gPlayerHulaContactDelay[player_number] = 0;
     }
     if (sprite != -1 && sprite != player->sprite_state) {
         player->animation_motion_axes = ANIMATION_MOTION_XY;
@@ -178,9 +178,9 @@ struct earthling_state *earthling;
             object->frame_duration = 1;
         /* ORIGINAL BUG: map_number is unset if neither loaded map has
          * the object's level. The original code makes no fallback choice. */
-        if (object->level == gLevel912C)
+        if (object->level == gPlayer1MapLevel)
             map_number = 0;
-        else if (object->level == gLevel912E)
+        else if (object->level == gPlayer2MapLevel)
             map_number = 1;
         if ((unsigned short)GetMapTerrainAtWorldPosition(map_number, object->x, object->y) > 0x50)
             DamageEarthling(earthling);
@@ -232,9 +232,9 @@ unsigned short terrain;
     player_number = player->entity_index;
     if (player->sprite_state == PLAYER_ANIM_WHIRLWIND_RECOVERY) {
         if (--gPlayerWhirlwindRecoveryTimers[player_number] <= 0) {
-            if (gPlayer1Powerup[player_number] == PRESENT_ROCKET_SKATES)
+            if (gPlayerPowerups[player_number] == PRESENT_ROCKET_SKATES)
                 sprite_or_direction = GetActivePresentSprite(player);
-            else if (!gPlayer1Powerup[player_number]) {
+            else if (!gPlayerPowerups[player_number]) {
                 sprite_or_direction = 61;
                 player->velocity_height = -1;
                 player->animation_motion_axes = ANIMATION_MOTION_NONE;

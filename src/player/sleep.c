@@ -40,7 +40,7 @@ struct object_state *state;
     struct timed_animation *animation;
 
     player = state->entity_index;
-    if (ELEVATOR_FLAG[player] || state->level == 26)
+    if (gPlayerElevatorFlags[player] || state->level == 26)
         return;
     if (state->sprite_state == PLAYER_ANIM_READ_BOOK) {
         if (--gPlayerBookSleepDelay[player] <= 0) {
@@ -48,18 +48,18 @@ struct object_state *state;
             gPlayerWakeEffectsLeft[player] = GetRandomNumber() % 7 + 4;
         }
     } else if (state->sprite_state == PLAYER_ANIM_SLEEP) {
-        input = MovePadInputIntoD0(player);
+        input = ReadMappedPlayerInput(player);
         if (effect = gPlayerWakeEffectEntityHandles[player]) {
             wake_effect = &gPlayerInfo[effect];
-            if ((!gPlayerWakeEffectsLeft[player] && --P1_IDLE_COUNTER[player] <= 0) ||
+            if ((!gPlayerWakeEffectsLeft[player] && --gPlayerIdleTicks[player] <= 0) ||
                 !wake_effect->frame_duration) {
                 FreeEntity(effect);
                 gPlayerWakeEffectEntityHandles[player] = 0;
                 if (!gPlayerWakeEffectsLeft[player])
                     next_sprite = GetActivePresentSprite(state);
             }
-        } else if (input && input != P1_KEYDOWN[player] &&
-                   PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100 < 20) {
+        } else if (input && input != gPlayerSleepPreviousInput[player] &&
+                   gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100 < 20) {
             if (effect = AllocateEntity()) {
                 gPlayerWakeEffectEntityHandles[player] = effect;
                 wake_effect = &gPlayerInfo[effect];
@@ -72,27 +72,27 @@ struct object_state *state;
                 wake_effect->sprite_count = 2;
                 wake_effect->tile_count = 32;
                 wake_effect->tile = VDP_TILE_PRIORITY;
-                animation = &AnimationDescriptors_0AF0B8[player];
+                animation = &PlayerWakeEffectAnimations[player];
                 wake_effect->frames = animation->frames;
                 wake_effect->frame_duration = 1;
                 wake_effect->frame = -1;
                 if (gPlayerWakeEffectsLeft[player]) {
                     wake_effect->frame_phase = 15;
                     if (gPlayerWakeEffectsLeft[player] & 1)
-                        wake_effect->sequence = InlineAnimationPrograms_AF0CC;
+                        wake_effect->sequence = WakeWhisperAnimationStreams;
                     else
-                        wake_effect->sequence = &InlineAnimationPrograms_AF0CC[2];
+                        wake_effect->sequence = &WakeWhisperAnimationStreams[2];
                     PlaySoundEffect((long)Sfx_WakeUpWhisper, 50, 0);
                 } else {
                     wake_effect->sequence = animation->sequence;
                     wake_effect->frame_phase = animation->period;
                     PlaySoundEffect((long)Sfx_WakeUpShout, 88, 0);
-                    P1_IDLE_COUNTER[player] = 30;
+                    gPlayerIdleTicks[player] = 30;
                 }
             }
         } else if (!gPcmEffectCooldownTicks)
             PlaySoundEffect((long)Sfx_Snoring, 30, 0);
-        P1_KEYDOWN[player] = input;
+        gPlayerSleepPreviousInput[player] = input;
     } else {
         if (effect = gPlayerWakeEffectEntityHandles[player]) {
             FreeEntity(effect);
@@ -103,12 +103,12 @@ struct object_state *state;
             && !gPlayerInteractionChoiceActive[player]
 #endif
         ) {
-            if (++P1_IDLE_COUNTER[player] > 300) {
+            if (++gPlayerIdleTicks[player] > 300) {
                 next_sprite = PLAYER_ANIM_SLEEP;
                 gPlayerWakeEffectsLeft[player] = GetRandomNumber() % 7 + 4;
             }
         } else
-            P1_IDLE_COUNTER[player] = 0;
+            gPlayerIdleTicks[player] = 0;
     }
     if (next_sprite != -1)
         SetSprite(state, next_sprite);

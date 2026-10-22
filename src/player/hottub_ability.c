@@ -13,7 +13,7 @@
 #include "speech.h"
 #include "sprite_calls.h"
 
-#define NEXT_RANDOM PREGEN_RANDOMS[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
+#define NEXT_RANDOM gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
 /* Advance entry, bathing, speech, healing, and exit poses at the hot tub. */
 void HottubAbility(player_number, earthling)
@@ -24,16 +24,16 @@ struct earthling_state *earthling;
     struct object_state *player;
 
     player = &gPlayerInfo[player_number];
-    if (gPlayer1Powerup[player_number] != PRESENT_SPRING_SHOES &&
+    if (gPlayerPowerups[player_number] != PRESENT_SPRING_SHOES &&
         abs(player->y - (earthling->y - 4)) < 5) {
         if (player->sprite_state == PLAYER_ANIM_WALK_RIGHT && earthling->x - player->x > 34) {
             sprite = PLAYER_ANIM_JUMP_WINDUP_RIGHT;
-            TOEJAM_JUMP_COUNTER[player_number] = 0;
+            gPlayerJumpCounters[player_number] = 0;
         } else if (player->sprite_state == PLAYER_ANIM_WALK_LEFT && player->x - earthling->x > 34) {
             sprite = PLAYER_ANIM_JUMP_WINDUP_LEFT;
-            TOEJAM_JUMP_COUNTER[player_number] = 0;
+            gPlayerJumpCounters[player_number] = 0;
         } else if (player->animation_group_mask & PLAYER_GROUP_JUMP_WINDUP) {
-            if (++TOEJAM_JUMP_COUNTER[player_number] > 4) {
+            if (++gPlayerJumpCounters[player_number] > 4) {
                 sprite = player->sprite_state + 4;
                 gPlayerInfo[earthling->object].behavior_flags &= ~1;
                 player->height = 1;
@@ -60,11 +60,11 @@ struct earthling_state *earthling;
             if (!player->frame_duration) {
                 sprite = PLAYER_ANIM_HOT_TUB;
                 player->height = 0;
-                TOEJAM_JUMP_COUNTER[player_number] = 0;
+                gPlayerJumpCounters[player_number] = 0;
             }
         } else if (player->sprite_state == PLAYER_ANIM_HOT_TUB) {
             if (!player_number) {
-                if (P1_PROCESSED_INPUT[PLAYER_TOEJAM] & 4) {
+                if (gPlayerProcessedInput[PLAYER_TOEJAM] & 4) {
                     sprite = PLAYER_ANIM_HOT_TUB_EXIT;
                     player->behavior_flags |= ENTITY_MASK_PIXELS;
                 } else if (!(GetRandomNumber() & 31)) {
@@ -78,7 +78,7 @@ struct earthling_state *earthling;
                         GenerateSpeech(0, "titter", 1);
                 }
             } else if (player_number == PLAYER_EARL) {
-                if (P1_PROCESSED_INPUT[PLAYER_EARL] & 8) {
+                if (gPlayerProcessedInput[PLAYER_EARL] & 8) {
                     sprite = PLAYER_ANIM_HOT_TUB_EXIT;
                     player->behavior_flags |= ENTITY_MASK_PIXELS;
                 } else if (!(GetRandomNumber() & 31)) {
@@ -93,8 +93,8 @@ struct earthling_state *earthling;
                         GenerateSpeech(1, "titter", 1);
                 }
             }
-            if (++TOEJAM_JUMP_COUNTER[player_number] > 5)
-                ++TOEJAMS_HEALTH[player_number];
+            if (++gPlayerJumpCounters[player_number] > 5)
+                ++gPlayerHealth[player_number];
         } else if (player->sprite_state == PLAYER_ANIM_HOT_TUB_EXIT && !player->frame_duration) {
             if (!player_number) {
                 sprite = PLAYER_ANIM_FALL_RIGHT;

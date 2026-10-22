@@ -26,17 +26,17 @@ ClearVideoRAM_Loop:
     rts
 .size ClearVideoRAM, .-ClearVideoRAM
 
-| Despite the historical name, the VDP command clears 40 VSRAM scroll words, not save RAM.
-.globl ClearSRAM
-.type ClearSRAM, @function
-ClearSRAM:
+| Clear all 40 VSRAM vertical-scroll words.
+.globl ClearVerticalScrollRam
+.type ClearVerticalScrollRam, @function
+ClearVerticalScrollRam:
     move.l #VDP_VSRAM_WRITE,(VDP_CONTROL).l
     move.w #VSRAM_WORDS_MINUS1,%d0
-ClearSRAM_Loop:
+ClearVerticalScrollRam_Loop:
     move.w #0x0,(VDP_DATA).l
-    dbra %d0,ClearSRAM_Loop
+    dbra %d0,ClearVerticalScrollRam_Loop
     rts
-.size ClearSRAM, .-ClearSRAM
+.size ClearVerticalScrollRam, .-ClearVerticalScrollRam
 
 | Clear all 64 CRAM color words.
 .globl ClearColourRAM

@@ -59,7 +59,7 @@ struct object_state *entity;
 }
 
 /* Walk the 26 entity records and dispatch the active record's flag mode. */
-void Process2FEntityFlag()
+void UpdateAllEntityShadows()
 {
     struct object_state *entity;
     short entity_number;

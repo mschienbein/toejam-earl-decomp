@@ -36,9 +36,9 @@ extern char Sfx_MailboxRoar[];
 extern char Sfx_OperaSing[];
 extern char Sfx_WisemanThink[];
 
-/* Additional selected final-batch storage and resource interfaces. */
+/* Sequencer initialization, PCM streams, and song/channel-template tables. */
 extern char *PCMPlaybackPointers[];
-extern char RAMWritesRoutine1ValuesA[];
+extern char MusicInitialState[];
 extern char Sfx_ChickenCannonFire[];
 extern char Sfx_JamBassDrum[];
 extern char Sfx_JamBigEarl[];

@@ -29,7 +29,7 @@ ReadPad1Input_LoopB:
     or.b %d1,%d0
     not.b %d0
     subq.b #DAC_PAD_READ_STEP,(Z80_DAC_DELAY).l
-    move.b (Z80_PSG_ACTIVE).l,(gMusicUnknownE46E).l
+    move.b (Z80_PSG_ACTIVE).l,(gPsgEffectStatus).l
     move.w #Z80_BUS_RELEASE,(Z80_BUS_REQUEST).l
     rts
 .size GetCtrl1Input, .-GetCtrl1Input
@@ -57,7 +57,7 @@ ReadPad2Input_LoopB:
     or.b %d1,%d0
     not.b %d0
     subq.b #DAC_PAD_READ_STEP,(Z80_DAC_DELAY).l
-    move.b (Z80_PSG_ACTIVE).l,(gMusicUnknownE46E).l
+    move.b (Z80_PSG_ACTIVE).l,(gPsgEffectStatus).l
     move.w #Z80_BUS_RELEASE,(Z80_BUS_REQUEST).l
     rts
 .size GetCtrl2Input, .-GetCtrl2Input

@@ -41,7 +41,7 @@ select_players:
         gPlayerLives[PLAYER_EARL] = 0;
         gPlayerRank[PLAYER_EARL] = 0;
         gPlayerInfo[PLAYER_EARL].level = 0;
-        PLAYER_INDICATOR = 2;
+        gPlayerSelection = 2;
         gControllerPortsSwapped = 0;
         break;
     case 1:
@@ -51,7 +51,7 @@ select_players:
         gPlayerLives[PLAYER_EARL] = -1;
         gPlayerRank[PLAYER_EARL] = 9;
         gPlayerInfo[PLAYER_EARL].level = 99;
-        PLAYER_INDICATOR = 0;
+        gPlayerSelection = 0;
         if (GetCtrl2Input()) {
             gControllerPortsSwapped = 1;
             break;
@@ -66,7 +66,7 @@ select_players:
         gPlayerLives[PLAYER_EARL] = 0;
         gPlayerRank[PLAYER_EARL] = 0;
         gPlayerInfo[PLAYER_EARL].level = 0;
-        PLAYER_INDICATOR = 1;
+        gPlayerSelection = 1;
         if (GetCtrl1Input()) {
             gControllerPortsSwapped = 1;
             break;
@@ -105,14 +105,14 @@ void ShowGameOverAndReset()
     ForceTextBackgroundColorToBlack(1);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
-    SetVHBlankFlag2();
-    TIME_COUNTER = 0;
+    EnableTextFontAnimation();
+    gFrameCounter = 0;
     for (;;) {
         do {
             WaitForNextVBlank(1);
             TextAnimateFontBanks(8);
-        } while (TIME_COUNTER <= 600 &&
-            !((MovePadInputIntoD0(0) | MovePadInputIntoD0(1)) & 0xf0));
+        } while (gFrameCounter <= 600 &&
+            !((ReadMappedPlayerInput(0) | ReadMappedPlayerInput(1)) & 0xf0));
         PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
         PlaySound(PSG_SILENCE, 98);
         AudioRequestFmChannelRelease();
@@ -120,12 +120,13 @@ void ShowGameOverAndReset()
         gMode2RegSoftcopy &= 0x3c;
         VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
         ClearColourRAM();
-        ClearSRAM();
+        ClearVerticalScrollRam();
         ClearVideoRAM();
         RestartFromResetEntry();
     }
 }
 
+/* Show the player-selection menu under its header and return the chosen item. */
 int MenuWhoHandler()
 {
     int selection;
@@ -135,6 +136,7 @@ int MenuWhoHandler()
     return selection;
 }
 
+/* Show the controller-options menu under its header and return the chosen item. */
 int MenuControllerOptionsHandler()
 {
     int selection;
@@ -144,6 +146,7 @@ int MenuControllerOptionsHandler()
     return selection;
 }
 
+/* Show the game-mode menu under its header and return the chosen item. */
 int MenuWhatHandler()
 {
     int selection;
@@ -153,6 +156,7 @@ int MenuWhatHandler()
     return selection;
 }
 
+/* Show the Jam Out menu under its header and return the chosen item. */
 int MenuJamOutHandler()
 {
     int selection;
@@ -221,10 +225,10 @@ register struct menu_item *items;
     MenuDrawTextItems(items, item_count);
     UpdateAndQueueEntitySprites();
     WaitForNextVBlank(1);
-    SpriteLoadingStuff(0, 0);
+    UploadQueuedSpriteGraphics(0, 0);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
-    SetVHBlankFlag2();
+    EnableTextFontAnimation();
     while ((GetCtrl1Input() | GetCtrl2Input()) & 0xf0) {
         WaitForNextVBlank(1);
         TextAnimateFontBanks(8);
@@ -233,10 +237,10 @@ register struct menu_item *items;
     selected_item = 0;
     selected = &items[0];
     for (;;) {
-        VBLANK_FLAG_2 = 0;
+        gSpriteGraphicsUploadPending = 0;
         UpdateAndQueueEntitySprites();
         WaitForNextVBlank(1);
-        SpriteLoadingStuff(0, 0);
+        UploadQueuedSpriteGraphics(0, 0);
         TextAnimateFontBanks(8);
         SelectViewportSpriteChain(0);
         GetRandomNumber();
@@ -264,7 +268,7 @@ register struct menu_item *items;
         selected = &items[selected_item];
         PositionMenuCursorEntity(cursor_column, selected->y);
     }
-    ClearVHBlankFlag2();
+    DisableTextFontAnimationIfMenusClosed();
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     ReleaseMenuCursorEntity();
@@ -290,8 +294,8 @@ short item_count;
 void CreateMenuCursorEntity()
 {
     struct object_state *cursor;
-    if (gMenuCursorObjId = (int)AllocateEntity()) {
-        cursor = &gPlayerInfo[gMenuCursorObjId];
+    if (gMenuCursorEntity = (int)AllocateEntity()) {
+        cursor = &gPlayerInfo[gMenuCursorEntity];
         cursor->tile_count = 12;
         cursor->sprite_count = 1;
         cursor->x = 20;
@@ -306,10 +310,11 @@ void CreateMenuCursorEntity()
     }
 }
 
+/* Release the cursor entity if its stored handle is nonzero. */
 void ReleaseMenuCursorEntity()
 {
-    if (gMenuCursorObjId)
-        FreeEntity(gMenuCursorObjId);
+    if (gMenuCursorEntity)
+        FreeEntity(gMenuCursorEntity);
 }
 
 /* Place the cursor at the selected tile coordinate with a six-pixel offset. */
@@ -317,8 +322,8 @@ void PositionMenuCursorEntity(column, row)
 short column, row;
 {
     struct object_state *cursor;
-    if (gMenuCursorObjId) {
-        cursor = &gPlayerInfo[gMenuCursorObjId];
+    if (gMenuCursorEntity) {
+        cursor = &gPlayerInfo[gMenuCursorEntity];
         cursor->x = column << 3;
         cursor->y = (row << 3) + 6;
     }
@@ -330,8 +335,8 @@ short header_number;
 {
     struct object_state *header;
     CopyPaletteToCRAMSlot(MenuHeaderPalette, 1);
-    if (gMenuHeaderObjId = (int)AllocateEntity()) {
-        header = &gPlayerInfo[gMenuHeaderObjId];
+    if (gMenuHeaderEntity = (int)AllocateEntity()) {
+        header = &gPlayerInfo[gMenuHeaderEntity];
         header->tile_count = -128;
         header->sprite_count = 11;
         header->x = 160;
@@ -346,8 +351,9 @@ short header_number;
     }
 }
 
+/* Release the menu-header entity if its stored handle is nonzero. */
 void RemoveMenuHeader()
 {
-    if (gMenuHeaderObjId)
-        FreeEntity(gMenuHeaderObjId);
+    if (gMenuHeaderEntity)
+        FreeEntity(gMenuHeaderEntity);
 }

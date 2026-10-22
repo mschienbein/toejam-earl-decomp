@@ -18,20 +18,20 @@ short viewport;
     viewport_height = 112;
     viewport_width = 320;
     if (viewport == 0) {
-        if (P1_MENU_OPEN[PLAYER_TOEJAM] || entity->level != gLevel912C)
+        if (gPlayerInventoryOpen[PLAYER_TOEJAM] || entity->level != gPlayer1MapLevel)
             return 0;
-        relative_x = entity->x - TOEJAM_CAMERA_NEWX;
-        relative_y = entity->y - TOEJAM_CAMERA_NEWY;
-        if (!SPLIT_SCREEN)
+        relative_x = entity->x - gCamera1PendingX;
+        relative_y = entity->y - gCamera1PendingY;
+        if (!gSplitScreenEnabled)
             viewport_height = 224;
     } else {
-        if (SPLIT_SCREEN) {
-            if (HBLANK_FLAG_1 || entity->level != gLevel912E)
+        if (gSplitScreenEnabled) {
+            if (gPlayer2InventoryOpen || entity->level != gPlayer2MapLevel)
                 return 0;
         } else
             return 0;
-        relative_x = entity->x - EARL_CAMERA_NEWX;
-        relative_y = entity->y - EARL_CAMERA_NEWY;
+        relative_x = entity->x - gCamera2PendingX;
+        relative_y = entity->y - gCamera2PendingY;
     }
     if (entity->width + relative_x >= 0 &&
         viewport_width >= relative_x - entity->width &&
@@ -79,11 +79,12 @@ int entity_number;
     }
 }
 
+/* Refresh viewport allocation for 26 gameplay entities, or all 40 on the final level. */
 void UpdateAllEntityViewportSprites()
 {
     short entity_number, entity_count;
 
-    if (gLevel912C == 26) {
+    if (gPlayer1MapLevel == 26) {
         entity_count = 40;
         gInventoryDrawListHead = 0;
     } else

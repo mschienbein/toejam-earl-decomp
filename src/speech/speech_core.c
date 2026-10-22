@@ -70,9 +70,9 @@ char replace_attached;
         bubble->height_pixels = 16;
         bubble->sprite_count = 4;
         bubble->tile_count = 13;
-        if (gLevel912C < 26)
+        if (gPlayer1MapLevel < 26)
             bubble->tile = VDP_TILE_PRIORITY;
-        bubble->current_frame = &RuntimeTextMetasprite_0AFADC;
+        bubble->current_frame = &SpeechBubbleTextFrame;
         if (source->draw_flags & ENTITY_PRIMARY_VIEW) {
             AllocateEntityViewportSprites(bubble, 0);
             viewport = 0;
@@ -86,10 +86,10 @@ char replace_attached;
             return 0;
         }
         bubble->draw_flags |= ENTITY_SKIP_PHYSICS;
-        while (VBLANK_FLAG_2)
+        while (gSpriteGraphicsUploadPending)
             ;
         QueueSpeechTextTiles(text, length, bubble->tile & VDP_TILE_INDEX_MASK);
-        PrepareEntitySpriteFrame(bubble, &RuntimeTextMetasprite_0AFADC, 1, viewport);
+        PrepareEntitySpriteFrame(bubble, &SpeechBubbleTextFrame, 1, viewport);
         bubble->sprite_ready = 1;
         if (replace_attached) {
             bubble->behavior_flags |= ENTITY_ATTACHED;

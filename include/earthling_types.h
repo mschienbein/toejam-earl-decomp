@@ -1,7 +1,7 @@
 #ifndef TJE_EARTHLING_TYPES_H
 #define TJE_EARTHLING_TYPES_H
 
-/* EARTHLING_DATA indices from frame/touch tables. VARIANT deliberately makes no unproved speed or
+/* EarthlingDefinitions indices from frame/touch tables. VARIANT deliberately makes no unproved speed or
  * aggression claim. */
 #define EARTHLING_UNUSED -1
 #define EARTHLING_SHIP_PIECE 0

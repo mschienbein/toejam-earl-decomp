@@ -84,10 +84,10 @@ struct object_state *player;
 /* Mark both secondary elevator records as absent. */
 void ElevatorInvalidateSecondaryRecords()
 {
-    ELEVATOR_LOCATION[0][1].level = -1;
-    ELEVATOR_LOCATION[1][1].level = -1;
-    ELEVATOR_LOCATION[0][1].state = 11;
-    ELEVATOR_LOCATION[1][1].state = 11;
+    gElevatorRecords[0][1].level = -1;
+    gElevatorRecords[1][1].level = -1;
+    gElevatorRecords[0][1].state = 11;
+    gElevatorRecords[1][1].state = 11;
 }
 
 /* Reuse the matching level record, or replace one of the two records for
@@ -102,8 +102,8 @@ char level, elevator_type;
     if ((level < 1 || level >= 25) && !elevator_type)
         return;
     elevator_number = elevator_type + 1;
-    elevator = &ELEVATOR_LOCATION[0][elevator_type];
-    alternate = &ELEVATOR_LOCATION[1][elevator_type];
+    elevator = &gElevatorRecords[0][elevator_type];
+    alternate = &gElevatorRecords[1][elevator_type];
     if (level == elevator->level)
         return elevator_number;
     if (level == alternate->level)
@@ -121,8 +121,8 @@ char level, elevator_type;
         elevator->entity = 0;
     }
     if (!elevator_type) {
-        if (ELEVATOR_LOCATION[0][1].level == level + 1 ||
-            ELEVATOR_LOCATION[1][1].level == level + 1)
+        if (gElevatorRecords[0][1].level == level + 1 ||
+            gElevatorRecords[1][1].level == level + 1)
             elevator->state = 13;
         else
             elevator->state = 0;
@@ -135,8 +135,8 @@ char level, elevator_type;
         map_x = 2;
         map_y = 21;
     } else {
-        map_x = ELEVATOR_POS_TABLE[elevator_type].x;
-        map_y = ELEVATOR_POS_TABLE[elevator_type].y;
+        map_x = gLevelAnchorPositions[elevator_type].x;
+        map_y = gLevelAnchorPositions[elevator_type].y;
     }
     elevator->x = (map_x + 2) * 16 * 8 - 16;
     elevator->y = (map_y + 2) * 8 * 8 - 5;
@@ -147,12 +147,12 @@ char level, elevator_type;
 void SetupInitialElevator()
 {
     SetupElevator(1, 0);
-    ELEVATOR_LOCATION[0][1].state = 11;
-    ELEVATOR_LOCATION[0][1].level = -1;
-    ELEVATOR_LOCATION[1][0].state = 11;
-    ELEVATOR_LOCATION[1][0].level = -1;
-    ELEVATOR_LOCATION[1][1].state = 11;
-    ELEVATOR_LOCATION[1][1].level = -1;
+    gElevatorRecords[0][1].state = 11;
+    gElevatorRecords[0][1].level = -1;
+    gElevatorRecords[1][0].state = 11;
+    gElevatorRecords[1][0].level = -1;
+    gElevatorRecords[1][1].state = 11;
+    gElevatorRecords[1][1].level = -1;
 }
 
 /* Claim one of the two elevator entity pairs and initialize both halves. */
@@ -207,16 +207,16 @@ void ElevatorUpdateEntityVisibility()
 
     for (pair = 0; pair <= 1; ++pair)
         for (elevator_type = 0; elevator_type <= 1; ++elevator_type) {
-            elevator = &ELEVATOR_LOCATION[pair][elevator_type];
-            primary_x = elevator->x - TOEJAM_CAMERA_NEWX;
-            primary_y = elevator->y - TOEJAM_CAMERA_NEWY;
-            secondary_x = elevator->x - EARL_CAMERA_NEWX;
-            secondary_y = elevator->y - EARL_CAMERA_NEWY;
+            elevator = &gElevatorRecords[pair][elevator_type];
+            primary_x = elevator->x - gCamera1PendingX;
+            primary_y = elevator->y - gCamera1PendingY;
+            secondary_x = elevator->x - gCamera2PendingX;
+            secondary_y = elevator->y - gCamera2PendingY;
             if (elevator->state != 11 && elevator->state != 13 &&
                 elevator->level > 0 &&
-                ((elevator->level == gLevel912C && primary_x + 160 > 0 &&
+                ((elevator->level == gPlayer1MapLevel && primary_x + 160 > 0 &&
                   primary_x < 480 && primary_y + 112 > 0 && primary_y < 336) ||
-                 (elevator->level == gLevel912E && SPLIT_SCREEN &&
+                 (elevator->level == gPlayer2MapLevel && gSplitScreenEnabled &&
                   secondary_x + 160 > 0 && secondary_x < 480 &&
                   secondary_y + 112 > 0 && secondary_y < 336))) {
                 if (!elevator->entity)
@@ -247,17 +247,17 @@ short player_number, x, y, elevation;
     for (elevator_type = 0; elevator_type <= 1; ++elevator_type)
         for (pair = 0; pair <= 1; ++pair) {
             elevator_number = pair * 2 + elevator_type + 1;
-            elevator = &ELEVATOR_LOCATION[pair][elevator_type];
+            elevator = &gElevatorRecords[pair][elevator_type];
             if (elevator->state != 11 && elevator->state != 13 &&
                 player->level == elevator->level) {
                 distance_x = abs(x - elevator->x);
-                if (ELEVATOR_FLAG[player_number] == elevator_number) {
+                if (gPlayerElevatorFlags[player_number] == elevator_number) {
                     if (elevator->state != 3)
                         return 1;
                     if (y <= elevator->y || distance_x)
                         return 1;
                     if (y >= elevator->y + 10)
-                        ELEVATOR_FLAG[player_number] = 0;
+                        gPlayerElevatorFlags[player_number] = 0;
                 } else if (distance_x < 20) {
                     if ((player->y > elevator->y && y < elevator->y) ||
                         (player->y < elevator->y && y > elevator->y))
@@ -269,7 +269,7 @@ short player_number, x, y, elevation;
                         if (elevator->state == 3 && distance_x < 10 &&
                             player->y > elevator->y) {
                             if (!elevation && y < elevator->y + 8)
-                                ELEVATOR_FLAG[player_number] = elevator_number;
+                                gPlayerElevatorFlags[player_number] = elevator_number;
                         } else
                             return 1;
                     }
@@ -290,7 +290,7 @@ short x, y;
     struct elevator_record *elevator;
     short record_number, distance_y;
 
-    elevator = &ELEVATOR_LOCATION[0][0];
+    elevator = &gElevatorRecords[0][0];
     for (record_number = 0; record_number < 4; ++record_number, ++elevator) {
         if (elevator->state != 11 && elevator->state != 13 &&
             player->level == elevator->level && abs(x - elevator->x) < 20) {
@@ -312,7 +312,7 @@ short x, y, level;
     struct elevator_record *elevator;
     short record_number;
 
-    elevator = &ELEVATOR_LOCATION[0][0];
+    elevator = &gElevatorRecords[0][0];
     for (record_number = 0; record_number < 4; ++record_number, ++elevator)
         if (elevator->level == level &&
             abs(elevator->y - y + 5) < 15 &&
@@ -349,7 +349,7 @@ void LoadFinalLevelMap()
     VDP_COMMAND = 0x7c020003L;
     VDP_DATA = scroll;
     HudHidePlayerSprites(2);
-    ToggleLOC_00FF8196(0);
+    SetCameraTilePriorityEnabled(0);
 }
 
 /* Remove active-level objects and present overlays, then reset four elevators. */
@@ -362,7 +362,7 @@ void MapClearActiveLevelObjects()
     if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
         EarthlingReleaseLevelBank(gPlayerInfo[PLAYER_TOEJAM].level);
         MapReleaseLevelItemBank(gPlayerInfo[PLAYER_TOEJAM].level);
-        ELEVATOR_FLAG[PLAYER_TOEJAM] = 0;
+        gPlayerElevatorFlags[PLAYER_TOEJAM] = 0;
     }
     if (gPlayer2Lives >= 0) {
         EarthlingReleaseLevelBank(gPlayerInfo[PLAYER_EARL].level);
@@ -378,7 +378,7 @@ void MapClearActiveLevelObjects()
                 ReleaseEntityViewportSprites(player, 1);
         }
     }
-    elevator = &ELEVATOR_LOCATION[0][0];
+    elevator = &gElevatorRecords[0][0];
     for (elevator_number = 0; elevator_number < 4; ++elevator_number, ++elevator) {
         if (elevator->entity) {
             FreeEntity(elevator->entity);
@@ -401,7 +401,7 @@ void MapEnterFinalLevel()
         player = &gPlayerInfo[PLAYER_TOEJAM];
         gPlayerInfo[PLAYER_TOEJAM].height = 0;
         StopPlayer(player);
-        TOEJAM_FALL_STATE[PLAYER_TOEJAM] = 0;
+        gPlayerFallStates[PLAYER_TOEJAM] = 0;
         SetSprite(player, PLAYER_ANIM_IDLE);
         player->behavior_flags &= 0xaf;
         player->tile &= 0x7fff;
@@ -428,7 +428,7 @@ void MapEnterFinalLevel()
     UpdateScreenSplitMode(1);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
-    SetSkipVHBlankFlags();
+    EnableBlankingGraphics();
 }
 
 /* Unpack four background parts and queue the resulting 64-tile run. */
@@ -442,10 +442,10 @@ void ElevatorLoadRideBackgroundTiles()
     struct render_frame *frame;
     struct render_piece *part;
 
-    frame = Spr_TransitionBackground[gLevel912C * 2];
+    frame = Spr_TransitionBackground[gPlayer1MapLevel * 2];
     for (part_number = 0; part_number < 4; ++part_number) {
         part = &((struct render_piece (*)[4])(frame + 1))[0][part_number];
-        packing = part->format;
+        packing = part->tile_format;
         if (packing < 0)
             SpriteUnpackInterleavedRLE(part, 16);
         else
@@ -454,7 +454,7 @@ void ElevatorLoadRideBackgroundTiles()
     }
     gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 1;
     gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 64;
-    SpriteLoadingStuff(1, 1);
+    UploadQueuedSpriteGraphics(1, 1);
 }
 
 /* Alternate the two ride sprites every sixteen ticks and transfer the table. */
@@ -464,7 +464,7 @@ void ElevatorAlternateRideEntities()
 
     first = gElevatorRideEntity;
     second = first + 2;
-    if (!(TIME_COUNTER & 15)) {
+    if (!(gFrameCounter & 15)) {
         if (first->sprite_ready) {
             first->sprite_ready = 0;
             second->sprite_ready = 1;
@@ -473,7 +473,7 @@ void ElevatorAlternateRideEntities()
             second->sprite_ready = 0;
         }
         BuildViewportSpriteLinks();
-        VDPWritesRoutine1(gHardwareSpriteTable, 0xf800, 320);
+        DmaCopyWordsToVram(gHardwareSpriteTable, 0xf800, 320);
         gPrimaryViewportUploadedLink = gPrimaryViewportSentinelLink;
     }
 }
@@ -529,30 +529,30 @@ void ElevatorUpdateRideDialogue()
 {
     short line;
 
-    if (TIME_COUNTER == 60) {
+    if (gFrameCounter == 60) {
         if (line = gElevatorRideSpeechEntities[0])
             gPlayerInfo[line].sprite_ready = 1;
-    } else if (TIME_COUNTER == 120) {
+    } else if (gFrameCounter == 120) {
         if (line = gElevatorRideSpeechEntities[0])
             gPlayerInfo[line].sprite_ready = 0;
         if (line = gElevatorRideSpeechEntities[1])
             gPlayerInfo[line].sprite_ready = 1;
         else
-            TIME_COUNTER = 180;
-    } else if (TIME_COUNTER == 180) {
+            gFrameCounter = 180;
+    } else if (gFrameCounter == 180) {
         if (line = gElevatorRideSpeechEntities[1])
             gPlayerInfo[line].sprite_ready = 0;
-    } else if (TIME_COUNTER == 300) {
+    } else if (gFrameCounter == 300) {
         if (line = gElevatorRideSpeechEntities[2])
             gPlayerInfo[line].sprite_ready = 1;
-    } else if (TIME_COUNTER == 360) {
+    } else if (gFrameCounter == 360) {
         if (line = gElevatorRideSpeechEntities[2])
             gPlayerInfo[line].sprite_ready = 0;
         if (line = gElevatorRideSpeechEntities[3])
             gPlayerInfo[line].sprite_ready = 1;
         else
-            TIME_COUNTER = 419;
-    } else if (TIME_COUNTER == 420)
+            gFrameCounter = 419;
+    } else if (gFrameCounter == 420)
         ClearSpeechBubblesAndReplies();
 }
 
@@ -569,8 +569,8 @@ void ElevatorRideVBlank()
     ElevatorUpdateRideDialogue();
     ElevatorAlternateRideEntities();
     SelectPrimaryViewportSprites();
-    MassiveRoutine();
-    ++TIME_COUNTER;
+    MusicUpdateSequencer();
+    ++gFrameCounter;
 }
 
 /* Wait for the elevator sprites, fill the ride background, and install VBlank. */
@@ -584,20 +584,20 @@ struct elevator_record *elevator;
     gElevatorRideEntity = &gPlayerInfo[elevator->entity];
     first = gElevatorRideEntity;
     second = first + 2;
-    first->x = TOEJAM_CAMERA_NEWX + 160;
-    first->y = TOEJAM_CAMERA_NEWY + 144;
-    first->level = gLevel912C;
+    first->x = gCamera1PendingX + 160;
+    first->y = gCamera1PendingY + 144;
+    first->level = gPlayer1MapLevel;
     first->sprite_ready = 0;
-    second->level = gLevel912C;
+    second->level = gPlayer1MapLevel;
     second->sprite_ready = 0;
     ElevatorSetState(elevator, 12);
     ClearTransientEntities();
     do {
         UpdateAndQueueEntitySprites();
-        while (VBLANK_FLAG_2)
+        while (gSpriteGraphicsUploadPending)
             ;
     } while (!first->sprite_ready || !second->sprite_ready);
-    ClearSkipVHBlankFlags();
+    DisableBlankingGraphics();
     ElevatorPrepareRideDialogue(first);
     WaitForVBlankWithGraphicsPaused();
     for (band = 0; band < 4; ++band)
@@ -605,8 +605,8 @@ struct elevator_record *elevator;
             VDP_COMMAND = (((band << 3) + row) << 23) + VDP_WRITE_PLANE_A;
             for (repeat = 0; repeat < 6; ++repeat)
                 for (column = 0; column < 8; ++column) {
-                    tile = ShipRelatedData[row][column] + 0x2001;
-                    if (SpritePriorityLookup[gLevel912C])
+                    tile = TransitionBackgroundTileOffsets[row][column] + 0x2001;
+                    if (SpritePriorityLookup[gPlayer1MapLevel])
                         tile |= 0x8000;
                     VDP_DATA = tile;
                 }
@@ -623,7 +623,7 @@ struct elevator_record *elevator;
     gElevatorRideScrollAcceleration = 1024;
     VDP_COMMAND = 0x7c000003L;
     VDP_DATA = 0xffff;
-    TIME_COUNTER = 0;
+    gFrameCounter = 0;
     gVBlankFunc = ElevatorRideVBlank;
 }
 
@@ -637,7 +637,7 @@ void ElevatorEndRideScene()
         ;
     gVBlankFunc = 0;
     ClearSpeechBubblesAndReplies();
-    ClearSkipVHBlankFlags();
+    DisableBlankingGraphics();
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     CopyPaletteToCRAMSlot(PaletteGameLine2, 1);
@@ -654,7 +654,7 @@ char elevator_number;
     short destination_y, destination_x;
     struct elevator_record *elevator;
 
-    if (elevator_number == ELEVATOR_FLAG[PLAYER_TOEJAM]) {
+    if (elevator_number == gPlayerElevatorFlags[PLAYER_TOEJAM]) {
         EarthlingReleaseLevelBank(gPlayerInfo[PLAYER_TOEJAM].level);
         MapReleaseLevelItemBank(gPlayerInfo[PLAYER_TOEJAM].level);
         destination_level = ++gPlayerInfo[PLAYER_TOEJAM].level;
@@ -667,33 +667,33 @@ char elevator_number;
         second_rides = 1;
     }
     if ((gPlayerLives[PLAYER_TOEJAM] < 0 || first_rides) && (gPlayer2Lives < 0 || second_rides)) {
-        VBLANK_FLAG_7 = MUSIC_TRANSITION;
-        while (VBLANK_FLAG_8 != VBLANK_FLAG_7)
+        gRequestedMusicSelection = MUSIC_TRANSITION;
+        while (gCurrentMusicSelection != gRequestedMusicSelection)
             ;
-        elevator = &ELEVATOR_LOCATION[(elevator_number - 1) >> 1][0];
+        elevator = &gElevatorRecords[(elevator_number - 1) >> 1][0];
         ElevatorBeginRideScene(elevator);
     }
     if (first_rides) {
         MapLoadPlayerLevel(0, gPlayerInfo[PLAYER_TOEJAM].level);
         EarthlingRetainLevelBank(gPlayerInfo[PLAYER_TOEJAM].level);
-        PlaceStuffInLevel(gPlayerInfo[PLAYER_TOEJAM].level);
+        LoadLevelItemBank(gPlayerInfo[PLAYER_TOEJAM].level);
     }
     if (second_rides) {
         MapLoadPlayerLevel(1, gPlayerInfo[PLAYER_EARL].level);
         EarthlingRetainLevelBank(gPlayerInfo[PLAYER_EARL].level);
-        PlaceStuffInLevel(gPlayerInfo[PLAYER_EARL].level);
+        LoadLevelItemBank(gPlayerInfo[PLAYER_EARL].level);
     }
     if (gVBlankFunc) {
         ElevatorEndRideScene();
         ElevatorSetState(elevator, 11);
     }
-    ClearSkipVHBlankFlags();
+    DisableBlankingGraphics();
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     if (destination_level < 25)
         SetupElevator(destination_level, 0);
     elevator_number = SetupElevator(destination_level, 1);
-    elevator = &ELEVATOR_LOCATION[(elevator_number - 1) >> 1][1];
+    elevator = &gElevatorRecords[(elevator_number - 1) >> 1][1];
     destination_y = elevator->y + 5;
     destination_x = elevator->x;
     if (second_rides) {
@@ -708,7 +708,7 @@ char elevator_number;
         gPlayerInfo[PLAYER_TOEJAM].y = destination_y;
         gPlayerInfo[PLAYER_TOEJAM].x = destination_x;
         HudLoadLevelNumberSprites(0);
-        ELEVATOR_FLAG[PLAYER_TOEJAM] = elevator_number;
+        gPlayerElevatorFlags[PLAYER_TOEJAM] = elevator_number;
         if (destination_level < 26)
             TelephonePlaceOutsidePlayerViews(0);
     }
@@ -718,8 +718,8 @@ char elevator_number;
     UpdateScreenSplitMode(1);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
-    SetSkipVHBlankFlags();
-    if (VBLANK_FLAG_8 == MUSIC_TRANSITION) {
+    EnableBlankingGraphics();
+    if (gCurrentMusicSelection == MUSIC_TRANSITION) {
         AudioRequestFmChannelRelease();
         MusicRequestTrackPointerReset();
     }

@@ -15,9 +15,9 @@ short sound_number, priority;
 {
     sizeof(&sound_number);
 
-    if (!(gPcmEffectCooldownTicks || gMusicUnknownE46E) ||
-        priority >= ram_ffe484) {
-        gMusicUnknownE47E = sound_number;
-        ram_ffe484 = priority;
+    if (!(gPcmEffectCooldownTicks || gPsgEffectStatus) ||
+        priority >= gSoundEffectPriority) {
+        gPendingPsgEffect = sound_number;
+        gSoundEffectPriority = priority;
     }
 }

@@ -13,10 +13,10 @@ long position_x, position_y;
         player = 0;
     SetCameraViewOrigin(player, position_x, position_y);
     if (player == 0) {
-        gCamera1FollowXFixed = (long)TOEJAM_CAMERA_NEWX << 8;
-        gCamera1FollowYFixed = (long)TOEJAM_CAMERA_NEWY << 8;
+        gCamera1FollowXFixed = (long)gCamera1PendingX << 8;
+        gCamera1FollowYFixed = (long)gCamera1PendingY << 8;
     } else {
-        gCamera2FollowXFixed = (long)EARL_CAMERA_NEWX << 8;
-        gCamera2FollowYFixed = (long)EARL_CAMERA_NEWY << 8;
+        gCamera2FollowXFixed = (long)gCamera2PendingX << 8;
+        gCamera2FollowYFixed = (long)gCamera2PendingY << 8;
     }
 }

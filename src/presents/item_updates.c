@@ -45,7 +45,7 @@ struct level_item *item;
         if (item->kind < ITEM_GROUND_BASE)
             object->frames = &PresentSpriteTable[gPresentInfo[item->kind].appearance];
         else if (item->kind >= ITEM_LARGE_BASE)
-            object->frames = &FramePointers_AF09C[item->kind - ITEM_LARGE_BASE];
+            object->frames = &LargeGroundItemFrames[item->kind - ITEM_LARGE_BASE];
         else {
             object->frames = &Spr_GroundItem[item->kind - ITEM_GROUND_BASE];
             object->draw_flags |= ENTITY_DRAW_LATE;
@@ -88,16 +88,16 @@ short count;
 
     for (item_number = 0; item_number < count; ++item_number) {
         item = &items[item_number];
-        first_x = item->x - TOEJAM_CAMERA_NEWX;
-        first_y = item->y - TOEJAM_CAMERA_NEWY;
-        second_x = item->x - EARL_CAMERA_NEWX;
-        second_y = item->y - EARL_CAMERA_NEWY;
+        first_x = item->x - gCamera1PendingX;
+        first_y = item->y - gCamera1PendingY;
+        second_x = item->x - gCamera2PendingX;
+        second_y = item->y - gCamera2PendingY;
         if (item->kind != ITEM_UNUSED &&
-            ((item->level == gLevel912C &&
+            ((item->level == gPlayer1MapLevel &&
               first_x + 20 > 0 && first_x < 340 && first_y + 20 > 0 &&
               ((item->kind < ITEM_LARGE_BASE && first_y < 244) ||
                (item->kind >= ITEM_LARGE_BASE && first_y < 288))) ||
-             (item->level == gLevel912E && SPLIT_SCREEN &&
+             (item->level == gPlayer2MapLevel && gSplitScreenEnabled &&
               second_x + 20 > 0 && second_x < 340 && second_y + 20 > 0 &&
               ((item->kind < ITEM_LARGE_BASE && second_y < 132) ||
                (item->kind >= ITEM_LARGE_BASE && second_y < 176))))) {
@@ -129,7 +129,7 @@ void PresentReleaseDroppedEntities()
 void EatYummyFood(player_number)
 short player_number;
 {
-    TOEJAMS_HEALTH[player_number] += 8;
+    gPlayerHealth[player_number] += 8;
     GenerateSpeech(player_number, "yummm", 1);
 }
 
@@ -137,7 +137,7 @@ short player_number;
 void EatYuckyFood(player_number)
 short player_number;
 {
-    TOEJAMS_HEALTH[player_number] -= 8;
+    gPlayerHealth[player_number] -= 8;
     GenerateSpeech(player_number, "yuck", 1);
 }
 
@@ -145,7 +145,7 @@ short player_number;
 void EatFudgeSundae(player_number)
 short player_number;
 {
-    TOEJAMS_HEALTH[player_number] += 12;
+    gPlayerHealth[player_number] += 12;
     StartDialogue(6, player_number);
 }
 
@@ -197,14 +197,14 @@ char record_pickup;
                         PlaySoundEffect((long)Sfx_Money, 50, 0);
                     } else {
                         slot = PresentAuxiliarySignedLookup[food];
-                        if (slot > 0 && TOEJAMS_HEALTH[player] >= PlayerGetMaximumHealth(player)) {
+                        if (slot > 0 && gPlayerHealth[player] >= PlayerGetMaximumHealth(player)) {
                             GenerateSpeech(player, "I'm stuffed", 1);
                             PlaySoundEffect((long)Sfx_ChowDown, 50, 0);
                             /* ORIGINAL BUG: The full-health path still removes
                              * the item because collected remains set. */
                             goto pickup_done;
                         } else {
-                            TOEJAMS_HEALTH[player] += slot;
+                            gPlayerHealth[player] += slot;
                             if (slot > 0)
                                 PlaySoundEffect((long)Sfx_ChowDown, 50, 0);
                             else
@@ -262,8 +262,8 @@ short player;
     short terrain;
 
     state = &gPlayerInfo[player];
-    terrain = (player == 0 ? LAND_UNDER_TOEJAM : LAND_UNDER_EARL) & 0xf0;
-    if (gPlayer1Powerup[player] == PRESENT_ROCKET_SKATES)
+    terrain = (player == 0 ? gPlayer1TerrainUnderfoot : gPlayer2TerrainUnderfoot) & 0xf0;
+    if (gPlayerPowerups[player] == PRESENT_ROCKET_SKATES)
         PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
     if (state->height > 0 && (state->animation_group_mask & (long)(PLAYER_GROUP_ICARUS_FLY | PLAYER_GROUP_SKATES_AIR))) {
         StopPlayer(state);
@@ -272,7 +272,7 @@ short player;
         gPlayerLandingCounterSeed[player] = 2;
     } else if (!(state->animation_group_mask & (long)PLAYER_GROUP_FALL) && state->height <= 0) {
         StopPlayer(state);
-        gPlayer1Powerup[player] = PRESENT_NONE;
+        gPlayerPowerups[player] = PRESENT_NONE;
         HudLoadActionIconSprite(player);
         HudPositionActionIconSprite(player);
         if ((state->animation_group_mask & (long)PLAYER_GROUP_INNERTUBE_MOVE) || state->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE ||
@@ -303,25 +303,25 @@ void ReducePresentTimer()
     short player, show;
 
     for (player = 0; player <= 1; player++) {
-        if (gPlayer1Powerup[player] >= 0 && gPlayerLives[player] >= 0 &&
+        if (gPlayerPowerups[player] >= 0 && gPlayerLives[player] >= 0 &&
             (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_GHOST &&
-            (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST && !P1_MENU_OPEN[player]) {
-            if (ELEVATOR_FLAG[player]) {
+            (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST && !gPlayerInventoryOpen[player]) {
+            if (gPlayerElevatorFlags[player]) {
                 if ((player == 0 && gHardwareSpriteTable[21].y == 1) ||
                     (player == 1 && gHardwareSpriteTable[22].y == 1))
                     HudPositionActionIconSprite(player);
             } else {
                 show = 0;
-                if (!gPlayer1PowerupTimer[player]) {
+                if (!gPlayerPowerupTimers[player]) {
                     PresentTryEndActivePowerup(player);
-                    if (gPlayer1Powerup[player] < 0)
+                    if (gPlayerPowerups[player] < 0)
                         show = 1;
-                } else if (--gPlayer1PowerupTimer[player] > 300)
+                } else if (--gPlayerPowerupTimers[player] > 300)
                     show = 1;
-                else if (gPlayer1PowerupTimer[player] > 100) {
-                    if (gPlayer1PowerupTimer[player] & 12)
+                else if (gPlayerPowerupTimers[player] > 100) {
+                    if (gPlayerPowerupTimers[player] & 12)
                         show = 1;
-                } else if (gPlayer1PowerupTimer[player] & 2)
+                } else if (gPlayerPowerupTimers[player] & 2)
                     show = 1;
                 if (show)
                     HudPositionActionIconSprite(player);
@@ -342,7 +342,7 @@ void PresentClearWorldEntityReadiness()
     struct level_item *item;
 
     for (bank = 0; bank < 2; bank++) {
-        if (LEVEL_PLAYERS_FLAG_1[bank]) {
+        if (gItemBankUsers[bank]) {
             item = gObjectTable[bank];
             for (index = 0; index < 28; index++, item++) {
                 if (item->kind != ITEM_UNUSED && item->kind < ITEM_GROUND_BASE && item->object)
@@ -363,18 +363,18 @@ void MapUpdateItemsAndPresents()
 {
     short bank, player;
 
-    if (P1_MENU_OPEN[PLAYER_TOEJAM] && P1_MENU_OPEN[PLAYER_EARL])
+    if (gPlayerInventoryOpen[PLAYER_TOEJAM] && gPlayerInventoryOpen[PLAYER_EARL])
         return;
-    if (LEVEL_PLAYERS_FLAG_1[0])
+    if (gItemBankUsers[0])
         EntityUpdateLevelItemVisibility(gObjectTable[0], 32);
-    if (LEVEL_PLAYERS_FLAG_2)
+    if (gItemBank2Users)
         EntityUpdateLevelItemVisibility(gObjectTable[1], 32);
     EntityUpdateLevelItemVisibility(gDroppedPresentTable, 32);
     for (player = 0; player <= 1; player++) {
-        if (gPlayerLives[player] >= 0 && !P1_MENU_OPEN[player]) {
+        if (gPlayerLives[player] >= 0 && !gPlayerInventoryOpen[player]) {
             for (bank = 0; bank < 2; bank++) {
-                if (LEVEL_PLAYERS_FLAG_1[bank] &&
-                    gPlayerInfo[player].level == LEVEL_LOADED_1[bank]) {
+                if (gItemBankUsers[bank] &&
+                    gPlayerInfo[player].level == gItemBankLevels[bank]) {
                     PlayerCollectNearbyItems(player, gObjectTable[bank], 28, 1);
                     PlayerCheckLevelItemHazards(player, &gObjectTable[bank][28]);
                 }
@@ -384,6 +384,6 @@ void MapUpdateItemsAndPresents()
     }
     ReducePresentTimer();
     ProcessPresents();
-    if (gLevel912C == 26)
+    if (gPlayer1MapLevel == 26)
         FunkatronUpdateSceneEntities();
 }

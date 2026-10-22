@@ -14,13 +14,13 @@ The C code and C function badges count only the code written in C; the functions
 hand-written assembly or compiler runtime are not in that count, because they are built from
 assembly source instead. The typed-data badges count data bytes rebuilt from typed assets.
 
-| Part of the ROM | Built from | REV 02 (checkpoint c026) | REV 00 (checkpoint c026) |
+| Part of the ROM | Built from | REV 02 (checkpoint c029) | REV 00 (checkpoint c029) |
 |---|---|---|---|
-| C functions (603 in each) | matched C in `src/` (MCC68K 3.3K) | **588 functions, 169,216 / 175,412 bytes (96.5%)** | **588 functions, 169,104 / 175,300 bytes (96.5%)** |
+| C functions (603 in each) | matched C in `src/` (MCC68K 3.3K) | **597 functions, 173,328 / 175,412 bytes (98.8%)** | **597 functions, 173,216 / 175,300 bytes (98.8%)** |
 | 36 hand-written routines + 6 compiler runtime helpers | readable 68000 assembly, `src/asm/` (ruling [R007](docs/rulings/R007-assembly-sources.md)) | all 42 | all 42 |
 | Z80 sound driver + boot stub (1,332 bytes) | Z80 assembly, `src/z80/` | all | all |
 | Other data | typed assets extracted from your dump at build time (`docs/DATA.md`) | all 865,932 bytes (6 typed `unreferenced`) | all 866,044 bytes (6 typed `unreferenced`) |
-| Still generated assembly | — | 15 C functions | the same 15 |
+| Still generated assembly | — | 6 C functions | the same 6 |
 
 Both revisions build from the same sources; the per-build `REVISION` value covers their few
 differences (seven bug fixes in REV 02, [docs/REVISIONS.md](docs/REVISIONS.md)), so a function

@@ -82,12 +82,21 @@ NON_C = ("handwritten_asm", "runtime_helper", "sega_library")
 
 
 def excluded(version: str) -> set[int]:
-    """Functions positively classified as not C (high confidence): never in the C denominator."""
+    """Functions positively classified as not C (high confidence): never in the C denominator.
+
+    A version without its own classification takes the primary revision's through the function
+    correspondence (config/<version>/correspondence.json), like its names.
+    """
     path = ROOT / "config" / version / "classification.json"
-    if not path.is_file():
+    if path.is_file():
+        entries = json.loads(path.read_text(encoding="utf-8"))["functions"]
+        return {int(e["address"], 16) for e in entries if e["class"] in NON_C and e["confidence"] == "high"}
+    pairs_path = ROOT / "config" / version / "correspondence.json"
+    if not pairs_path.is_file():
         return set()
-    entries = json.loads(path.read_text(encoding="utf-8"))["functions"]
-    return {int(e["address"], 16) for e in entries if e["class"] in NON_C and e["confidence"] == "high"}
+    pairs = json.loads(pairs_path.read_text(encoding="utf-8"))
+    primary = excluded(pairs["primary"])
+    return {int(pair[version], 16) for pair in pairs["functions"] if int(pair[pairs["primary"]], 16) in primary}
 
 
 def load(version: str) -> tuple[list[dict], set[int], int, int]:

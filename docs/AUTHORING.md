@@ -34,6 +34,9 @@ acceptance rules: `docs/ACCEPTANCE.md`.
 - **Natural code.** Write what a 1991 programmer would have written. If only a contortion matches
   (a pointless temporary, an odd cast, a `goto`), say so in a comment and keep looking for the
   plain spelling; reviewers check.
+- **Revision differences.** Where REV 00 and REV 02 were built from different source, write
+  `#include "revision.h"` and guard the difference with `#if REVISION >= 2` (REV 00 has
+  `REVISION 0`); the header is generated for each compile. Check both revisions with match.py.
 - **Comments state evidence.** Describe what the function does as observed (callers, data it
   touches); mark guesses as guesses. Names for locals and parameters should say what they hold.
 

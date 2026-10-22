@@ -410,7 +410,8 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
         for spelling in (name.name, *name.aliases):
             by_label.setdefault(spelling, name.address)
     spans = tus_spans or []
-    c_units = list(pool.map(lambda entry: cunits.compile_unit(entry, out, address_of=by_label.get, spans=spans),
+    c_units = list(pool.map(lambda entry: cunits.compile_unit(entry, out, address_of=by_label.get, spans=spans,
+                                                              version=catalogue["version"]),
                             sources or []))
     units = place_c_units(c_units, units, symbols)
     code_units = [u for u in units if u.insns]

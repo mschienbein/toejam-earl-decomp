@@ -148,7 +148,7 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
         except MatchError:
             return None
 
-    compiled = mcc.compile_to_gas(source, unit, [ROOT / "include"], options, address_of, tus.load(version))
+    compiled = mcc.compile_to_gas(source, unit, [ROOT / "include"], options, address_of, tus.load(version), version)
     with tempfile.TemporaryDirectory(prefix="match-") as tmp:
         work = keep or Path(tmp)
         work.mkdir(parents=True, exist_ok=True)

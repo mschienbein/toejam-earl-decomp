@@ -248,7 +248,16 @@ def dos_name(stem: str) -> str:
     return clean or "UNIT"
 
 
-def compile_c(source: Path, include_dirs: list[Path] = (), options: list[str] = (), timeout: int = 120) -> str:
+def revision_header(version: str) -> str:
+    """revision.h for one build: `#if REVISION >= 2` marks code that only REV 02 has."""
+    number = re.fullmatch(r"rev(\d+)", version)
+    if not number:
+        raise CompileError(f"{version}: not a revision name")
+    return f"/* Generated per build by tools/mcc.py: which revision this compile is for. */\n#define REVISION {int(number.group(1))}\n"
+
+
+def compile_c(source: Path, include_dirs: list[Path] = (), options: list[str] = (), timeout: int = 120,
+              version: str = "rev02") -> str:
     """Run MCC68K on `source`; returns the compiler's assembly text (it writes <NAME>.SRC)."""
     toolchain.verified_compiler()   # the exact programs about to run
     emu2 = toolchain.emu2_path()
@@ -265,6 +274,7 @@ def compile_c(source: Path, include_dirs: list[Path] = (), options: list[str] = 
                 target = work / header.relative_to(folder).as_posix().upper()
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(header, target)
+        (work / "REVISION.H").write_text(revision_header(version))
         name = dos_name(source.stem)
         shutil.copy2(source, work / f"{name}.C")
         env = {**os.environ, "EMU2_DRIVE_C": str(drive), "EMU2_CWD": "C:\\WORK",
@@ -310,8 +320,8 @@ def assemble(gas: str, source: Path, obj: Path, unit: str) -> None:
 
 
 def compile_to_gas(source: Path, unit: str, include_dirs: list[Path] = (), options: list[str] = (),
-                   address_of=None, spans: list[tuple[int, int]] = ()) -> Compiled:
-    listing = compile_c(source, include_dirs, options)
+                   address_of=None, spans: list[tuple[int, int]] = (), version: str = "rev02") -> Compiled:
+    listing = compile_c(source, include_dirs, options, version=version)
     near = near_targets(listing, address_of, list(spans)) if address_of else {}
     return Compiled(source, listing, adapt(listing, unit, near))
 

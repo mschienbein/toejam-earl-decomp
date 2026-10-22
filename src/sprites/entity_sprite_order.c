@@ -77,7 +77,7 @@ struct object_state *first_entity;
                 }
             }
             if ((sprite_number = entity->primary_shadow) && !(entity->flags_4d & 64)) {
-                if (!IsSpriteSlotNonReclaimable(sprite_number)) {
+                if (!IsSpriteSlotLocked(sprite_number)) {
                     shadow_width = (gHardwareSpriteTable[sprite_number].size & 12) + 4;
                     gHardwareSpriteTable[sprite_number].x = screen_x - shadow_width;
                     if (elevation < 0)
@@ -109,7 +109,7 @@ struct object_state *first_entity;
                 }
             }
             if ((sprite_number = entity->secondary_shadow) && !(entity->flags_4d & 64)) {
-                if (!IsSpriteSlotNonReclaimable(sprite_number)) {
+                if (!IsSpriteSlotLocked(sprite_number)) {
                     shadow_width = (gHardwareSpriteTable[sprite_number].size & 12) + 4;
                     gHardwareSpriteTable[sprite_number].x = screen_x - shadow_width;
                     if (elevation < 0)

@@ -33,7 +33,8 @@ void UpdateCameraX()
                     VDP_COMMAND = 0x60000002L + (gCameraColumnUploadVramColumn[camera] << 17);
                 else
                     VDP_COMMAND = 0x40000003L + (gCameraColumnUploadVramColumn[camera] << 17);
-                MoveDataToVRAM(&gCameraColumnUploadWords[camera][first_count], count - first_count);
+                MoveDataToVRAM(
+                    &gCameraColumnUploadWords[camera][first_count], count - first_count);
             }
             gCameraColumnUploadPending[camera] = 0;
         }

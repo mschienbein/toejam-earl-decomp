@@ -141,35 +141,7 @@ NAMESPACE_REFERENCE = re.compile(rb"(?<!\w)[a-z][a-z0-9_]{0,31}:[a-z][a-z0-9_]{0
 HASH_COMPONENT = re.compile(rb"""(?<=/)(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})(?=[/?.#"'`]|$)""")
 PACKAGE_HASH = re.compile(rb"(?<=/packages/)[0-9a-fA-F]{2}/[0-9a-fA-F]{2}/[0-9a-fA-F]{60}(?=/)")
 QUOTED_IDENTIFIER = re.compile(rb"""(["'])([A-Za-z_]\w*)\1""")
-# Reference expressions: identifier and decimal atoms joined by member, index, call and list
-# punctuation (`a.b`, `a[i]`, `f(x)`). C sources also use address-of, negation, dereference and
-# arrow (`&a[i]`, `!f(x)`, `*p`, `a->b`); an expression using those (Base85 characters) qualifies
-# only when every atom is a single-case word (`first_count`, `SPRITE_STATE`), a short number, or a
-# name registered in the reviewed config/<version>/names.json (`gCameraRowUploadWords`), because
-# encoded data reads as mixed-case noise. No Base64 alphabet punctuation is a separator.
 REFERENCE_EXPRESSION = re.compile(rb"[A-Za-z_]\w*(?:[.\[\](),;]+(?:[A-Za-z_]\w*|[0-9]+)?)+")
-C_REFERENCE_EXPRESSION = re.compile(rb"[!&*]*[A-Za-z_]\w*(?:(?:[.\[\](),;&!*]|->)+(?:[A-Za-z_]\w*|[0-9]+)?)+")
-SINGLE_CASE_ATOM = re.compile(rb"_?[a-z][a-z0-9]*(?:_[a-z0-9]+)*|_?[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*|[0-9]{1,6}")
-REGISTERED_NAMES: frozenset = frozenset()   # set by audit() from the audited repository
-
-
-def registered_names(repo: Path) -> frozenset:
-    """Names and aliases of config/*/names.json in the worktree (the reviewed naming registry)."""
-    found = set()
-    for path in sorted((repo / "config").glob("*/names.json")):
-        try:
-            document = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            continue
-        for symbol in document.get("symbols", []):
-            for name in [symbol.get("name"), *[a if isinstance(a, str) else a.get("name") for a in symbol.get("aliases", [])]]:
-                if isinstance(name, str) and name.isidentifier():
-                    found.add(name.encode())
-    return frozenset(found)
-
-
-def natural_atom(atom: bytes) -> bool:
-    return bool(SINGLE_CASE_ATOM.fullmatch(atom)) or atom in REGISTERED_NAMES
 INTEL_LINE = re.compile(rb"^[ \t]*:[0-9A-Fa-f]{10,}[ \t]*$")
 SRECORD_LINE = re.compile(rb"^[ \t]*S[0-9][0-9A-Fa-f]{4,}[ \t]*$")
 UU_LINE = re.compile(rb"^M[ -`]{60}[ \t]*$")
@@ -241,11 +213,8 @@ def structured_text_view(text: bytes) -> bytes:
             spans.append(match.span())
     for match in re.finditer(rb"\S+", text):
         word = match.group().strip(b"();,")
-        atoms = re.findall(rb"[A-Za-z_]\w*|[0-9]+", word)
-        if any(opaque_component(atom) for atom in atoms):
-            continue
-        if REFERENCE_EXPRESSION.fullmatch(word) or (
-                C_REFERENCE_EXPRESSION.fullmatch(word) and all(natural_atom(atom) for atom in atoms)):
+        if REFERENCE_EXPRESSION.fullmatch(word) and not any(
+                opaque_component(atom) for atom in re.findall(rb"[A-Za-z_]\w*|[0-9]+", word)):
             spans.append(match.span())
     view = bytearray(text)
     for start, end in spans:
@@ -1246,8 +1215,6 @@ def audit(repo: Path, history: bool = False, no_rom: bool = False) -> tuple[list
     started = time.perf_counter()
     repo = Path(os.fsdecode(git(repo, "rev-parse", "--show-toplevel").strip()))
     object_format = git(repo, "rev-parse", "--show-object-format").decode().strip()
-    global REGISTERED_NAMES
-    REGISTERED_NAMES = registered_names(repo)
     images = [] if no_rom else reference_images(repo)
     index = None if no_rom else RomIndex(images)
     refs: set[tuple[str, str, str, str]] = set()

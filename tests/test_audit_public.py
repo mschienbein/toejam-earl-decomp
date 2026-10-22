@@ -826,29 +826,6 @@ class AuditTest(unittest.TestCase):
         self.assertIsNone(audit_public.opaque_reason("uv.lock", package))
         self.assertIsNone(audit_public.opaque_reason("facts.txt", b"https://example.invalid/" + digest + b"/file"))
 
-    def test_c_reference_expressions_are_not_encoded_runs(self):
-        # Literals are split so this file's own source holds no long unspaced run.
-        lines = tuple(b"".join(parts) for parts in (
-            (b"    MoveDataToVRAM(&gCameraColumn", b"UploadWords[camera][first_count], count - first_count);\n"),
-            (b"    if (entity->primary_shadow && !IsSpriteSlot", b"NonReclaimable(entity->primary_shadow)) {\n"),
-            (b"        InitializeLevelZero", b"FixedItems(&gObjectTable[bank][28]); \n")))
-        registered = frozenset(b"".join(parts) for parts in (
-            (b"MoveDataToVRAM",), (b"gCameraColumn", b"UploadWords"), (b"IsSpriteSlot", b"NonReclaimable"),
-            (b"InitializeLevelZero", b"FixedItems"), (b"gObjectTable",)))
-        # Mixed-case noise joined only by permitted separators, like Base85 text that avoids its
-        # other punctuation: it is not a registered name, so it stays an opaque run.
-        noise = b"".join((b"Xk9Pq&Zr7Lm", b"!Tw3Yb(Hj5Nc)", b"Vg2Kd;Rf8Ws*", b"Qe4Ua&Pi6Ox!", b"Ny1Mz(Lo0Jv)"))
-        with mock.patch.object(audit_public, "REGISTERED_NAMES", registered):
-            for line in lines:
-                with self.subTest(line=line[:40]):
-                    self.assertIsNone(audit_public.opaque_reason("src/x.c", line))
-            self.assertIn("opaque", audit_public.opaque_reason("src/x.c", b"f(&" + noise + b");\n"))
-            payload = base64.b85encode(self.image[17:113])
-            self.assertIn("opaque", audit_public.opaque_reason("src/x.c", b"f(&" + payload + b");\n"))
-            self.assertIn("opaque", audit_public.opaque_reason("src/x.c", b"!" + base64.b64encode(self.image[17:113]) + b"\n"))
-        # Without the registry, the unregistered mixed-case names are not exempted.
-        self.assertIn("opaque", audit_public.opaque_reason("src/x.c", lines[0]))
-
     def test_genesis_header_needs_more_than_sega_at_offset_256(self):
         text = b"/* " + b"x" * 237 + b" */\nextern void SEGAAndIntroVideoRoutine();\n"
         self.assertEqual(text[256:260], b"SEGA")

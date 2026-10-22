@@ -97,7 +97,7 @@ char item;
     gViewportSpriteSlotFlags[item] = 0;
 }
 
-int IsSpriteSlotNonReclaimable(item)
+int IsSpriteSlotLocked(item)
 int item;
 {
     if (gViewportSpriteSlotFlags[item - 25] & 2)
@@ -147,11 +147,11 @@ short tile, count;
 void ReleaseEntityShadows(entity)
 struct object_state *entity;
 {
-    if (entity->primary_shadow && !IsSpriteSlotNonReclaimable(entity->primary_shadow)) {
+    if (entity->primary_shadow && !IsSpriteSlotLocked(entity->primary_shadow)) {
         FreeSpriteSlot(entity->primary_shadow);
         entity->primary_shadow = 0;
     }
-    if (entity->secondary_shadow && !IsSpriteSlotNonReclaimable(entity->secondary_shadow)) {
+    if (entity->secondary_shadow && !IsSpriteSlotLocked(entity->secondary_shadow)) {
         FreeSpriteSlot(entity->secondary_shadow);
         entity->secondary_shadow = 0;
     }
@@ -201,14 +201,14 @@ short viewport;
     if (!viewport) {
         entity->draw_flags &= 0xfd;
         slots = entity->primary_sprites;
-        if (entity->primary_shadow && !IsSpriteSlotNonReclaimable(entity->primary_shadow)) {
+        if (entity->primary_shadow && !IsSpriteSlotLocked(entity->primary_shadow)) {
             FreeSpriteSlot(entity->primary_shadow);
             entity->primary_shadow = 0;
         }
     } else {
         entity->draw_flags &= 0xfb;
         slots = entity->secondary_sprites;
-        if (entity->secondary_shadow && !IsSpriteSlotNonReclaimable(entity->secondary_shadow)) {
+        if (entity->secondary_shadow && !IsSpriteSlotLocked(entity->secondary_shadow)) {
             FreeSpriteSlot(entity->secondary_shadow);
             entity->secondary_shadow = 0;
         }

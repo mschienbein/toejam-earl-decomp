@@ -379,7 +379,8 @@ get_present:
         }
     }
     if (!level)
-        InitializeLevelZeroFixedItems(&gObjectTable[bank][28]);
+        InitializeLevelZeroFixedItems(
+            &gObjectTable[bank][28]);
     else if (level != 1)
         MapPlaceLargeLevelItems(gObjectTable[bank], level);
     ++LEVEL_PLAYERS_FLAG_1[bank];

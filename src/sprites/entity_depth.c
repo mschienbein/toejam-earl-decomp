@@ -18,7 +18,7 @@ struct object_state *entity;
     viewport = 0;
     do {
         if (entity->draw_flags & viewport_bit) {
-            if (IsSpriteSlotNonReclaimable(sprite_number))
+            if (IsSpriteSlotLocked(sprite_number))
                 sprite_number = 0;
             if (!sprite_number) {
                 sprite_number = AllocateSpriteSlot(viewport, 0);

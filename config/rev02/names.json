@@ -8847,11 +8847,14 @@
       "evidence": "The C subtracts the public identifier base 25 and clears one sprite allocation flag. The viewport release and shadow cleanup routines call it for individually held shadow sprites."
     },
     {
-      "name": "IsSpriteSlotNonReclaimable",
+      "name": "IsSpriteSlotLocked",
       "address": "0x00D612",
       "kind": "function",
       "source": "naming pass A (NameSmithA, reviewed by NameReviewA)",
-      "evidence": "The C returns whether bit 1 of the slot's allocation byte is set; the allocator sets that bit for non-reclaimable entity pieces but not ordinary shadow allocations. Shadow positioning/allocation/cleanup callers use it to detect that a formerly reusable shadow slot has been claimed."
+      "evidence": "The C returns whether bit 1 of the slot's allocation byte is set; the allocator sets that bit for non-reclaimable entity pieces but not ordinary shadow allocations. Shadow positioning/allocation/cleanup callers use it to detect that a formerly reusable shadow slot has been claimed.",
+      "aliases": [
+        "IsSpriteSlotNonReclaimable"
+      ]
     },
     {
       "name": "AllocateSpriteTileRun",

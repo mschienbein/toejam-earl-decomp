@@ -107,7 +107,14 @@
    ]
   },
   {
-   "source": "src/engine/random_counter.c",
+   "source": "src/engine/effect_slot_lookup.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/effects_and_inventory_display.c",
    "versions": [
     "rev02",
     "rev00"
@@ -275,6 +282,27 @@
    ]
   },
   {
+   "source": "src/player/contact_hula_and_attack.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/earthling_player_eligibility.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/effect_slots.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/player/entity_motion_proximity.c",
    "versions": [
     "rev02",
@@ -422,6 +450,13 @@
    ]
   },
   {
+   "source": "src/player/whirlwind_and_touch.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/presents/item_updates.c",
    "versions": [
     "rev02",
@@ -437,6 +472,13 @@
   },
   {
    "source": "src/presents/present_effects.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/projectile_effects.c",
    "versions": [
     "rev02",
     "rev00"

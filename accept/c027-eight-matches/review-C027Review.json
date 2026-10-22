@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c027-eight-matches",
+ "prepare_sha256": "f2c113cf0ff79435e66e6acbe086e81c09e3525f327dc0aa3d1c6f8d513e82d2",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T17:53:09Z",
+ "review_file": "review.json",
+ "review_sha256": "d9c5a1b0aa47f8e288e9860c7e5b1ae9f2da4267d0e8100ad57669ea0e7e88e5",
+ "reviewer": "C027Review",
+ "verdict": "FAIL"
+}

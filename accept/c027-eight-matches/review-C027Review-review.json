@@ -1,0 +1,140 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "C027Review",
+  "checkpoint": "c027-eight-matches",
+  "qualifications": [
+    {
+      "function": "SpriteChecks",
+      "decision": "ACCEPTED",
+      "disclosure": "Two otherwise unnecessary single-use int locals are assigned inside the width/X and Y/height comparisons. The source discloses both boundaries precisely.",
+      "independent_controls": "Offered control MATCHes 542 bytes. Seven fresh alternatives all DIFF: direct fields, commuted direct addition, separate assignments, each ownership removal, meaningful edge locals, and smallest-block initializers. Separate assignments and block initializers leave seven strict differing bytes; direct fields leave thirteen.",
+      "semantic_review": "The assignments preserve the complete field domains and do not mutate shared state or the incoming argument.",
+      "evidence": "scratch/agents/C027Review/natural/SpriteChecks/"
+    },
+    {
+      "function": "QueueSpeechTextTiles",
+      "decision": "ACCEPTED",
+      "disclosure": "The source identifies the initial long-pointer element-address view and the redundant input char-pointer cast plus explicit int index promotion.",
+      "independent_controls": "Offered control MATCHes 248 bytes. Eleven fresh ordinary-address and scalar-local alternatives all DIFF. Plain input/font addresses leave six differing bytes; removing only the input char-pointer cast leaves four; removing only the explicit index promotion leaves eight.",
+      "semantic_review": "The initial long-pointer view agrees with the tile copier's actual source type. The redundant input boundaries preserve the same character and index values.",
+      "evidence": "scratch/agents/C027Review/natural/QueueSpeechTextTiles/"
+    },
+    {
+      "function": "StartDialogue",
+      "decision": "ACCEPTED",
+      "disclosure": "The source precisely identifies the redundant post-selection short-to-short selected-speaker copy.",
+      "independent_controls": "Offered control MATCHes 342 bytes. Five fresh alternatives all DIFF: formal parameter throughout, a declaration reorder, entry initializer, entry assignment, and meaningful branch-local speaker selection. The formal forms have eighteen differing bytes; the local-selection forms grow to 344 bytes.",
+      "semantic_review": "All later speaker uses receive the same selected value, and existing rejection/store/call ordering is retained.",
+      "evidence": "scratch/agents/C027Review/natural/StartDialogue/"
+    },
+    {
+      "function": "MapUploadCoverAnimationFrame",
+      "decision": "SUPERSEDED_QUALIFICATION_NOT_PRESENT",
+      "disclosure": "The assignment's self-assignment qualification describes an older offer. The prepared canonical source and current Solo13 report/manifest already use the natural width-first product, with no height temporary or identity statement.",
+      "independent_controls": "Natural offered control MATCHes 284 bytes. Height-first multiplication differs in thirteen bytes; plain payload-pointer arithmetic also DIFFs. The existing twelve-slot renderer view is explicitly described as a shared indexing/capacity view, not the physical ROM frame extent.",
+      "evidence": "scratch/agents/C027Review/natural/MapUploadCoverAnimationFrame/"
+    },
+    {
+      "function": "ShowShipPieces",
+      "decision": "REJECTED_AVOIDABLE",
+      "disclosure": "The prepared source discloses width promotion/staging, the separate height mask, the first queue-index conversion, and the palette-word boundary, but incorrectly states that ordinary multiplication and two direct queue indices do not match.",
+      "independent_controls": "An ordinary complete width-first product MATCHes all 938 target bytes. The same product with both direct queue indices also MATCHes. A complete fourteen-function TU with that reduction MATCHes every function in both REV 02 and REV 00 through fresh official CLI checks.",
+      "remaining_boundary": "The pre-existing signed-word palette expression is intentionally unchanged. Four fresh simpler palette variants DIFF against the reduced source; a fifth control using an unsupported literal suffix is a compiler error, not negative matching evidence. A remaining palette qualification does not justify avoidable width/height/queue machinery.",
+      "evidence": "scratch/agents/C027Review/natural_cutover/"
+    }
+  ],
+  "checks": [
+    {
+      "name": "prepared_record_integrity",
+      "result": "PASS",
+      "details": "Reviewed code commit 886f392cc4d03b24862767427bf2fe984dac5c08. Prepare SHA-256 f2c113cf0ff79435e66e6acbe086e81c09e3525f327dc0aa3d1c6f8d513e82d2. All 249 prepared input hashes and both 128-entry source registries agree. All four retained receipt hashes, actual image hashes, C-unit records, and pinned retail hashes agree; all raw-word counts are zero.",
+      "evidence": "scratch/agents/C027Review/metadata.json"
+    },
+    {
+      "name": "fresh_official_matches_both_revisions",
+      "result": "PASS",
+      "details": "All six changed/new complete TUs checked with tools/match.py CLI, without option overrides or symbol definitions: 3, 7, 15, 11, 14, and 12 MATCHes respectively in each revision. Total 124 individual MATCH results. Eight new functions total 3580 catalogued code bytes per revision, with trailing literal/alignment bytes also compared.",
+      "evidence": "scratch/agents/C027Review/matches.json"
+    },
+    {
+      "name": "verbatim_replaced_files_and_author_offers",
+      "result": "PASS",
+      "details": "All twelve superseded complete parent-commit source texts occur exactly once byte-for-byte in the six new TUs; the obsolete paths are absent. All seven definitive author offers, including the identical joint speech copies, agree with the canonical prepared files.",
+      "evidence": "scratch/agents/C027Review/metadata.json"
+    },
+    {
+      "name": "header_types_and_extents",
+      "result": "PASS",
+      "details": "Both catalogues agree: dialogue descriptors have widths 1/1/4/2/4 at offsets 0/1/2/6/8, size 12, and 58 entries in 696 bytes; map uncover table has twelve four-byte frame pointers in 48 bytes; named PCM streams occupy 5348 and 3026 bytes. The pinned compiler independently confirms record/table sizes, pointer size, and pointer/delay offsets. Original dialogue code confirms signed-byte speaker rules. Header diffs are additive only.",
+      "evidence": [
+        "scratch/agents/C027Review/header_data.json",
+        "scratch/agents/C027Review/header_layout.SRC",
+        "scratch/agents/C027Review/header_additions.diff"
+      ]
+    },
+    {
+      "name": "natural_additions_without_undisclosed_tricks",
+      "result": "PASS",
+      "details": "Reviewed QueueSpritePieceTiles, UpdateAndQueueEntitySprites, and Player_Youch against source and original private packets. Their locals and control flow have real semantic roles; no dummy state, identity statements, unevaluated address observations, register hints, or hidden ABI changes are present. The queue's signed byte flag view and signed word return are supported by original operations. Each also has an exact standalone offered control.",
+      "evidence": [
+        "scratch/agents/C027Review/natural_results.json",
+        "scratch/agents/C027Review/packets/"
+      ]
+    },
+    {
+      "name": "independent_full_builds",
+      "result": "PASS",
+      "details": "The unmodified suite's real-ROM tests perform independent full builds in a byte-identical private input snapshot. Both PASS with zero raw words, exactly prepared C-unit records and tool hashes, and pinned retail image hashes: REV02 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV00 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228. No tool/test monkeypatch was used; snapshotting keeps all generated output inside reviewer scratch.",
+      "evidence": "scratch/agents/C027Review/suite_binding.json"
+    },
+    {
+      "name": "full_test_suite",
+      "result": "PASS",
+      "details": "python -m unittest discover -s tests: 191 tests, OK, no skips or failures. Every prepared manifest entry matches the unmodified suite snapshot.",
+      "evidence": [
+        "scratch/agents/C027Review/suite.json",
+        "scratch/agents/C027Review/suite.stderr.txt"
+      ]
+    },
+    {
+      "name": "canonical_worktree_public_audit",
+      "result": "PASS",
+      "details": "tools/audit_public.py against the actual canonical worktree, both private ROM comparisons enabled: 386 unique Git blobs, one tree, 386 tracked worktree files, two ROMs indexed, zero findings.",
+      "evidence": "scratch/agents/C027Review/audit.json"
+    },
+    {
+      "name": "independent_natural_control_accounting",
+      "result": "COMPLETED_WITH_BLOCKING_DISCOVERY",
+      "details": "47 fresh standalone attempts: eight offered controls MATCH; 39 alternatives comprise 36 DIFFs, two newly discovered ship MATCHes, and one unsupported-syntax compiler ERROR. Completed failures were not rerun after the interrupted auxiliary runner. The new complete ship TU separately MATCHes 14/14 in each revision. Compiler-internal ownership/coalescing explanations and historical source spellings remain [INFERENCE], not proved mechanisms.",
+      "evidence": [
+        "scratch/agents/C027Review/natural_results.json",
+        "scratch/agents/C027Review/ship_reduction_results.json",
+        "scratch/agents/C027Review/natural_cutover/results.json"
+      ]
+    },
+    {
+      "name": "review_independence_and_write_boundary",
+      "result": "PASS",
+      "details": "Verdict sealed before reading any other checkpoint review. Only reviewer scratch artifacts were written; canonical tracked files, repository Git state, acceptance records, ROMs and toolchain configuration were not changed. No tools/accept.py review or finalize command was run. Synthetic suite fixture repositories are confined to reviewer scratch."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "BLOCKING",
+      "function": "ShowShipPieces",
+      "location": "src/ship/ship_screen_and_collection.c:466-472,487,511-514,534",
+      "summary": "Prepared ShowShipPieces retains avoidable matching-only width/height/queue machinery and an incorrect natural-failure claim.",
+      "observed": "Replacing the four staged dimension statements with tiles = part->width * part->height, deleting width_in_tiles, and removing the first queue-index cast preserves every byte in both complete original fourteen-function TUs. Official match.py CLI exits zero with 14/14 MATCH for REV02 and REV00. The reduced complete source SHA-256 is 85089d99f4aa4bd898771e8a9e614a865e5fdaa3c73207b2981f6f091ef68ee1.",
+      "reason_for_fail": "The assignment permits qualified compiler coaxing only when natural alternatives do not match and reserves FAIL for avoidable fake matches. A retained palette-word boundary does not excuse the independently removable width promotion/temporary, height mask and asymmetric queue conversion.",
+      "required_action": "Use the reduced executable spelling, revise the comment to describe only any genuinely remaining qualification, and prepare a new immutable checkpoint for the changed input. Do not finalize this prepared qualified source.",
+      "evidence": [
+        "scratch/agents/C027Review/natural/ShowShipPieces/full_product_direct_queues/result.json",
+        "scratch/agents/C027Review/natural_cutover/src/ship/ship_screen_and_collection.c",
+        "scratch/agents/C027Review/natural_cutover/source.diff",
+        "scratch/agents/C027Review/natural_cutover/evidence/rev02/result.json",
+        "scratch/agents/C027Review/natural_cutover/evidence/rev00/result.json"
+      ]
+    }
+  ]
+}

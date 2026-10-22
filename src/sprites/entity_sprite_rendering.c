@@ -7,9 +7,13 @@
 #include "ram_sprites.h"
 #include "sprite_calls.h"
 
-/* Preserve the observed signed/unsigned value views of shared storage.
- * These casts do not imply a different record layout; historical spelling
- * is unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: UpdateAttachedEntityPosition uses signed-char
+ * parent-relative offsets, but reads attachment_x_or_latch and
+ * attachment_y_or_latch as unsigned bytes for camera owners -1 and -2.
+ * Direct reads of the shared char X/Y fields sign-extend instead, changing
+ * the camera-offset arithmetic and code. The unsigned height field is read
+ * as char for a parent offset. These are scalar views, not alternate record
+ * declarations; historical spelling is unknown [INFERENCE]. */
 /* Follow another entity, or use unsigned offsets from one of the cameras. */
 void UpdateAttachedEntityPosition(entity)
 struct object_state *entity;

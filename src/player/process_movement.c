@@ -7,9 +7,11 @@
 #include "player.h"
 #include "ram_sprites.h"
 
-/* Preserve the observed signed/unsigned value views of shared storage.
- * These casts do not imply a different record layout; historical spelling
- * is unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: ProcessMovement casts the shared unsigned-long
+ * animation_group_mask to signed long in its fall and high-top tests.
+ * Direct unsigned reads change MCC68K's mask code and scratch allocation;
+ * these scalar views retain the matching instructions without changing
+ * the shared record. Historical spelling is unknown [INFERENCE]. */
 /* Integrate the linked active entities in 24.8 coordinates. Player records
  * additionally clamp map bounds and test horizontal and descending collisions. */
 void ProcessMovement()

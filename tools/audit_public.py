@@ -73,6 +73,10 @@ REVIEWED_FALSE_POSITIVES = {
     # The immutable c020 review record quotes those source lines as its evidence.
     ("f3acb1e2d208ed94285d6dc83d4240d5a5e05ae2", "accept/c020-names-hardcases-data/review-C020Review-review.json"):
         ("opaque Base85 run",),
+    # The immutable c027 review record cites private evidence directories by long extension-less
+    # paths (scratch/agents/C027Review/natural/<Function>/), which read as Base64 runs.
+    ("6835a9a57dfd33550a0a2f6e4e83211190c03eb9", "accept/c027-eight-matches/review-C027Review-review.json"):
+        ("opaque Base64 run",),
 }
 
 

@@ -141,9 +141,12 @@ struct earthling_state *earthling;
             santa->velocity_height = 0;
         }
         {
-            /* MATCHING QUALIFICATION: the scoped assignment and
-             * unsigned mask preserve the original byte-promotion copy and
-             * scratch register selection throughout this routine. */
+            /* MATCHING QUALIFICATION: the scoped flags assignment and
+             * unsigned mask preserve the byte-promotion copy and scratch
+             * allocation. The earlier random range also retains + -64L:
+             * subtraction by 64 changes the code in both revisions.
+             * These are compiler-sensitive spellings, not recovered
+             * historical expressions [INFERENCE]. */
             int flags;
             if (!((flags = santa->draw_flags) & (unsigned long)6)) {
                 do {

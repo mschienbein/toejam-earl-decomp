@@ -7,9 +7,11 @@
 #include "ram_system.h"
 #include "ram_ui.h"
 
-/* Preserve the observed signed/unsigned value views of shared storage.
- * These casts do not imply a different record layout; historical spelling
- * is unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: GetPlayerCameraVelocity and UpdateCameraFollowing
+ * read the shared unsigned-long animation_group_mask through signed-long
+ * casts for their jump-takeoff and airborne-camera tests. Using the shared
+ * unsigned value directly changes MCC68K's mask code and allocation.
+ * Storage remains unsigned; historical spelling is unknown [INFERENCE]. */
 /* Compute camera velocity from animation movement and viewport edge thresholds. */
 void GetPlayerCameraVelocity(player, delta_x, delta_y, screen_x, screen_y)
 short player, *delta_x, *delta_y, screen_x, screen_y;

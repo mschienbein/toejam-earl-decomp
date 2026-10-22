@@ -8,6 +8,9 @@ short camera;
 {
     short column;
 
+    /* MATCHING QUALIFICATION: OR with zero is value-redundant, but direct
+     * assignment of gCameraTileAttributes changes the blank-fill code.
+     * The historical expression is unknown [INFERENCE]. */
     for (column = 0; column < 45; column++)
         gCameraRowUploadWords[camera][column] = gCameraTileAttributes | 0;
     gCameraRowUploadWordCount[camera] = 45;
@@ -164,6 +167,10 @@ short camera;
     {
       if (!wraps)
       {
+        /* MATCHING QUALIFICATION: retain the value-redundant zero OR;
+         * assigning gCameraTileAttributes directly changes the blank-fill
+         * code. The zero cast is retained spelling, not a separately
+         * established requirement; historical spelling is unknown [INFERENCE]. */
         gCameraRowUploadWords[camera][transfer_count] = gCameraTileAttributes | ((unsigned short) 0);
         continue;
       }
@@ -235,6 +242,9 @@ short camera;
 {
     short row;
 
+    /* MATCHING QUALIFICATION: OR with zero is value-redundant, but direct
+     * assignment of gCameraTileAttributes changes the blank-fill code.
+     * The historical expression is unknown [INFERENCE]. */
     for (row = 0; row < gCameraColumnUploadHeight; row++)
         gCameraColumnUploadWords[camera][row] = gCameraTileAttributes | 0;
     gCameraColumnUploadPending[camera] = 1;
@@ -357,6 +367,9 @@ short camera;
     {
       if (!wraps)
       {
+        /* MATCHING QUALIFICATION: the value-redundant zero OR retains the
+         * blank-fill code; direct gCameraTileAttributes assignment differs.
+         * The historical expression is unknown [INFERENCE]. */
         gCameraColumnUploadWords[camera][transfer_count] = gCameraTileAttributes | 0;
         continue;
       }

@@ -10,9 +10,11 @@
 #include "ram_player.h"
 #include "sprite_calls.h"
 
-/* Preserve the observed signed/unsigned value views of shared storage.
- * These casts do not imply a different record layout; historical spelling
- * is unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: PlayerApplyTerrainDestination tests swimming and
+ * innertube movement through signed-long views of animation_group_mask and
+ * its mask. Reading the shared unsigned-long field directly changes the
+ * generated code; the scalar casts retain the observed mask/allocation.
+ * The common record stays unsigned; historical spelling is unknown [INFERENCE]. */
 /* Local 12-byte proposed-position result, not an entity storage view. */
 struct movement_destination {
     short x, y;                            /* 00/02: proposed world pixels; terrain-motion producer writes. */

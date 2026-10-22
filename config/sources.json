@@ -835,21 +835,7 @@
    ]
   },
   {
-   "source": "src/ui/hud_health_update.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/ui/hud_initialization.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/ui/hud_status.c",
+   "source": "src/ui/hud.c",
    "versions": [
     "rev02",
     "rev00"

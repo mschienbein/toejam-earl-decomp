@@ -463,13 +463,6 @@ short player_number;
 #include "ram_player.h"
 
 /* Unpack collected pieces before uncollected pieces and upload their sprites. */
-/* MATCHING QUALIFICATION: the otherwise redundant int promotion into the
- * unsigned-word width temporary, and the explicit word conversion on the
- * first queue index, preserve MCC68K's original scratch ownership. The byte
- * values are 0..255, so neither conversion changes a value. Plain multiplication,
- * an unpromoted width temporary, and two direct queue indices do not match.
- * The separate height mask and word palette boundary also retain the observed
- * narrowing instructions; no historical source spelling is asserted. */
 void ShowShipPieces(selected_piece, player_number)
 short selected_piece, player_number;
 {
@@ -484,7 +477,6 @@ short selected_piece, player_number;
     struct render_frame *frame;
     char format;
     short tiles;
-    unsigned short width_in_tiles;
     char sprite_size;
 
     levels = &gShipPieceLevelAssignments;
@@ -508,10 +500,7 @@ short selected_piece, player_number;
                 /* Shared renderer slot-capacity view, not a fixed ROM extent. */
                 part = &((struct render_piece (*)[12])(frame + 1))[0][part_number];
                 format = part->tile_format;
-                tiles = part->height;
-                tiles &= 255;
-                width_in_tiles = (int)part->width;
-                tiles *= width_in_tiles;
+                tiles = part->width * part->height;
                 if (format < 0)
                     SpriteUnpackInterleavedRLE(part, tiles);
                 else
@@ -531,7 +520,7 @@ short selected_piece, player_number;
                 tile_offset += tiles;
                 ++sprite_number;
             }
-            gSpriteTileUploadRuns[(short)gSpriteTileUploadQueueWordCount++] = base_tile;
+            gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = base_tile;
             gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = tile_offset;
             base_tile += tile_offset;
             UploadQueuedSpriteGraphics(1, 1);

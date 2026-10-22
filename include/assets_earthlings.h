@@ -10,4 +10,8 @@ extern struct earthling_definition EARTHLING_DATA[25];
 extern char EarthlingCoordinatePairs[];
 extern char LevelEarthlingChoices[26][20];
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern short EarthlingThresholds[8];
+extern short EarthlingVectorPairs[9][2];
+
 #endif

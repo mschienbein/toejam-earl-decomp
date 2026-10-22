@@ -1,7 +1,9 @@
 #ifndef TJE_CORE_CALLS_H
 #define TJE_CORE_CALLS_H
 
-/* K&R return interfaces for core routines. */
+/* K&R return interfaces. Represented C definitions establish their types;
+ * remaining ROM-only declarations describe the observed ABI, not a uniquely
+ * recovered historical C spelling. */
 extern int CheckStartButton();
 extern void ClearSkipVHBlankFlags();
 extern void DelayRoutine1();
@@ -26,8 +28,6 @@ extern void func_000d7e();
 extern void func_000ee6();
 extern int func_000fb6();
 extern void func_00105a();
-#ifndef TJE_LOCAL_FUNC_001262
 extern short func_001262();
-#endif
 
 #endif

@@ -48,4 +48,8 @@ extern char TOMATO_RAIN_TIMER[2];
 /* Six mole-effect object handles shared with land/effect cleanup. */
 extern char ram_ffe244[6];
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern char gPlayer2BurpsLeft;
+extern char ram_ffe396[];
+
 #endif

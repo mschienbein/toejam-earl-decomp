@@ -1,5 +1,3 @@
-#define TJE_LOCAL_FUNC_00D904
-
 #include "entities.h"
 #include "sprites.h"
 #include "assets_presents.h"
@@ -12,10 +10,10 @@
 #include "ram_system.h"
 #include "sprite_calls.h"
 
-/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
- * whose canonical return is short. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
-extern int func_00d904();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
+
 /* Find an unused projectile slot, then use the player's facing, input, and
  * selected powerup to set its origin and launch velocity. */
 void func_01befa(player, player_number, powerup)
@@ -35,7 +33,7 @@ short player_number, powerup;
     } while (slot < 4);
     if (slot == 4)
         return;
-    if (ram_ffe1c0[slot] = func_00d904()) {
+    if (ram_ffe1c0[slot] = (int)func_00d904()) {
         ram_ffe1cc[slot] = player_number;
         projectile = &gPlayerInfo[ram_ffe1c0[slot]];
         direction = player->sprite_state & 3;

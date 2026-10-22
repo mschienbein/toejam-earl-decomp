@@ -1,6 +1,3 @@
-#define TJE_LOCAL_FUNC_01E736
-#define TJE_LOCAL_FUNC_00D904
-
 #include "entities.h"
 #include "earthlings.h"
 #include "sprites.h"
@@ -25,15 +22,11 @@
 #include "sprite_calls.h"
 #include "ui_calls.h"
 
-/* ORIGINAL BUG: this byte-store consumer keeps an int result view of the
- * short allocator. The shared short declaration adds normalization absent
- * from the ROM; the historical missing declaration is [INFERENCE]. */
-extern int func_01e736();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
 
 /* Interaction choices use one display object and one result byte per player. */
-/* ORIGINAL BUG: this caller consumes an int result from the short-returning
- * allocator. Declaring short adds a MOVE.W D0,D0 absent from the ROM. */
-extern int func_00d904();
 
 /* Allocate the two-choice display, copying the player's current level. */
 void func_020f6c(player_number)
@@ -43,7 +36,7 @@ short player_number;
     struct animation_descriptor *animation;
 
     ram_ffe234[player_number] = 0;
-    if (ram_ffe232[player_number] = func_01e736(0)) {
+    if (ram_ffe232[player_number] = (int)func_01e736(0)) {
         display = &gPlayerInfo[ram_ffe232[player_number]];
         display->level = (&gPlayerInfo[player_number])->level;
         display->flags_4d |= 8;
@@ -396,7 +389,7 @@ short player_number;
     struct object_state *object;
     struct timed_animation *animation;
 
-    if (ram_ffe242 = func_00d904()) {
+    if (ram_ffe242 = (int)func_00d904()) {
         object = &gPlayerInfo[ram_ffe242];
         object->x = TOEJAM_CAMERA_NEWX + 80;
         object->y = TOEJAM_CAMERA_NEWY + 224;

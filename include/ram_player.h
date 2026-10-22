@@ -62,4 +62,10 @@ extern char HULA_DANCE[];
 extern char HULA_DANCE_TIMER[];
 extern char ram_ffe1b4;
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern char TOEJAM_SPRITE;
+extern char ram_ffda2a[];
+extern char ram_ffda2e;
+extern short ram_ffda3c;
+
 #endif

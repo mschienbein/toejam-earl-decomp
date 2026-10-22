@@ -1,17 +1,22 @@
 #ifndef TJE_PRESENT_CALLS_H
 #define TJE_PRESENT_CALLS_H
 
-/* K&R return interfaces for presents routines. */
+/* K&R return interfaces. Represented C definitions establish their types;
+ * remaining ROM-only declarations describe the observed ABI, not a uniquely
+ * recovered historical C spelling. */
 extern void BummerLifePromo();
 extern void CheckForTelephone();
 extern void CheckTomatoRainTimer();
+extern void DropPresent();
 extern void EatFudgeSundae();
 extern void EatYuckyFood();
 extern void EatYummyFood();
 extern void LoadLevel2AndUp();
+extern void NoOp();
 extern void OpenBoomBox();
 extern void OpenDecoy();
 extern int OpenSelectedPresent();
+extern void OpenTelephone();
 extern void PerformPromotion();
 extern void PlaceStuffInLevel();
 extern void PresentIsDoorway();
@@ -48,6 +53,7 @@ extern void func_0161aa();
 extern void func_0168e2();
 extern void func_016aca();
 extern void func_016d94();
+extern void func_01c2a2();
 extern int func_01c928();
 extern void func_01c96a();
 extern short func_01ca64();
@@ -61,21 +67,9 @@ extern void func_01cfea();
 extern void func_01d084();
 extern void func_01d288();
 extern void func_01d2cc();
+extern void func_02297c();
 extern void func_022bf6();
 extern void func_022c78();
-
-/* Additional matched wave interfaces and their observed call targets. */
-extern void NoOp();
-
-/* Represented C telephone definitions establish these return types. */
-extern void OpenTelephone();
-extern void func_02297c();
 extern void func_023012();
-
-/* ROM-only present interfaces retain their current caller spellings;
- * the ABI alone does not uniquely establish historical C return types. */
-extern void DropPresent();
-extern void func_01c2a2();
-extern void func_023c6e();
 
 #endif

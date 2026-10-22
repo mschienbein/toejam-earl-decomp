@@ -1,8 +1,7 @@
-#define TJE_LOCAL_FUNC_001262
-
 #include "entities.h"
 #include "elevator.h"
 #include "audio_calls.h"
+#include "core_calls.h"
 #include "elevator_calls.h"
 #include "ram_elevator.h"
 #include "ram_map.h"
@@ -11,10 +10,10 @@
 #include "ram_ui.h"
 #include "random.h"
 
-/* ORIGINAL BUG: this consumer keeps a int result view of func_001262,
- * whose canonical return is short. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
-extern int func_001262();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
+
 /* Report input or nearby players on this elevator's level, marking nearby
  * players in ram_ffda82 before the elevator changes state. */
 int func_013a3e(elevator, flag)
@@ -221,7 +220,7 @@ void ProcessElevatorStep2()
                 }
                 PlaySound(15, 50);
                 if (VBLANK_FLAG_8 == 6)
-                    VBLANK_FLAG_7 = func_001262(gHighestLevel);
+                    VBLANK_FLAG_7 = (int)func_001262(gHighestLevel);
             }
         } else if (state == 2) {
             if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration)

@@ -57,4 +57,9 @@ struct scene_placement {
     short x, y, interaction;
 };
 
+/* Two-byte animation record: frame selection then FE hold/stop command. */
+struct held_frame2 {
+    char frame, hold;
+};
+
 #endif

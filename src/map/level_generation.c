@@ -6,9 +6,9 @@
 #include "ram_map.h"
 #include "random.h"
 
-/* Compiler bound qualification: the compatible incomplete-array view
- * preserves the observed long index arithmetic. The shared complete bound
- * changes index width. Historical declaration spelling is unknown [INFERENCE]. */
+/* Compatible incomplete-array compiler view. The actual complete shared
+ * declaration changes the observed instructions; historical source spelling
+ * is unknown [INFERENCE]. */
 extern unsigned char *TileAlternativePointers[];
 
 /* Refine marked map cells using the low-byte shapes of adjacent cells. */

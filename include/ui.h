@@ -7,4 +7,11 @@ struct ride_speech {
     char *first_line, *second_line, *reply_first_line, *reply_second_line;
 };
 
+/* Eight-byte menu entry: byte tile coordinates, text pointer, signed selection. */
+struct menu_item {
+    unsigned char x, y;
+    char *text;
+    short selection;
+};
+
 #endif

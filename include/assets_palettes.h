@@ -22,4 +22,18 @@ extern unsigned short PaletteShipLine1[];
 extern unsigned short PaletteShipLine2[];
 extern unsigned short PaletteShipLine3[];
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern unsigned short EndingPaletteA[];
+extern unsigned short EndingPaletteB[];
+extern unsigned short MenuHeaderPalette[];
+extern unsigned short PaletteIntroCollision_bank2[];
+extern unsigned short PaletteIntroEarlDriving_bank0[];
+extern unsigned short PaletteIntroEarlDriving_bank3[];
+extern unsigned short PaletteSpaceScreen_bank2[];
+extern unsigned short PaletteSpaceScreen_bank3[];
+extern unsigned short PaletteTitleScreen_bank0[];
+extern unsigned short PaletteTitleScreen_bank2[];
+extern unsigned short PaletteTitleScreen_bank3[];
+extern unsigned short SegaLogo_Pal[];
+
 #endif

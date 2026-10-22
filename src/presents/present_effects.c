@@ -1,7 +1,3 @@
-#define TJE_LOCAL_FUNC_01E736
-#define TJE_LOCAL_FUNC_001262
-#define TJE_LOCAL_FUNC_00D904
-
 #include "entities.h"
 #include "sprites.h"
 #include "hardware.h"
@@ -30,20 +26,9 @@
 #include "sprite_calls.h"
 #include "ui_calls.h"
 
-/* ORIGINAL BUG: this byte-store consumer keeps an int result view of the
- * short allocator. The shared short declaration adds normalization absent
- * from the ROM; the historical missing declaration is [INFERENCE]. */
-extern int func_01e736();
-
-/* ORIGINAL BUG: this consumer keeps a int result view of func_001262,
- * whose canonical return is short. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
-extern int func_001262();
-
-/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
- * whose canonical return is short. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
-extern int func_00d904();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
 
 /* Create or restart the player's short-lived effect at the given position. */
 int func_015b66(player_number, x, y, height, level)
@@ -54,7 +39,7 @@ char level;
     struct timed_animation *animation;
 
     if (!ram_ffde56[player_number])
-        ram_ffde56[player_number] = func_00d904();
+        ram_ffde56[player_number] = (int)func_00d904();
     if (ram_ffde56[player_number]) {
         effect = &gPlayerInfo[ram_ffde56[player_number]];
         effect->x = x;
@@ -86,7 +71,7 @@ short player_number;
     struct timed_animation *animation;
 
     if (!ram_ffde58[player_number])
-        ram_ffde58[player_number] = func_01e736(0);
+        ram_ffde58[player_number] = (int)func_01e736(0);
     if (ram_ffde58[player_number]) {
         decoy = &gPlayerInfo[ram_ffde58[player_number]];
         player = &gPlayerInfo[player_number];
@@ -177,7 +162,7 @@ short player_number;
     struct timed_animation *animation;
 
     if (!ram_ffde5c[player_number])
-        ram_ffde5c[player_number] = func_01e736(0);
+        ram_ffde5c[player_number] = (int)func_01e736(0);
     if (ram_ffde5c[player_number]) {
         doorway = &gPlayerInfo[ram_ffde5c[player_number]];
         player = &gPlayerInfo[player_number];
@@ -339,7 +324,7 @@ unsigned short terrain;
     struct timed_animation *animation;
 
     if (!ram_ffde5a[player_number] &&
-        (ram_ffde5a[player_number] = func_01e736(0))) {
+        (ram_ffde5a[player_number] = (int)func_01e736(0))) {
         display = &gPlayerInfo[ram_ffde5a[player_number]];
         player = &gPlayerInfo[player_number];
         display->flags_4d |= 8;
@@ -480,7 +465,7 @@ short player_number;
     struct timed_animation *animation;
 
     if (!gPlayer1RainCloudState[player_number]) {
-        if (gPlayer1RainCloudState[player_number] = func_01e736(0)) {
+        if (gPlayer1RainCloudState[player_number] = (int)func_01e736(0)) {
             cloud = &gPlayerInfo[gPlayer1RainCloudState[player_number]];
             player = &gPlayerInfo[player_number];
             cloud->level = player->level;
@@ -567,7 +552,7 @@ short player_number;
     struct animation_descriptor *animation;
 
     if (!ram_ffde6c[player_number])
-        ram_ffde6c[player_number] = func_01e736(0);
+        ram_ffde6c[player_number] = (int)func_01e736(0);
     if (ram_ffde6c[player_number]) {
         box = &gPlayerInfo[ram_ffde6c[player_number]];
         player = &gPlayerInfo[player_number];
@@ -606,7 +591,7 @@ short player_number;
             func_00d970(ram_ffde6c[player_number]);
             ram_ffde6c[player_number] = 0;
             if (!ram_ffde6c[player_number ^ 1]) {
-                VBLANK_FLAG_7 = func_001262(gHighestLevel);
+                VBLANK_FLAG_7 = (int)func_001262(gHighestLevel);
                 ram_ffe474 = 0;
             }
         } else if (gMusicUnknownE488) {

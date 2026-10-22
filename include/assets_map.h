@@ -35,4 +35,8 @@ extern unsigned char dat_08bfc2[];
 extern char dat_08bfce[23];
 extern unsigned char dat_08bfe6[4][10];
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern unsigned char MapGenerationRangePairs[8][8][2];
+extern char MapGenerationRangeRow[];
+
 #endif

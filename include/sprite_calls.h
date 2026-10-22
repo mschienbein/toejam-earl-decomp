@@ -1,7 +1,9 @@
 #ifndef TJE_SPRITE_CALLS_H
 #define TJE_SPRITE_CALLS_H
 
-/* K&R return interfaces for sprites routines. */
+/* K&R return interfaces. Represented C definitions establish their types;
+ * remaining ROM-only declarations describe the observed ABI, not a uniquely
+ * recovered historical C spelling. */
 extern void ClearLOC_00FFB8DA();
 extern void OpeningPresents7();
 extern void Process2FEntityBit0();
@@ -10,15 +12,23 @@ extern void Process2FEntityFlag();
 extern void SetRAMIndexes();
 extern void SetSprite();
 extern void SpriteLoadingStuff();
+extern void SpriteUnpackInterleavedRLE();
+extern void SpriteUnpackRLE();
+#ifndef TJE_LOCAL_FUNC_00BDD8
 extern short func_00bdd8();
+#endif
 extern void func_00beb2();
 extern void func_00bfc6();
 extern void func_00c170();
 extern void func_00c242();
 extern void func_00c4fa();
 extern void func_00c6b0();
+extern int func_00c7a8();
 extern short func_00c85a();
 extern void func_00c8ec();
+extern void func_00c920();
+extern void func_00cb54();
+extern void func_00cc82();
 extern void func_00cfba();
 extern void func_00cffa();
 extern void func_00d00e();
@@ -39,16 +49,5 @@ extern void func_00d8f2();
 extern short func_00d904();
 #endif
 extern void func_00d970();
-
-/* Additional matched wave interfaces and their observed call targets. */
-extern void func_00c920();
-
-/* ROM-only sprite decoding/processing interfaces retain their current caller
- * spellings; the ABI alone does not uniquely establish historical C returns. */
-extern void SpriteUnpackInterleavedRLE();
-extern void SpriteUnpackRLE();
-extern int func_00c7a8();
-extern void func_00cb54();
-extern void func_00cc82();
 
 #endif

@@ -50,4 +50,11 @@ extern short gMusicUnknownE472;
 extern short ram_ffe474;
 extern char gMusicUnknownE488;
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern short gMusicUnknownE478;
+extern short gMusicUnknownE47A;
+extern short gMusicUnknownE47C;
+extern char gMusicUnknownE489;
+extern unsigned char ram_ff801f;
+
 #endif

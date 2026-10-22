@@ -18,4 +18,7 @@ extern short StarryBackgroundSize;
 extern void *AnimationPointerWords_AF040[2];
 extern char FixedWorldShipPieces[10];
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern char StarfieldByteMap[32][32];
+
 #endif

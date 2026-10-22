@@ -1,5 +1,3 @@
-#define TJE_LOCAL_FUNC_00D904
-
 #include "entities.h"
 #include "earthlings.h"
 #include "presents.h"
@@ -13,10 +11,10 @@
 #include "ram_system.h"
 #include "sprite_calls.h"
 
-/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
- * whose canonical return is short. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
-extern int func_00d904();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
+
 /* Remove a random occupied inventory slot, replacing it with the last slot,
  * and launch a present object from the victim's position when allocation succeeds. */
 void DoMoleAbility(victim, player_number)
@@ -44,7 +42,7 @@ short player_number;
         gPlayerInventory[player_number][selected_slot] =
             gPlayerInventory[player_number][inventory_count];
     gPlayerInventory[player_number][inventory_count] = -1;
-    if (ram_ffe24a[player_number] = func_00d904()) {
+    if (ram_ffe24a[player_number] = (int)func_00d904()) {
         present = &gPlayerInfo[ram_ffe24a[player_number]];
         present->x = victim->x;
         present->y = victim->y - 3;

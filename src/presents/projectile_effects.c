@@ -1,5 +1,3 @@
-#define TJE_LOCAL_FUNC_01E736
-#define TJE_LOCAL_FUNC_00D904
 #define TJE_LOCAL_FUNC_00D9DC
 #define TJE_LOCAL_FUNC_015DA6
 
@@ -7,40 +5,130 @@
 #include "earthlings.h"
 #include "sprites.h"
 #include "assets_audio.h"
+#include "assets_earthlings.h"
 #include "assets_map.h"
 #include "assets_sprites.h"
 #include "audio_calls.h"
 #include "collision_calls.h"
 #include "earthling_calls.h"
+#include "map_calls.h"
 #include "player.h"
 #include "present_calls.h"
 #include "ram_effects.h"
 #include "ram_elevator.h"
 #include "ram_player.h"
+#include "ram_speech.h"
 #include "ram_system.h"
 #include "ram_ui.h"
 #include "random.h"
 #include "sprite_calls.h"
 
-/* ORIGINAL BUG: this byte-store consumer keeps an int result view of the
- * short allocator. The shared short declaration adds normalization absent
- * from the ROM; the historical missing declaration is [INFERENCE]. */
-extern int func_01e736();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
 
-/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
- * whose canonical return is short. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
-extern int func_00d904();
-
-/* ORIGINAL BUG: this consumer keeps a int result view of func_00d9dc,
- * whose canonical return is unsigned char. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
+/* ORIGINAL BUG: this consumer retains the observed int result view.
+ * Both the shared unsigned char declaration and ordinary integral promotion
+ * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int func_00d9dc();
 
-/* ORIGINAL BUG: this consumer keeps a int result view of func_015da6,
- * whose canonical return is short. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
+/* ORIGINAL BUG: this consumer retains the observed int result view.
+ * Both the shared short declaration and ordinary integral promotion
+ * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int func_015da6();
+/* Launch a tomato from an earthling toward a velocity-adjusted target.
+ * The distance estimate controls the vertical acceleration. */
+void func_01c2a2(target, earthling)
+struct object_state *target;
+struct earthling_state *earthling;
+{
+    short slot, distance_x, distance_y, speed_x, speed_y, direction;
+    struct object_state *projectile;
+    struct animation_descriptor *animation;
+
+    slot = 4;
+    do {
+        if (!ram_ffe1c0[slot])
+            break;
+        ++slot;
+    } while (slot < 12);
+    if (slot == 12)
+        return;
+    if (ram_ffe1c0[slot] = (int)func_00d904()) {
+        distance_x = target->x - earthling->x;
+        distance_y = target->y - earthling->y;
+        distance_x += target->velocity_x >> 3;
+        distance_y += target->velocity_y >> 4;
+        if (!distance_x) {
+            speed_x = 0;
+            speed_y = 800;
+        } else {
+            speed_x = abs(distance_y * 100 / distance_x);
+            direction = 0;
+            do {
+                if (speed_x < EarthlingThresholds[direction])
+                    break;
+                ++direction;
+            } while (direction < 8);
+            speed_x = EarthlingVectorPairs[direction][0];
+            speed_y = EarthlingVectorPairs[direction][1];
+            if (distance_x < 0)
+                speed_x = -speed_x;
+        }
+        if (distance_y < 0)
+            speed_y = -speed_y;
+        ram_ffe1cc[slot] = earthling->object;
+        projectile = &gPlayerInfo[ram_ffe1c0[slot]];
+        projectile->x = earthling->x;
+        projectile->y = earthling->y;
+        if (earthling->state == 8)
+            projectile->height = 10;
+        else if (earthling->state == 9)
+            projectile->height = 15;
+        else {
+            projectile->height = 27;
+            if (earthling->state == 10)
+                projectile->x -= 10;
+            else
+                projectile->x += 10;
+        }
+        /* Compiler-spelling qualification: this explicit narrow expression
+         * keeps speed widening in scratch D1 rather than clobbering D6.
+         * The bare speed and simple scalar casts do not reproduce the copy. */
+        projectile->velocity_x = GetRandomNumber() % 101 + -50 + (short)(speed_x + 0);
+        projectile->velocity_y = GetRandomNumber() % 61 + -30 + speed_y;
+        projectile->velocity_height = 768;
+        distance_x = abs(distance_x);
+        distance_y = abs(distance_y);
+        if (distance_x > distance_y)
+            distance_x += distance_y >> 1;
+        else {
+            distance_x >>= 1;
+            distance_x += distance_y;
+        }
+        distance_x = ((distance_x - 40) >> 3) - 64;
+        if (distance_x > -16)
+            distance_x = -16;
+        else if (distance_x < -64)
+            distance_x = -64;
+        projectile->acceleration_height = distance_x;
+        projectile->level = earthling->level;
+        projectile->width = 9;
+        projectile->height_pixels = 7;
+        projectile->sprite_count = 1;
+        projectile->tile_count = 16;
+        projectile->tile = 0x8000;
+        animation = AnimationDescriptors_0AEFF6;
+        projectile->sequence = animation->sequence;
+        projectile->frames = animation->frames;
+        projectile->frame_phase = 0;
+        projectile->draw_flags |= 64;
+        projectile->sprite_state = -1;
+        if (!TOEJAM_SPEECH_COUNTER)
+            PlaySoundEffect((long)Sfx_ChickenCannonFire, 40, 0);
+    }
+}
+
 /* Process all twelve tomato handles, changing landed or collided tomatoes
  * into their impact animation and releasing completed objects. */
 void ProcessTomatoRain()
@@ -150,7 +238,7 @@ int player_number;
     } while (slot < 12);
     if (slot == 12)
         return;
-    if (ram_ffe1c0[slot] = func_00d904()) {
+    if (ram_ffe1c0[slot] = (int)func_00d904()) {
         ram_ffe1cc[slot] = -1;
         player = &gPlayerInfo[player_number];
         projectile = &gPlayerInfo[ram_ffe1c0[slot]];
@@ -207,7 +295,7 @@ struct object_state *source;
     } while (slot < 4);
     if (slot == 4)
         return;
-    if (ram_ffe1d8[slot] = func_00d904()) {
+    if (ram_ffe1d8[slot] = (int)func_00d904()) {
         projectile = &gPlayerInfo[ram_ffe1d8[slot]];
         projectile->x = source->x;
         projectile->y = source->y - 5;
@@ -279,7 +367,7 @@ short player_number;
     struct timed_animation *animation;
 
     if (!ram_ffe1dc[player_number]) {
-        if (ram_ffe1dc[player_number] = func_01e736(0)) {
+        if (ram_ffe1dc[player_number] = (int)func_01e736(0)) {
             effect = &gPlayerInfo[ram_ffe1dc[player_number]];
             player = &gPlayerInfo[player_number];
             effect->flags_4d |= 8;
@@ -394,7 +482,7 @@ short player_number;
     struct object_state *effect;
     struct timed_animation *animation;
 
-    if (object_number = func_01e736(0)) {
+    if (object_number = (int)func_01e736(0)) {
         ram_ffe1e4[player_number] = object_number;
         effect = &gPlayerInfo[object_number];
         effect->x = player->x;
@@ -447,7 +535,7 @@ short player_number;
     struct object_state *effect;
     struct timed_animation *animation;
 
-    if (object_number = func_00d904()) {
+    if (object_number = (int)func_00d904()) {
         ram_ffe1e6[player_number] = object_number;
         effect = &gPlayerInfo[object_number];
         effect->x = player->x;

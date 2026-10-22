@@ -2,7 +2,7 @@
  "schema_version": 1,
  "units": [
   {
-   "source": "src/core/main_loop.c",
+   "source": "src/core/startup_and_main_loop.c",
    "versions": [
     "rev02",
     "rev00"
@@ -16,14 +16,28 @@
    ]
   },
   {
-   "source": "src/core/vdp_startup.c",
+   "source": "src/cutscene/ending.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/earthlings/abilities_and_sleep.c",
+   "source": "src/cutscene/intro_part11.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscene/sega_vblank.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscene/sega_video.c",
    "versions": [
     "rev02",
     "rev00"
@@ -44,14 +58,14 @@
    ]
   },
   {
-   "source": "src/earthlings/behaviour_tu28.c",
+   "source": "src/earthlings/behaviour_tu25.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/earthlings/damage_and_processing.c",
+   "source": "src/earthlings/behaviour_tu28.c",
    "versions": [
     "rev02",
     "rev00"
@@ -65,14 +79,7 @@
    ]
   },
   {
-   "source": "src/earthlings/mole_santa_drops.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/earthlings/mole_santa_helpers.c",
+   "source": "src/earthlings/mole_santa.c",
    "versions": [
     "rev02",
     "rev00"
@@ -87,13 +94,6 @@
   },
   {
    "source": "src/earthlings/nice_earthling_touch.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/earthlings/spawning_and_loading.c",
    "versions": [
     "rev02",
     "rev00"
@@ -142,14 +142,84 @@
    ]
   },
   {
-   "source": "src/engine/reset_sequence.c",
+   "source": "src/engine/late_helpers_collision_release.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/graphics/camera_column_transfer.c",
+   "source": "src/engine/late_helpers_ending_create.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/late_helpers_ending_release.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/late_helpers_intro_create.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/late_helpers_intro_release.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/late_helpers_intro_show.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/late_helpers_rocket_animate.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/late_helpers_rocket_create.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/late_helpers_rocket_foreground.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/late_helpers_rocket_move.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/late_helpers_rocket_release.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/reset_sequences.c",
    "versions": [
     "rev02",
     "rev00"
@@ -163,7 +233,7 @@
    ]
   },
   {
-   "source": "src/graphics/camera_motion.c",
+   "source": "src/graphics/camera_redraw_and_motion.c",
    "versions": [
     "rev02",
     "rev00"
@@ -198,6 +268,41 @@
    ]
   },
   {
+   "source": "src/intro/intro_background_objects.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/intro/intro_flying_objects.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/intro/intro_impact_objects.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/intro/intro_object_slots.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/jam/jamout.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/map/change_level.c",
    "versions": [
     "rev02",
@@ -206,13 +311,6 @@
   },
   {
    "source": "src/map/elevator_icon.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/map/land_path_animation.c",
    "versions": [
     "rev02",
     "rev00"
@@ -261,14 +359,14 @@
    ]
   },
   {
-   "source": "src/map/region_cleanup.c",
+   "source": "src/map/range_and_region_walk.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/map/region_walk.c",
+   "source": "src/map/region_cleanup.c",
    "versions": [
     "rev02",
     "rev00"
@@ -296,7 +394,7 @@
    ]
   },
   {
-   "source": "src/math/random_cache.c",
+   "source": "src/player/ability_helpers.c",
    "versions": [
     "rev02",
     "rev00"
@@ -317,7 +415,7 @@
    ]
   },
   {
-   "source": "src/player/contact_hula_and_attack.c",
+   "source": "src/player/contact_cupid_and_touch.c",
    "versions": [
     "rev02",
     "rev00"
@@ -359,6 +457,13 @@
    ]
   },
   {
+   "source": "src/player/hottub_ability.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/player/jump_motion.c",
    "versions": [
     "rev02",
@@ -366,7 +471,7 @@
    ]
   },
   {
-   "source": "src/player/level_fall_and_landings.c",
+   "source": "src/player/level_fall_sinking_and_respawn.c",
    "versions": [
     "rev02",
     "rev00"
@@ -387,21 +492,7 @@
    ]
   },
   {
-   "source": "src/player/player_states_and_respawn.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/player/process_movement.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/player/process_players.c",
    "versions": [
     "rev02",
     "rev00"
@@ -479,13 +570,6 @@
   },
   {
    "source": "src/player/targeting.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/player/whirlwind_and_touch.c",
    "versions": [
     "rev02",
     "rev00"
@@ -583,6 +667,27 @@
    ]
   },
   {
+   "source": "src/sound/request_channel_reset.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sound/request_effect.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sound/request_pointer_reset.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/speech/speech_core.c",
    "versions": [
     "rev02",
@@ -591,13 +696,6 @@
   },
   {
    "source": "src/speech/speech_update.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/sprites/copy_sprite_tiles.c",
    "versions": [
     "rev02",
     "rev00"
@@ -674,6 +772,13 @@
    ]
   },
   {
+   "source": "src/sprites/sprite_frame_budget.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/sprites/sprite_links_vdp.c",
    "versions": [
     "rev02",
@@ -716,7 +821,35 @@
    ]
   },
   {
+   "source": "src/ui/main_menu.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/ui/pause.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/video/cutscene_text.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/video/intro.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/video/title_and_transition.c",
    "versions": [
     "rev02",
     "rev00"

@@ -43,4 +43,7 @@ extern char ram_ffd9c6[34];
 extern char ram_ffe264[277];
 extern char ram_ffe390;
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern short ram_ffd936;
+
 #endif

@@ -1,13 +1,14 @@
 #ifndef TJE_RANDOM_H
 #define TJE_RANDOM_H
 
-/* K&R return interfaces for math routines. */
+/* K&R return interfaces. Represented C definitions establish their types;
+ * remaining ROM-only declarations describe the observed ABI, not a uniquely
+ * recovered historical C spelling. */
+#ifndef TJE_LOCAL_GETRANDOMNUMBER
 extern unsigned short GetRandomNumber();
+#endif
 extern void PreGenerateRandoms();
 extern long StackBasedRandom();
-
-/* ROM math-runtime entry. Retain its current long caller interface without
- * claiming that the ABI establishes a historical C source spelling. */
 extern long abs();
 
 #endif

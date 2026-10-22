@@ -16,10 +16,9 @@
 #include "ram_ui.h"
 #include "ui_calls.h"
 
-/* Compiler bound qualification: the compatible incomplete-array view
- * preserves the observed index arithmetic. The complete bound changes width;
- * a pointer cast changes address-register allocation. Historical declaration
- * spelling is unknown [INFERENCE]. */
+/* Compatible incomplete-array compiler view. The actual complete shared
+ * declaration changes the observed instructions; historical source spelling
+ * is unknown [INFERENCE]. */
 extern char *RankCharsTable[];
 
 /* Preserve the observed signed/unsigned value views of shared storage.

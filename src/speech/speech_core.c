@@ -1,5 +1,3 @@
-#define TJE_LOCAL_FUNC_00D904
-
 #include "entities.h"
 #include "sprites.h"
 #include "assets_ui.h"
@@ -10,10 +8,10 @@
 #include "speech.h"
 #include "sprite_calls.h"
 
-/* ORIGINAL BUG: this byte-store caller consumes the short allocator as int.
- * Preserve the observed omission of short-result normalization; a historical
- * missing declaration is [INFERENCE]. */
-extern int func_00d904();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
+
 /* Set the lifetime override consumed by the next allocated speech bubble. */
 void func_01e012(lifetime)
 short lifetime;
@@ -61,7 +59,7 @@ char replace_attached;
         ;
     if (length > 12)
         length = 12;
-    if (ram_ffe1ee[slot] = func_00d904()) {
+    if (ram_ffe1ee[slot] = (int)func_00d904()) {
         bubble = &gPlayerInfo[ram_ffe1ee[slot]];
         bubble->x = source->x;
         bubble->y = source->y + 15;

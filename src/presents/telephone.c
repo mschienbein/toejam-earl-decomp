@@ -1,5 +1,3 @@
-#define TJE_LOCAL_FUNC_01E736
-
 #include "entities.h"
 #include "presents.h"
 #include "sprites.h"
@@ -18,10 +16,9 @@
 #include "random.h"
 #include "sprite_calls.h"
 
-/* ORIGINAL BUG: this byte-store consumer keeps an int result view of the
- * short allocator. The shared short declaration adds normalization absent
- * from the ROM; the historical missing declaration is [INFERENCE]. */
-extern int func_01e736();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
 
 /* Allocate the telephone's displayed object and copy its position and level. */
 void func_022bf6(telephone)
@@ -30,7 +27,7 @@ struct telephone_state *telephone;
     struct object_state *object;
     struct animation_descriptor *animation;
 
-    if (telephone->object = func_01e736(0)) {
+    if (telephone->object = (int)func_01e736(0)) {
         object = &gPlayerInfo[telephone->object];
         animation = AnimationDescriptors_0AF0A8;
         object->frames = animation->frames;

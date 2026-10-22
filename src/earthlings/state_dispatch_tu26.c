@@ -10,9 +10,9 @@
 #include "ram_system.h"
 #include "ram_ui.h"
 
-/* ORIGINAL BUG: this consumer keeps a int result view of func_00d9dc,
- * whose canonical return is unsigned char. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
+/* ORIGINAL BUG: this consumer retains the observed int result view.
+ * Both the shared unsigned char declaration and ordinary integral promotion
+ * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int func_00d9dc();
 /* Probe eight pixels vertically or sixteen horizontally in states 4..7. */
 int func_01916c(player_number, world_x, world_y, state)

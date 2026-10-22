@@ -12,4 +12,10 @@
 #define Z80_RESET (*(short *)0xa11200L)
 #define Z80_BUS_REQUEST (*(short *)0xa11100L)
 
+/* Controller port data/direction accesses retain their observed byte types. */
+#define CONTROL_1_DIRECTION (*(unsigned char *)0xa10009L)
+#define CONTROL_1_DATA (*(char *)0xa10003L)
+#define CONTROL_2_DIRECTION (*(unsigned char *)0xa1000bL)
+#define CONTROL_2_DATA (*(char *)0xa10005L)
+
 #endif

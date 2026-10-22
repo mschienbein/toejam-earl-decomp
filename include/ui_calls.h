@@ -1,7 +1,9 @@
 #ifndef TJE_UI_CALLS_H
 #define TJE_UI_CALLS_H
 
-/* K&R return interfaces for ui routines. */
+/* K&R return interfaces. Represented C definitions establish their types;
+ * remaining ROM-only declarations describe the observed ABI, not a uniquely
+ * recovered historical C spelling. */
 extern void CheckBButton();
 extern void CheckIfOpenForBoth();
 extern int CheckPromotionScore();
@@ -50,20 +52,14 @@ extern void func_00abbe();
 extern void func_00acca();
 extern void func_00ad8a();
 extern int func_00ae90();
+extern void func_00aeb8();
 extern void func_00b0cc();
 extern void func_00b18c();
+extern void func_00b3e4();
+extern void func_00b590();
 extern void func_00b64a();
 extern void func_00b95c();
 extern void func_00baa2();
 extern void func_01db30();
-
-/* ROM-only menu/HUD interfaces retain their current caller spellings;
- * the ABI alone does not uniquely establish historical C return types. */
-extern void NewGameMainMenu();
-extern void func_00aeb8();
-extern void func_00b3e4();
-extern void func_00b590();
-/* Displays BogusGameOverStr, then returns to the reset trampoline. */
-extern void func_023554();
 
 #endif

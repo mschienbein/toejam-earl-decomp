@@ -5,6 +5,32 @@
 #include "ram_map.h"
 #include "random.h"
 
+/* Copy one player's complete map and visibility nibble to the other. */
+void CopyLevelBetweenPlayers(player)
+short player;
+{
+    unsigned short row, column;
+    unsigned short *source, *destination;
+    unsigned char mask;
+
+    if (!player) {
+        source = gMapDataA[0];
+        destination = gMapDataB[0];
+    } else {
+        source = gMapDataB[0];
+        destination = gMapDataA[0];
+    }
+    for (row = 0; row < 26; ++row)
+        for (column = 0; column < 19; ++column) {
+            *destination++ = *source++;
+            mask = gMapDataD[row][column];
+            if (!player)
+                gMapDataD[row][column] = (mask << 4) | (mask & 15);
+            else
+                gMapDataD[row][column] = (mask >> 4) | (mask & 0xf0);
+        }
+}
+
 /* Exchange a player's map with the saved map, preserving the other
  * player's visibility nibble in the active mask plane. */
 void func_0044e2(player)

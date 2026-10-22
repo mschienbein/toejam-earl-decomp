@@ -1,5 +1,3 @@
-#define TJE_LOCAL_FUNC_00D904
-
 #include "entities.h"
 #include "sprites.h"
 #include "assets_sprites.h"
@@ -9,10 +7,10 @@
 #include "ram_player.h"
 #include "sprite_calls.h"
 
-/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
- * whose canonical return is short. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
-extern int func_00d904();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
+
 /* Report whether either of the two effect slots is available. */
 int func_01bdd0()
 {
@@ -36,7 +34,7 @@ short x, y, level;
         effect_slot = 1;
     else
         return 1;
-    if (ram_ffe1be[effect_slot] = func_00d904()) {
+    if (ram_ffe1be[effect_slot] = (int)func_00d904()) {
         effect = &gPlayerInfo[ram_ffe1be[effect_slot]];
         effect->x = x;
         effect->y = y;

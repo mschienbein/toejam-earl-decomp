@@ -1,54 +1,68 @@
 #ifndef TJE_PLAYER_H
 #define TJE_PLAYER_H
 
-/* K&R return interfaces for player routines. */
+/* K&R return interfaces. Represented C definitions establish their types;
+ * remaining ROM-only declarations describe the observed ABI, not a uniquely
+ * recovered historical C spelling. */
 extern void AI_BoogieTouch();
+extern void CheckPlayerFalling();
 extern void ChickenAbility();
+extern void CupidAbility();
 extern void DoMoleAbility();
 extern int GetActivePresentSprite();
+extern void HottubAbility();
 extern void HulaAbility();
 extern void KillThePlayer();
+extern void LemonadeAbility();
 extern void MakePlayerFall();
 extern void MoleAbility();
 extern void OpenRocketSkates();
 extern void OpenSchoolBook();
 extern void Player_Squish();
+extern int Player_Youch();
 extern void ProcessMovement();
 extern void ProcessPlayers();
 extern void ProcessSleep();
 extern void SetToejamFalling();
 extern void SetupPlayer();
+extern void SpriteChecks();
 extern void StopPlayer();
 extern void WhirlWindAbility();
 extern void func_002608();
 extern void func_00300a();
 extern int func_00dcc2();
 extern int func_00dd1e();
+extern void func_00dd82();
 extern void func_00e17a();
 extern void func_00e400();
 extern void func_00e410();
 extern void func_00f00c();
 extern void func_00f282();
+extern void func_00f69e();
 extern void func_00f8de();
 extern void func_00f96c();
 extern void func_010086();
 extern void func_0101b4();
+extern void func_010294();
 extern void func_01044e();
 extern void func_01062c();
 extern void func_0107b2();
 extern void func_010968();
 extern void func_010ab6();
 extern void func_010ec2();
+extern void func_010ffc();
 extern void func_011462();
 extern void func_0115da();
 extern void func_01189c();
 extern void func_011a7c();
 extern void func_011ac0();
 extern void func_011dd8();
+extern int func_012028();
 extern void func_012116();
 extern char func_01aa20();
 extern int func_01ae92();
 extern char func_01af04();
+extern char func_01afb8();
 extern char func_01b02e();
 extern void func_01b078();
 extern int func_01b0aa();
@@ -61,17 +75,7 @@ extern int func_01bde8();
 extern void func_01bea6();
 extern void func_01befa();
 extern void func_01c188();
-
-/* ROM-only player interfaces retain their current caller spellings;
- * the ABI alone does not uniquely establish historical C return types. */
-extern void CheckPlayerFalling();
-extern int Player_Youch();
-extern void SpriteChecks();
-extern void func_00dd82();
-extern void func_00f69e();
-extern void func_010294();
-extern void func_010ffc();
-extern int func_012028();
-extern char func_01afb8();
+extern void func_023c6e();
+extern void func_023cb4();
 
 #endif

@@ -1,9 +1,8 @@
-#define TJE_LOCAL_FUNC_01E736
-
 #include "entities.h"
 #include "earthlings.h"
 #include "sprites.h"
 #include "assets_sprites.h"
+#include "map_calls.h"
 #include "ram_camera.h"
 #include "ram_map.h"
 #include "ram_player.h"
@@ -13,10 +12,9 @@
 #include "speech.h"
 #include "sprite_calls.h"
 
-/* ORIGINAL BUG: this byte-store consumer keeps an int result view of the
- * short allocator. The shared short declaration adds normalization absent
- * from the ROM; the historical missing declaration is [INFERENCE]. */
-extern int func_01e736();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
 
 /* Release the collected world object, show the corresponding ship piece,
  * and restore the appropriate single-screen or split-screen message. */
@@ -64,7 +62,7 @@ void func_020d3e()
         }
     } else if (gShipPieceLevels[4]) {
         if (!SPLIT_SCREEN) {
-            *active_object = func_01e736(0);
+            *active_object = (int)func_01e736(0);
             object = &gPlayerInfo[*active_object];
             object->x = TOEJAM_CAMERA_NEWX + 160;
             object->y = TOEJAM_CAMERA_NEWY + 224;

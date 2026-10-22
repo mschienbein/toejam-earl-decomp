@@ -40,4 +40,21 @@ extern unsigned char rom_0a836c[4][40];
 /* Four-byte prefix of the observed 44-byte runtime text frame (four pieces). */
 extern struct render_frame RuntimeTextMetasprite_0AFADC;
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern short MenuControllerOptionsItemCount;
+extern struct menu_item MenuControllerOptionsItems[];
+extern char MenuCursorAnimation[];
+extern char MenuHeaderAnimations[4][2];
+extern short MenuJamOutItemCount;
+extern struct menu_item MenuJamOutItems[];
+extern short MenuWhatItemCount;
+extern struct menu_item MenuWhatItems[];
+extern short MenuWhoItemCount;
+extern struct menu_item MenuWhoItems[];
+extern char RuntimeTextFontTiles[];
+extern struct render_frame RuntimeTextMetasprite_0AFB08;
+extern struct render_frame RuntimeTextMetasprite_0AFB5C;
+extern struct render_frame *Spr_MenuCursor[];
+extern struct render_frame *Spr_MenuHeader[];
+
 #endif

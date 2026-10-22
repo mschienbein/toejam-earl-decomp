@@ -1,5 +1,3 @@
-#define TJE_LOCAL_FUNC_00D904
-
 #include "entities.h"
 #include "earthlings.h"
 #include "presents.h"
@@ -24,10 +22,10 @@
 #include "sprite_calls.h"
 #include "ui_calls.h"
 
-/* ORIGINAL BUG: this consumer keeps a int result view of func_00d904,
- * whose canonical return is short. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
-extern int func_00d904();
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
+
 /* Allocate a world-item object and configure its frames, size and position.
  * Non-present ground items set drawing flag 0x80; kinds 81 and up use the
  * larger 32-by-64 dimensions. */
@@ -36,7 +34,7 @@ struct level_item *item;
 {
     struct object_state *object;
 
-    if (item->object = func_00d904()) {
+    if (item->object = (int)func_00d904()) {
         object = &gPlayerInfo[item->object];
         if (item->kind < 64)
             object->frames = &PresentSpriteTable[gPresentInfo[item->kind].sprite];

@@ -6,6 +6,7 @@
 #include "assets_presents.h"
 #include "earthling_calls.h"
 #include "map_calls.h"
+#include "player.h"
 #include "present_calls.h"
 #include "ram_elevator.h"
 #include "ram_map.h"
@@ -14,9 +15,9 @@
 #include "random.h"
 #include "sprite_calls.h"
 
-/* ORIGINAL BUG: this consumer keeps a int result view of func_00d9dc,
- * whose canonical return is unsigned char. The observed caller omits that
- * narrowing; the historical missing declaration is [INFERENCE]. */
+/* ORIGINAL BUG: this consumer retains the observed int result view.
+ * Both the shared unsigned char declaration and ordinary integral promotion
+ * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int func_00d9dc();
 /* Reserve the two fixed identities, then assign the other present sprites
  * to random unused identities, scanning forward through collisions. */

@@ -36,4 +36,16 @@ extern char Sfx_MailboxRoar[];
 extern char Sfx_OperaSing[];
 extern char Sfx_WisemanThink[];
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern char *PCMPlaybackPointers[];
+extern char RAMWritesRoutine1ValuesA[];
+extern char Sfx_ChickenCannonFire[];
+extern char Sfx_JamBassDrum[];
+extern char Sfx_JamBigEarl[];
+extern char Sfx_JamRap[];
+extern char Sfx_JamRecordScratch[];
+extern char Sfx_JamToejam[];
+extern char Sfx_Meep[];
+extern char SongChannelTemplates[][228];
+
 #endif

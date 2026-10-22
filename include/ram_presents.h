@@ -30,4 +30,7 @@ extern char ram_ffe25e[];
 extern char gTelephoneRingsLeft[];
 extern char gTelephoneTimeToRing[];
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern char gDroppedPresentTableIdx;
+
 #endif

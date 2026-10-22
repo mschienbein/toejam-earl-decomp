@@ -10,6 +10,7 @@
 #include "assets_ui.h"
 #include "audio_calls.h"
 #include "core_calls.h"
+#include "cutscene_calls.h"
 #include "elevator_calls.h"
 #include "hardware_calls.h"
 #include "ram_camera.h"
@@ -25,10 +26,9 @@
 #include "sprite_calls.h"
 #include "ui_calls.h"
 
-/* Compiler bound qualification: this compatible incomplete byte-array
- * view preserves the original long offset. The shared bounded array and
- * an explicit pointer-arithmetic alternative both change the emitted code.
- * Historical declaration spelling is unknown [INFERENCE]. */
+/* Compatible incomplete-array compiler view. The actual complete shared
+ * declaration changes the observed instructions; historical source spelling
+ * is unknown [INFERENCE]. */
 extern char ram_ffb8da[];
 
 /* Expand each nonzero packed pixel nibble to palette index fifteen. */

@@ -49,4 +49,8 @@ extern char ram_ffe238[];
 extern short ram_ffe240;
 extern short ram_ffe242;
 
+/* Additional selected final-batch storage and resource interfaces. */
+extern short gMenuCursorObjId;
+extern short gMenuHeaderObjId;
+
 #endif

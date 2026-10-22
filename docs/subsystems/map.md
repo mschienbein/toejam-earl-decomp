@@ -31,8 +31,8 @@ VDP attribute constants.
 - `terrain_placement.c`: tile-property rectangle validation and player placement.
 - `land_processing.c`: marked-path consumption, animated redraws, and a shared
   entity allocator with eviction; these are live-game operations, not generation.
-- `map_drawing.c`: map terrain/background, cover, icons, and marker blinking.
-- `map_drawing_controller.c`: blocking map-screen lifecycle in `DrawGameMap`.
+- `map_drawing_and_controller.c`: map terrain/background, cover animation/uploads,
+  icons, marker blinking, and the blocking `DrawGameMap` lifecycle.
 - `elevator_icon.c`: map elevator marker in `Map_DrawElevator`.
 
 ## Data structures and RAM
@@ -206,6 +206,14 @@ idle counter; the `REVISION` branch preserves REV 00's difference.
 additional reveals, then draws unrevealed blocks. Player, ship-piece, and elevator
 markers use `Map_DrawPlayer`, `Map_DrawShipPiece`, and `Map_DrawElevator`;
 `DrawMapCharacters` blinks markers from `gFrameCounter` bits 3/4.
+
+`MapUploadCoverAnimationFrame` decodes both pieces of a `Spr_MapTileUncover`
+frame, selecting interleaved or contiguous RLE from each format sign, and queues
+the 20-tile uncover run into the selected tile bank. Frame seven applies
+`VDP_TILE_PALETTE_3` to map sprites from index seven onward. It waits a VBlank,
+copies the supplied hardware-sprite table to VRAM, then flushes the queued tiles
+(`map_drawing_and_controller.c`). Piece access uses `render_frame_piece_view`
+from `include/sprite_frame_views.h`, not a fixed twelve-piece ROM-frame extent.
 
 On exit, `DrawGameMap` restores gameplay graphics/HUD/palettes or calls
 `ShowShipPieces`, and redraws the partner's inventory if needed. Telephones invoke

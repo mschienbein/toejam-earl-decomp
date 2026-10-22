@@ -1,8 +1,8 @@
 # Resume
 
-State as of 2026-10-22, evening (newest first in `docs/STATUS.md`), through checkpoint c026.
-Goal: 100% matching, readable C. Both revisions have 588 of 603 C functions matched:
-169,216 of 175,412 bytes in REV 02 and 169,104 of 175,300 bytes in REV 00 (96.5% each).
+State as of 2026-10-22, evening (newest first in `docs/STATUS.md`), through checkpoint c030.
+Goal: 100% matching, readable C. Both revisions have 597 of 603 C functions matched:
+173,328 of 175,412 bytes in REV 02 and 173,216 of 175,300 bytes in REV 00 (98.8% each).
 
 ## Machine setup from scratch
 
@@ -44,21 +44,21 @@ The Microtec archive (archive.org, ruling R006) and emu2 are pinned in
   The other per-revision configuration files hold data units, TU spans, seeds, and
   correspondence. Denominator history is `docs/denominator-history.jsonl` (r11),
   accepted matches are in `config/matches.json`, and checkpoint records are in `accept/`.
-- Current merged units include `src/camera/camera_tiles_and_scroll.c`,
+- Current complete units include `src/camera/camera_tiles_and_scroll.c`,
   `src/map/random_regions_and_cleanup.c`, `src/map/level_generation_and_changes.c`,
-  `src/player/active_present_falling_and_respawn.c`, and
-  `src/sprites/sprite_frame_preparation.c`; use these paths rather than their former
-  split-file names.
+  `src/map/map_drawing_and_controller.c`, `src/player/active_present_falling_and_respawn.c`,
+  `src/player/sprite_checks_and_movement.c`, `src/player/earthling_damage_reactions.c`,
+  `src/sprites/entity_sprite_rendering.c`, `src/speech/speech_and_dialogue.c`,
+  `src/ship/ship_screen_and_collection.c`, and `src/ui/hud.c`. Bounded variable-frame
+  access views are declared separately in `include/sprite_frame_views.h`.
 
 ## Open
 
-15 C functions remain unmatched (`ci/progress_report.py` lists them):
+6 C functions remain unmatched (`ci/progress_report.py` lists them):
 
-- Five collision queries remain under classification review:
+- `PlayerProcessTerrainMotion` is the remaining player terrain-motion body to match.
+- Five collision queries await a user decision on classification:
   `EntityFindNarrowCollisionAtPosition`, `EntityFindMenuAwareCollisionAtPosition`,
   `EntityFindVolumeCollisionAtPosition`, `ProjectileFindCollisionExcludingOwner`,
-  and `EntityFindHorizontalCollisionAtX`.
-- The other ten are `MapUploadCoverAnimationFrame`, `HudInitializeHealthBar`,
-  `QueueSpritePieceTiles`, `UpdateAndQueueEntitySprites`, `PlayerProcessTerrainMotion`,
-  `SpriteChecks`, `Player_Youch`, `QueueSpeechTextTiles`, `StartDialogue`, and
-  `ShowShipPieces`.
+  and `EntityFindHorizontalCollisionAtX`. They remain in the C denominator unless
+  that decision changes their classification.

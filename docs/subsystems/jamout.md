@@ -147,9 +147,10 @@ Only viewport zero is explicitly allocated by this helper.
 `JamOutSynchronizeEntityCopies` walks 40 records. For active shared-tile objects,
 it copies the parent's frame, readiness, current frame pointer, and each hardware
 piece's size/tile fields. Position remains each copy's own layout position.
-The caller of this helper is not represented in the still-absent high-level
-`UpdateAndQueueEntitySprites` body; the global shared-copy flag is evidence of the intended integration,
-not a reconstructed hidden call sequence.
+`UpdateAndQueueEntitySprites` calls this helper when
+`gSharedTileSpriteCopiesEnabled` is set, after ordinary frame preparation and
+before sorting, positioning, and building the viewport links. The shared-copy
+callsite and its place in the renderer sequence are now directly represented.
 `JamOutReleaseCharacterCopies` frees nonzero handles but does not explicitly
 zero the handle arrays in the shown body.
 
@@ -203,8 +204,6 @@ explicit matching qualification, not an original-bug label or design requirement
 
 - Allocation failure of a lead before later copies is not covered by a marked
   bug or a documented resource guarantee in the shown constructor.
-- The missing `UpdateAndQueueEntitySprites` body leaves the shared-copy helper's
-  callsite and full animation-advance ordering open.
 - Some cycle/input words are not explicitly reset in `StartJamOut`; persistent
   cross-entry behavior should be derived from full callers before changing it.
 

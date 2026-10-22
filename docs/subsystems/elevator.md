@@ -67,6 +67,9 @@ Riders are indexed by `PLAYER_TOEJAM`/`PLAYER_EARL`. The two halves' `draw_flags
 and `behavior_flags` use the named entity policies in `include/entities.h`;
 `animation_motion_axes` delegates motion axes, while `owner` and attachment fields
 retain shared effect meanings rather than elevator-specific record layouts.
+The ride-background uploader accesses its four pieces through
+`render_frame_four_piece_view` in `include/sprite_frame_views.h`; that is a
+bounded consumer view, not a fixed ROM-frame allocation or stride.
 
 ## Setup, visibility, and threshold flow
 

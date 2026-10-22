@@ -70,6 +70,9 @@ Ending has two player handles and several composite handles.
 
 `held_frame2` is frame byte plus FE hold command. Frame tables remain variable
 counted metasprites, not fixed arrays inside `render_frame` (`sprites.h`).
+`include/sprite_frame_views.h` provides twelve/four-piece access views for the
+constructors and transition code, not allocation or stride types; consumers
+follow the frame's actual `piece_count`.
 Funkatron resources contain 30 descriptors and 277 placement records; descriptors
 supply frames/sequences, period, bounds, and reservations, while placements contain
 X/Y and interaction ID. Zero X separates descriptor groups (`assets_scenes.h`).
@@ -276,9 +279,6 @@ created objects are collidable (`FunkatronCreateSceneEntity`).
 
 - Allocation-failure assumptions and stale-handle lifetimes are not consistently
   guarded; no extra original-bug labels are invented beyond source comments.
-- `QueueSpritePieceTiles` and `UpdateAndQueueEntitySprites` remain absent, limiting
-  proof of high-level queue order, shared-copy calls, and animation advancement;
-  `PrepareEntitySpriteFrame` now has a matched body.
 - Several composite resources retain address-based names; their exact depicted
   identities are not established by the constructor's frame pointer alone.
 - The flagged cleanup offset mismatch and first-player frame fallback are

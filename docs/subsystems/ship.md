@@ -7,15 +7,15 @@ piece, displays progress/name/summary screens, and performs the completion trans
 into the ending and final map (`AssignShipPieceLevels`, `ShipPieceAbility`,
 `ShowMissingShipPieceSummary`, `PlayShipCompletionSequence`).
 
-Source paths describe the repository layout. Four files live under `src/ship`;
+Source paths describe the repository layout. Two files live under `src/ship`;
 bare C filenames below abbreviate that directory. The mailbox predicates belong
 to `src/earthlings/mailbox_earthling.c` and are covered in the Earthlings document,
 not as ship-piece logic.
 
-`ShowShipPieces` is declared by `include/ship.h` and has a canonical function identity
-in `config/rev02/names.json`, but no definition in the inspected canonical `src`.
-This document describes its observed callers and supporting routines, not an
-invented reconstruction of that missing top-level screen controller.
+`ShowShipPieces` now has a matched body in
+`src/ship/ship_screen_and_collection.c`. The complete unit exposes the collection
+mutation, composed display, restoration, and completion branches rather than
+requiring those steps to be inferred from callers.
 
 Content/entity identifiers come from `include/earthling_types.h`,
 `include/present_types.h`, and `include/entities.h`.
@@ -24,13 +24,10 @@ Content/entity identifiers come from `include/earthling_types.h`,
 
 - `src/ship/piece_level_assignment.c`: `AssignShipPieceLevels`; fixed-world and
   randomized ten-piece level assignments.
-- `src/ship/piece_collection.c`: `ShipPieceAbility`, the pending-piece world indicator,
-  and random selection of a still-missing piece for display.
-- `src/ship/screen_setup.c`: packed-pixel silhouette helper, animated ship and
-  transition backgrounds, tilemap/palette setup, piece-name/summary text,
-  gameplay graphics restoration, and the completion/ending transaction.
-- `src/ship/screen_acknowledgement.c`: timed or button-driven dismissal while the
-  ship background continues animating.
+- `src/ship/ship_screen_and_collection.c`: ship-piece collection and notices,
+  silhouette/background animation, tilemap/palette setup, full piece composition,
+  piece-name/summary text, timed/input dismissal, gameplay restoration, and the
+  completion/ending transaction.
 - `include/ship.h` is the public K&R call interface; it also declares the mailbox
   helpers implemented in `src/earthlings/mailbox_earthling.c`.
 
@@ -60,7 +57,9 @@ Frames/pieces use `render_frame` and `render_piece` from `include/sprites.h`.
 A frame has a four-byte prefix followed by its own count of pieces, not a universal
 fixed twelve-piece tail. Ship-background upload code consumes eight pieces;
 transition upload code consumes four (`AnimateShipScreenBackground`,
-`AnimateTransitionBackground`).
+`AnimateTransitionBackground`). Their shared access views are declared in
+`include/sprite_frame_views.h`; the twelve/four member bounds are not fixed ROM
+frame allocations or strides.
 
 `include/ram_sprites.h` supplies the shared unpack buffer, upload-run queue, and
 hardware sprite table. `include/ram_system.h` supplies `gFrameCounter`, rendering
@@ -94,7 +93,7 @@ visibility, allocation, and contact dispatch rather than a separate ship entity 
 `MapGetShipPieceWorldPosition` converts the ship anchor map cell to world position.
 When that level is the highest reached, retaining its Earthling bank sets
 `gShipScreenState[4]` for a notice (`spawning_and_banks.c`). `Map_DrawShipPiece` in
-`src/map/map_drawing.c` locates the `EARTHLING_SHIP_PIECE` record among the first two
+`src/map/map_drawing_and_controller.c` locates the `EARTHLING_SHIP_PIECE` record among the first two
 loaded Earthlings and draws its map icon.
 
 ## Collection and pending indication
@@ -102,18 +101,18 @@ loaded Earthlings and draws its map icon.
 `ShipPieceAbility` requires the record to have a display object. It finds the piece
 whose assigned level equals the collector's current level, frees the displayed
 object, marks the Earthling kind `EARTHLING_UNUSED`, clears its handle, and invokes
-`ShowShipPieces` with that piece and player (`piece_collection.c`).
+`ShowShipPieces` with that piece and player (`ship_screen_and_collection.c`).
 
 After the display call it starts dialogue 2 for player one or a shared screen;
 player two on a split screen instead receives the short "Jammin" speech. The
-function does not itself zero the assignment entry in its visible body. Which
-screen-controller step performs that mutation remains an open source boundary.
+function delegates assignment mutation to `ShowShipPieces`, which clears the
+selected nonnegative piece entry before composing the display.
 
 `ShipUpdatePendingPieceIndicator` runs from `ProcessEarthlings`. An existing notice
 entity is released if it is no longer at Y = camera Y + 224. A pending notice
 allocates a 96×32, three-sprite, 48-tile object only outside split-screen, positioned
 at camera X + 160 and that fixed Y row with height 112. The pending flag is cleared
-whether or not split-screen allowed a notice (`piece_collection.c`).
+whether or not split-screen allowed a notice (`ship_screen_and_collection.c`).
 
 `ShowRandomUncollectedShipPiece` starts from the low byte of a random draw, advances
 cyclically modulo ten until finding a nonzero assignment, and calls
@@ -121,6 +120,20 @@ cyclically modulo ten until finding a nonzero assignment, and calls
 in `WaitForShipScreenAcknowledgement`; it is not a third player record.
 
 ## Ship-screen rendering and acknowledgement
+
+`ShowShipPieces` disables gameplay graphics, flushes outstanding tiles, initializes
+the ship screen, and clears a nonnegative selected piece from
+`gShipPieceLevelAssignments`. It uses frame-table slot one of
+`IntroAndShipAnimationPointers` and draws collected pieces first, then uncollected
+pieces. Each piece is unpacked and queued; uncollected pixels become silhouettes,
+while the selected piece uses palette three. The generated hardware pieces are
+linked and uploaded before the name/summary display.
+
+If any assignment remains nonzero, it waits for acknowledgement, restores gameplay
+graphics, and redraws open inventories. If none remain, it calls
+`PlayShipCompletionSequence`. A negative piece selector displays progress without
+changing the assignment table; player selector two suppresses the player-specific
+summary and enables either pad for acknowledgement.
 
 `InitializeShipScreenTilemapAndPalettes` fills four eight-row background pages,
 constructs a random star border on a 40×28 screen, selects scroll/window registers,
@@ -135,8 +148,8 @@ call/tick policy, not a duration independent of caller execution.
 
 `FillSpriteOpaquePixels(tile_count)` changes each nonzero packed pixel nibble in the
 current upload-buffer region to palette index fifteen; zero stays transparent.
-[INFERENCE] This is suitable for a silhouette/missing-piece treatment, but the
-missing `ShowShipPieces` body prevents proving every display use from this snapshot.
+`ShowShipPieces` calls it on uncollected pieces, directly establishing that
+silhouette treatment.
 
 `ShowShipPieceName` maps indexes 0–9 to ten embedded names, centers the chosen string
 using its character count, and animates for 90 calls. `ShowMissingShipPieceSummary`
@@ -146,7 +159,7 @@ level, and chooses same-level, ToeJam-level, or Earl-level wording.
 `WaitForShipScreenAcknowledgement` resets the shared time counter and animates until
 240 ticks elapse or A/B/C is pressed on an enabled pad. It also waits for the pressed
 buttons to be released while continuing animation. `PLAYER_TOEJAM`/`PLAYER_EARL`
-enable their respective pad; selector two enables both (`screen_acknowledgement.c`).
+enable their respective pad; selector two enables both (`ship_screen_and_collection.c`).
 
 `RestoreGameplayGraphics` restores level/starfield/inventory-label graphics, the HUD,
 the hardware sprite table, all four gameplay palettes, graphics flags, and a VDP
@@ -158,7 +171,7 @@ showing that the two blocking displays share global presentation resources.
 `PlayShipCompletionSequence` builds a transition background and randomized border,
 resets time, selects `MUSIC_TRANSITION`, animates transition background 20 for 480
 ticks, and runs a staged sound sequence. Sound-driver cooldowns gate transitions
-between claps, "Hallelujah", and "Jammin" (`screen_setup.c`).
+between claps, "Hallelujah", and "Jammin" (`ship_screen_and_collection.c`).
 
 It then restores gameplay graphics, explicitly closes the partner's open inventory,
 selects the primary sprite chain, clears split-screen, hides player HUD sprites,
@@ -188,9 +201,6 @@ Earthling-owned findings are documented in the Earthlings subsystem.
 
 ## Open questions
 
-- The canonical `ShowShipPieces` body is absent. Its callers prove entry modes and
-  helper interfaces, but not exact piece-placement composition, collection-table
-  mutation, all cleanup paths, or the condition that triggers completion.
 - `IntroAndShipAnimationPointers[0]` has no established pointee type; treating the
   pair as an ordinary sequence/frame descriptor would assert more than the header.
 - The collection scan assumes some piece belongs to the player's level; its body

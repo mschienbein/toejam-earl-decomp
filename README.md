@@ -14,7 +14,7 @@ The C code and C function badges count only the code written in C; the functions
 hand-written assembly or compiler runtime are not in that count, because they are built from
 assembly source instead. The typed-data badges count data bytes rebuilt from typed assets.
 
-| Part of the ROM | Built from | REV 02 (checkpoint c029) | REV 00 (checkpoint c029) |
+| Part of the ROM | Built from | REV 02 (checkpoint c030) | REV 00 (checkpoint c030) |
 |---|---|---|---|
 | C functions (603 in each) | matched C in `src/` (MCC68K 3.3K) | **597 functions, 173,328 / 175,412 bytes (98.8%)** | **597 functions, 173,216 / 175,300 bytes (98.8%)** |
 | 36 hand-written routines + 6 compiler runtime helpers | readable 68000 assembly, `src/asm/` (ruling [R007](docs/rulings/R007-assembly-sources.md)) | all 42 | all 42 |

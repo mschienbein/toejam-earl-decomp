@@ -8,24 +8,25 @@ and uploads. World simulation and renderer residency share the same records.
 
 Evidence is `include/entities.h`, `include/sprites.h`,
 `include/ram_sprites.h`, and the source files listed below. Paths refer to the
-current repository-root layout. An interface declaration alone is not claimed
-to reveal a missing function's implementation.
+current repository-root layout. The complete rendering unit supplies both the
+per-piece decoder and the high-level animation-to-upload flow.
 
 ## Files and roles
 
 - `src/sprites/sprite_slots.c`: hardware-slot,
   tile-run, viewport, and dynamic-object allocation/release.
 - `entity_visibility.c`: view/level tests and residency transitions.
-- `entity_sprite_order.c`: attachments, positioning, links, and Y sorting.
+- `entity_sprite_rendering.c`: attachments, positioning, links/Y sorting,
+  single-piece uploads, frame decoding, animation/queue control, raw buffering,
+  animation-motion budget, and pixel clipping/mask removal.
 - `entity_depth.c`: optional shadows and their elevation-dependent appearance.
-- `sprite_frame_preparation.c`: frame-piece decoding, tile-run queuing, raw tile
-  buffering, animation-motion budget, and buffered pixel clipping/mask removal.
 - `load_sprites.c`: hardware table and queued tile-run DMA uploads.
 - `set_sprite.c`: selection/reset of player animation descriptors.
 - `entity_indexes.c`: stable object indices and initial sprite sentinels.
 - `select_first_link.c`, `sprite_links_vdp.c`: live VDP chain-root changes.
 - `link_player_sprites.c`: the special chain used during split-screen wipe.
 - `hide_player_sprites.c`: direct hiding for a flagged player.
+- `include/sprite_frame_views.h`: bounded payload access views for variable frames.
 - `src/asm/rle.s`: sprite decompression; see `docs/subsystems/platform.md`.
 
 ## Data structures and RAM
@@ -40,7 +41,8 @@ to reveal a missing function's implementation.
   and draw-late bits; it is not purely a visibility field.
 - `behavior_flags`: shared graphics, attachment, player suppression, masking,
   hidden state, and collision policy.
-- Two 12-handle sprite arrays, two shadow handles, and `sprite_ready`.
+- Two `ENTITY_SPRITES_PER_VIEW`-handle arrays (12 each), two shadow handles,
+  and `sprite_ready`.
 - `owner` plus three offset/latch bytes, `next`, and stable `entity_index`.
 
 `render_frame` is a four-byte prefix followed by `piece_count` ten-byte pieces;
@@ -50,8 +52,16 @@ Its prefix contains piece count, X/Y motion multipliers, and tile-reuse flag.
 `flipped_x`, `tile_format`, and the raw/packed `tile_data` pointer (`sprites.h`).
 A `timed_animation` pairs sequence/frame pointers with period and Y offset.
 
+`include/sprite_frame_views.h` supplies `render_frame_piece_view` and
+`render_frame_four_piece_view`, each a `header` followed by bounded `pieces`
+access. Their bounds are twelve and four respectively, not allocation sizes or
+ROM-array strides; only `header.piece_count` pieces are present. Keeping these
+views separate from the prefix/descriptor header also avoids unnecessary MCC68K
+heap pressure in large units. `ENTITY_SLOT_COUNT` is 40 and
+`GAMEPLAY_ENTITY_SLOT_COUNT` is the 26-record ordinary gameplay prefix.
+
 `hardware_sprite` is the eight-byte VDP entry: Y, size/link bytes, tile word, X.
-`gHardwareSpriteTable[80]` is its RAM mirror. Aliases name record-zero's link,
+`gHardwareSpriteTable[HARDWARE_SPRITE_COUNT]` is its 80-record RAM mirror. Aliases name record-zero's link,
 record-eleven's byte region, and record-23's primary sentinel link.
 `gViewportSpriteSlotFlags[54]`, `gSpriteTileGroupAllocated[80]`, and
 `gDynamicEntitySlotAllocated[34]` are distinct resource pools.
@@ -141,10 +151,11 @@ with `ENTITY_PLAYER_SUPPRESSED`; core alternates its serviced player in VBlank.
 `SetSprite` chooses ToeJam descriptors only for entity index zero, otherwise
 player-two descriptors; it resets phase/index and computes
 `animation_group_mask = 1 << (sprite_state >> 2)`.
-`ANIMATION_HOLD` is 254, `ANIMATION_LOOP` 255, and frame selection masks with 127.
+`ANIMATION_HOLD` is 254, `ANIMATION_LOOP` 255, and frame selection uses
+`ANIMATION_FRAME_MASK` (127); `ANIMATION_FLIP_HORIZONTAL` selects horizontal flip.
 
 `ProcessEntityAnimationMotion` skips inactive and speech-bubble records.
-At an imminent frame boundary it enforces a nominal 112-tile total, resolves
+At an imminent frame boundary it applies `SPRITE_FRAME_TILE_BUDGET` (112), resolves
 loop/hold commands, identifies reusable graphics, and invokes the motion callback
 for animation-controlled axes. This function is not the complete decoder.
 `AppendSpriteTilesToBuffer` copies complete 32-byte tiles and advances the offset.
@@ -166,9 +177,24 @@ viewport's hardware size/tile fields, derives palette bits from the format, and
 appends a destination/count upload pair when a new nonempty tile run is produced.
 The source does not add an upload-buffer capacity check.
 
-`QueueSpritePieceTiles` and `UpdateAndQueueEntitySprites` still lack bodies in the
-supplied integration tree, leaving high-level queue order and countdown advancement
-open. Core calls the latter in its odd iteration and uses VBlank for loading.
+`QueueSpritePieceTiles` briefly pauses graphics while saving and clearing the
+pending-upload flag. It resumes the graphics gate, decodes one piece, appends its
+destination/count run, then restores the saved pending flag. Unlike the full frame decoder, it chooses
+interleaved versus contiguous RLE from the format sign; it has no raw-tile branch.
+
+`UpdateAndQueueEntitySprites` suspends inventory camera state and waits for the
+previous upload. With a shared-view inventory open it starts at the inventory
+records; otherwise it walks all `ENTITY_SLOT_COUNT` records. It skips inactive,
+shared-tile, speech-bubble, and completed ready records, decrements animation
+countdowns, resolves loop/hold/flip commands, and prepares each resident viewport.
+Tiles prepared for the first view are reused by the second. It tracks the tile
+budget, but the over-budget rejection requires a nonzero accumulated total, so
+that test is not a general buffer-capacity check.
+
+After ordinary frames, enabled shared-copy mode calls `JamOutSynchronizeEntityCopies`.
+The function then sorts, positions world and inventory sprites, restores inventory
+camera state when needed, builds viewport links, and requests the next upload.
+Core calls this controller in its odd iteration and uses VBlank for loading.
 
 ## Interactions
 
@@ -188,8 +214,6 @@ open. Core calls the latter in its odd iteration and uses VBlank for loading.
 
 ## Open questions
 
-- Missing queue/controller bodies still limit the account of animation countdown
-  advancement and high-level ordering; the frame decoder itself is now available.
 - The upload buffer's declared span must not be confused with a checked capacity.
 - Shared flag bytes encode rendering and gameplay policy; a clean separation
   requires tracing all consumers, not merely replacing the hardware table.

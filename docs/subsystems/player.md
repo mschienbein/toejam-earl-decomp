@@ -14,16 +14,17 @@ owns edge hops and health sharing. Targeting/steering live in `src/earthlings`,
 and camera positioning/split-view animation live in `src/camera`; those are not
 counted as player implementation here. Identifiers match the repository headers.
 
-Several important interfaces have declarations/callers but no canonical C body in
-the inspected `src`: `SpriteChecks`, `PlayerProcessTerrainMotion`, and `Player_Youch`.
-`CheckPlayerFalling` and `MapClearTilePriorityNearPlayer` now have matched bodies
-in `src/player/active_present_falling_and_respawn.c`.
-The three remaining missing implementations are not reconstructed from their names.
+`PlayerProcessTerrainMotion` remains the unmatched terrain-motion body behind the
+installed player callbacks. `SpriteChecks` and `Player_Youch` now have matched
+implementations in the complete movement and Earthling-damage units below. Shared
+collision queries remain separate classification decisions (`docs/RESUME.md`);
+this document does not invent their missing internals.
 
 ## Files and roles
 
 - `setup_player.c`: player objects, hardware sprite links, inventory-object chains.
-- `sprite_movement.c`: directional speed/animation selection and phase preservation.
+- `sprite_checks_and_movement.c`: input/state/bounds filtering, directional
+  speed/animation selection, and phase preservation.
 - `entity_motion_terrain.c`: proposed-position terrain resolution, `StopPlayer`,
   and the two installed player terrain callbacks.
 - `process_movement.c`: fixed-point integration of all linked active entities,
@@ -38,9 +39,9 @@ The three remaining missing implementations are not reconstructed from their nam
 - `sleep.c`: schoolbook, idle sleep, wake effects, and wake-input checks.
 - `edge_hop_and_clap.c`: automatic terrain-edge hop and two-player health sharing.
 - `entity_motion_proximity.c`: same-level proximity/range predicates.
-- `earthling_player_eligibility.c`: common allowed-player-state predicate.
-- `contact_cupid_and_touch.c`: squish, Hula, Cupid, chicken/boogie, whirlwind,
-  bouncing damage, and decoy attack-range behavior.
+- `earthling_damage_reactions.c`: common allowed-player-state predicate, hurt
+  eligibility/knockback/damage initiation, squish, Hula, Cupid, chicken/boogie,
+  whirlwind, bouncing damage, and decoy attack-range behavior.
 - `mole.c`: victim capture, inventory theft, and stolen-present animation setup.
 - `hottub_ability.c`: entering, bathing/healing, and leaving the hot tub.
 - `ability_helpers.c`: level-zero fixed items/positions and lemonade reward flow.
@@ -106,6 +107,12 @@ Thus a handler call, a simulation step, and one VBlank are not interchangeable.
 `CheckAButton`, handles pause/map selection, then calls `SpriteChecks` for active
 players whose menus are closed. Its map entry is a blocking call (`startup_and_main_loop.c`).
 
+`SpriteChecks` first rejects skip-physics and input-blocked animation states; Hula
+has its own countdown/return-to-idle branch. It applies directional remapping,
+world bounds, elevator/doorway input gates, and leaning-state restrictions before
+calling `PlayerChooseDirectionalMovement`. Thus this input filter is separate
+from the still-unmatched terrain-motion callback and from fixed-point integration.
+
 For each active, menu-closed player, `ProcessPlayers` runs this exact ordered chain:
 teetering; hurt/idle; spring shoes; descending terrain; phased jump; skates;
 jump/landing animation; present completion/terrain pose; sinking; death; shooting;
@@ -128,7 +135,7 @@ elevator approach input gates, and chooses horizontal/vertical/diagonal velociti
 appropriate directional family for active abilities/terrain/action input, and
 preserves animation frame/duration when changing within the same family. Sequence
 control bytes can invalidate a preserved frame. Directional animation and movement
-mode therefore jointly control motion (`sprite_movement.c`).
+mode therefore jointly control motion (`sprite_checks_and_movement.c`).
 
 `PlayerApplyTerrainDestination` reads the proposed tile in the local cache. Ground
 properties through `TERRAIN_WALKABLE_MAX` or positive elevation allow the proposed
@@ -251,8 +258,18 @@ two-choice interactions from idle sleep; REV 00 does not (`sleep.c`).
 `PlayerCanReceiveEarthlingEffect` combines the per-player interaction exclusion byte
 with permitted sprite/flag masks. `Player_Squish` applies direct type-defined damage;
 Hula induces nearby dance; Cupid chooses horizontal/falling attacks; chicken and
-boogie helpers use the shared hurt interface and state selection (`contact_cupid_and_touch.c`).
+boogie helpers use the shared hurt interface and state selection (`earthling_damage_reactions.c`).
 `EarthlingStartHorizontalAttack` and `EarthlingCheckDecoyAttackRange` also target decoys.
+
+`Player_Youch` returns one for a rejected hit, using shark-specific water-state
+eligibility or the common effect predicate. An accepted hit chooses a hurt pose
+and a sixteen-pixel trial displacement away from the attacker; an elevator
+collision can prevent that displacement, while current velocity can override
+the facing pose. It sets motion/shadow state and height according to existing
+sinking, and records damage from `EarthlingDefinitions` in
+`gPlayerPendingHurtDamage` for later hurt recovery rather than subtracting health
+immediately. Dentist hits also select the attacker's attack state and stop its
+motion. The accepted path emits speech/sampled sound and returns zero.
 
 `WhirlWindAbility` consumes the source Earthling and captures the player for 225
 updates in `PLAYER_ANIM_WHIRLWIND`; `PlayerUpdateWhirlwindAndRecovery` performs
@@ -290,11 +307,9 @@ Matching qualifications and uncertain historical spellings are not extra bug cla
 
 ## Open questions
 
-- Missing `SpriteChecks` and `PlayerProcessTerrainMotion` bodies leave the complete
-  input-to-destination dispatch path open; the shown directional and terrain helpers
-  establish important parts, not the entire missing controller.
-- The missing `Player_Youch` body leaves common hurt eligibility and damage
-  initiation outside this source-only account.
+- The missing `PlayerProcessTerrainMotion` body leaves the complete frame-motion
+  callback-to-destination dispatch open; input filtering and hurt initiation now
+  have matched implementations.
 - `animation_group_mask` is derived from `sprite_state`; named group constants
   describe individual families, but composite eligibility masks still require all consumers.
 - `PlayerAdvanceToNextLevel` and relocation use some explicit map-zero queries even

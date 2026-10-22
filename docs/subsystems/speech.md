@@ -9,21 +9,22 @@ The two meet at explicit `PlaySoundEffect` calls, such as the sneeze event.
 
 Evidence is the speech C/header implementation and canonical-name records in
 `config/rev02/names.json` where identified below. Paths are repository-root paths.
-Missing bodies are distinguished from observed callers; descriptor details are
-not reverse-invented from their names.
+Text packing, bubble ownership, and dialogue scheduling now have matched bodies
+in the complete speech unit; canonical names are not claimed historical spellings.
 
 ## Files and roles
 
-- `src/speech/speech_core.c`: lifetime override, bubble construction, clearing,
-  and checking whether a speaker already has speech or a pending reply.
-- `src/speech/speech_update.c`: expiration, reply timers, sneeze/reunion triggers,
-  and the control-remap-related conversation branch.
+- `src/speech/speech_and_dialogue.c`: text tile uploads, lifetime override, bubble
+  construction/clearing, speaker occupancy, dialogue scheduling, expiration/reply
+  timers, sneeze/reunion triggers, and the control-remap conversation branch.
 - `src/speech/speech_bubble_lookup.c`: `IsSpeechBubbleEntity`.
 - `include/speech.h`: K&R interfaces, including `StartDialogue` and text queuing.
 - `include/ram_speech.h`: four bubble slots, two replies, lifetime override/aliases.
 - `include/entities.h`: shared object fields and attachment conventions.
 - `include/sprites.h`: runtime frame/piece format.
-- `include/assets_ui.h`: `SpeechBubbleTextFrame` and font resources.
+- `include/assets_ui.h`: `SpeechBubbleTextFrame`, font resources, and
+  `DialogueDescriptors[58]`.
+- `include/ui.h`: `dialogue_descriptor` fields and reply-speaker policy.
 - `src/ui/inventory.c`: shared character mapping/font behavior, not bubble ownership.
 - `src/sprites/entity_visibility.c`: deliberately excludes bubbles from ordinary
   automatic viewport allocation.
@@ -51,7 +52,12 @@ sound path, not the bubble-expiration loop shown here.
 The bubble's ordinary object record carries level, geometry, graphics reservation,
 view bits, frame readiness, and optional speaker attachment.
 The runtime text frame is a shared frame resource, not an independent animation
-sequence for each line (`speech_core.c`, `assets_ui.h`).
+sequence for each line (`speech_and_dialogue.c`, `assets_ui.h`).
+
+`dialogue_descriptor` contains `first_speaker`, `reply_speaker`, `first_line`,
+`delay`, and `reply`. `DialogueDescriptors` is a declared 58-entry table of those
+records. These scripted exchanges are distinct from the elevator
+`ride_speech` records (`include/ui.h`).
 
 ## Bubble creation flow
 
@@ -59,7 +65,7 @@ sequence for each line (`speech_core.c`, `assets_ui.h`).
 
 1. Resolve the source object from the supplied speaker index.
 2. Reject a source without either viewport-residency bit.
-3. Reject player speakers in the specifically tested sprite state 117.
+3. Reject player speakers in `PLAYER_ANIM_SLEEP`.
 4. When replacement/attachment is requested, remove existing attached bubbles
    whose owner is this speaker.
 5. Choose the first free speech slot, or the slot with smallest remaining
@@ -92,7 +98,7 @@ allocation, even when the text/event itself is otherwise valid.
 
 Attached bubbles use `UpdateAttachedEntityPosition` in the sprite subsystem.
 Their owner is an entity index, and the three attachment bytes are interpreted
-as offsets by that renderer path (`entity_sprite_order.c`).
+as offsets by that renderer path (`src/sprites/entity_sprite_rendering.c`).
 `GenerateSpeech` calls `PrepareEntitySpriteFrame` directly and sets readiness;
 normal animation/visibility machinery recognizes bubble entities specially.
 `IsSpeechBubbleEntity` scans the four handles only for entity indices six or
@@ -100,11 +106,13 @@ above. It does not identify arbitrary text frames by their graphics pointer.
 `ProcessEntityAnimationMotion` and `UpdateEntityViewportSprites` use this predicate
 instead of treating speech as an ordinary animated resident (`sprites` sources).
 
-`QueueSpeechTextTiles` has no body in the supplied integration tree.
-Its canonical name record says it centers a 13-tile line using
-`RuntimeTextFontTiles`, shared character mapping, padding, and a queued tile run
-(`config/rev02/names.json`, `QueueSpeechTextTiles` evidence).
-That metadata supports resource identification, not a complete glyph-packing spec.
+`QueueSpeechTextTiles` copies the reserved bubble-prefix tile, then centers the
+caller-clamped text within `SPEECH_TEXT_MAX_GLYPHS` (12) columns using blank tiles
+before and after it. `TextMapCharacterToGlyph` maps each input byte; a glyph equal
+to `SPEECH_BUBBLE_PREFIX_GLYPH` is advanced so it does not reuse the reserved
+prefix. Odd lengths add one trailing pad tile. The function queues a
+`SPEECH_TEXT_UPLOAD_TILES` (13) run from `RuntimeTextFontTiles`; it does not
+independently clamp a caller-supplied length.
 
 ## Expiration, clearing, and reply delivery
 
@@ -140,11 +148,19 @@ A final loop checks only slot zero for a control-remap entity, proximity below
 30 X/20 Y, and a one-in-256 masked-random match to value two. Its second-player
 branch is unreachable with the observed loop bound. The source marks this bug.
 
-`StartDialogue` itself is absent from the supplied integration sources.
-Its canonical-name evidence describes dialogue descriptors, initial/reply
-speaker selection, unavailable-player/occupied-slot rejection, immediate opening
-speech, and a delayed reply. Descriptor layout, exact delays, and complete
-speaker rules remain outside direct C-body evidence in this assignment.
+`StartDialogue` chooses the first free delayed-reply slot, returning -1 when
+both are occupied. The descriptor can force the opening speaker to either
+player; otherwise the caller's speaker is retained, with a duplicate-other-slot
+check. Reply speaker values zero/one force a player,
+`DIALOGUE_REPLY_FIRST_SPEAKER` reuses the resolved opening speaker, and other
+values use the resolved speaker XOR one. An absent/menu-open player cannot open
+dialogue.
+
+It immediately requests the opening line when present. A reply is scheduled
+with the descriptor's `delay` only when the view is shared or both lines use
+the same speaker. A player reply recipient must also be alive with no menu open. The return value is the
+selected slot, not a bubble handle: failure to allocate the opening bubble does
+not itself change that result or create an allocation retry.
 
 ## Interactions
 
@@ -166,12 +182,8 @@ speaker rules remain outside direct C-body evidence in this assignment.
 
 ## Open questions
 
-- `StartDialogue` and `QueueSpeechTextTiles` lack represented bodies; name-record
-  descriptions must not be mistaken for recovered descriptor/packing formats.
 - The lifetime override narrows to a signed byte; accepted content ranges are
   not validated by the shown setter or constructor.
-- Sprite state 117 is used numerically here; its intended speech-specific
-  meaning is not established by this function alone.
 - No retry/queue policy beyond two reply slots is observed.
 
 ## Port notes

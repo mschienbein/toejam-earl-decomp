@@ -18,14 +18,14 @@ transient-cleanup primitives. Identifiers refer to source functions/shared state
 - `main_menu.c`: character/game/controller menus, cursor/header entities,
   controller-presence test, game-over timeout/reset.
 - `pause.c`: global pause display, input sequence, and final-level reset choice.
-- `hud_initialization.c`: level digits, action icons, maximum-health formula.
-- `hud_health_update.c`: health display interpolation, life-icon uploads/placement.
-- `hud_status.c`: full HUD, ranks, promotion checks, initial resources, death/swim checks.
+- `hud.c`: level digits, action/life icons, maximum-health and health-bar
+  initialization/interpolation, full HUD, ranks, promotion, resources, and death/swim checks.
 - `window_panels.c`: tile borders, nested panels, pause choices, and transient cleanup.
 - `include/ram_ui.h`: menu state, aliases, inventory objects, choice/life-request state.
 - `include/assets_ui.h`: maps, labels, fonts, icon and menu-table resources.
-- `include/ui.h`: eight-byte `menu_item` and sixteen-byte elevator `ride_speech`.
-- `include/ui_calls.h` and `menu_calls.h`: shared interfaces, including absent bodies.
+- `include/ui.h`: eight-byte `menu_item`, sixteen-byte elevator `ride_speech`,
+  and the shared `dialogue_descriptor` used by speech.
+- `include/ui_calls.h` and `menu_calls.h`: shared UI/menu interfaces.
 
 ## Key state and storage aliases
 
@@ -46,7 +46,7 @@ Mailbox items/prices have three entries per player.
 `gMenuCursorEntity` and `gMenuHeaderEntity` are dynamic object handles.
 
 HUD uses fixed hardware sprite records: level digits 11..14, health bars 15..18,
-lives 19..20, and action icons 21..22 (`hud_*` files).
+lives 19..20, and action icons 21..22 (`hud.c`).
 `gHudDisplayedHealth` is distinct from actual health, and death checks read both.
 `gPlayerSelection`, rank, points, lives, bucks, powerups, and restore-health state
 come from player/effect RAM interfaces, not a self-contained UI model.
@@ -174,7 +174,12 @@ base health, no powerup, and fresh HUD resources.
 before death, decrements lives subject to its observed last-life branch, handles
 saved health during swimming, drains health according to `gFrameCounter & 12`,
 and invokes promotion. Presentation state therefore affects gameplay timing.
-`HudInitializeHealthBar` is called here but its body is absent from this tree.
+`HudInitializeHealthBar` resets displayed health, installs the two bar sprites,
+clears the `HUD_HEALTH_BAR_TILES` tile span, and paints the maximum-capacity
+bar pattern from character base health plus the rank bonus for active players.
+Its immediate path DMA-uploads the pixels and animates displayed health toward
+actual health; its queued path appends the tile run, waits for the upload request
+to clear, and leaves displayed health at zero.
 
 ## Main menus and pause
 
@@ -218,7 +223,6 @@ telephones. Its cross-subsystem cleanup role must not be mistaken for window-onl
 
 ## Open questions
 
-- `HudInitializeHealthBar` is called here but its body is not represented.
 - The exact historical declarations are not recovered by a matching qualification;
   compiler-shape comments should not be presented as original design intent.
 - Input/action numeric states remain in several places despite named constants elsewhere.

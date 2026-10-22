@@ -14,5 +14,34 @@
     },
     "configure": ["--disable-nls", "--disable-werror", "--disable-gdb", "--disable-gdbserver", "--disable-sim", "--disable-gprofng", "--disable-plugins", "--without-zstd", "--enable-deterministic-archives"],
     "make_variables": {"MAKEINFO": "true"}
+  },
+  "emu2": {
+    "description": "emu2, a small DOS emulator (GPL-2.0), runs the MS-DOS-hosted Microtec tools non-interactively. Built from a pinned commit.",
+    "git": "https://github.com/dmsc/emu2.git",
+    "commit": "9d8698d06e67359bc8b230c2d19d5b1503e60819",
+    "tree": "f14d9394b740f08142b78c53becbfc91b195816d"
+  },
+  "mcc68k": {
+    "description": "Microtec Research MCC68K C cross compiler 3.3K (MS-DOS) with ASM68K 6.6A, from the archive.org floppy images. Proprietary abandonware acquired under ruling R006; private cache only, never committed or redistributed.",
+    "version": "3.3K",
+    "url": "https://archive.org/download/mri-68-k-c-cross-compiler-toolchain/MRI-68K-C-Cross-Compiler-Toolchain.zip",
+    "size": 65572238,
+    "sha256_archive": "0dd99fb6c323da9938b3635fa384a232d0eb32f45a353721faa6740f9c539dc7",
+    "images": {
+      "MCC68K-v3.3K-Vol-1-of-2.img": "MCC68K",
+      "MCC68K-v3_3K-Vol-2-of-2.img": "MCC68K",
+      "ASM68K-v6_6A-Vol-1-of-1.img": "ASM68K"
+    },
+    "assemble": {
+      "MCC68K/MCC68K.EXE": ["MCC68K/MCC68K.EX1", "MCC68K/MCC68K.EX2"]
+    },
+    "sha256": {
+      "MCC68K/MCC68K.EXE": "26275720df55710fff27a62e9b2fe936ffc203f682fac944cd5d7c2e4ac1c3a1",
+      "MCC68K/68000/MCC68KAB.LIB": "cfdba32467e7294e68eca99439d46f2fbe26603dc7b31873dc24f09e1095e761",
+      "MCC68K/68000/MCC68KPC.LIB": "179d9d3618af4e3cf2ec6daf6b4bee556a43edb952870b501a4813f1a8084e19",
+      "MCC68K/68000/MCC68KA5.LIB": "92aa976ee25fba2b272e1273e3185637ac1ee9035ebfba1d398b8caef2d23083",
+      "ASM68K/ASM68K.EXE": "ef93e39dcead01cd4f8ee5b7529f7b2301459918c04f6c5509ef0d688a5a1a20",
+      "ASM68K/LNK68K.EXE": "62ebf28cf25909b97409a2b227ed27f744b312ec515e992b9de25d58666348fa"
+    }
   }
 }

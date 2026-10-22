@@ -1,5 +1,26 @@
 # Status (current entry first)
 
+## 2026-10-21 (evening) — goal run started: ByteMatch live, four lanes, names and denominator plumbing
+
+**Result.**
+- ByteMatch registered and fully configured (`docs/BYTEMATCH.md`): platform id `md`, IGDB game
+  8389, art, GitHub App on the repository; first ingested commit `4debbc9` (0 / 651 functions).
+- Rulings R003 (import the existing disassemblies' names, layouts and formats with attribution),
+  R004 (sub-agents: `openai-codex/gpt-6.1-sol` max), R005 (up to four at once).
+- Four sub-agent lanes running (log: genesis-experiments `records/tje/subagent-log.jsonl`):
+  CompilerHunter (fingerprints + free candidates), Cartographer (names, RAM/struct headers, typed
+  data units, classification), Toolsmith (`audit_public.py`, `packet.py`, `diff.py`), Archaeologist
+  (runtime-helper survey across the Genesis library, documentary evidence, DOS emulator).
+- Main: `tools/names.py` + build/report support for imported names (labels, RAM and ROM-data
+  symbols); `tools/denominator.py` hash-chained denominator history, r1 recorded (catalogues only)
+  and verified in CI. 23 tests pass; both revisions still PASS. Pending an independent review before
+  push.
+
+**Observed (Main).** The 32-bit helpers take their operands in `d0`/`d1`, return in `d0`, use
+`a0`/`a1` as scratch and preserve `d2`: a register calling convention, unlike GCC's stack-based
+`__mulsi3`/`__divsi3`; unsigned div/mod share one body selected by a flag in `a0`
+(`0x027240`/`0x027248`). [INFERENCE] GCC 1.x/2.x with its stock runtime is unlikely.
+
 ## 2026-10-21 — harness milestone 1: both revisions rebuild byte-identically
 
 **Result.** `tools/build.py` rebuilds REV 02 and REV 00 byte-identically from generated GNU assembly

@@ -62,7 +62,10 @@ def parse(document: dict, version: str | None = None) -> dict[int, Name]:
             raise NamesError(f"names: {name}: RAM name outside 0xFF0000-0xFFFFFF")
         if kind != "ram" and not 0 <= address < ROM_END:
             raise NamesError(f"names: {name}: ROM name outside the cartridge space")
-        for alias in [name, *entry.get("aliases", [])]:
+        aliases = [a if isinstance(a, str) else a.get("name", "") for a in entry.get("aliases", [])]
+        for alias in [name, *aliases]:
+            if alias != name and (not IDENT.match(alias) or RESERVED.match(alias)):
+                raise NamesError(f"names: alias {alias!r} of {name} is not a usable identifier")
             if alias in seen and seen[alias] != address:
                 raise NamesError(f"names: {alias!r} names two addresses")
             seen[alias] = address

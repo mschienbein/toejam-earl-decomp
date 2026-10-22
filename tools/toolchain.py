@@ -27,6 +27,16 @@ def tool(target: str, name: str) -> Path:
     return path
 
 
+def emu2_path() -> Path:
+    """The pinned emu2 DOS emulator binary (built by tools/setup.py)."""
+    return INSTALL / f"emu2-{LOCK['emu2']['commit'][:12]}" / "emu2"
+
+
+def mcc68k_dir() -> Path:
+    """The extracted Microtec tools: MCC68K/ (compiler, headers, libraries) and ASM68K/."""
+    return INSTALL / f"mcc68k-{LOCK['mcc68k']['version']}"
+
+
 def file_sha256(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as stream:

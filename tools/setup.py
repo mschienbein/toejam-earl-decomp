@@ -1,12 +1,15 @@
 """Provision the pinned toolchain from toolchain.lock.json into .cache/toolchain/.
 
-    python tools/setup.py            # build GNU binutils for every pinned target (m68k-elf, z80-elf)
+    python tools/setup.py            # binutils (m68k-elf, z80-elf), emu2, Microtec MCC68K 3.3K
     python tools/setup.py --check    # verify what is installed without downloading or building
 
-The GNU tarball is checked against its pinned size and sha256 before use. Each target is built out of
-tree into its own prefix; afterwards every installed program is hashed and its `--version` banner
-recorded in .cache/toolchain/installed.json, which builds bind into their receipts. Nothing here is
-committed. Needs a host C compiler and make (no system-wide installation).
+Every download is checked against its pinned size and sha256 before use; emu2 is fetched at a
+pinned commit and its tree hash verified. binutils targets and emu2 are built from source; the
+Microtec tools are extracted from the archived floppy images (FAT12) and the compiler executable
+is reassembled from its two overlay parts. Afterwards every installed program is hashed (and
+binutils' `--version` banner recorded) in .cache/toolchain/installed.json, which builds bind into
+their receipts. Nothing here is committed. Needs a host C compiler, make and git (no system-wide
+installation).
 """
 from __future__ import annotations
 
@@ -18,10 +21,13 @@ import subprocess
 import sys
 import tarfile
 import urllib.request
+import zipfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from toolchain import INSTALL, INSTALLED, LOCK, ROOT, binutils_prefix, file_sha256  # noqa: E402
+import fat12  # noqa: E402
+from toolchain import (INSTALL, INSTALLED, LOCK, ROOT, binutils_prefix, emu2_path, file_sha256,  # noqa: E402
+                       mcc68k_dir)
 
 DOWNLOADS = ROOT / ".cache/downloads"
 WORK = ROOT / ".cache/work"
@@ -74,6 +80,54 @@ def build_binutils(target: str, tarball: Path, jobs: int) -> Path:
     return prefix
 
 
+def build_emu2(jobs: int) -> Path:
+    """emu2 at the pinned commit (tree hash verified), built with the host compiler."""
+    spec = LOCK["emu2"]
+    binary = emu2_path()
+    if binary.is_file():
+        return binary
+    source = WORK / "emu2"
+    shutil.rmtree(source, ignore_errors=True)
+    source.mkdir(parents=True)
+
+    def git(*args: str) -> str:
+        return subprocess.run(["git", *args], cwd=source, check=True, capture_output=True, text=True).stdout.strip()
+
+    print(f"fetching emu2 {spec['commit'][:12]}", flush=True)
+    git("init", "-q")
+    git("fetch", "-q", "--depth", "1", spec["git"], spec["commit"])
+    git("checkout", "-q", "FETCH_HEAD")
+    if git("rev-parse", "HEAD") != spec["commit"] or git("rev-parse", "HEAD^{tree}") != spec["tree"]:
+        raise SetupError("emu2: fetched commit/tree differ from the pinned ones")
+    subprocess.run(["make", f"-j{jobs}"], cwd=source, check=True, stdout=subprocess.DEVNULL)
+    binary.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source / "emu2", binary)
+    shutil.copy2(source / "LICENSE", binary.parent / "LICENSE")
+    shutil.rmtree(source)
+    return binary
+
+
+def install_mcc68k() -> Path:
+    """Extract the Microtec disks into .cache/toolchain/mcc68k-<version>/ and verify the pinned files."""
+    spec = LOCK["mcc68k"]
+    dest = mcc68k_dir()
+    if not all((dest / rel).is_file() for rel in spec["sha256"]):
+        archive = fetch(spec["url"], spec["size"], spec["sha256_archive"])
+        shutil.rmtree(dest, ignore_errors=True)
+        with zipfile.ZipFile(archive) as bundle:
+            for image, folder in spec["images"].items():
+                for path, data in fat12.extract(bundle.read(image)).items():
+                    out = dest / folder / path
+                    out.parent.mkdir(parents=True, exist_ok=True)
+                    out.write_bytes(data)
+        for target, parts in spec["assemble"].items():
+            (dest / target).write_bytes(b"".join((dest / part).read_bytes() for part in parts))
+    for rel, digest in spec["sha256"].items():
+        if file_sha256(dest / rel) != digest:
+            raise SetupError(f"mcc68k: {rel} does not match its pinned sha256")
+    return dest
+
+
 def record() -> dict:
     spec = LOCK["binutils"]
     result = {"schema_version": 1, "binutils": {"version": spec["version"], "sha256": spec["sha256"], "targets": {}}}
@@ -87,6 +141,13 @@ def record() -> dict:
             banner = subprocess.run([str(path), "--version"], capture_output=True, text=True, check=True).stdout.splitlines()[0]
             programs[name] = {"path": str(path.relative_to(ROOT)), "sha256": file_sha256(path), "banner": banner}
         result["binutils"]["targets"][target] = programs
+    emu2 = emu2_path()
+    if not emu2.is_file():
+        raise SetupError(f"{emu2} missing after install")
+    result["emu2"] = {"commit": LOCK["emu2"]["commit"], "path": str(emu2.relative_to(ROOT)), "sha256": file_sha256(emu2)}
+    mcc = mcc68k_dir()
+    result["mcc68k"] = {"version": LOCK["mcc68k"]["version"],
+                        "files": {rel: file_sha256(mcc / rel) for rel in sorted(LOCK["mcc68k"]["sha256"])}}
     return result
 
 
@@ -100,6 +161,8 @@ def main() -> int:
         tarball = fetch(spec["url"], spec["size"], spec["sha256"])
         for target in spec["targets"]:
             build_binutils(target, tarball, args.jobs)
+        build_emu2(args.jobs)
+        install_mcc68k()
     current = record()
     INSTALL.mkdir(parents=True, exist_ok=True)
     if args.check:

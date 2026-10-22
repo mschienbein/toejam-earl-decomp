@@ -1,7 +1,33 @@
 # Compiler identification
 
-Matching C needs the compiler (and version, options, runtime) that built the game. It is not known.
-This file collects the evidence; each claim is observed in the ROM or cited, else marked [INFERENCE].
+Matching C needs the compiler (and version, options, runtime) that built the game. This file collects
+the evidence; each claim is observed in the ROM or cited, else marked [INFERENCE].
+
+## Identified: Microtec Research MCC68K (2026-10-21)
+
+- **Byte-identical reproduction.** C written independently for two REV 02 functions, compiled by
+  Microtec MCC68K **3.3K** (default options) under the free DOS emulator emu2, with the compiler's
+  assembly output passed to GNU `as` after directive-only adaptation (sections, `XDEF`/`XREF`; no
+  instruction changed) and linked at the original address, reproduces both exactly:
+  `0x0011CA` (14 bytes: a `short` count-down loop) and `0x001262` (36 bytes: `(x - 1) % 6` on a
+  `short`, including the native `divs` with a `bvc` fallback to the `lmodt` helper at `0x027154`
+  and the redundant `move.w d0,d0` sign-extension sequence seen throughout the ROM). First found by
+  the CompilerHunter lane, reproduced independently by Main with different source.
+- **Historical fit.** Sega of America's Genesis Technical Bulletin #1 (1991-03-13) corrects the
+  Microtec C examples shipped with the development kit (`TESTC68K.bat`, `asm68k`, `LNK68K`,
+  option `STRINTEXT`); the Microtec 68000 reference manual of September 1991 documents the observed
+  frame policy, preserved/volatile registers and argument cleanup.
+- **Toolchain source.** archive.org `mri-68-k-c-cross-compiler-toolchain` (MCC68K 3.3K + ASM68K
+  6.6A, 1989–90), acquired under ruling R006; private cache only.
+- **Runtime library: the stock MCC68K 3.3K 68000 runtime.** Parsed properly as IEEE-695 objects
+  (load records split instructions, so a raw byte search of the `.LIB` files finds nothing), the
+  3.3K libraries `MCC68KAB.LIB`, `MCC68KA5.LIB` and `MCC68KPC.LIB` contain all five ROM helpers
+  byte for byte: `abs` (`0x02714A`), `lmodt` (`0x027154`), `ldivt` (`0x0271B2`), `ulmult`/`lmult`
+  (`0x027214`), and `ulmodt`/`uldivt` (`0x027240`/`0x027248`, one body). Found by the Archaeologist
+  lane; the disks were manufactured 1990-03-05, the release notes are dated 1989-07-28.
+- **Still open:** the options used for the whole game (3.3K with defaults reproduces both probes) and
+  the assembler's branch sizing (the ROM has 235 forward word branches that would fit a byte
+  displacement, as a one-pass assembler sizes forward references; ASM68K 6.6A is on the same disks).
 
 ## Evidence that the game is compiled C
 

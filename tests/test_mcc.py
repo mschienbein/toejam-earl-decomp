@@ -103,6 +103,12 @@ class AdaptTest(unittest.TestCase):
         self.assertIn("\tPEA\t(ext).l", lines)                  # another file: absolute
         self.assertIn("\t.fill\t1,1,0", lines)                  # DCB.B count,value
 
+    def test_word_and_long_data_are_aligned_like_asm68k(self):
+        listing = "\tSECTION\t9,,C\n.f:\n\tRTS\n_L1:\tDC.B\t1\n_L2:\tDC.W\t2\n\tDS.L\t1\n"
+        lines = mcc.adapt(listing, "u").splitlines()
+        self.assertEqual(lines[lines.index("_L2:") - 1], "\t.even")   # the label moves with its data
+        self.assertEqual(lines[lines.index("\t.space\t(1)*4") - 1], "\t.even")
+
     def test_microtec_dot_prefix_and_hex_are_respelled(self):
         self.assertIn("loop:", self.lines)
         self.assertIn("\t.globl loop", self.lines)

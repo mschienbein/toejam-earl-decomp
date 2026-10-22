@@ -211,6 +211,8 @@ def adapt(listing: str, unit: str, near: dict[str, str] | None = None) -> str:
     local = code_labels(listing)
     for section, statement in parse(listing):
         word = statement.mnemonic.upper()
+        if re.fullmatch(r"(?:DC|DCB|DS)\.[WL]", word):
+            lines.append("\t.even")   # ASM68K aligns word and long data (and its label) to an even address
         if statement.label and word != "IDNT":
             if section == CODE_SECTION:
                 defined.add(statement.label)

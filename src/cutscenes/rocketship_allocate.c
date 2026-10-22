@@ -18,7 +18,7 @@ void CutsceneAllocateRocketshipPair()
     object->tile = 0;
     object->current_frame = Spr_IntroRocketshipDodging[0];
     object->sprite_ready = 0;
-    object->sequence = (char *)IntroHeldFrameStreams;
+    object->sequence = &IntroHeldFrameStreams[0].frame;
     object->frames = Spr_IntroRocketshipDodging;
     object->frame_phase = 1;
     object->frame_duration = 1;

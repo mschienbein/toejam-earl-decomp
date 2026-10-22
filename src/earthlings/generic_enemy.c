@@ -45,7 +45,7 @@ struct object_state *object;
         if (earthling->kind == EARTHLING_DENTIST || earthling->kind == EARTHLING_DENTIST_VARIANT) {
             if (!gPcmEffectCooldownTicks && object->frame_duration > 3 &&
                 earthling->saved_x_or_status) {
-                PlaySoundEffect((long)Sfx_DentistLaugh, 50, 0);
+                PlaySoundEffect((long)Sfx_DentistLaugh, AUDIO_PRIORITY_NORMAL, 0);
                 earthling->saved_x_or_status = 0;
             }
             if (object->frame_duration)

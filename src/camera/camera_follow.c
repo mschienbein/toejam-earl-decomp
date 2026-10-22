@@ -1,3 +1,4 @@
+#include "player_animation.h"
 #include "player_animation_groups.h"
 #include "entities.h"
 #include "sprites.h"
@@ -41,9 +42,9 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
     if (entity->frame_phase && (entity->animation_motion_axes & ANIMATION_MOTION_XY)) {
         for (frame_count = 0; ; frame_count++) {
             sequence_byte = entity->sequence[frame_count];
-            if ((sequence_byte & 0xf0) == 0xf0)
+            if ((sequence_byte & ANIMATION_COMMAND_MASK) == 0xf0)
                 break;
-            frame = entity->frames[sequence_byte & 0x7f];
+            frame = entity->frames[sequence_byte & ANIMATION_FRAME_MASK];
             velocity_x += frame->motion_x;
             velocity_y += frame->motion_y;
         }
@@ -57,7 +58,7 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
     else if (!(entity->animation_motion_axes & ANIMATION_MOTION_X) && entity->x > 168 && entity->x < 2512)
         velocity_x = entity->velocity_x;
     if ((entity->draw_flags & (ENTITY_SKIP_PHYSICS | ENTITY_BLOCKED_Y_OR_HEIGHT)) || ((long)entity->animation_group_mask & PLAYER_GROUP_JUMP_TAKEOFF) ||
-            entity->sprite_state == 5 || entity->sprite_state == 6)
+            entity->sprite_state == PLAYER_ANIM_GHOST || entity->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST)
         velocity_y = 0;
     else if (!(entity->animation_motion_axes & ANIMATION_MOTION_Y)) {
         velocity_y = entity->velocity_y;

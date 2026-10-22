@@ -3,6 +3,19 @@
 
 struct timed_animation;
 
+/* Observed bank arrays and every bank iterator use these independent bounds. */
+#define EARTHLING_BANK_COUNT 2
+#define EARTHLINGS_PER_BANK 20
+
+/* Shared sentinel written by EarthlingApplyNearbySleep and cleared by EarthlingWakeLevel. */
+#define EARTHLING_STATE_SLEEP 99
+
+/* Dentist attack-state IDs selected from the player's relative position in Player_Youch. */
+#define EARTHLING_DENTIST_ATTACK_UP 8
+#define EARTHLING_DENTIST_ATTACK_DOWN 9
+#define EARTHLING_DENTIST_ATTACK_LEFT 10
+#define EARTHLING_DENTIST_ATTACK_RIGHT 11
+
 /* MCC68K target layout: 18 bytes; twenty records occupy one 360-byte bank. */
 struct earthling_state {
     char kind;                       /* 00: EARTHLING ID or -1 unused; bank setup writes. */

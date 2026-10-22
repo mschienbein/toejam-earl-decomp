@@ -51,7 +51,7 @@ struct object_state *player;
     }
     player->velocity_x = 0;
     player->velocity_y = 0;
-    if (sprite != 4)
+    if (sprite != PLAYER_ANIM_ICARUS_IDLE)
         player->draw_flags &= ~ENTITY_SHADOW;
     return sprite;
 }
@@ -152,13 +152,13 @@ short player_number;
     player->acceleration_height = -128;
     SetSprite(player, sprite);
     player->animation_motion_axes = ANIMATION_MOTION_NONE;
-    player->tile &= 0x7fff;
+    player->tile &= ~VDP_TILE_PRIORITY;
     gTerrainPriorityUpdatePlayer = player_number;
     gTerrainPriorityUpdatePending = 1;
     while (gTerrainPriorityUpdatePending)
         ;
     GenerateSpeech(player_number, "Bummer", 0);
-    PlaySoundEffect((long)Sfx_Falling, 50, 0);
+    PlaySoundEffect((long)Sfx_Falling, AUDIO_PRIORITY_NORMAL, 0);
 }
 
 /* Launch a short directional fall and remember that it has started. */
@@ -249,7 +249,7 @@ struct object_state *player;
  * This is a meaningful scalar-role reuse, not an unused value or fake ABI. */
 void CheckPlayerFalling()
 {
-  char falling[2];
+  char falling[PLAYER_COUNT];
   short player_number;
   long other_number;
   struct object_state *player;
@@ -259,7 +259,7 @@ void CheckPlayerFalling()
   char selected_sprite;
   falling[0] = 0;
   falling[1] = 0;
-  for (player_number = 0; player_number <= 1; ++player_number)
+  for (player_number = 0; player_number <= PLAYER_EARL; ++player_number)
   {
     if (gPlayerLives[player_number] < 0)
       continue;
@@ -273,7 +273,7 @@ void CheckPlayerFalling()
         player->velocity_height = 0;
         player->acceleration_height = 0;
         falling[player_number] = 1;
-        if (gPlayerPowerups[player_number] == 5)
+        if (gPlayerPowerups[player_number] == PRESENT_ROCKET_SKATES)
           gPlayerJumpCounters[player_number] = 1;
         else
           gPlayerJumpCounters[player_number] = 3;
@@ -288,12 +288,12 @@ void CheckPlayerFalling()
         land = gPlayer1TerrainUnderfoot;
       else
         land = gPlayer2TerrainUnderfoot;
-      direction = player->sprite_state & 3;
-      if (land >= 0x80)
+      direction = player->sprite_state & DIRECTION_MASK;
+      if (land >= TERRAIN_WATER)
       {
-        if (!(player->animation_group_mask & 32))
+        if (!(player->animation_group_mask & PLAYER_GROUP_FALL))
         {
-          SetSprite(player, direction + 20);
+          SetSprite(player, direction + PLAYER_ANIM_FALL_UP);
           player->velocity_height = 0;
           player->acceleration_height = -128;
         }
@@ -312,7 +312,7 @@ void CheckPlayerFalling()
       else
         if ((player->velocity_height < 0) && (player->height < 4))
       {
-        SetSprite(player, direction + 24);
+        SetSprite(player, direction + PLAYER_ANIM_LAND_UP);
         player->height = 0;
         player->velocity_height = 0;
         player->acceleration_height = 0;
@@ -321,7 +321,7 @@ void CheckPlayerFalling()
         if (!player->frame_duration)
       {
         short jump_count;
-        SetSprite(player, direction + 20);
+        SetSprite(player, direction + PLAYER_ANIM_FALL_UP);
         player->velocity_height = 512;
         player->acceleration_height = -64;
         jump_count = gPlayerJumpCounters[player_number];
@@ -329,27 +329,27 @@ void CheckPlayerFalling()
         --gPlayerJumpCounters[player_number];
       }
       selected_sprite = -1;
-      if (((((((other->sprite_state == 0) ||
-        (other->sprite_state == 4)) ||
-        (other->animation_group_mask & 0x20400000)) ||
-        (other->sprite_state == 76)) ||
-        (other->sprite_state == 1)) ||
-        ((other->sprite_state == 57) &&
+      if (((((((other->sprite_state == PLAYER_ANIM_IDLE) ||
+        (other->sprite_state == PLAYER_ANIM_ICARUS_IDLE)) ||
+        (other->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY))) ||
+        (other->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE)) ||
+        (other->sprite_state == PLAYER_ANIM_TOMATO_RAIN)) ||
+        ((other->sprite_state == PLAYER_ANIM_SPRING_SHOES_DOWN) &&
         (!other->velocity_y))) &&
         EntityIsNearPosition(other, player->x, player->y, player->level))
       {
         if (player->height < 20)
         {
-          selected_sprite = 2;
-          other->draw_flags |= 0x80;
-          PlaySoundEffect((long) Sfx_Squish, 50, 0);
+          selected_sprite = PLAYER_ANIM_FLATTENED;
+          other->draw_flags |= ENTITY_DRAW_LATE;
+          PlaySoundEffect((long) Sfx_Squish, AUDIO_PRIORITY_NORMAL, 0);
         }
         else
-          if (((other->sprite_state != 1) && (!(other->animation_group_mask & 0x20000000))) && (player->height < 300))
-          selected_sprite = 1;
+          if (((other->sprite_state != PLAYER_ANIM_TOMATO_RAIN) && (!(other->animation_group_mask & PLAYER_GROUP_STATIONARY))) && (player->height < 300))
+          selected_sprite = PLAYER_ANIM_TOMATO_RAIN;
       }
       else
-        if (other->sprite_state == 1)
+        if (other->sprite_state == PLAYER_ANIM_TOMATO_RAIN)
         selected_sprite = GetActivePresentSprite(other);
       if (selected_sprite != (-1))
       {
@@ -358,12 +358,12 @@ void CheckPlayerFalling()
         other->velocity_y = 0;
       }
     }
-    if ((player->sprite_state == 2) && (!player->frame_duration))
+    if ((player->sprite_state == PLAYER_ANIM_FLATTENED) && (!player->frame_duration))
     {
       selected_sprite = GetActivePresentSprite(player);
       SetSprite(player, selected_sprite);
-      player->draw_flags &= 0x7f;
-      player->behavior_flags |= 0x10;
+      player->draw_flags &= ~ENTITY_DRAW_LATE;
+      player->behavior_flags |= ENTITY_PLAYER_SUPPRESSED;
       gPlayerRespawnSuppressionTicks[player_number] = 20;
     }
   }
@@ -525,7 +525,7 @@ unsigned short land;
             player->height = 0;
             player->draw_flags &= ~ENTITY_SHADOW;
             sprite = player->sprite_state + 4;
-            PlaySoundEffect((long)Sfx_Splash, 50, 0);
+            PlaySoundEffect((long)Sfx_Splash, AUDIO_PRIORITY_NORMAL, 0);
         } else {
             gPlayerJumpCounters[player_number] = 1;
             gPlayerFallStates[player_number] = 2;
@@ -589,7 +589,7 @@ unsigned short land;
         player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST)
         return;
     previous_height = player->height;
-    if (land == TERRAIN_SINKING && player->height <= 0 && !(player->animation_group_mask & (unsigned long)0x60) &&
+    if (land == TERRAIN_SINKING && player->height <= 0 && !(player->animation_group_mask & (unsigned long)(PLAYER_GROUP_FALL | PLAYER_GROUP_LAND)) &&
         !gPlayerElevatorFlags[player_number]) {
         if (!gPlayerTerrainSinking[player_number]) {
             gPlayerTerrainSinking[player_number] = 1;
@@ -674,7 +674,7 @@ unsigned short land;
                     direction ^= 1;
                 SetSprite(player, direction + PLAYER_ANIM_FALL_SPLASH_UP);
                 player->height = 0;
-                PlaySoundEffect((long)Sfx_Splash, 50, 0);
+                PlaySoundEffect((long)Sfx_Splash, AUDIO_PRIORITY_NORMAL, 0);
             } else {
                 if (gPlayerHealth[player_number] <= 0)
                     gPlayerHealth[player_number] = 1;
@@ -709,7 +709,7 @@ unsigned short land;
     sprite = -1;
     direction = player->sprite_state & DIRECTION_MASK;
     if (player->animation_group_mask & PLAYER_GROUP_SPRING_SHOES) {
-        if ((gPlayerProcessedInput[player_number] & 64) &&
+        if ((gPlayerProcessedInput[player_number] & INPUT_BUTTON_A) &&
             (player->velocity_x || player->velocity_y)) {
             sprite = direction + PLAYER_ANIM_JUMP_WINDUP_UP;
             gPlayerJumpCounters[player_number] = 0;
@@ -723,7 +723,7 @@ unsigned short land;
             else
                 sprite = player->sprite_state + 4;
             player->height = 1;
-            PlaySoundEffect((long)Sfx_Springing, 50, 0);
+            PlaySoundEffect((long)Sfx_Springing, AUDIO_PRIORITY_NORMAL, 0);
         }
     } else if (player->animation_group_mask & PLAYER_GROUP_JUMP_TAKEOFF) {
         if (!player->frame_duration) {
@@ -764,7 +764,7 @@ unsigned short land;
         else
             player->draw_flags |= ENTITY_SHADOW;
         if (gPlayerPowerups[player_number] == PRESENT_SPRING_SHOES && player->velocity_height > 0) {
-            if (player->height > 60 || !(gPlayerProcessedInput[player_number] & 64)) {
+            if (player->height > 60 || !(gPlayerProcessedInput[player_number] & INPUT_BUTTON_A)) {
                 player->velocity_height = 0;
                 player->acceleration_height = -64;
             }
@@ -780,13 +780,13 @@ unsigned short land;
                         direction ^= 1;
                     sprite = direction + PLAYER_ANIM_FALL_SPLASH_UP;
                     player->draw_flags &= ~ENTITY_SHADOW;
-                    PlaySoundEffect((long)Sfx_Splash, 50, 0);
+                    PlaySoundEffect((long)Sfx_Splash, AUDIO_PRIORITY_NORMAL, 0);
                 }
             } else if (gPlayerPowerups[player_number] == PRESENT_SUPER_HITOPS) {
                 player->height = 0;
                 player->acceleration_height = 0;
                 player->velocity_height = 0;
-                if (gPlayerProcessedInput[player_number] & 15)
+                if (gPlayerProcessedInput[player_number] & INPUT_DIRECTION_MASK)
                     sprite = direction + PLAYER_ANIM_HITOPS_UP;
                 else
                     sprite = GetActivePresentSprite(player);
@@ -941,7 +941,7 @@ short player_number;
         player->height = -58;
     else
         player->height = -16;
-    player->draw_flags &= 0x3f;
+    player->draw_flags &= ~(ENTITY_SHADOW | ENTITY_DRAW_LATE);
     gPlayerPreDeathSpriteState[player_number] = player->sprite_state;
     SetSprite(player, PLAYER_ANIM_GHOST);
     if (!gPlayerLives[player_number])

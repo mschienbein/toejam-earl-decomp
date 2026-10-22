@@ -56,7 +56,7 @@ struct telephone_state *telephone;
     struct object_state *object;
 
     if (!gElevatorDepartureInProgress)
-        PlaySoundEffect((long)Sfx_Telephone, 50, 0);
+        PlaySoundEffect((long)Sfx_Telephone, AUDIO_PRIORITY_NORMAL, 0);
     gTelephoneTimeToRing[telephone_number] = 60;
     if (telephone->object) {
         object = &gPlayerInfo[telephone->object];

@@ -179,9 +179,9 @@ short player_number;
     int maximum_health;
 
     if (player_number == PLAYER_TOEJAM)
-        maximum_health = 23;
+        maximum_health = PLAYER_TOEJAM_BASE_HEALTH;
     else
-        maximum_health = 31;
+        maximum_health = PLAYER_EARL_BASE_HEALTH;
     maximum_health += gPlayerRank[player_number] << 2;
     return maximum_health;
 }
@@ -211,19 +211,19 @@ short player_number, upload_now;
     if (player_number == PLAYER_TOEJAM) {
         tile_number = 0x7b4;
         sprite_number = 15;
-        maximum_health = 23;
+        maximum_health = PLAYER_TOEJAM_BASE_HEALTH;
     } else {
         tile_number = 0x7d4;
         sprite_number = 17;
-        maximum_health = 31;
+        maximum_health = PLAYER_EARL_BASE_HEALTH;
     }
     if (gPlayerLives[player_number] >= 0)
         maximum_health += gPlayerRank[player_number] * 4;
-    gHardwareSpriteTable[sprite_number].size = 12;
-    gHardwareSpriteTable[sprite_number].tile = (unsigned short)tile_number + 0x8000;
-    gHardwareSpriteTable[sprite_number + 1].size = 12;
-    gHardwareSpriteTable[sprite_number + 1].tile = (unsigned short)tile_number + 0x8004;
-    for (row = 0; row < 256; ++row)
+    gHardwareSpriteTable[sprite_number].size = VDP_SPRITE_SIZE_4X1;
+    gHardwareSpriteTable[sprite_number].tile = (unsigned short)tile_number + VDP_TILE_PRIORITY;
+    gHardwareSpriteTable[sprite_number + 1].size = VDP_SPRITE_SIZE_4X1;
+    gHardwareSpriteTable[sprite_number + 1].tile = (unsigned short)tile_number + (VDP_TILE_PRIORITY + 4);
+    for (row = 0; row < HUD_HEALTH_BAR_TILES * VDP_TILE_BYTES; ++row)
         gSpriteTileUploadBuffer[gSpriteTileBufferOffset + row] = 0;
 
     full_bar = 0;
@@ -238,7 +238,7 @@ short player_number, upload_now;
             if (!(unit & 1))
                 pixels <<= 4;
             byte_offset = gSpriteTileBufferOffset;
-            byte_offset += row * 32 + unit / 2;
+            byte_offset += row * VDP_TILE_BYTES + unit / 2;
             for (tile_row = 0; tile_row < 3; ++tile_row)
                 gSpriteTileUploadBuffer[(tile_row << 2) + byte_offset] |= pixels;
         }
@@ -251,13 +251,13 @@ short player_number, upload_now;
          * The shared buffer declaration and word offset are unchanged. */
         DmaCopyWordsToVram(
             &gSpriteTileUploadBuffer[(int)gSpriteTileBufferOffset],
-            tile_number << 5, 128);
+            tile_number << 5, HUD_HEALTH_BAR_TILES * (VDP_TILE_BYTES / 2));
         while (gHudDisplayedHealth[player_number] < gPlayerHealth[player_number])
             HudAnimateHealthBar(player_number);
     } else {
-        gSpriteTileBufferOffset += 256;
+        gSpriteTileBufferOffset += HUD_HEALTH_BAR_TILES * VDP_TILE_BYTES;
         gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = tile_number;
-        gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 8;
+        gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = HUD_HEALTH_BAR_TILES;
         gSpriteGraphicsUploadPending = 1;
         while (gSpriteGraphicsUploadPending)
             ;
@@ -330,12 +330,12 @@ short player_number;
     /* (&gPlayerInfo[i])->field rather than gPlayerInfo[i].field: the two compile differently
      * here and only this spelling reproduces the ROM. */
     if (gPlayerLives[player_number] < 0 || (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_GHOST ||
-        (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST || gPlayer1MapLevel == 26)
+        (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST || gPlayer1MapLevel == LEVEL_FINAL)
         return;
     if (player_number == PLAYER_TOEJAM)
-        maximum_health = 23;
+        maximum_health = PLAYER_TOEJAM_BASE_HEALTH;
     else
-        maximum_health = 31;
+        maximum_health = PLAYER_EARL_BASE_HEALTH;
     maximum_health += gPlayerRank[player_number] * 4;
     if (gPlayerHealth[player_number] < 0)
         gPlayerHealth[player_number] = 0;
@@ -406,7 +406,7 @@ short player;
         icons = IconTilesB;
     }
     lives = gPlayerLives[player];
-    gHardwareSpriteTable[sprite_number].size = 12;
+    gHardwareSpriteTable[sprite_number].size = VDP_SPRITE_SIZE_4X1;
     gHardwareSpriteTable[sprite_number].tile = (unsigned short)tile + 0xe000;
     if (lives > 4) {
         for (remaining = lives - 4; remaining > 0; remaining--) {
@@ -536,7 +536,7 @@ void DrawHUD()
     short row, column;
     unsigned short tile;
 
-    if (gPlayer1MapLevel == 26) {
+    if (gPlayer1MapLevel == LEVEL_FINAL) {
         gHudRedrawPending = 0;
         return;
     }
@@ -727,7 +727,7 @@ unsigned short terrain_class;
     short player_number = entity->entity_index;
 
     if (entity->sprite_state == PLAYER_ANIM_GHOST || entity->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST ||
-        ((long)entity->animation_group_mask & PLAYER_GROUP_REACTION) || gPlayer1MapLevel == 26 ||
+        ((long)entity->animation_group_mask & PLAYER_GROUP_REACTION) || gPlayer1MapLevel == LEVEL_FINAL ||
         gPlayerPromotionDisplayEntities[player_number])
         return;
     if (!gHudDisplayedHealth[player_number] && gPlayerHealth[player_number] <= 0) {

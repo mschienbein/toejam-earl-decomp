@@ -1,6 +1,7 @@
 #include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
+#include "sprite_frame_views.h"
 #include "assets_intro.h"
 #include "core_calls.h"
 #include "ram_intro.h"
@@ -27,8 +28,8 @@ void IntroAllocateLargePlayerParts()
             entity->sprite_count = frame->piece_count;
             entity->tile_count = 0;
             for (piece = 0; piece < frame->piece_count; ++piece)
-                entity->tile_count += ((struct render_piece (*)[12])(frame + 1))[0][piece].width *
-                                      ((struct render_piece (*)[12])(frame + 1))[0][piece].height;
+                entity->tile_count += ((struct render_frame_piece_view *)frame)->pieces[piece].width *
+                                      ((struct render_frame_piece_view *)frame)->pieces[piece].height;
             entity->tile = VDP_TILE_PRIORITY;
             entity->current_frame = frame;
         }
@@ -71,7 +72,7 @@ short index, x, y;
         entity->y += 5;
         entity->height = 5;
     }
-    entity->sequence = (char *)&IntroLargePlayerPartHeldFrameStreams[index];
+    entity->sequence = &IntroLargePlayerPartHeldFrameStreams[index].frame;
     entity->frames = Spr_TitleBigPlayers;
     entity->frame_phase = 10;
     entity->frame_duration = 1;
@@ -152,8 +153,8 @@ void IntroAllocateDrivingParts()
             entity->sprite_count = frame->piece_count;
             entity->tile_count = 0;
             for (piece = 0; piece < frame->piece_count; ++piece)
-                entity->tile_count += ((struct render_piece (*)[12])(frame + 1))[0][piece].width *
-                                      ((struct render_piece (*)[12])(frame + 1))[0][piece].height;
+                entity->tile_count += ((struct render_frame_piece_view *)frame)->pieces[piece].width *
+                                      ((struct render_frame_piece_view *)frame)->pieces[piece].height;
             entity->tile = VDP_TILE_PRIORITY;
             entity->current_frame = frame;
         }
@@ -197,7 +198,7 @@ short index, x, y;
         entity->y += 101;
         entity->height += 101;
     }
-    entity->sequence = (char *)&IntroDrivingPartHeldFrameStreams[index];
+    entity->sequence = &IntroDrivingPartHeldFrameStreams[index].frame;
     entity->frames = Spr_IntroEarlDriving;
     entity->frame_phase = 10;
     entity->frame_duration = 1;
@@ -230,7 +231,7 @@ short index;
     if (index >= 3)
         return;
     entity = &gPlayerInfo[gIntroDrivingPartEntities[index]];
-    if (!(entity->draw_flags & 3))
+    if (!(entity->draw_flags & (ENTITY_ACTIVE | ENTITY_PRIMARY_VIEW)))
         return;
     ReleaseEntityViewportSprites(entity, 0);
 }

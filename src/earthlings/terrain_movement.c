@@ -43,7 +43,7 @@ struct object_state *object;
     short next_x, terrain, player_number, distance;
 
     earthling = object->earthling;
-    if (EarthlingIsUpdateBlocked(object->earthling) || earthling->state == 99)
+    if (EarthlingIsUpdateBlocked(object->earthling) || earthling->state == EARTHLING_STATE_SLEEP)
         return;
     if (object->level == gPlayer1MapLevel)
         player_number = PLAYER_TOEJAM;
@@ -148,7 +148,7 @@ struct object_state *object;
     short next_x, terrain, player_number, distance, collision;
 
     earthling = object->earthling;
-    if (EarthlingIsUpdateBlocked(earthling) || earthling->state == 99 ||
+    if (EarthlingIsUpdateBlocked(earthling) || earthling->state == EARTHLING_STATE_SLEEP ||
         (object->behavior_flags & ENTITY_HIDDEN) ||
         (earthling->kind == EARTHLING_CUPID && earthling->state == 3))
         return;

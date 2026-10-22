@@ -416,8 +416,8 @@ short start_row, start_column, height, width, replacement;
         for (column = start_column; column < start_column + width; ++column) {
             tile = gPlayer1LevelMap[row][column];
             if ((tile & 0x3000) == 0x1000 && tile != replacement) {
-                for (map_row = 0; map_row < 26; ++map_row)
-                    for (map_column = 0; map_column < 19; ++map_column)
+                for (map_row = 0; map_row < MAP_ROWS; ++map_row)
+                    for (map_column = 0; map_column < MAP_COLUMNS; ++map_column)
                         if (gPlayer1LevelMap[map_row][map_column] == tile)
                             gPlayer1LevelMap[map_row][map_column] = replacement;
             } else
@@ -486,7 +486,7 @@ void MapWidenHorizontalRegionEdges()
     for (row = 0; row < 25; row++) {
         run_length = 0;
         previous_terrain = 0xffff;
-        for (column = 0; column < 19; column++) {
+        for (column = 0; column < MAP_COLUMNS; column++) {
             terrain = gPlayer1LevelMap[row][column];
             if ((terrain & 0x3000) == 0x1000 &&
                 (row == 0 || (gPlayer1LevelMap[row - 1][column] & 0x3000) != 0x1000)) {
@@ -510,10 +510,10 @@ void MapWidenHorizontalRegionEdges()
             }
         }
     }
-    for (row = 1; row < 26; row++) {
+    for (row = 1; row < MAP_ROWS; row++) {
         run_length = 0;
         previous_terrain = 0xffff;
-        for (column = 0; column < 19; column++) {
+        for (column = 0; column < MAP_COLUMNS; column++) {
             terrain = gPlayer1LevelMap[row][column];
             if ((terrain & 0x3000) == 0x1000 &&
                 (row == 25 || (gPlayer1LevelMap[row + 1][column] & 0x3000) != 0x1000)) {
@@ -549,7 +549,7 @@ void MapWidenVerticalRegionEdges()
     for (column = 0; column < 18; column++) {
         run_length = 0;
         previous_terrain = 0xffff;
-        for (row = 0; row < 26; row++) {
+        for (row = 0; row < MAP_ROWS; row++) {
             terrain = gPlayer1LevelMap[row][column];
             if ((terrain & 0x3000) == 0x1000 &&
                 (column == 0 || (gPlayer1LevelMap[row][column - 1] & 0x3000) != 0x1000)) {
@@ -573,10 +573,10 @@ void MapWidenVerticalRegionEdges()
             }
         }
     }
-    for (column = 1; column < 19; column++) {
+    for (column = 1; column < MAP_COLUMNS; column++) {
         run_length = 0;
         previous_terrain = 0xffff;
-        for (row = 0; row < 26; row++) {
+        for (row = 0; row < MAP_ROWS; row++) {
             terrain = gPlayer1LevelMap[row][column];
             if ((terrain & 0x3000) == 0x1000 &&
                 (column == 18 || (gPlayer1LevelMap[row][column + 1] & 0x3000) != 0x1000)) {
@@ -611,8 +611,8 @@ void MapStabilizeRegionConnections()
     MapWidenVerticalRegionEdges();
     while (changed) {
         changed = 0;
-        for (row = 0; row < 26; ++row) {
-            for (column = 0; column < 19; ++column) {
+        for (row = 0; row < MAP_ROWS; ++row) {
+            for (column = 0; column < MAP_COLUMNS; ++column) {
                 if ((gPlayer1LevelMap[row][column] & 0x3000) == 0x2000) {
                     if (MapExpandRegionsBesidePaths(row, column))
                         changed = 1;
@@ -630,8 +630,8 @@ void MapSeedFilledTerrainRegions()
     short eligible, cell, replacement;
     unsigned short probability;
 
-    for (row = 0; row < 26; ++row) {
-        for (column = 0; column < 19; ++column)
+    for (row = 0; row < MAP_ROWS; ++row) {
+        for (column = 0; column < MAP_COLUMNS; ++column)
             gPlayer1LevelMap[row][column] &= 0xf7ff;
     }
     probability = MapGetRandomGenerationParameter(4);
@@ -677,8 +677,8 @@ short region_count;
     for (region = 0; region < region_count; ++region) {
         upper_table = MapGetRandomGenerationParameter(5);
         upper_table = upper_table > GetRandomNumber() % 100;
-        for (row = 0; row < 26; ++row) {
-            for (column = 0; column < 19; ++column) {
+        for (row = 0; row < MAP_ROWS; ++row) {
+            for (column = 0; column < MAP_COLUMNS; ++column) {
                 cell = gPlayer1LevelMap[row][column];
                 if (((cell & 0x3000) == 0x1000 ||
                      (cell & 0x3000) == 0x3000) &&
@@ -690,8 +690,8 @@ short region_count;
                     gPlayer1LevelMap[row][column] &= 0xf7ff;
             }
         }
-        for (row = 0; row < 26; ++row) {
-            for (column = 0; column < 19; ++column) {
+        for (row = 0; row < MAP_ROWS; ++row) {
+            for (column = 0; column < MAP_COLUMNS; ++column) {
                 cell = gPlayer1LevelMap[row][column];
                 if (cell & 0x800) {
                     corner_mask = 0;

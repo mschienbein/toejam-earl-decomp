@@ -14,6 +14,11 @@ struct render_frame;
 #define DIRECTION_RIGHT 3
 #define DIRECTION_MASK 3
 
+/* gPlayerInfo capacity and the ordinary gameplay prefix selected by renderers. */
+#define ENTITY_SLOT_COUNT 40
+#define GAMEPLAY_ENTITY_SLOT_COUNT 26
+#define ENTITY_SPRITES_PER_VIEW 12
+
 /* A set bit delegates that axis to the animation's motion callback. */
 #define ANIMATION_MOTION_NONE 0
 #define ANIMATION_MOTION_X 1
@@ -71,8 +76,8 @@ struct object_state {
     unsigned short tile;                  /* 2c: VDP tile index/priority/flip attributes; renderer writes. */
     unsigned char sprite_count;           /* 2e: reserved hardware pieces, at most 12; setup writes. */
     unsigned char draw_flags;             /* 2f: ENTITY draw/allocation bits; renderer/physics write. */
-    char primary_sprites[12];             /* 30: first viewport's sprite handles; allocator writes. */
-    char secondary_sprites[12];           /* 3c: second viewport's sprite handles; allocator writes. */
+    char primary_sprites[ENTITY_SPRITES_PER_VIEW];   /* 30: first viewport's sprite handles; allocator writes. */
+    char secondary_sprites[ENTITY_SPRITES_PER_VIEW]; /* 3c: second viewport's sprite handles; allocator writes. */
     char primary_shadow;                  /* 48: first viewport shadow handle, 0 absent; renderer writes. */
     char secondary_shadow;                /* 49: second viewport shadow handle, 0 absent; renderer writes. */
     char sprite_ready;                    /* 4a: nonzero when current sprite frame is ready; renderer writes. */

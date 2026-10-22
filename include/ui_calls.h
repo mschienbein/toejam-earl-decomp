@@ -1,6 +1,9 @@
 #ifndef TJE_UI_CALLS_H
 #define TJE_UI_CALLS_H
 
+/* The health bar occupies two four-tile-wide hardware sprites. */
+#define HUD_HEALTH_BAR_TILES 8
+
 /* K&R return interfaces. Represented C definitions establish their types;
  * remaining ROM-only declarations describe the observed ABI, not a uniquely
  * recovered historical C spelling. */

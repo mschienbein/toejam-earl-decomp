@@ -92,7 +92,7 @@ void SEGAVideo()
             while (frame == gFrameCounter)
                 ;
             if (character_x == 257)
-                PlaySoundEffect((long)Sfx_Achoo, 50, 0);
+                PlaySoundEffect((long)Sfx_Achoo, AUDIO_PRIORITY_NORMAL, 0);
             if (character_x < 57 && character_x > 44)
                 character_y += 2;
             else if (character_x > 178 && character_x < 191) {
@@ -136,7 +136,7 @@ void SegaLogoCreateTrademarkEntity()
         trademark->x = 160;
         trademark->y = 166;
         trademark->sprite_ready = 0;
-        trademark->sequence = (char *)IntroHeldFrameStreams;
+        trademark->sequence = &IntroHeldFrameStreams[0].frame;
         trademark->frame_duration = 1;
         trademark->frame = -1;
         trademark->frame_phase = 6;

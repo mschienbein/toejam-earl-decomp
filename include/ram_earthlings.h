@@ -7,8 +7,8 @@
  * existing record-array alias of gEarthlingBanks[1]. The load-flag
  * copy likewise aliases gEarthlingBankUsers[1]; incomplete outer bounds
  * retain the canonical views rather than an adjacent-symbol estimate. */
-extern struct earthling_state gEarthlingBanks[2][20];
-extern struct earthling_state gEarthlingBank2Records[20];
+extern struct earthling_state gEarthlingBanks[EARTHLING_BANK_COUNT][EARTHLINGS_PER_BANK];
+extern struct earthling_state gEarthlingBank2Records[EARTHLINGS_PER_BANK];
 extern char gEarthlingBankUsers[];
 extern char gEarthlingBank2Users;
 extern char gEarthlingBankLevels[];

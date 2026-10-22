@@ -84,11 +84,11 @@ void UpdateAllEntityViewportSprites()
 {
     short entity_number, entity_count;
 
-    if (gPlayer1MapLevel == 26) {
-        entity_count = 40;
+    if (gPlayer1MapLevel == LEVEL_FINAL) {
+        entity_count = ENTITY_SLOT_COUNT;
         gInventoryDrawListHead = 0;
     } else
-        entity_count = 26;
+        entity_count = GAMEPLAY_ENTITY_SLOT_COUNT;
     for (entity_number = 0; entity_number < entity_count; ++entity_number)
         UpdateEntityViewportSprites(entity_number);
 }

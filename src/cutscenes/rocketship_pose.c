@@ -18,7 +18,7 @@ short animation, x, y;
     object->x = x;
     object->y = y;
     object->sprite_ready = 0;
-    object->sequence = (char *)&IntroHeldFrameStreams[animation];
+    object->sequence = &IntroHeldFrameStreams[animation].frame;
     object->frame_duration = 1;
     object->frame = -1;
     AllocateEntityViewportSprites(object, 0);

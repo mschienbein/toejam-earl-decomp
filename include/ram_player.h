@@ -3,6 +3,10 @@
 
 #include "entities.h"
 
+/* PlayerGetMaximumHealth adds four health units per rank to these character bases. */
+#define PLAYER_TOEJAM_BASE_HEALTH 23
+#define PLAYER_EARL_BASE_HEALTH 31
+
 /* Player statistics keep their canonical byte views and incomplete
  * outer bounds. The player-two scalars alias element one of the
  * corresponding lives, bucks, rank, health and health-restore arrays. */
@@ -24,7 +28,7 @@ extern char gPlayerSelection;
 /* Forty shared 128-byte object records. gPlayer2Entity is the existing
  * record-one alias; gToejamLevel and gEarlLevel name the level bytes of
  * records zero and one. Inventory views of records 26..39 are in ram_ui.h. */
-extern struct object_state gPlayerInfo[40];
+extern struct object_state gPlayerInfo[ENTITY_SLOT_COUNT];
 extern struct object_state gPlayer2Entity;
 extern char gToejamLevel;
 extern char gEarlLevel;

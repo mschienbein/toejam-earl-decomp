@@ -90,10 +90,10 @@ short player;
         }
     }
     MapDrawFixedBackgroundDecorations();
-    for (row = 0; row < 26; ++row) {
+    for (row = 0; row < MAP_ROWS; ++row) {
         VDP_COMMAND = 0x60040003 + ((row + 2) << 23);
-        for (column = 0; column < 19; ++column) {
-            map_cell = map[row * 19 + column];
+        for (column = 0; column < MAP_COLUMNS; ++column) {
+            map_cell = map[row * MAP_COLUMNS + column];
             map_cell &= 0xff;
             if (map_cell != 34) {
                 tile_number = map_cell & 0x7f;
@@ -144,8 +144,8 @@ int cover_row, cover_column;
             for (column_offset = 0; column_offset < 5; ++column_offset) {
                 row = cover_row + row_offset;
                 column = (cover_column + column_offset) / 2;
-                if (row >= 0 && row < 26 && column >= 0 && column < 19 &&
-                        (map[row * 19 + column] & 0x7f) != 34)
+                if (row >= 0 && row < MAP_ROWS && column >= 0 && column < MAP_COLUMNS &&
+                        (map[row * MAP_COLUMNS + column] & 0x7f) != 34)
                     return 1;
             }
         }
@@ -229,11 +229,11 @@ struct hardware_sprite *sprites;
     VDP_COMMAND = VDP_WRITE_WINDOW;
     for (column = 0; column < 40; ++column)
         VDP_DATA = 0x8000;
-    for (row = 0; row < 26; ++row) {
+    for (row = 0; row < MAP_ROWS; ++row) {
         VDP_COMMAND = VDP_WRITE_WINDOW + ((row + 1) << 23);
         VDP_DATA = 0x8000;
-        for (column = 0; column < 19; ++column) {
-            overlay = (map[row * 19 + column] & 0x1f00) >> 8;
+        for (column = 0; column < MAP_COLUMNS; ++column) {
+            overlay = (map[row * MAP_COLUMNS + column] & 0x1f00) >> 8;
             if (overlay) {
                 overlay_number = overlay & 15;
                 left_tile = (overlay_number + 121) * 2 + 1;
@@ -263,8 +263,8 @@ void LoadLevel1Tiles()
 {
     short column, row;
 
-    for (row = 0; row < 26; ++row) {
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row) {
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             gPlayer1LevelMap[row][column] = Level1MapData[row][column];
             gPlayer2LevelMap[row][column] = Level1MapData[row][column];
         }
@@ -351,7 +351,7 @@ struct hardware_sprite *sprites;
     short player, tile;
     struct object_state *position;
 
-    for (player = 0; player <= 1; ++player) {
+    for (player = 0; player <= PLAYER_EARL; ++player) {
         position = &gPlayerInfo[player];
         if (!PlayerHasOddElevatorState(player) && position->level == level) {
             tile = sprites[player].tile;
@@ -428,6 +428,7 @@ struct hardware_sprite *sprites;
 
 
 #include "sprites.h"
+#include "sprite_frame_views.h"
 #include "assets_map.h"
 #include "ram_sprites.h"
 #include "sprite_calls.h"
@@ -449,12 +450,12 @@ short frame_number, use_first_tiles;
 
     frame = Spr_MapTileUncover[frame_number];
     if (frame_number == 7)
-        for (sprite_number = 7; sprite_number < 80; ++sprite_number)
-            sprites[sprite_number].tile |= 0x6000;
-    for (sprite_number = 0; sprite_number < 2; ++sprite_number) {
+        for (sprite_number = 7; sprite_number < HARDWARE_SPRITE_COUNT; ++sprite_number)
+            sprites[sprite_number].tile |= VDP_TILE_PALETTE_3;
+    for (sprite_number = 0; sprite_number < MAP_UNCOVER_PIECE_COUNT; ++sprite_number) {
         /* The shared renderer's twelve-slot view preserves word indexing;
          * twelve is not asserted to be this ROM frame's piece extent. */
-        piece = &((struct render_piece (*)[12])(frame + 1))[0][sprite_number];
+        piece = &((struct render_frame_piece_view *)frame)->pieces[sprite_number];
         flags = piece->tile_format;
         tile_count = piece->width * piece->height;
         if (flags < 0)
@@ -498,7 +499,7 @@ short frame_number, use_first_tiles;
 void DrawGameMap(player)
 short player;
 {
-    struct hardware_sprite sprites[80];
+    struct hardware_sprite sprites[HARDWARE_SPRITE_COUNT];
     short map_number, buttons;
 
     map_number = 0;
@@ -540,23 +541,23 @@ short player;
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     if (gMapRevealMode)
-        for (map_number = 1; map_number < 12; ++map_number) {
+        for (map_number = 1; map_number < MAP_UNCOVER_FRAME_COUNT; ++map_number) {
             WaitForNextVBlank(4);
             MapUploadCoverAnimationFrame(sprites, map_number, 0);
         }
     PreGenerateRandoms();
-    while (ReadMappedPlayerInput(player) & 0x20)
+    while (ReadMappedPlayerInput(player) & INPUT_BUTTON_C)
         WaitForNextVBlank(1);
     while (!((buttons = ReadMappedPlayerInput(player)) & 0x70))
         DrawMapCharacters(sprites);
-    buttons &= 0x70;
+    buttons &= INPUT_ACTION_MASK;
     while (ReadMappedPlayerInput(player) & buttons)
         WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     DrawStarfieldPlane();
     DmaCopyWordsToVram(gHardwareSpriteTable, 0xf800, 320);
-    if (gMapRevealMode || (buttons & 0x20)) {
+    if (gMapRevealMode || (buttons & INPUT_BUTTON_C)) {
         VDP_COMMAND = VDP_WRITE_VRAM_BASE;
         MoveDataToVRAM(LevelTiles, (MapScreenTileCount + 41) << 4);
         VDP_CONTROL_WORD = 0x9100;

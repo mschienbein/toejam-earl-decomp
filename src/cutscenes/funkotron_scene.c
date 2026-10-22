@@ -1,4 +1,5 @@
 #include "entities.h"
+#include "terrain.h"
 #include "sprites.h"
 #include "assets_scenes.h"
 #include "engine_calls.h"
@@ -33,7 +34,7 @@ short placement_number, descriptor_number;
         object->frame = -1;
         object->x = FunkatronScenePlacements[placement_number].x;
         object->y = FunkatronScenePlacements[placement_number].y;
-        object->level = 26;
+        object->level = LEVEL_FINAL;
         object->draw_flags |= ENTITY_SKIP_PHYSICS;
         if (descriptor_number == 6)
             object->draw_flags |= ENTITY_DRAW_LATE;

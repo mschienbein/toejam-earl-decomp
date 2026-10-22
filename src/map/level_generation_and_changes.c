@@ -18,8 +18,8 @@ void MapRefineFilledShapeMasks()
     unsigned short shape;
     char upper_right, upper_left, lower_right, lower_left;
 
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             shape = gPlayer1LevelMap[row][column];
             if (shape & 0x800) {
                 shape &= 0xff;
@@ -31,8 +31,8 @@ void MapRefineFilledShapeMasks()
                 }
             }
         }
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             shape = gPlayer1LevelMap[row][column];
             if (shape & 0x800) {
                 shape &= 0xff;
@@ -43,8 +43,8 @@ void MapRefineFilledShapeMasks()
                 }
             }
         }
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             shape = gPlayer1LevelMap[row][column];
             if ((shape & 0x800) && (shape & 15) == 15) {
                 upper_right = upper_left = 0;
@@ -88,8 +88,8 @@ void MapBuildFilledTerrainShapes()
     short row, column;
     unsigned short shape;
 
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             shape = gPlayer1LevelMap[row][column];
             if ((shape & 0x3000) == 0x3000)
                 gPlayer1LevelMap[row][column] |= 0x800;
@@ -98,8 +98,8 @@ void MapBuildFilledTerrainShapes()
             if ((shape & 0x3000) != 0x2000)
                 gMapPathDirectionBanks[row][column] &= 0xf0;
         }
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             shape = gPlayer1LevelMap[row][column];
             if (shape & 0x800) {
                 shape = 0;
@@ -127,8 +127,8 @@ void MapBuildFilledTerrainShapes()
             }
         }
     MapRefineFilledShapeMasks();
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             shape = gPlayer1LevelMap[row][column];
             if (shape & 0x800) {
                 shape &= 31;
@@ -187,8 +187,8 @@ void MapBuildDirectionalPathShapes()
                 }
             }
         }
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             shape = gPlayer1LevelMap[row][column];
             corners = gMapPathDirectionBanks[row][column] & 15;
             if (gMapDirectionalPathMode)
@@ -211,8 +211,8 @@ void MapScatterTerrainFeatures()
     short nearby_plain, nearby_alternate, nearby_feature, alternate_chance;
     unsigned short shape;
 
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             if (!(gMapPathDirectionBanks[row][column] & 15)) {
                 shape = gPlayer1LevelMap[row][column] & 0xff;
                 if (!shape) {
@@ -296,8 +296,8 @@ void MapChooseMetatileAlternatives()
     unsigned short new_cell;
     unsigned char *shapes, *alternatives;
 
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             old_shape = gPlayer1LevelMap[row][column] & 0xff;
             new_cell = gPlayer1LevelMap[row][column] & 0xc000;
             if (!(gPlayer1LevelMap[row][column] & 0x1f00)) {
@@ -337,8 +337,8 @@ void MapSwapPlayerBanks()
     unsigned short row, column, saved_cell;
     unsigned char saved_mask;
 
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             saved_cell = gPlayer1LevelMap[row][column];
             gPlayer1LevelMap[row][column] = gPlayer2LevelMap[row][column];
             gPlayer2LevelMap[row][column] = saved_cell;
@@ -371,8 +371,8 @@ short player;
         source = gPlayer2LevelMap[0];
         destination = gPlayer1LevelMap[0];
     }
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             *destination++ = *source++;
             mask = gMapPathDirectionBanks[row][column];
             if (!player)
@@ -398,8 +398,8 @@ short player;
         gSavedMapLevel = gPlayer2MapLevel;
         map = gPlayer2LevelMap[0];
     }
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             saved_cell = *map;
             *map++ = *saved_map;
             *saved_map++ = saved_cell;
@@ -584,15 +584,15 @@ short player;
     }
     if (!loaded && gRequestedMapLevel <= 1) {
         if (!gRequestedMapLevel) {
-            for (row = 0; row < 26; ++row)
-                for (column = 0; column < 19; ++column)
+            for (row = 0; row < MAP_ROWS; ++row)
+                for (column = 0; column < MAP_COLUMNS; ++column)
                     gPlayer1LevelMap[row][column] = 34;
             for (row = 0; row < 5; ++row)
                 for (column = 0; column < 4; ++column)
                     gPlayer1LevelMap[row + 12][column + 9] = Level0MapData[row][column];
         } else {
-            for (row = 0; row < 26; ++row)
-                for (column = 0; column < 19; ++column)
+            for (row = 0; row < MAP_ROWS; ++row)
+                for (column = 0; column < MAP_COLUMNS; ++column)
                     gPlayer1LevelMap[row][column] = Level1MapData[row][column];
         }
         if (player == 1)
@@ -607,8 +607,8 @@ short player;
         ;
     if (gRequestedMapLevel > gHighestLevel)
         gHighestLevel = gRequestedMapLevel;
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             gPlayer1LevelMap[row][column] = 0;
             gMapPathDirectionBanks[row][column] &= 0xf0;
         }
@@ -642,8 +642,8 @@ short level;
 {
     short row, column;
 
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column) {
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column) {
             gPlayer1LevelMap[row][column] = FunkatronMapData[row][column];
             gPlayer2LevelMap[row][column] = FunkatronMapData[row][column];
             gPlayer1MapLevel = level;

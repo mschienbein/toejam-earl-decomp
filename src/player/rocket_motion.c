@@ -32,7 +32,7 @@ unsigned short terrain;
         direction = 1;
     else if (velocity_y < 0 && direction != 0)
         direction = 0;
-    jump = gPlayerProcessedInput[player] & 0x40;
+    jump = gPlayerProcessedInput[player] & INPUT_BUTTON_A;
     if (jump && terrain <= TERRAIN_WALKABLE_MAX && (state->animation_group_mask & PLAYER_GROUP_SKATES))
         sprite = direction + PLAYER_ANIM_SKATES_CROUCH_UP;
     else if (!jump && (state->animation_group_mask & PLAYER_GROUP_SKATES_CROUCH)) {
@@ -59,7 +59,7 @@ unsigned short terrain;
     } else if (direction != (state->sprite_state & (unsigned long)3))
         /* The unsigned long mask reproduces the ROM's register order; a plain 3 keeps the size
          * but swaps scratch registers ([INFERENCE] the original spelling is unknown). */
-        sprite = (state->sprite_state & 0xfc) + direction;
+        sprite = (state->sprite_state & PLAYER_ANIM_FAMILY_MASK) + direction;
     if (sprite != -1)
         SetSprite(state, sprite);
 }
@@ -79,10 +79,10 @@ unsigned char input;
     velocity_x = state->velocity_x;
     velocity_y = state->velocity_y;
     if (!(state->animation_group_mask & PLAYER_GROUP_SKATES_AIR) || (state->draw_flags & (ENTITY_BLOCKED_X | ENTITY_BLOCKED_Y_OR_HEIGHT))) {
-        up = input & 1;
-        down = input & 2;
-        left = input & 4;
-        right = input & 8;
+        up = input & INPUT_UP;
+        down = input & INPUT_DOWN;
+        left = input & INPUT_LEFT;
+        right = input & INPUT_RIGHT;
         direction = state->sprite_state & DIRECTION_MASK;
         if ((up && right) || (up && left) ||
             (down && right) || (down && left)) {
@@ -97,7 +97,7 @@ unsigned char input;
             else if (right && direction == 3)
                 right = 0;
         }
-        if (!(input & 15)) {
+        if (!(input & INPUT_DIRECTION_MASK)) {
             if (direction == 0)
                 up = 1;
             else if (direction == 1)
@@ -191,7 +191,7 @@ unsigned short terrain;
         state->acceleration_height = 0;
         state->draw_flags |= ENTITY_SHADOW;
     }
-    if ((gPlayerProcessedInput[player] & 15) != (gPlayerPreviousProcessedInput[player] & 15)) {
+    if ((gPlayerProcessedInput[player] & INPUT_DIRECTION_MASK) != (gPlayerPreviousProcessedInput[player] & INPUT_DIRECTION_MASK)) {
         changed_direction = 1;
         gPlayerRocketTurnDelay[player] = 0;
     } else if (gPlayerRocketTurnDelay[player] && gPlayerRocketTurnDelay[player]--)
@@ -201,23 +201,23 @@ unsigned short terrain;
     else
         input = gPlayerProcessedInput[player];
     if (state->velocity_y && (state->draw_flags & ENTITY_BLOCKED_Y_OR_HEIGHT)) {
-        input &= 0xfc;
+        input &= (INPUT_BUTTON_MASK | INPUT_HORIZONTAL_MASK);
         changed_direction = 1;
-        if (!(input & 12)) {
+        if (!(input & INPUT_HORIZONTAL_MASK)) {
             if (gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
-                input |= 1;
+                input |= INPUT_UP;
             else
-                input |= 2;
+                input |= INPUT_DOWN;
         }
     }
     if (state->velocity_x && (state->draw_flags & ENTITY_BLOCKED_X)) {
-        input &= 0xf3;
+        input &= (INPUT_BUTTON_MASK | INPUT_VERTICAL_MASK);
         changed_direction = 1;
-        if (!(input & 3)) {
+        if (!(input & INPUT_VERTICAL_MASK)) {
             if (gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1)
-                input |= 4;
+                input |= INPUT_LEFT;
             else
-                input |= 8;
+                input |= INPUT_RIGHT;
         }
     }
     PlayerApplyRocketSkatesInput(state, player, changed_direction, input);

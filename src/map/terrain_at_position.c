@@ -1,4 +1,5 @@
 #include "terrain.h"
+#include "hardware.h"
 #include "entities.h"
 #include "assets_map.h"
 #include "graphics_calls.h"
@@ -9,10 +10,10 @@
 #include "ram_player.h"
 #include "ram_ui.h"
 
-/* Read the high terrain nibble at a world position. A map coordinate of
- * zero or past the upper bound reads as terrain 0x80 on levels 1 and 26 and
- * 0x90 elsewhere ([INFERENCE] callers pass nonnegative coordinates; a
- * negative one would index the map). */
+/* Read the high terrain nibble at a world position. Zero or an upper-bound
+ * overflow returns water on levels 1/26, void elsewhere.
+ * ORIGINAL BUG: negative map coordinates are not rejected before indexing.
+ * Whether an original caller can supply them is unknown [INFERENCE]. */
 unsigned char GetMapTerrainAtWorldPosition(player, world_x, world_y)
 short player, world_x, world_y;
 {
@@ -23,26 +24,26 @@ short player, world_x, world_y;
 
     if (!player) {
         map = gPlayer1LevelMap[0];
-        if (gPlayer1MapLevel == 1 || gPlayer1MapLevel == 26)
+        if (gPlayer1MapLevel == 1 || gPlayer1MapLevel == LEVEL_FINAL)
             special_level = 1;
     } else {
         map = gPlayer2LevelMap[0];
-        if (gPlayer2MapLevel == 1 || gPlayer2MapLevel == 26)
+        if (gPlayer2MapLevel == 1 || gPlayer2MapLevel == LEVEL_FINAL)
             special_level = 1;
     }
     tile_y = (world_y >> 3) & 7;
     tile_x = (world_x >> 3) & 15;
     map_y = world_y >> 6;
     map_x = world_x >> 7;
-    if (!map_x || map_x > 19 || !map_y || map_y > 26) {
+    if (!map_x || map_x > MAP_COLUMNS || !map_y || map_y > MAP_ROWS) {
         if (special_level)
-            return 0x80;
+            return TERRAIN_WATER;
         else
-            return 0x90;
+            return TERRAIN_VOID;
     } else {
         --map_x;
         --map_y;
-        gTerrainQueryMetatileWord = map[map_y * 19 + map_x];
+        gTerrainQueryMetatileWord = map[map_y * MAP_COLUMNS + map_x];
         tile_number = GetLevelMetatileTile(gTerrainQueryMetatileLowByte, tile_y, tile_x);
         tile_number &= 0x1ff;
         return PlayerTilePropertyLookup[tile_number] & TERRAIN_CLASS_MASK;
@@ -85,30 +86,30 @@ short player;
     for (sample_y = center_y - 2; sample_y < center_y + 3; ++sample_y) {
         for (sample_x = center_x - 2; sample_x < center_x + 3; ++sample_x) {
             if (PresentFindDoorwayOwnerAtTile(entity, sample_y, sample_x))
-                terrain = 16;
+                terrain = TERRAIN_GROUND;
             else {
                 tile_y = sample_y & 7;
                 tile_x = sample_x & 15;
                 map_y = sample_y >> 3;
                 map_cell = sample_x >> 4;
-                if (!map_cell || map_cell > 19 || !map_y || map_y > 26) {
-                    if (entity->level == 1 || entity->level == 26)
-                        terrain = 0x80;
+                if (!map_cell || map_cell > MAP_COLUMNS || !map_y || map_y > MAP_ROWS) {
+                    if (entity->level == 1 || entity->level == LEVEL_FINAL)
+                        terrain = TERRAIN_WATER;
                     else
-                        terrain = 0x90;
+                        terrain = TERRAIN_VOID;
                 } else {
                     --map_cell;
                     --map_y;
                     tile_number = 0;
-                    map_cell = map[map_y * 19 + map_cell];
-                    terrain = ((unsigned short)map_cell & 0x1f00) >> 8;
+                    map_cell = map[map_y * MAP_COLUMNS + map_cell];
+                    terrain = ((unsigned short)map_cell & METATILE_OVERLAY_MASK) >> 8;
                     if (terrain)
                         tile_number = GetOverlayMetatileTile(terrain, tile_y, tile_x);
                     if (!tile_number) {
                         terrain = map_cell;
                         tile_number = GetLevelMetatileTile(terrain, tile_y, tile_x);
                     }
-                    terrain = PlayerTilePropertyLookup[tile_number & 0x7ff];
+                    terrain = PlayerTilePropertyLookup[tile_number & VDP_TILE_INDEX_MASK];
                 }
             }
             *land++ = terrain;

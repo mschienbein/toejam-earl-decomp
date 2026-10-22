@@ -1,6 +1,11 @@
 #ifndef TJE_PLAYER_ANIMATION_H
 #define TJE_PLAYER_ANIMATION_H
 
+/* Mask off the directional member of a four-animation family. */
+#define PLAYER_ANIM_FAMILY_MASK 0xfc
+/* Ignore only the left/right member bit of a two-animation pair. */
+#define PLAYER_ANIM_PAIR_MASK 0xfe
+
 /* Player descriptor IDs used by the source; directional families use UP/DOWN/LEFT/RIGHT. */
 #define PLAYER_ANIM_IDLE 0
 #define PLAYER_ANIM_TOMATO_RAIN 1
@@ -23,6 +28,7 @@
 #define PLAYER_ANIM_FALL_DOWN 21
 #define PLAYER_ANIM_FALL_LEFT 22
 #define PLAYER_ANIM_FALL_RIGHT 23
+#define PLAYER_ANIM_LAND_UP 24
 #define PLAYER_ANIM_JUMP_WINDUP_UP 28
 #define PLAYER_ANIM_JUMP_WINDUP_DOWN 29
 #define PLAYER_ANIM_JUMP_WINDUP_LEFT 30
@@ -31,6 +37,10 @@
 #define PLAYER_ANIM_JUMP_TAKEOFF_RIGHT 35
 #define PLAYER_ANIM_SWIM_UP 44
 #define PLAYER_ANIM_CLIMB_UP 48
+#define PLAYER_ANIM_HURT_UP 52
+#define PLAYER_ANIM_HURT_DOWN 53
+#define PLAYER_ANIM_HURT_LEFT 54
+#define PLAYER_ANIM_HURT_RIGHT 55
 #define PLAYER_ANIM_SPRING_SHOES_UP 56
 #define PLAYER_ANIM_SPRING_SHOES_DOWN 57
 #define PLAYER_ANIM_ICARUS_FLY_UP 60

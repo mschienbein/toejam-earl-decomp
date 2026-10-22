@@ -1,6 +1,7 @@
 #include "revision.h"
 #include "entities.h"
 #include "sprites.h"
+#include "sprite_frame_views.h"
 #include "hardware.h"
 #include "assets_intro.h"
 #include "assets_palettes.h"
@@ -46,7 +47,7 @@ char restart;
         frame = Spr_TransitionBackground[frame_number];
         for (part_number = 0; part_number < 4; ++part_number) {
             /* These transition frames have exactly four payload pieces. */
-            part = &((struct render_piece (*)[4])(frame + 1))[0][part_number];
+            part = &((struct render_frame_four_piece_view *)frame)->pieces[part_number];
             packing = part->tile_format;
             if (packing < 0)
                 SpriteUnpackInterleavedRLE(part, 16);
@@ -318,8 +319,8 @@ unsigned short TitleScreenVideo()
             TitleDrawSelectedLogo();
         }
         buttons = GetCtrl1Input() | GetCtrl2Input();
-        if (buttons & 0x80) {
-            while ((GetCtrl1Input() | GetCtrl2Input()) & 0x80)
+        if (buttons & INPUT_START) {
+            while ((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)
                 WaitForNextVBlank(1);
             start_pressed = 1;
             break;

@@ -8,6 +8,9 @@
 #define VDP_DATA (*(unsigned short *)0xc00000L)
 #define VRAM_WRITE(address) (0x40000000L + (((address) & 0x3fff) << 16) + (((address) & 0xc000) >> 14))
 
+/* One 8x8 four-bit-per-pixel Genesis pattern. */
+#define VDP_TILE_BYTES 32
+
 /* Packed VDP control-port commands; suffixes preserve their longword view.
  * ResetVDP selects plane A at A000, window at D000 and plane B at E000. */
 #define VDP_WRITE_VRAM_BASE 0x40000000L
@@ -23,6 +26,8 @@
 #define VDP_TILE_HORIZONTAL_FLIP 0x0800
 #define VDP_TILE_VERTICAL_FLIP 0x1000
 #define VDP_TILE_PRIORITY 0x8000
+#define VDP_TILE_PALETTE_3 0x6000
+#define VDP_SPRITE_SIZE_4X1 12
 
 #define Z80_RAM ((char *)0xa00000L)
 #define Z80_RESET (*(short *)0xa11200L)

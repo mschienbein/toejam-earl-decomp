@@ -26,11 +26,11 @@ char flag;
     int occupied = 0;
     struct object_state *entity;
 
-    for (player = 0; player <= 1; ++player) {
+    for (player = 0; player <= PLAYER_EARL; ++player) {
         entity = &gPlayerInfo[player];
         if (entity->level == elevator->level) {
             if (flag == gPlayerElevatorFlags[player]) {
-                if (gPlayerProcessedInput[player] & 3)
+                if (gPlayerProcessedInput[player] & INPUT_VERTICAL_MASK)
                     occupied = 1;
             } else if ((short)abs(entity->x - elevator->x) < 10) {
                 distance_y = entity->y - elevator->y;
@@ -58,7 +58,7 @@ struct elevator_record *elevator;
         if ((entity->height += 4) > 28) {
             entity->height = 0;
             --gDepartureElevatorShakeCycles;
-            PlaySound(PSG_GATED_TONE_SWEEP, 50);
+            PlaySound(PSG_GATED_TONE_SWEEP, AUDIO_PRIORITY_NORMAL);
         }
         gDepartureElevatorShakeDelay = gDepartureElevatorShakeCycles / 2;
     }
@@ -123,14 +123,14 @@ void ProcessElevatorStep1()
                 next_state = 5;
                 gDepartureElevatorShakeCycles = 5;
                 gDepartureElevatorShakeDelay = 2;
-                PlaySound(PSG_GATED_TONE_SWEEP, 50);
+                PlaySound(PSG_GATED_TONE_SWEEP, AUDIO_PRIORITY_NORMAL);
                 if ((gPlayerLives[PLAYER_TOEJAM] < 0 || flag == gPlayerElevatorFlags[PLAYER_TOEJAM]) &&
                     (gPlayer2Lives < 0 || flag == gPlayerElevatorFlags[PLAYER_EARL])) {
                     AudioRequestFmChannelRelease();
                     MusicRequestTrackPointerReset();
                 }
             } else if (distance_or_frame < 12 && !((distance_or_frame + 1) & 3))
-                PlaySound(PSG_TONE_PULSE, 50);
+                PlaySound(PSG_TONE_PULSE, AUDIO_PRIORITY_NORMAL);
         } else if (state == 5) {
             if (elevator->entity && ElevatorStepDepartureHeightCycles(elevator)) {
                 next_state = 7;
@@ -171,7 +171,7 @@ void ProcessElevatorStep1()
             next_state = 4;
             PlaySound(PSG_NOISE_ACCENT, 30);
         }
-        for (player = 0; player <= 1; ++player) {
+        for (player = 0; player <= PLAYER_EARL; ++player) {
             if (flag == gPlayerElevatorFlags[player]) {
                 entity = &gPlayerInfo[player];
                 if (!entity->sprite_state && entity->frame == 1)
@@ -220,7 +220,7 @@ void ProcessElevatorStep2()
                     if (distance_x < 22 && distance_y < 7)
                         entity->y = elevator->y + 12;
                 }
-                PlaySound(PSG_DUAL_TONE_FADE, 50);
+                PlaySound(PSG_DUAL_TONE_FADE, AUDIO_PRIORITY_NORMAL);
                 if (gCurrentMusicSelection == MUSIC_TRANSITION)
                     gRequestedMusicSelection = (int)GetLevelMusicIndex(gHighestLevel);
             }
@@ -252,7 +252,7 @@ void ProcessElevatorStep2()
             next_state = 4;
             PlaySound(PSG_NOISE_ACCENT, 30);
         }
-        for (player = 0; player <= 1; ++player) {
+        for (player = 0; player <= PLAYER_EARL; ++player) {
             if (flag == gPlayerElevatorFlags[player]) {
                 entity = &gPlayerInfo[player];
                 if (!entity->sprite_state && entity->frame == 1)

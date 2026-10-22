@@ -4,6 +4,7 @@
 #include "ram_player.h"
 #include "ram_effects.h"
 #include "ram_elevator.h"
+#include "ram_system.h"
 #include "player.h"
 #include "present_calls.h"
 #include "sprite_calls.h"
@@ -38,7 +39,7 @@ short player_number, input;
         }
         return;
     }
-    if ((player->animation_group_mask & 0x77d13760L) ||
+    if ((player->animation_group_mask & PLAYER_GROUP_BLOCK_DIRECTIONAL_INPUT) ||
         (player->animation_group_mask & (long)PLAYER_GROUP_REACTION) ||
         player->sprite_state == PLAYER_ANIM_WHIRLWIND ||
         player->sprite_state == PLAYER_ANIM_WHIRLWIND_RECOVERY ||
@@ -50,32 +51,32 @@ short player_number, input;
     if (gPlayerControlRemapEntities[player_number])
         input = PlayerRemapDirectionalInput(player_number);
     if (player->x <= 8)
-        input &= ~4;
+        input &= ~INPUT_LEFT;
     /* MATCHING QUALIFICATION: these single-use int ownership locals are
      * assigned inside the comparisons to select the original scratch registers.
      * Direct field expressions, separate assignments, and block-local
      * initializers did not match. Neither assignment changes a field or input. */
     if ((width = player->width) + player->x >= 2672)
-        input &= ~8;
+        input &= ~INPUT_RIGHT;
     if ((player_y = player->y) - player->height_pixels <= 8)
-        input &= ~1;
+        input &= ~INPUT_UP;
     if (player->y >= 1776)
-        input &= ~2;
+        input &= ~INPUT_DOWN;
     if (gPlayerElevatorFlags[player_number]) {
         if (!ProcessElevator(gPlayerElevatorFlags[player_number]))
             input = 0;
         else
-            input &= ~12;
+            input &= ~INPUT_HORIZONTAL_MASK;
     }
     if ((gDoorwayPlayerContactFlags[0] == ((player_number + 1) | 4) ||
-         gSecondDoorwayPlayerContactFlags == ((player_number + 1) | 4)) && (input & 1))
-        input &= ~12;
+         gSecondDoorwayPlayerContactFlags == ((player_number + 1) | 4)) && (input & INPUT_UP))
+        input &= ~INPUT_HORIZONTAL_MASK;
     sprite = player->sprite_state;
     if (player->animation_group_mask & (long)PLAYER_GROUP_LEAN) {
-        if ((sprite == PLAYER_ANIM_LEAN_UP && (input & 1)) ||
-            (sprite == PLAYER_ANIM_LEAN_DOWN && (input & 2)) ||
-            (sprite == PLAYER_ANIM_LEAN_LEFT && (input & 4)) ||
-            (sprite == PLAYER_ANIM_LEAN_RIGHT && (input & 8)))
+        if ((sprite == PLAYER_ANIM_LEAN_UP && (input & INPUT_UP)) ||
+            (sprite == PLAYER_ANIM_LEAN_DOWN && (input & INPUT_DOWN)) ||
+            (sprite == PLAYER_ANIM_LEAN_LEFT && (input & INPUT_LEFT)) ||
+            (sprite == PLAYER_ANIM_LEAN_RIGHT && (input & INPUT_RIGHT)))
             return;
         player->velocity_x = 0;
         player->velocity_y = 0;
@@ -88,12 +89,14 @@ short player_number, input;
 #include "present_types.h"
 #include "terrain.h"
 #include "entities.h"
+#include "sprites.h"
 #include "assets_audio.h"
 #include "audio_calls.h"
 #include "player.h"
 #include "ram_effects.h"
 #include "ram_elevator.h"
 #include "ram_player.h"
+#include "ram_system.h"
 #include "sprite_calls.h"
 
 /* Select movement speeds, directional sprite, and animation mode. */
@@ -124,7 +127,7 @@ unsigned short land;
         speed_y += velocity_x * 8;
     }
     if (gPlayerElevatorApproachInputGate[player_number]) {
-        if (input & 1)
+        if (input & INPUT_UP)
             input = 1;
         else
             gPlayerElevatorApproachInputGate[player_number] = 0;
@@ -143,54 +146,54 @@ unsigned short land;
     current_sprite = player->sprite_state;
     animation_mode = player->animation_motion_axes;
     if (player->animation_group_mask & (long)PLAYER_GROUP_JUMP_WINDUP) {
-        if ((current_sprite == PLAYER_ANIM_JUMP_WINDUP_UP && (input & 1)) ||
-            (current_sprite == PLAYER_ANIM_JUMP_WINDUP_DOWN && (input & 2)) ||
-            (current_sprite == PLAYER_ANIM_JUMP_WINDUP_LEFT && (input & 4)) ||
-            (current_sprite == PLAYER_ANIM_JUMP_WINDUP_RIGHT && (input & 8)))
+        if ((current_sprite == PLAYER_ANIM_JUMP_WINDUP_UP && (input & INPUT_UP)) ||
+            (current_sprite == PLAYER_ANIM_JUMP_WINDUP_DOWN && (input & INPUT_DOWN)) ||
+            (current_sprite == PLAYER_ANIM_JUMP_WINDUP_LEFT && (input & INPUT_LEFT)) ||
+            (current_sprite == PLAYER_ANIM_JUMP_WINDUP_RIGHT && (input & INPUT_RIGHT)))
             return;
         sprite = 0;
-    } else if (!(input & 15) && (velocity_x || velocity_y)) {
+    } else if (!(input & INPUT_DIRECTION_MASK) && (velocity_x || velocity_y)) {
         sprite = 0;
         velocity_x = 0;
         velocity_y = 0;
         animation_mode = 0;
-    } else if (input & 12) {
-        if (((input & 4) && velocity_x >= 0) ||
-            ((input & 8) && velocity_x <= 0)) {
-            if (input & 4)
+    } else if (input & INPUT_HORIZONTAL_MASK) {
+        if (((input & INPUT_LEFT) && velocity_x >= 0) ||
+            ((input & INPUT_RIGHT) && velocity_x <= 0)) {
+            if (input & INPUT_LEFT)
                 sprite = PLAYER_ANIM_WALK_LEFT;
             else
                 sprite = PLAYER_ANIM_WALK_RIGHT;
             velocity_y = 0;
             animation_mode = 3;
         }
-        if (input & 3) {
-            if (input & 1)
+        if (input & INPUT_VERTICAL_MASK) {
+            if (input & INPUT_UP)
                 velocity_y = -speed_y;
             else
                 velocity_y = speed_y;
-            if (input & 4)
+            if (input & INPUT_LEFT)
                 velocity_x = -speed_y;
             else
                 velocity_x = speed_y;
         } else {
             velocity_y = 0;
-            if (input & 4)
+            if (input & INPUT_LEFT)
                 velocity_x = -speed_x;
             else
                 velocity_x = speed_x;
         }
-    } else if (input & 3) {
-        if (velocity_x || ((input & 1) && velocity_y >= 0) ||
-            ((input & 2) && velocity_y <= 0)) {
-            if (input & 1)
+    } else if (input & INPUT_VERTICAL_MASK) {
+        if (velocity_x || ((input & INPUT_UP) && velocity_y >= 0) ||
+            ((input & INPUT_DOWN) && velocity_y <= 0)) {
+            if (input & INPUT_UP)
                 sprite = PLAYER_ANIM_WALK_UP;
             else
                 sprite = PLAYER_ANIM_WALK_DOWN;
             animation_mode = 2;
             velocity_x = 0;
         }
-        if (input & 1)
+        if (input & INPUT_UP)
             velocity_y = -speed_x;
         else
             velocity_y = speed_x;
@@ -225,7 +228,7 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
             sprite = GetActivePresentSprite(player);
             frame = -1;
         } else {
-            sprite &= 3;
+            sprite &= DIRECTION_MASK;
             if ((player->animation_group_mask & (long)PLAYER_GROUP_INNERTUBE_MOVE) || player->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE)
                 sprite += PLAYER_ANIM_INNERTUBE_MOVE_UP;
             else if ((player->animation_group_mask & (long)PLAYER_GROUP_SWIM) || player->sprite_state == PLAYER_ANIM_SWIM_IDLE || player->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE)
@@ -234,12 +237,12 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
                 sprite += PLAYER_ANIM_SPRING_SHOES_UP;
             else if (player->animation_group_mask & (long)PLAYER_GROUP_ICARUS_FLY)
                 sprite += PLAYER_ANIM_ICARUS_FLY_UP;
-            else if ((input & 64) && !gPlayerElevatorFlags[player_number] &&
+            else if ((input & INPUT_BUTTON_A) && !gPlayerElevatorFlags[player_number] &&
                      gPlayerPowerups[player_number] == PRESENT_SUPER_HITOPS) {
                 sprite += PLAYER_ANIM_HITOPS_UP;
                 if (!(player->animation_group_mask & (long)PLAYER_GROUP_HITOPS))
-                    PlaySoundEffect((long)Sfx_Running, 50, 0);
-            } else if ((input & 64) && gPlayerPowerups[player_number] == PRESENT_NONE)
+                    PlaySoundEffect((long)Sfx_Running, AUDIO_PRIORITY_NORMAL, 0);
+            } else if ((input & INPUT_BUTTON_A) && gPlayerPowerups[player_number] == PRESENT_NONE)
                 sprite += PLAYER_ANIM_SNEAK_UP;
             else {
                 sprite += PLAYER_ANIM_WALK_UP;
@@ -248,17 +251,17 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
             }
         }
     } else if (sprite == -1) {
-        if (input & 64) {
+        if (input & INPUT_BUTTON_A) {
             if (player->animation_group_mask & PLAYER_GROUP_WALK) {
                 if (gPlayerPowerups[player_number] == PRESENT_NONE)
                     sprite = player->sprite_state + 4;
                 else if (gPlayerPowerups[player_number] == PRESENT_SUPER_HITOPS && !gPlayerElevatorFlags[player_number]) {
                     sprite = (player->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_HITOPS_UP;
-                    PlaySoundEffect((long)Sfx_Running, 50, 0);
+                    PlaySoundEffect((long)Sfx_Running, AUDIO_PRIORITY_NORMAL, 0);
                 }
             }
         } else if ((player->animation_group_mask & (long)(PLAYER_GROUP_SNEAK | PLAYER_GROUP_HITOPS)) && player->frame_duration <= 1) {
-            sprite = (player->sprite_state & DIRECTION_MASK) + 8;
+            sprite = (player->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_WALK_UP;
             player->animation_motion_axes = ANIMATION_MOTION_XY;
             if (player->animation_group_mask & (long)PLAYER_GROUP_HITOPS) {
                 player->velocity_x = velocity_x / 3;
@@ -267,7 +270,7 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
         }
     }
     if (sprite != -1) {
-        if ((sprite & 252) == (player->sprite_state & 252)) {
+        if ((sprite & PLAYER_ANIM_FAMILY_MASK) == (player->sprite_state & PLAYER_ANIM_FAMILY_MASK)) {
             frame_duration = player->frame_duration;
             if (!frame_duration)
                 frame_duration = 1;
@@ -281,7 +284,7 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
         player->frame_duration = frame_duration;
         player->frame = frame;
         for (sequence_index = 1; sequence_index <= frame + 1; ++sequence_index) {
-            if ((player->sequence[sequence_index] & 240) == 240) {
+            if ((player->sequence[sequence_index] & ANIMATION_COMMAND_MASK) == ANIMATION_COMMAND_MASK) {
                 player->frame = -1;
                 break;
             }

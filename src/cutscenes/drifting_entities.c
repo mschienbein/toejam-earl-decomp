@@ -1,5 +1,6 @@
 #include "entities.h"
 #include "sprites.h"
+#include "sprite_frame_views.h"
 #include "assets_intro.h"
 #include "intro_object_calls.h"
 #include "ram_intro.h"
@@ -29,8 +30,8 @@ void CutsceneCreateDriftingEntities()
              * maximum payload bound, not a fixed complete-frame stride. */
             for (piece_number = 0; piece_number < frame->piece_count; piece_number++)
                 object->tile_count +=
-                    ((struct render_piece (*)[4])(frame + 1))[0][piece_number].width *
-                    ((struct render_piece (*)[4])(frame + 1))[0][piece_number].height;
+                    ((struct render_frame_four_piece_view *)frame)->pieces[piece_number].width *
+                    ((struct render_frame_four_piece_view *)frame)->pieces[piece_number].height;
             object->tile = 0;
             object->current_frame = frame;
             object->x = (int)GetRandomNumber() % 320 + (-70);
@@ -38,7 +39,7 @@ void CutsceneCreateDriftingEntities()
             do {
                 object->y = (int)GetRandomNumber() % 148 + 60;
             } while (object->y > 150 && object->y < 170);
-            object->sequence = (char *)&IntroHeldFrameStreams[object_number];
+            object->sequence = &IntroHeldFrameStreams[object_number].frame;
             object->frames = CutsceneDriftingEntityFrames;
             object->frame_phase = 1;
             object->frame_duration = 1;

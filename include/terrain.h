@@ -1,6 +1,11 @@
 #ifndef TJE_TERRAIN_H
 #define TJE_TERRAIN_H
 
+/* Metatile-grid dimensions, distinct from the numerically equal final-level ID. */
+#define MAP_ROWS 26
+#define MAP_COLUMNS 19
+#define LEVEL_FINAL 26
+
 /* Tile high-nibble classes and separately named packed-metatile bits; these are not map-generation
  * region labels. */
 #define TERRAIN_CLASS_MASK 0xf0

@@ -53,7 +53,7 @@ short x, y, level;
         effect->frame_phase = animation->period;
         effect->frame_duration = 1;
         effect->frame = -1;
-        PlaySound(PSG_TWO_NOTES, 50);
+        PlaySound(PSG_TWO_NOTES, AUDIO_PRIORITY_NORMAL);
         return 0;
     }
     return 1;

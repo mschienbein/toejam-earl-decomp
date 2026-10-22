@@ -54,7 +54,7 @@ struct earthling_state *earthling;
                 player->height = 22;
                 player->draw_flags &= ~ENTITY_SHADOW;
                 sprite = player->sprite_state + 4;
-                PlaySoundEffect((long)Sfx_Splash, 50, 0);
+                PlaySoundEffect((long)Sfx_Splash, AUDIO_PRIORITY_NORMAL, 0);
             }
         } else if (player->animation_group_mask & PLAYER_GROUP_JUMP_SPLASH) {
             if (!player->frame_duration) {
@@ -64,7 +64,7 @@ struct earthling_state *earthling;
             }
         } else if (player->sprite_state == PLAYER_ANIM_HOT_TUB) {
             if (!player_number) {
-                if (gPlayerProcessedInput[PLAYER_TOEJAM] & 4) {
+                if (gPlayerProcessedInput[PLAYER_TOEJAM] & INPUT_LEFT) {
                     sprite = PLAYER_ANIM_HOT_TUB_EXIT;
                     player->behavior_flags |= ENTITY_MASK_PIXELS;
                 } else if (!(GetRandomNumber() & 31)) {
@@ -78,7 +78,7 @@ struct earthling_state *earthling;
                         GenerateSpeech(0, "titter", 1);
                 }
             } else if (player_number == PLAYER_EARL) {
-                if (gPlayerProcessedInput[PLAYER_EARL] & 8) {
+                if (gPlayerProcessedInput[PLAYER_EARL] & INPUT_RIGHT) {
                     sprite = PLAYER_ANIM_HOT_TUB_EXIT;
                     player->behavior_flags |= ENTITY_MASK_PIXELS;
                 } else if (!(GetRandomNumber() & 31)) {

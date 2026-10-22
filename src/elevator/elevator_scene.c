@@ -3,6 +3,7 @@
 #include "entities.h"
 #include "elevator.h"
 #include "sprites.h"
+#include "sprite_frame_views.h"
 #include "ui.h"
 #include "hardware.h"
 #include "assets_map.h"
@@ -403,8 +404,8 @@ void MapEnterFinalLevel()
         StopPlayer(player);
         gPlayerFallStates[PLAYER_TOEJAM] = 0;
         SetSprite(player, PLAYER_ANIM_IDLE);
-        player->behavior_flags &= 0xaf;
-        player->tile &= 0x7fff;
+        player->behavior_flags &= ~(ENTITY_PLAYER_SUPPRESSED | ENTITY_HIDDEN);
+        player->tile &= ~VDP_TILE_PRIORITY;
     }
     if (gPlayer2Lives >= 0) {
         gPlayerInfo[PLAYER_EARL].level = 26;
@@ -414,8 +415,8 @@ void MapEnterFinalLevel()
         StopPlayer(player);
         gPlayer2FallState = 0;
         SetSprite(player, PLAYER_ANIM_IDLE);
-        player->behavior_flags &= 0xaf;
-        player->tile &= 0x7fff;
+        player->behavior_flags &= ~(ENTITY_PLAYER_SUPPRESSED | ENTITY_HIDDEN);
+        player->tile &= ~VDP_TILE_PRIORITY;
     }
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
@@ -444,7 +445,7 @@ void ElevatorLoadRideBackgroundTiles()
 
     frame = Spr_TransitionBackground[gPlayer1MapLevel * 2];
     for (part_number = 0; part_number < 4; ++part_number) {
-        part = &((struct render_piece (*)[4])(frame + 1))[0][part_number];
+        part = &((struct render_frame_four_piece_view *)frame)->pieces[part_number];
         packing = part->tile_format;
         if (packing < 0)
             SpriteUnpackInterleavedRLE(part, 16);

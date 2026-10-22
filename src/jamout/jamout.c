@@ -79,46 +79,46 @@ short song;
         else
             start_hold = 0;
         if (gJamPlayer1PendingAnimationInput) {
-            if (gJamPlayer1PendingAnimationInput & 64) {
+            if (gJamPlayer1PendingAnimationInput & INPUT_BUTTON_A) {
                 if ((int)GetRandomNumber() & 1)
                     JamOutSetToejamSequence(JamOutCharacterAnimations, 6);
                 else
                     JamOutSetToejamSequence(JamBassDrumAlternateSequence, 6);
             }
-            if (gJamPlayer1PendingAnimationInput & 16) {
+            if (gJamPlayer1PendingAnimationInput & INPUT_BUTTON_B) {
                 if ((int)GetRandomNumber() & 1)
                     JamOutSetToejamSequence(JamSnareDrumSecondSequence, 6);
                 else
                     JamOutSetToejamSequence(JamSnareDrumFirstSequence, 6);
             }
-            if (gJamPlayer1PendingAnimationInput & 32) {
+            if (gJamPlayer1PendingAnimationInput & INPUT_BUTTON_C) {
                 JamOutSetToejamSequence(JamClapSequence, 3);
                 gJamToejamAnimationLocked = 1;
             }
-            if ((gJamPlayer1PendingAnimationInput & 15) || (gJamPlayer1PendingAnimationInput & 128)) {
+            if ((gJamPlayer1PendingAnimationInput & INPUT_DIRECTION_MASK) || (gJamPlayer1PendingAnimationInput & INPUT_START)) {
                 JamOutSetToejamSequence(JamVocalOrScratchSequence, 2);
                 gJamToejamAnimationLocked = 1;
             }
             gJamPlayer1PendingAnimationInput = 0;
         }
         if (gJamPlayer2PendingAnimationInput) {
-            if (gJamPlayer2PendingAnimationInput & 64) {
+            if (gJamPlayer2PendingAnimationInput & INPUT_BUTTON_A) {
                 if ((int)GetRandomNumber() & 1)
                     JamOutSetEarlSequence(JamOutCharacterAnimations, 6);
                 else
                     JamOutSetEarlSequence(JamBassDrumAlternateSequence, 6);
             }
-            if (gJamPlayer2PendingAnimationInput & 16) {
+            if (gJamPlayer2PendingAnimationInput & INPUT_BUTTON_B) {
                 if ((int)GetRandomNumber() & 1)
                     JamOutSetEarlSequence(JamSnareDrumSecondSequence, 6);
                 else
                     JamOutSetEarlSequence(JamSnareDrumFirstSequence, 6);
             }
-            if (gJamPlayer2PendingAnimationInput & 32) {
+            if (gJamPlayer2PendingAnimationInput & INPUT_BUTTON_C) {
                 JamOutSetEarlSequence(JamClapSequence, 3);
                 gJamEarlAnimationLocked = 1;
             }
-            if ((gJamPlayer2PendingAnimationInput & 15) || (gJamPlayer2PendingAnimationInput & 128)) {
+            if ((gJamPlayer2PendingAnimationInput & INPUT_DIRECTION_MASK) || (gJamPlayer2PendingAnimationInput & INPUT_START)) {
                 JamOutSetEarlSequence(JamVocalOrScratchSequence, 2);
                 gJamEarlAnimationLocked = 1;
             }
@@ -174,41 +174,41 @@ void JamOutVBlank()
     }
     if (gFrameCounterLowByte & 1) {
         if (gJamAudioRoute1PendingInput) {
-            if (gJamAudioRoute1PendingInput & 64) {
+            if (gJamAudioRoute1PendingInput & INPUT_BUTTON_A) {
                 if (!gJamSelectedSong)
                     gMusicAnimationEvent = 1;
                 PlaySoundEffect((long)Sfx_JamBassDrum, 90, 0);
             }
-            if (gJamAudioRoute1PendingInput & 16)
+            if (gJamAudioRoute1PendingInput & INPUT_BUTTON_B)
                 PlaySoundEffect((long)Sfx_JamSnareDrum, 90, 0);
-            if (gJamAudioRoute1PendingInput & 32)
+            if (gJamAudioRoute1PendingInput & INPUT_BUTTON_C)
                 PlaySoundEffect((long)Sfx_JamClap, 90, 0);
-            if (gJamAudioRoute1PendingInput & 15) {
-                if (gJamAudioRoute1PendingInput & 1)
+            if (gJamAudioRoute1PendingInput & INPUT_DIRECTION_MASK) {
+                if (gJamAudioRoute1PendingInput & INPUT_UP)
                     PlaySoundEffect((long)Sfx_JamToejam, 90, 0);
-                if (gJamAudioRoute1PendingInput & 2)
+                if (gJamAudioRoute1PendingInput & INPUT_DOWN)
                     PlaySoundEffect((long)Sfx_JamBigEarl, 90, 0);
-                if (gJamAudioRoute1PendingInput & 4)
+                if (gJamAudioRoute1PendingInput & INPUT_LEFT)
                     PlaySoundEffect((long)Sfx_JamRap, 90, 0);
-                if (gJamAudioRoute1PendingInput & 8)
+                if (gJamAudioRoute1PendingInput & INPUT_RIGHT)
                     PlaySoundEffect((long)Sfx_Jammin, 90, 0);
             }
-            if (gJamAudioRoute1PendingInput & 128)
+            if (gJamAudioRoute1PendingInput & INPUT_START)
                 PlaySoundEffect((long)Sfx_JamRecordScratch, 90, 0);
             gJamAudioRoute1PendingInput = 0;
         }
     } else {
         if (gJamAudioRoute2PendingInput) {
-            if (gJamAudioRoute2PendingInput & 64) {
+            if (gJamAudioRoute2PendingInput & INPUT_BUTTON_A) {
                 AudioRequestChannelTemplateEffect(FM_EFFECT_JAM_BUTTON_A);
                 if (!gJamSelectedSong)
                     gMusicAnimationEvent = 1;
             }
-            if (gJamAudioRoute2PendingInput & 16)
+            if (gJamAudioRoute2PendingInput & INPUT_BUTTON_B)
                 AudioRequestChannelTemplateEffect(FM_EFFECT_JAM_BUTTON_B);
-            if (gJamAudioRoute2PendingInput & 32)
+            if (gJamAudioRoute2PendingInput & INPUT_BUTTON_C)
                 AudioRequestChannelTemplateEffect(FM_EFFECT_JAM_BUTTON_C);
-            if ((gJamAudioRoute2PendingInput & 15) || (gJamAudioRoute2PendingInput & 128))
+            if ((gJamAudioRoute2PendingInput & INPUT_DIRECTION_MASK) || (gJamAudioRoute2PendingInput & INPUT_START))
                 AudioRequestChannelTemplateEffect(FM_EFFECT_JAM_DIRECTION);
             gJamAudioRoute2PendingInput = 0;
         }
@@ -244,7 +244,7 @@ void JamOutRandomSampleVBlank()
         ++gFrameCounter;
     }
     if (gJamAudioRoute1PendingInput) {
-        if (gJamAudioRoute1PendingInput & 128) {
+        if (gJamAudioRoute1PendingInput & INPUT_START) {
             if (gJamSongCycleIndex == 7) {
                 AudioRequestFmChannelRelease();
                 MusicRequestTrackPointerReset();
@@ -252,16 +252,16 @@ void JamOutRandomSampleVBlank()
             } else
                 gRequestedMusicSelection = gJamSongCycleIndex++;
         }
-        if (gJamAudioRoute1PendingInput & 64) {
+        if (gJamAudioRoute1PendingInput & INPUT_BUTTON_A) {
             if (!gJamSongCycleIndex)
                 gMusicAnimationEvent = 1;
             PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute1ButtonASampleIndex], 90, 0);
         }
-        if (gJamAudioRoute1PendingInput & 16)
+        if (gJamAudioRoute1PendingInput & INPUT_BUTTON_B)
             PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute1ButtonBSampleIndex], 90, 0);
-        if (gJamAudioRoute1PendingInput & 32)
+        if (gJamAudioRoute1PendingInput & INPUT_BUTTON_C)
             PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute1ButtonCSampleIndex], 90, 0);
-        if (gJamAudioRoute1PendingInput & 15) {
+        if (gJamAudioRoute1PendingInput & INPUT_DIRECTION_MASK) {
             gJamAudioRoute1ButtonASampleIndex = (int)GetRandomNumber() % 42;
             gJamAudioRoute1ButtonBSampleIndex = (int)GetRandomNumber() % 42;
             gJamAudioRoute1ButtonCSampleIndex = (int)GetRandomNumber() % 42;
@@ -269,7 +269,7 @@ void JamOutRandomSampleVBlank()
         gJamAudioRoute1PendingInput = 0;
     }
     if (gJamAudioRoute2PendingInput) {
-        if (gJamAudioRoute2PendingInput & 128) {
+        if (gJamAudioRoute2PendingInput & INPUT_START) {
             if (++gJamTemplateBankCycleIndex == 3)
                 gJamTemplateBankCycleIndex = 0;
             if (!gJamTemplateBankCycleIndex) {
@@ -284,16 +284,16 @@ void JamOutRandomSampleVBlank()
                 gCurrentMusicSelection = !gRequestedMusicSelection;
             }
         }
-        if (gJamAudioRoute2PendingInput & 64) {
+        if (gJamAudioRoute2PendingInput & INPUT_BUTTON_A) {
             if (!gJamSongCycleIndex)
                 gMusicAnimationEvent = 1;
             PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute2ButtonASampleIndex], 90, 0);
         }
-        if (gJamAudioRoute2PendingInput & 16)
+        if (gJamAudioRoute2PendingInput & INPUT_BUTTON_B)
             PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute2ButtonBSampleIndex], 90, 0);
-        if (gJamAudioRoute2PendingInput & 32)
+        if (gJamAudioRoute2PendingInput & INPUT_BUTTON_C)
             PlaySoundEffect(PCMPlaybackPointers[gJamAudioRoute2ButtonCSampleIndex], 90, 0);
-        if (gJamAudioRoute2PendingInput & 15) {
+        if (gJamAudioRoute2PendingInput & INPUT_DIRECTION_MASK) {
             gJamAudioRoute2ButtonASampleIndex = (int)GetRandomNumber() % 42;
             gJamAudioRoute2ButtonBSampleIndex = (int)GetRandomNumber() % 42;
             gJamAudioRoute2ButtonCSampleIndex = (int)GetRandomNumber() % 42;

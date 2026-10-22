@@ -1,4 +1,5 @@
 #include "player_animation.h"
+#include "present_types.h"
 #include "hardware.h"
 #include "entities.h"
 #include "earthlings.h"
@@ -43,7 +44,7 @@ short player_number;
     if (selected_slot < inventory_count)
         gPlayerInventory[player_number][selected_slot] =
             gPlayerInventory[player_number][inventory_count];
-    gPlayerInventory[player_number][inventory_count] = -1;
+    gPlayerInventory[player_number][inventory_count] = PRESENT_NONE;
     if (gPlayerStolenPresentEntities[player_number] = (int)AllocateEntity()) {
         present = &gPlayerInfo[gPlayerStolenPresentEntities[player_number]];
         present->x = victim->x;
@@ -96,7 +97,7 @@ struct earthling_state *earthling;
         return;
     }
     mole = &gPlayerInfo[earthling->object];
-    if (gPlayerInventory[player_number][0] == -1 ||
+    if (gPlayerInventory[player_number][0] == PRESENT_NONE ||
         (player_number == PLAYER_TOEJAM && mole->attachment_x_or_latch) ||
         (player_number == PLAYER_EARL && mole->attachment_y_or_latch) ||
         !PlayerCanReceiveEarthlingEffect(victim, player_number))

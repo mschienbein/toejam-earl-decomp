@@ -16,24 +16,24 @@ char *output;
     short slot;
     char free_count = 0, secondary_count = 0;
     short index, limit;
-    char free_slots[12], secondary_slots[12];
+    char free_slots[ENTITY_SPRITES_PER_VIEW], secondary_slots[ENTITY_SPRITES_PER_VIEW];
 
-    flags = 1;
+    flags = SPRITE_SLOT_ALLOCATED;
     if (include_secondary)
-        flags |= 2;
+        flags |= SPRITE_SLOT_LOCKED;
     if (selection_mode == 1)
-        flags |= 4;
-    limit = 54;
+        flags |= SPRITE_SLOT_SECONDARY_VIEW;
+    limit = VIEWPORT_SPRITE_SLOT_COUNT;
     for (index = 0; index < limit; ++index) {
         char state;
 
         slot = index;
         if (selection_mode == 1)
-            slot = 53 - index;
+            slot = VIEWPORT_SPRITE_SLOT_COUNT - 1 - index;
         state = gViewportSpriteSlotFlags[slot];
-        if (!(state & 1))
+        if (!(state & SPRITE_SLOT_ALLOCATED))
             free_slots[free_count++] = slot;
-        else if (include_secondary && !(state & 2) &&
+        else if (include_secondary && !(state & SPRITE_SLOT_LOCKED) &&
                  secondary_count < count - free_count)
             secondary_slots[secondary_count++] = slot;
         if (free_count == count)
@@ -45,7 +45,7 @@ char *output;
         char selected = free_slots[index];
 
         gViewportSpriteSlotFlags[selected] = flags;
-        *output++ = selected + 25;
+        *output++ = selected + VIEWPORT_SPRITE_FIRST;
     }
     if (free_count < count) {
         count -= free_count;
@@ -53,7 +53,7 @@ char *output;
             char selected = secondary_slots[index];
 
             gViewportSpriteSlotFlags[selected] = flags;
-            *output++ = selected + 25;
+            *output++ = selected + VIEWPORT_SPRITE_FIRST;
         }
     }
     return 0;
@@ -84,7 +84,7 @@ char *slots;
     char slot;
 
     for (index = 0; index < count; ++index) {
-        slot = slots[index] - 25;
+        slot = slots[index] - VIEWPORT_SPRITE_FIRST;
         gViewportSpriteSlotFlags[slot] = 0;
     }
 }
@@ -93,7 +93,7 @@ char *slots;
 void FreeSpriteSlot(item)
 char item;
 {
-    item -= 25;
+    item -= VIEWPORT_SPRITE_FIRST;
     gViewportSpriteSlotFlags[item] = 0;
 }
 
@@ -101,7 +101,7 @@ char item;
 int IsSpriteSlotLocked(item)
 int item;
 {
-    if (gViewportSpriteSlotFlags[item - 25] & 2)
+    if (gViewportSpriteSlotFlags[item - VIEWPORT_SPRITE_FIRST] & SPRITE_SLOT_LOCKED)
         return 1;
     else
         return 0;
@@ -113,14 +113,14 @@ short count;
 {
     short groups, run, index, mark_index, tile;
 
-    groups = (count - 1) / 8 + 1;
+    groups = (count - 1) / SPRITE_TILES_PER_GROUP + 1;
     run = 0;
-    for (index = 0; index < 80; ++index) {
+    for (index = 0; index < SPRITE_TILE_GROUP_COUNT; ++index) {
         if (!gSpriteTileGroupAllocated[index]) {
             ++run;
             if (run == groups) {
                 index = index + 1 - run;
-                tile = (index << 3) + 640;
+                tile = (index << 3) + SPRITE_TILE_POOL_FIRST;
                 for (mark_index = 0; mark_index < run; ++mark_index)
                     gSpriteTileGroupAllocated[index++] = 1;
                 return tile;
@@ -137,9 +137,9 @@ short tile, count;
 {
     short groups, index;
 
-    groups = (count - 1) / 8 + 1;
-    tile -= 640;
-    tile /= 8;
+    groups = (count - 1) / SPRITE_TILES_PER_GROUP + 1;
+    tile -= SPRITE_TILE_POOL_FIRST;
+    tile /= SPRITE_TILES_PER_GROUP;
     for (index = 0; index < groups; ++index)
         gSpriteTileGroupAllocated[tile + index] = 0;
 }
@@ -176,10 +176,10 @@ short viewport;
         entity->tile |= tile;
     }
     if (!viewport) {
-        viewport_bit = 2;
+        viewport_bit = ENTITY_PRIMARY_VIEW;
         slots = entity->primary_sprites;
     } else {
-        viewport_bit = 4;
+        viewport_bit = ENTITY_SECONDARY_VIEW;
         slots = entity->secondary_sprites;
     }
     if (!AllocateSpriteSlots(entity->sprite_count, viewport, 1, slots))
@@ -239,14 +239,14 @@ short AllocateEntity()
 {
     short count, index;
 
-    if (gPlayer1MapLevel == 26)
-        count = 34;
+    if (gPlayer1MapLevel == LEVEL_FINAL)
+        count = DYNAMIC_ENTITY_SLOT_COUNT;
     else
-        count = 20;
+        count = DYNAMIC_ENTITY_GAMEPLAY_SLOTS;
     for (index = 0; index < count; ++index) {
         if (!gDynamicEntitySlotAllocated[index]) {
             gDynamicEntitySlotAllocated[index] = 1;
-            count = index + 6;
+            count = index + DYNAMIC_ENTITY_FIRST_SLOT;
             ResetEntityRuntimeState(&gPlayerInfo[count]);
             gPlayerInfo[count].draw_flags = ENTITY_ACTIVE;
             return count;
@@ -261,7 +261,7 @@ short entity_number;
 {
     struct object_state *entity;
 
-    if (entity_number <= 1)
+    if (entity_number <= PLAYER_EARL)
         return;
     entity = &gPlayerInfo[entity_number];
     if (entity->draw_flags & ENTITY_ACTIVE) {
@@ -270,7 +270,7 @@ short entity_number;
         if (entity->draw_flags & ENTITY_SECONDARY_VIEW)
             ReleaseEntityViewportSprites(entity, 1);
         entity->draw_flags = 0;
-        if (entity_number >= 6)
-            gDynamicEntitySlotAllocated[entity_number - 6] = 0;
+        if (entity_number >= DYNAMIC_ENTITY_FIRST_SLOT)
+            gDynamicEntitySlotAllocated[entity_number - DYNAMIC_ENTITY_FIRST_SLOT] = 0;
     }
 }

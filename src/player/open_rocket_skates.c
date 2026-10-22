@@ -23,17 +23,17 @@ unsigned short terrain;
         state->velocity_height = 256;
         state->acceleration_height = 0;
     }
-    if (state->animation_group_mask & 0x07b5fffc)
+    if (state->animation_group_mask & PLAYER_GROUP_ROCKET_FACING_MOTION)
         sprite = state->sprite_state & DIRECTION_MASK;
     if (terrain == TERRAIN_VOID || state->height > 0)
-        sprite += 104;
+        sprite += PLAYER_ANIM_SKATES_AIR_UP;
     else if (terrain == TERRAIN_WATER)
-        sprite += 100;
+        sprite += PLAYER_ANIM_SKATES_WATER_UP;
     else
-        sprite += 92;
+        sprite += PLAYER_ANIM_SKATES_UP;
     SetSprite(state, sprite);
     state->animation_motion_axes = ANIMATION_MOTION_NONE;
-    gPlayerPreviousProcessedInput[player] &= 0xf0;
+    gPlayerPreviousProcessedInput[player] &= INPUT_BUTTON_MASK;
     if (state->height >= 0)
         state->draw_flags |= ENTITY_SHADOW;
 }

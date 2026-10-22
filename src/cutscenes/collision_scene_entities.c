@@ -22,7 +22,7 @@ void IntroCreateCollisionSceneEntities()
         parent->x = 16;
         parent->y = 97;
         parent->height = 1;
-        parent->sequence = (char *)&IntroHeldFrameStreams[1];
+        parent->sequence = &IntroHeldFrameStreams[1].frame;
         parent->frame_duration = 1;
         parent->frame = -1;
         parent->frame_phase = 6;
@@ -49,7 +49,7 @@ void IntroCreateCollisionSceneEntities()
             }
             ++object->y;
             object->height = 1;
-            object->sequence = (char *)&IntroHeldFrameStreams[1];
+            object->sequence = &IntroHeldFrameStreams[1].frame;
             object->frame_duration = 1;
             object->frame = -1;
             object->frame_phase = 6;

@@ -14,9 +14,12 @@ struct menu_item {
     short selection;
 };
 
+/* Reuse the resolved opening speaker, which may differ from the incoming caller. */
+#define DIALOGUE_REPLY_FIRST_SPEAKER 2
+
 /* One scripted exchange: who speaks first, who answers, and after how long. */
 struct dialogue_descriptor {
-    char first_speaker, reply_speaker;   /* speaker indices */
+    char first_speaker, reply_speaker;   /* 0/1 force a player; reply 2 reuses the opening speaker. */
     char *first_line;                    /* opening line */
     short delay;                         /* ticks before the reply */
     char *reply;                         /* reply line */

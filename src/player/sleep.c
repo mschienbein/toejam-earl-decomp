@@ -1,6 +1,7 @@
 #include "player_animation.h"
 #include "hardware.h"
 #include "entities.h"
+#include "terrain.h"
 #include "sprites.h"
 #include "revision.h"
 #include "assets_audio.h"
@@ -40,7 +41,7 @@ struct object_state *state;
     struct timed_animation *animation;
 
     player = state->entity_index;
-    if (gPlayerElevatorFlags[player] || state->level == 26)
+    if (gPlayerElevatorFlags[player] || state->level == LEVEL_FINAL)
         return;
     if (state->sprite_state == PLAYER_ANIM_READ_BOOK) {
         if (--gPlayerBookSleepDelay[player] <= 0) {
@@ -82,7 +83,7 @@ struct object_state *state;
                         wake_effect->sequence = WakeWhisperAnimationStreams;
                     else
                         wake_effect->sequence = &WakeWhisperAnimationStreams[2];
-                    PlaySoundEffect((long)Sfx_WakeUpWhisper, 50, 0);
+                    PlaySoundEffect((long)Sfx_WakeUpWhisper, AUDIO_PRIORITY_NORMAL, 0);
                 } else {
                     wake_effect->sequence = animation->sequence;
                     wake_effect->frame_phase = animation->period;

@@ -1,3 +1,5 @@
+#include "hardware.h"
+#include "player_animation.h"
 #include "assets_ui.h"
 #include "ram_sprites.h"
 #include "sprite_calls.h"
@@ -19,26 +21,26 @@ short length, tile;
 {
     short index, padding;
 
-    AppendSpriteTilesToBuffer((long *)&RuntimeTextFontTiles[864], 1);
+    AppendSpriteTilesToBuffer((long *)&RuntimeTextFontTiles[SPEECH_BUBBLE_PREFIX_GLYPH * VDP_TILE_BYTES], 1);
     {
         int unused_columns;
-        unused_columns = 12 - length;
+        unused_columns = SPEECH_TEXT_MAX_GLYPHS - length;
         padding = unused_columns / 2;
     }
     for (index = 0; index < padding; ++index)
         AppendSpriteTilesToBuffer(RuntimeTextFontTiles, 1);
     for (index = 0; index < length; ++index) {
         char glyph = TextMapCharacterToGlyph(*(char *)&text[(int)index]);
-        if (glyph == 27)
+        if (glyph == SPEECH_BUBBLE_PREFIX_GLYPH)
             ++glyph;
-        AppendSpriteTilesToBuffer(RuntimeTextFontTiles + 32 * glyph, 1);
+        AppendSpriteTilesToBuffer(RuntimeTextFontTiles + VDP_TILE_BYTES * glyph, 1);
     }
     if (length & 1)
         ++padding;
     for (index = 0; index < padding; ++index)
         AppendSpriteTilesToBuffer(RuntimeTextFontTiles, 1);
     gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = tile;
-    gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = 13;
+    gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = SPEECH_TEXT_UPLOAD_TILES;
 }
 
 #include "hardware.h"
@@ -76,7 +78,7 @@ char replace_attached;
     source = &gPlayerInfo[speaker];
     if (!(source->draw_flags & ENTITY_EITHER_VIEW))
         return 0;
-    if (speaker <= 1 && source->sprite_state == 117)
+    if (speaker <= PLAYER_EARL && source->sprite_state == PLAYER_ANIM_SLEEP)
         return 0;
     if (replace_attached) {
         for (slot = 0; slot < 4; ++slot) {
@@ -101,8 +103,8 @@ char replace_attached;
     }
     for (length = 0; text[length]; ++length)
         ;
-    if (length > 12)
-        length = 12;
+    if (length > SPEECH_TEXT_MAX_GLYPHS)
+        length = SPEECH_TEXT_MAX_GLYPHS;
     if (gSpeechBubbleEntities[slot] = (int)AllocateEntity()) {
         bubble = &gPlayerInfo[gSpeechBubbleEntities[slot]];
         bubble->x = source->x;
@@ -112,8 +114,8 @@ char replace_attached;
         bubble->width = length << 3;
         bubble->height_pixels = 16;
         bubble->sprite_count = 4;
-        bubble->tile_count = 13;
-        if (gPlayer1MapLevel < 26)
+        bubble->tile_count = SPEECH_TEXT_UPLOAD_TILES;
+        if (gPlayer1MapLevel < LEVEL_FINAL)
             bubble->tile = VDP_TILE_PRIORITY;
         bubble->current_frame = &SpeechBubbleTextFrame;
         if (source->draw_flags & ENTITY_PRIMARY_VIEW) {
@@ -210,7 +212,7 @@ short dialogue_number, speaker;
         }
     }
     dialogue = &DialogueDescriptors[dialogue_number];
-    if (dialogue->first_speaker <= 1)
+    if (dialogue->first_speaker <= PLAYER_EARL)
         speaker = dialogue->first_speaker;
     else if (gDelayedSpeechReplyTimers[slot ^ 1] && gDelayedSpeechReplySpeakers[slot ^ 1] == speaker) {
         slot = -1;
@@ -221,21 +223,21 @@ short dialogue_number, speaker;
      * check. MCC68K coalesces it with the incoming word load; using the parameter
      * throughout or copying it at entry does not match. No new state is added. */
     selected_speaker = speaker;
-    if (dialogue->reply_speaker <= 1)
+    if (dialogue->reply_speaker <= PLAYER_EARL)
         gDelayedSpeechReplySpeakers[slot] = dialogue->reply_speaker;
-    else if (dialogue->reply_speaker == 2)
+    else if (dialogue->reply_speaker == DIALOGUE_REPLY_FIRST_SPEAKER)
         gDelayedSpeechReplySpeakers[slot] = selected_speaker;
     else
         gDelayedSpeechReplySpeakers[slot] = selected_speaker ^ 1;
     reply_speaker = gDelayedSpeechReplySpeakers[slot];
-    if (selected_speaker <= 1 && (gPlayerLives[selected_speaker] < 0 || gPlayerInventoryOpen[selected_speaker])) {
+    if (selected_speaker <= PLAYER_EARL && (gPlayerLives[selected_speaker] < 0 || gPlayerInventoryOpen[selected_speaker])) {
         slot = -1;
         return slot;
     }
     if (dialogue->first_line)
         GenerateSpeech(selected_speaker, dialogue->first_line, 1);
     if (dialogue->reply && (!gSplitScreenEnabled || selected_speaker == reply_speaker) &&
-        (reply_speaker > 1 ||
+        (reply_speaker > PLAYER_EARL ||
          (gPlayerLives[reply_speaker] >= 0 && !gPlayerInventoryOpen[reply_speaker]))) {
         gDelayedSpeechReplyTimers[slot] = dialogue->delay;
         gDelayedSpeechReplyTexts[slot] = dialogue->reply;
@@ -282,7 +284,7 @@ void UpdateSpeechAndDialogue()
         if (EarthlingResetStateTwoByDrawMask(gPlayerInfo[player_number].draw_flags & ENTITY_EITHER_VIEW)) {
             slot = StartDialogue(0, player_number);
             if (slot != -1) {
-                PlaySoundEffect((long)Sfx_Achoo, 50, 0);
+                PlaySoundEffect((long)Sfx_Achoo, AUDIO_PRIORITY_NORMAL, 0);
                 if (gSplitScreenEnabled)
                     gDelayedSpeechReplyTimers[slot] = 0;
             }

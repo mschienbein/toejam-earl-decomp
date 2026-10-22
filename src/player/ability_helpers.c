@@ -72,7 +72,7 @@ struct earthling_state *earthling;
     if (player->sprite_state == PLAYER_ANIM_DRINK_LEMONADE && !player->frame_duration) {
         SetSprite(player, GetActivePresentSprite(player));
         GenerateSpeech(player_number, "Burp", 1);
-        PlaySoundEffect((long)Sfx_Burp, 50, 0);
+        PlaySoundEffect((long)Sfx_Burp, AUDIO_PRIORITY_NORMAL, 0);
         if (!gPlayerLemonadeRewardStates[player_number])
             gPlayerLemonadeRewardStates[player_number] = 1;
     } else if (player->sprite_state == PLAYER_ANIM_WALK_UP && player->y > earthling->y) {

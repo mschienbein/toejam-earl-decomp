@@ -1,6 +1,22 @@
 #ifndef TJE_RAM_SYSTEM_H
 #define TJE_RAM_SYSTEM_H
 
+/* Decoded controller bits: ReadMappedPlayerInput exchanges only A and C.
+ * CheckAButton/CheckBButton and the movement dispatch establish these roles. */
+#define INPUT_UP 0x01
+#define INPUT_DOWN 0x02
+#define INPUT_LEFT 0x04
+#define INPUT_RIGHT 0x08
+#define INPUT_BUTTON_B 0x10
+#define INPUT_BUTTON_C 0x20
+#define INPUT_BUTTON_A 0x40
+#define INPUT_START 0x80
+#define INPUT_DIRECTION_MASK 0x0f
+#define INPUT_VERTICAL_MASK (INPUT_UP | INPUT_DOWN)
+#define INPUT_HORIZONTAL_MASK (INPUT_LEFT | INPUT_RIGHT)
+#define INPUT_ACTION_MASK (INPUT_BUTTON_A | INPUT_BUTTON_B | INPUT_BUTTON_C)
+#define INPUT_BUTTON_MASK (INPUT_ACTION_MASK | INPUT_START)
+
 /* Frame synchronization and interrupt override. gFrameCounterLowByte
  * is the low-byte alias of gFrameCounter on the big-endian target. */
 extern unsigned short gFrameCounter;

@@ -12,7 +12,7 @@ short player_number;
     if (!gPlayerInteractionChoiceActive[player_number] &&
         (!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
          (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
-         (player->animation_group_mask & 0x830409c)))
+         (player->animation_group_mask & PLAYER_GROUP_RECEIVE_EARTHLING_EFFECT)))
         return 1;
     return 0;
 }
@@ -64,21 +64,21 @@ struct earthling_state *earthling;
     trial_y = player->y;
     if (abs(attack_direction) > 10) {
         if (attack_direction > 0) {
-            sprite = 55;
-            attack_direction = 11;
+            sprite = PLAYER_ANIM_HURT_RIGHT;
+            attack_direction = EARTHLING_DENTIST_ATTACK_RIGHT;
             trial_x += 16;
         } else {
-            sprite = 54;
-            attack_direction = 10;
+            sprite = PLAYER_ANIM_HURT_LEFT;
+            attack_direction = EARTHLING_DENTIST_ATTACK_LEFT;
             trial_x -= 16;
         }
     } else if (delta_y > 0) {
-        sprite = 53;
-        attack_direction = 9;
+        sprite = PLAYER_ANIM_HURT_DOWN;
+        attack_direction = EARTHLING_DENTIST_ATTACK_DOWN;
         trial_y += 16;
     } else {
-        sprite = 52;
-        attack_direction = 8;
+        sprite = PLAYER_ANIM_HURT_UP;
+        attack_direction = EARTHLING_DENTIST_ATTACK_UP;
         trial_y -= 16;
     }
     if (!ElevatorBlocksPlayerMovement(player_number, trial_x, trial_y, 1)) {
@@ -86,15 +86,15 @@ struct earthling_state *earthling;
         player->y = trial_y;
     }
     if (player->velocity_x > 0)
-        sprite = 55;
+        sprite = PLAYER_ANIM_HURT_RIGHT;
     else if (player->velocity_x < 0)
-        sprite = 54;
+        sprite = PLAYER_ANIM_HURT_LEFT;
     else if (player->velocity_y > 0)
-        sprite = 53;
+        sprite = PLAYER_ANIM_HURT_DOWN;
     else if (player->velocity_y < 0)
-        sprite = 52;
+        sprite = PLAYER_ANIM_HURT_UP;
     else if (sprite == -1)
-        sprite = 52;
+        sprite = PLAYER_ANIM_HURT_UP;
     SetSprite(player, sprite);
     player->animation_motion_axes = ANIMATION_MOTION_XY;
     player->draw_flags |= ENTITY_SHADOW;
@@ -113,9 +113,9 @@ struct earthling_state *earthling;
     }
     GenerateSpeech(player_number, "Youch!", 1);
     if (player_number == PLAYER_TOEJAM)
-        PlaySoundEffect((long)Sfx_ToejamYouch, 50, 0);
+        PlaySoundEffect((long)Sfx_ToejamYouch, AUDIO_PRIORITY_NORMAL, 0);
     else
-        PlaySoundEffect((long)Sfx_EarlYouch, 50, 0);
+        PlaySoundEffect((long)Sfx_EarlYouch, AUDIO_PRIORITY_NORMAL, 0);
     return 0;
 }
 
@@ -168,7 +168,7 @@ struct earthling_state *earthling;
         if (earthling->state)
             earthling->timer = 30;
         gPlayerHealth[player_number] -= EarthlingDefinitions[earthling->kind].damage;
-        PlaySoundEffect((long)Sfx_Squish, 50, 0);
+        PlaySoundEffect((long)Sfx_Squish, AUDIO_PRIORITY_NORMAL, 0);
     }
 }
 
@@ -204,7 +204,7 @@ struct earthling_state *earthling;
                 if (distance_x < 20 && distance_y < 15) {
                     if (!gHulaSpeechCooldown) {
                         GenerateSpeech(player_number, "Hubba hubba", 1);
-                        PlaySoundEffect((long)Sfx_Aloha, 50, 1);
+                        PlaySoundEffect((long)Sfx_Aloha, AUDIO_PRIORITY_NORMAL, 1);
                         gHulaSpeechCooldown = 128;
                     } else
                         --gHulaSpeechCooldown;
@@ -259,7 +259,7 @@ struct earthling_state *earthling;
         return;
     if (!(player->sprite_state == PLAYER_ANIM_IDLE || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
           (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
-          player->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE || (player->animation_group_mask & 0x1834c03c)))
+          player->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE || (player->animation_group_mask & PLAYER_GROUP_CONTACT_EFFECT_MOTION)))
         return;
     if ((earthling->state & 0xfc) != 8 && player->height < 40 &&
         abs(player->y - earthling->y) <= 8)
@@ -485,5 +485,5 @@ struct earthling_state *earthling;
             next_state = 8;
     }
     SetEarthlingState(earthling, next_state);
-    PlaySoundEffect((long)Sfx_BoogieBoogie, 50, 0);
+    PlaySoundEffect((long)Sfx_BoogieBoogie, AUDIO_PRIORITY_NORMAL, 0);
 }

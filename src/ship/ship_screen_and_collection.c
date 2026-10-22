@@ -6,6 +6,7 @@
 
 #include "entities.h"
 #include "sprites.h"
+#include "sprite_frame_views.h"
 #include "hardware.h"
 #include "assets_audio.h"
 #include "assets_map.h"
@@ -82,7 +83,7 @@ char force_frame;
         for (part_number = 0; part_number < 8; ++part_number) {
             /* Compiler view: retain the renderer's twelve-slot word-index
              * capacity, not a fixed twelve-piece extent on each ROM frame. */
-            part = &((struct render_piece (*)[12])(frame + 1))[0][part_number];
+            part = &((struct render_frame_piece_view *)frame)->pieces[part_number];
             packing = part->tile_format;
             if (packing < 0)
                 SpriteUnpackInterleavedRLE(part, 16);
@@ -147,7 +148,7 @@ short background_number;
         for (part_number = 0; part_number < 4; ++part_number) {
             /* Compiler view: four transition payloads retain the original
              * bounded word-index arithmetic after the four-byte prefix. */
-            part = &((struct render_piece (*)[4])(frame + 1))[0][part_number];
+            part = &((struct render_frame_four_piece_view *)frame)->pieces[part_number];
             packing = part->tile_format;
             if (packing < 0)
                 SpriteUnpackInterleavedRLE(part, 16);
@@ -430,7 +431,7 @@ short player_number;
             pressed_buttons = ReadMappedPlayerInput(0);
             pressed_buttons &= 0x70;
             if (pressed_buttons) {
-                while (ReadMappedPlayerInput(0) & 0x70 & pressed_buttons)
+                while (ReadMappedPlayerInput(0) & INPUT_ACTION_MASK & pressed_buttons)
                     AnimateShipScreenBackground(0);
                 break;
             }
@@ -439,7 +440,7 @@ short player_number;
             pressed_buttons = ReadMappedPlayerInput(1);
             pressed_buttons &= 0x70;
             if (pressed_buttons) {
-                while (ReadMappedPlayerInput(1) & 0x70 & pressed_buttons)
+                while (ReadMappedPlayerInput(1) & INPUT_ACTION_MASK & pressed_buttons)
                     AnimateShipScreenBackground(0);
                 break;
             }
@@ -560,6 +561,7 @@ short selected_piece, player_number;
 #include "hardware.h"
 #include "entities.h"
 #include "earthlings.h"
+#include "earthling_types.h"
 #include "sprites.h"
 #include "assets_sprites.h"
 #include "map_calls.h"
@@ -589,14 +591,15 @@ struct earthling_state *ship_piece;
     if (!ship_piece->object)
         return;
     player = &gPlayerInfo[player_number];
-    /* [INFERENCE] The original retains this otherwise-unused object read. */
+    /* MATCHING QUALIFICATION: retain the assigned-but-unused handle read.
+     * It has no subsequent C consumer; historical spelling is unknown [INFERENCE]. */
     object_number = ship_piece->object;
     for (piece_number = 0; piece_number < 10; ++piece_number) {
         if (gShipPieceLevelAssignments[piece_number] == player->level)
             break;
     }
     FreeEntity(ship_piece->object);
-    ship_piece->kind = -1;
+    ship_piece->kind = EARTHLING_UNUSED;
     ship_piece->object = 0;
     ShowShipPieces(piece_number, player_number);
     if (player_number == PLAYER_TOEJAM || !gSplitScreenEnabled)

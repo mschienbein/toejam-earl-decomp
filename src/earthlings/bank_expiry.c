@@ -11,12 +11,12 @@ short level;
     short bank, record_number;
     char object_number;
 
-    for (bank = 0; bank < 2; ++bank) {
+    for (bank = 0; bank < EARTHLING_BANK_COUNT; ++bank) {
         if (gEarthlingBankUsers[bank] && gEarthlingBankLevels[bank] == level) {
             --gEarthlingBankUsers[bank];
             if (!gEarthlingBankUsers[bank]) {
                 gEarthlingBankLevels[bank] = -1;
-                for (record_number = 0; record_number < 20; ++record_number) {
+                for (record_number = 0; record_number < EARTHLINGS_PER_BANK; ++record_number) {
                     object_number = gEarthlingBanks[bank][record_number].object;
                     /* Byte zero is set to the released-record marker. */
                     gEarthlingBanks[bank][record_number].kind = EARTHLING_UNUSED;

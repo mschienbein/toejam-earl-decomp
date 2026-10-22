@@ -19,5 +19,5 @@ void SetRAMIndexes()
         entity->entity_index = entity_number;
         ++entity_number;
         ++entity;
-    } while (entity_number < 40);
+    } while (entity_number < ENTITY_SLOT_COUNT);
 }

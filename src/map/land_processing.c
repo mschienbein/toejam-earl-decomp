@@ -158,7 +158,7 @@ short bank, row, column;
         map = &gPlayer1LevelMap[0][0];
     else
         map = &gPlayer2LevelMap[0][0];
-    cell = map[row * 19 + column];
+    cell = map[row * MAP_COLUMNS + column];
     if (!(cell & 0x4000))
         return -1;
     directions = MapGetBankPathDirections(bank, row, column);
@@ -241,7 +241,7 @@ short bank, row, column;
     if (directions)
         cell |= 0x4000;
     cell |= 0x2000;
-    map[row * 19 + column] = cell;
+    map[row * MAP_COLUMNS + column] = cell;
     return finished;
 }
 
@@ -326,7 +326,7 @@ short camera, x, y;
                 object->y += (short)(GetRandomNumber() % 33) + 16;
             if (!gSplitScreenEnabled || !gPlayerInventoryOpen[camera])
                 object->behavior_flags &= ~ENTITY_HIDDEN;
-            PlaySound(PSG_SHORT_NOISE_FADE_RATE2, 50);
+            PlaySound(PSG_SHORT_NOISE_FADE_RATE2, AUDIO_PRIORITY_NORMAL);
             break;
         }
     }
@@ -532,7 +532,7 @@ void ProcessLand()
         gPlayerInfo[PLAYER_TOEJAM].level > 1 && !gPlayerElevatorFlags[PLAYER_TOEJAM]) {
         row = (gPlayerInfo[PLAYER_TOEJAM].y >> 6) - 1;
         column = (gPlayerInfo[PLAYER_TOEJAM].x >> 7) - 1;
-        if (row >= 0 && column >= 0 && row < 26 && column < 19 &&
+        if (row >= 0 && column >= 0 && row < MAP_ROWS && column < MAP_COLUMNS &&
             (gPlayer1LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(0)) {
             MapAnimateMarkedLandPaths(0, row, column);
             EarthlingDamageOnHazardTerrain(0, gPlayer1MapLevel);
@@ -552,7 +552,7 @@ void ProcessLand()
         gPlayerInfo[PLAYER_EARL].level > 1 && !gPlayerElevatorFlags[PLAYER_EARL]) {
         row = (gPlayerInfo[PLAYER_EARL].y >> 6) - 1;
         column = (gPlayerInfo[PLAYER_EARL].x >> 7) - 1;
-        if (row >= 0 && column >= 0 && row < 26 && column < 19) {
+        if (row >= 0 && column >= 0 && row < MAP_ROWS && column < MAP_COLUMNS) {
             if (gSplitScreenEnabled) {
                 if ((gPlayer2LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(1)) {
                     MapAnimateMarkedLandPaths(1, row, column);

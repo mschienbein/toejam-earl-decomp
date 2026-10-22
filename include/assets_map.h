@@ -7,9 +7,9 @@
 extern unsigned short EarlMapIcon[16];
 extern unsigned short ElevatorMapIcon[16];
 extern unsigned short FixedWorldSeeds[26];
-extern unsigned short FunkatronMapData[26][19];
+extern unsigned short FunkatronMapData[MAP_ROWS][MAP_COLUMNS];
 extern unsigned char Level0MapData[5][4];
-extern unsigned char Level1MapData[26][19];
+extern unsigned char Level1MapData[MAP_ROWS][MAP_COLUMNS];
 extern unsigned short LevelMetatileMaps[122][8][16];
 extern unsigned char LevelTiles[];
 extern short LevelTilesSize;
@@ -39,5 +39,7 @@ extern unsigned char MapGenerationRangePairs[8][8][2];
 extern char MapGenerationRangeRow[];
 
 /* Twelve frames of the map-cover tile uncovering animation. */
-extern struct render_frame *Spr_MapTileUncover[12];
+#define MAP_UNCOVER_FRAME_COUNT 12
+#define MAP_UNCOVER_PIECE_COUNT 2
+extern struct render_frame *Spr_MapTileUncover[MAP_UNCOVER_FRAME_COUNT];
 #endif

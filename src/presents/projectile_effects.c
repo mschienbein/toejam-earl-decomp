@@ -158,7 +158,7 @@ void ProcessTomatoRain()
                             object_number = 1;
                         object_number = GetMapTerrainAtWorldPosition(object_number, projectile->x, projectile->y);
                         if (object_number == 144) {
-                            projectile->tile &= 0x7fff;
+                            projectile->tile &= ~VDP_TILE_PRIORITY;
                             projectile->sprite_ready = 0;
                             projectile->sprite_state = 21;
                         } else {
@@ -406,10 +406,10 @@ short player_number;
     unsigned char input, direction;
 
     input = gPlayerProcessedInput[player_number];
-    if (!(input & 15))
+    if (!(input & INPUT_DIRECTION_MASK))
         return input;
-    direction = ControlRemapDirections[gPlayerControlRemapIndices[player_number]][(input & 15) - 1];
-    return (input & 240) | direction;
+    direction = ControlRemapDirections[gPlayerControlRemapIndices[player_number]][(input & INPUT_DIRECTION_MASK) - 1];
+    return (input & INPUT_BUTTON_MASK) | direction;
 }
 
 /* Expire the control-effect object, or occasionally play its animation sound. */
@@ -578,8 +578,8 @@ unsigned short terrain;
         player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST) {
         if (gPlayerActiveTerrainEffectEntities[player_number])
             PresentRetireTerrainEffect(player_number);
-    } else if (!(gPlayerPreviousProcessedInput[player_number] & 64) &&
-               (gPlayerProcessedInput[player_number] & 64)) {
+    } else if (!(gPlayerPreviousProcessedInput[player_number] & INPUT_BUTTON_A) &&
+               (gPlayerProcessedInput[player_number] & INPUT_BUTTON_A)) {
         if (terrain == TERRAIN_GROUND || terrain == TERRAIN_WALKABLE_MAX) {
             if (gPlayerActiveTerrainEffectEntities[player_number])
                 PresentRetireTerrainEffect(player_number);
@@ -665,6 +665,6 @@ struct object_state *object;
             EarthlingLaunchAimedProjectile(target, earthling);
     } else if (!object->frame_duration) {
         SetEarthlingState(earthling, 0);
-        PlaySoundEffect((long)Sfx_ChickenCluck, 50, 0);
+        PlaySoundEffect((long)Sfx_ChickenCluck, AUDIO_PRIORITY_NORMAL, 0);
     }
 }

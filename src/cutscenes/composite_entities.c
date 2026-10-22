@@ -45,7 +45,7 @@ void EndingCreatePoseComposite()
         object->y = -50;
         object->sprite_ready = 0;
         object->tile |= VDP_TILE_PRIORITY;
-        object->sequence = (char *)&IntroHeldFrameStreams[0];
+        object->sequence = &IntroHeldFrameStreams[0].frame;
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;
@@ -66,7 +66,7 @@ short frame, x, y;
         object->y = y - 5;
         object->tile |= VDP_TILE_PRIORITY;
         object->draw_flags |= ENTITY_DRAW_LATE;
-        object->sequence = (char *)&IntroHeldFrameStreams[frame];
+        object->sequence = &IntroHeldFrameStreams[frame].frame;
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;
@@ -96,7 +96,7 @@ void EndingCreateSixPieceComposite()
         object->y = -50;
         object->sprite_ready = 0;
         object->tile |= VDP_TILE_PRIORITY;
-        object->sequence = (char *)&IntroHeldFrameStreams[0];
+        object->sequence = &IntroHeldFrameStreams[0].frame;
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;
@@ -186,7 +186,7 @@ void IntroCreateFallingRocketship()
         object->x = 104;
         object->y = -50;
         object->sprite_ready = 0;
-        object->sequence = (char *)&IntroFrameIndexLists[7];
+        object->sequence = &IntroFrameIndexLists[7];
         object->frame_duration = 1;
         object->frame = -1;
         object->frame_phase = 6;

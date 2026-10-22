@@ -246,19 +246,19 @@ register struct menu_item *items;
         GetRandomNumber();
         input = (unsigned char)GetCtrl1Input() | GetCtrl2Input();
         if (input != previous_input) {
-            if (input & 0xf0) {
+            if (input & INPUT_BUTTON_MASK) {
                 if (items != MenuWhoItems || selected->selection || AreBothControllersConnected())
                     break;
-                PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
+                PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
                 VDP_COMMAND = 0x5c040003L;
                 TextWriteStringTiles("need two controllers for two players");
-            } else if (input & 1) {
+            } else if (input & INPUT_UP) {
                 --selected_item;
-                PlaySound(PSG_TONE_PULSE, 50);
+                PlaySound(PSG_TONE_PULSE, AUDIO_PRIORITY_NORMAL);
                 if (selected_item < 0 || items[selected_item].selection < 0)
                     ++selected_item;
-            } else if (input & 2) {
-                PlaySound(PSG_TONE_PULSE, 50);
+            } else if (input & INPUT_DOWN) {
+                PlaySound(PSG_TONE_PULSE, AUDIO_PRIORITY_NORMAL);
                 ++selected_item;
                 if (selected_item >= item_count || items[selected_item].selection < 0)
                     --selected_item;

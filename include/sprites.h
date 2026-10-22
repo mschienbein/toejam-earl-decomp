@@ -5,6 +5,8 @@
 #define ANIMATION_HOLD 254
 #define ANIMATION_LOOP 255
 #define ANIMATION_FRAME_MASK 127
+#define ANIMATION_COMMAND_MASK 0xf0
+#define ANIMATION_FLIP_HORIZONTAL 128
 
 /* Eight-byte VDP sprite attribute-table record, populated by the renderer. */
 struct hardware_sprite {

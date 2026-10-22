@@ -43,22 +43,22 @@ short player_number, powerup;
         projectile = &gPlayerInfo[gSharedProjectileEntities[slot]];
         direction = player->sprite_state & DIRECTION_MASK;
         powerup_index = powerup;
-        powerup_index -= 3;
+        powerup_index -= PRESENT_TOMATOES;
         projectile->x = player->x + ProjectilePlacementTriples[powerup_index][player_number][direction][0];
         projectile->y = player->y + ProjectilePlacementTriples[powerup_index][player_number][direction][1];
         projectile->height = player->height + ProjectilePlacementTriples[powerup_index][player_number][direction][2];
         /* The facing index is now replaced by a movement-direction bitmask. */
         direction = gPlayerProcessedInput[player_number];
-        direction &= 15;
+        direction &= INPUT_DIRECTION_MASK;
         facing = player->sprite_state & DIRECTION_MASK;
-        if (facing == DIRECTION_UP && !(direction & 1))
-            direction = 1;
-        else if (facing == DIRECTION_DOWN && !(direction & 2))
-            direction = 2;
-        else if (facing == DIRECTION_LEFT && !(direction & 4))
-            direction = 4;
-        else if (facing == DIRECTION_RIGHT && !(direction & 8))
-            direction = 8;
+        if (facing == DIRECTION_UP && !(direction & INPUT_UP))
+            direction = INPUT_UP;
+        else if (facing == DIRECTION_DOWN && !(direction & INPUT_DOWN))
+            direction = INPUT_DOWN;
+        else if (facing == DIRECTION_LEFT && !(direction & INPUT_LEFT))
+            direction = INPUT_LEFT;
+        else if (facing == DIRECTION_RIGHT && !(direction & INPUT_RIGHT))
+            direction = INPUT_RIGHT;
         if (powerup == PRESENT_TOMATOES) {
             speed_x = 896;
             speed_y = 512;
@@ -71,13 +71,13 @@ short player_number, powerup;
             projectile->acceleration_height = -8;
             AudioRequestChannelTemplateEffect(FM_EFFECT_SLING_SHOT);
         }
-        if (direction & 1)
+        if (direction & INPUT_UP)
             projectile->velocity_y = -speed_y;
-        else if (direction & 2)
+        else if (direction & INPUT_DOWN)
             projectile->velocity_y = speed_y;
-        if (direction & 4)
+        if (direction & INPUT_LEFT)
             projectile->velocity_x = -speed_x;
-        else if (direction & 8)
+        else if (direction & INPUT_RIGHT)
             projectile->velocity_x = speed_x;
         if (projectile->velocity_x && projectile->velocity_y) {
             quarter_velocity = projectile->velocity_x >> 2;
@@ -125,8 +125,8 @@ short unused;
     }
     shooting_sprite = -1;
     if (!gPlayerElevatorFlags[player_number] && (player->animation_group_mask & PLAYER_GROUP_WALK) &&
-        (gPlayerProcessedInput[player_number] & 64) &&
-        (gPlayerProcessedInput[player_number] & 15)) {
+        (gPlayerProcessedInput[player_number] & INPUT_BUTTON_A) &&
+        (gPlayerProcessedInput[player_number] & INPUT_DIRECTION_MASK)) {
         direction = player->sprite_state & DIRECTION_MASK;
         if (gPlayerPowerups[player_number] == PRESENT_TOMATOES)
             shooting_sprite = direction + PLAYER_ANIM_THROW_TOMATO_UP;

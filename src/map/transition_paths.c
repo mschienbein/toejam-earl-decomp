@@ -129,13 +129,13 @@ void MapAssignTransitionChain()
 {
     short column, row, pass;
 
-    for (row = 0; row < 26; ++row)
-        for (column = 0; column < 19; ++column)
+    for (row = 0; row < MAP_ROWS; ++row)
+        for (column = 0; column < MAP_COLUMNS; ++column)
             gPlayer1LevelMap[row][column] &= 0xe0ff;
     gTransitionPathMinimumVisits = 25;
     for (pass = 0; pass < 2; ++pass) {
-        for (row = 0; row < 26; ++row)
-            for (column = 0; column < 19; ++column) {
+        for (row = 0; row < MAP_ROWS; ++row)
+            for (column = 0; column < MAP_COLUMNS; ++column) {
                 gTransitionPathVisitCount = 0;
                 if (MapTransitionContainsMetatile(1, gPlayer1LevelMap[row][column])) {
                     if (MapTraceTransitionChain(row, column - 1, 8, 8)) {

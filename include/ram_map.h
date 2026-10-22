@@ -1,6 +1,8 @@
 #ifndef TJE_RAM_MAP_H
 #define TJE_RAM_MAP_H
 
+#include "terrain.h"
+
 /* World/level selection and per-level seeds. */
 extern char gRequestedMapLevel;
 extern char gPlayer1MapLevel;
@@ -12,11 +14,11 @@ extern unsigned short gLevelSeeds[26];
 
 /* Canonical map banks. gSavedMapPathDirections is the existing byte view beginning
  * at gMapPathDirectionBanks[26][0], not an additional independent terrain allocation. */
-extern unsigned short gPlayer1LevelMap[26][19];
-extern unsigned short gPlayer2LevelMap[26][19];
-extern unsigned short gSavedLevelMap[26][19];
-extern unsigned char gMapPathDirectionBanks[52][19];
-extern unsigned char gSavedMapPathDirections[26][19];
+extern unsigned short gPlayer1LevelMap[MAP_ROWS][MAP_COLUMNS];
+extern unsigned short gPlayer2LevelMap[MAP_ROWS][MAP_COLUMNS];
+extern unsigned short gSavedLevelMap[MAP_ROWS][MAP_COLUMNS];
+extern unsigned char gMapPathDirectionBanks[MAP_ROWS * 2][MAP_COLUMNS];
+extern unsigned char gSavedMapPathDirections[MAP_ROWS][MAP_COLUMNS];
 
 /* Transition-path coordinates and map-generation state. */
 extern short gTransitionPathVisitCount;

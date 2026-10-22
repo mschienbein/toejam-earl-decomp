@@ -21,16 +21,16 @@ short restart, scene;
         return;
     object = &gPlayerInfo[gIntroFlyingEntities[0]];
     if (restart) {
-        if (object->draw_flags & 3)
+        if (object->draw_flags & (ENTITY_ACTIVE | ENTITY_PRIMARY_VIEW))
             ReleaseEntityViewportSprites(object, 0);
         if (scene == 1) {
             object->y = 94;
-            object->sequence = (char *)&IntroHeldFrameStreams[(int)GetRandomNumber(0) % 3];
+            object->sequence = &IntroHeldFrameStreams[(int)GetRandomNumber(0) % 3].frame;
             object->height = 0;
         } else if (scene == 2) {
             object->y = 192;
             object->height = 80;
-            object->sequence = (char *)&IntroHeldFrameStreams[((int)GetRandomNumber() & 1) + 3];
+            object->sequence = &IntroHeldFrameStreams[((int)GetRandomNumber() & 1) + 3].frame;
         }
         object->frames = IntroFlyingEntityFrames;
         object->frame_phase = 6;
@@ -41,7 +41,7 @@ short restart, scene;
         AllocateEntityViewportSprites(object, 0);
     }
     object->x += 10;
-    if (object->x > 232 && (object->draw_flags & 3))
+    if (object->x > 232 && (object->draw_flags & (ENTITY_ACTIVE | ENTITY_PRIMARY_VIEW)))
         ReleaseEntityViewportSprites(object, 0);
 }
 
@@ -100,8 +100,8 @@ short scene;
                         object->velocity_y = -object->velocity_y;
                     object->velocity_height = -(int)GetRandomNumber() % 12;
                     variant = (int)GetRandomNumber() & 1;
-                    /* The mask only produces 0/1, but comparisons against
-                     * 2/3 and their alternate frame table are in the ROM. */
+                    /* ORIGINAL BUG: the mask only produces 0/1, leaving
+                     * the 2/3 variants and their alternate frame table unreachable. */
                     if (variant == 0) {
                         object->sequence = IntroFlyingForwardFramesAnimation;
                         object->frames = IntroFlyingEntityFrames;

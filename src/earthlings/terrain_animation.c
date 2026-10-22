@@ -27,7 +27,7 @@ short next_state;
             if (earthling->saved_x_or_status >= 128)
                 next_state += 8;
             else
-                PlaySoundEffect((long)Sfx_IceCreamHonk, 50, 0);
+                PlaySoundEffect((long)Sfx_IceCreamHonk, AUDIO_PRIORITY_NORMAL, 0);
         } else
             next_state += 4;
     } else if (animation == 12) {
@@ -61,7 +61,7 @@ struct object_state *object;
                 next_state = earthling->state + 4;
             else {
                 next_state = earthling->state - 4;
-                PlaySoundEffect((long)Sfx_IceCreamHonk, 50, 0);
+                PlaySoundEffect((long)Sfx_IceCreamHonk, AUDIO_PRIORITY_NORMAL, 0);
             }
         }
     } else if (animation == 12) {

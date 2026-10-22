@@ -18,6 +18,5 @@ extern struct render_frame *Spr_GroundItem[17];
 extern struct render_frame *Spr_PresentSelector[1];
 /* Shared one-frame hold sequence used by item and selector rendering. */
 extern char SingleFrameHoldAnimation[];
-extern char SingleFrameHoldAnimation[];
 
 #endif

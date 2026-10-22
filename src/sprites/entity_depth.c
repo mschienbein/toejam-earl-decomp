@@ -75,5 +75,5 @@ void UpdateAllEntityShadows()
         }
         ++entity_number;
         ++entity;
-    } while (entity_number < 26);
+    } while (entity_number < GAMEPLAY_ENTITY_SLOT_COUNT);
 }

@@ -577,7 +577,7 @@ short IntroPart5()
             break;
         case 5:
             IntroSetDrivingPartSequence(1, &IntroHeldFrameStreams[5].frame, 6);
-            PlaySoundEffect((long)Sfx_Running, 50, 0);
+            PlaySoundEffect((long)Sfx_Running, AUDIO_PRIORITY_NORMAL, 0);
             driving_pose = 2;
             scroll_direction = -1;
             break;
@@ -588,7 +588,7 @@ short IntroPart5()
             break;
         case 7:
             IntroSetDrivingPartSequence(1, &IntroHeldFrameStreams[6].frame, 6);
-            PlaySoundEffect((long)Sfx_Running, 50, 0);
+            PlaySoundEffect((long)Sfx_Running, AUDIO_PRIORITY_NORMAL, 0);
             driving_pose = 3;
             scroll_direction = 1;
             break;
@@ -599,7 +599,7 @@ short IntroPart5()
             break;
         case 9:
             IntroSetDrivingPartSequence(1, &IntroHeldFrameStreams[5].frame, 6);
-            PlaySoundEffect((long)Sfx_Running, 50, 0);
+            PlaySoundEffect((long)Sfx_Running, AUDIO_PRIORITY_NORMAL, 0);
             driving_pose = 2;
             scroll_direction = -1;
             break;
@@ -764,7 +764,7 @@ short IntroPart7()
         switch (gCutsceneScriptState) {
         case 1:
             IntroSetDrivingPartSequence(1, &IntroHeldFrameFive.frame, 6);
-            PlaySoundEffect((long)Sfx_Running, 50, 0);
+            PlaySoundEffect((long)Sfx_Running, AUDIO_PRIORITY_NORMAL, 0);
             scroll_direction = -1;
             driving_pose = 2;
             break;
@@ -777,7 +777,7 @@ short IntroPart7()
             break;
         case 4:
             IntroSetDrivingPartSequence(1, &IntroHeldFrameSix.frame, 6);
-            PlaySoundEffect((long)Sfx_Running, 50, 0);
+            PlaySoundEffect((long)Sfx_Running, AUDIO_PRIORITY_NORMAL, 0);
             scroll_direction = 1;
             driving_pose = 3;
             break;
@@ -842,7 +842,7 @@ short IntroPart8()
             switch (gCutsceneScriptState) {
             case 1:
                 IntroCreateCollisionSceneEntities();
-                PlaySoundEffect((long)Sfx_Falling, 50, 0);
+                PlaySoundEffect((long)Sfx_Falling, AUDIO_PRIORITY_NORMAL, 0);
                 gCutsceneScriptCountdown = 59;
                 break;
             case 2:
@@ -936,7 +936,7 @@ short IntroPart10()
             break;
         case 2:
             IntroCreateRocketshipImpact(160, 180);
-            PlaySound(PSG_NOISE_RISE, 50);
+            PlaySound(PSG_NOISE_RISE, AUDIO_PRIORITY_NORMAL);
             gCutsceneScriptCountdown = 85;
             ++gCutsceneScriptState;
             break;

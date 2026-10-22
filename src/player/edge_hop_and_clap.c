@@ -65,7 +65,7 @@ void PlayerUpdateHealthSharingClap()
     earl = &gPlayer2Entity;
     if (toejam->level != earl->level)
         return;
-    if ((toejam->sprite_state & 0xfe) == 90) {
+    if ((toejam->sprite_state & PLAYER_ANIM_PAIR_MASK) == PLAYER_ANIM_HIGH_FIVE_LEFT) {
         if (!toejam->frame_duration)
             SetSprite(toejam, PLAYER_ANIM_IDLE);
         else if (toejam->frame == 2) {
@@ -73,7 +73,7 @@ void PlayerUpdateHealthSharingClap()
             ++toejam->frame;
         }
     }
-    if ((earl->sprite_state & 0xfe) == 90) {
+    if ((earl->sprite_state & PLAYER_ANIM_PAIR_MASK) == PLAYER_ANIM_HIGH_FIVE_LEFT) {
         if (!earl->frame_duration) {
             SetSprite(earl, PLAYER_ANIM_IDLE);
             average_health = (gPlayerHealth[PLAYER_TOEJAM] + gPlayerHealth[PLAYER_EARL] + 1) >> 1;

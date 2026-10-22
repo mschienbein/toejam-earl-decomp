@@ -74,8 +74,8 @@ void CheckAButton()
             choice = display->sprite_state;
             cancel = (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_GHOST ||
                      (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST;
-            if (cancel || ((gPlayerProcessedInput[player_number] & 64) &&
-                           !(gPlayerPreviousProcessedInput[player_number] & 64))) {
+            if (cancel || ((gPlayerProcessedInput[player_number] & INPUT_BUTTON_A) &&
+                           !(gPlayerPreviousProcessedInput[player_number] & INPUT_BUTTON_A))) {
                 if (cancel)
                     gPlayerInteractionResponses[player_number] = 0;
                 else if (display->sprite_state == 1)
@@ -89,9 +89,9 @@ void CheckAButton()
                 gPlayerProcessedInput[player_number] = 64;
                 gPlayerChoiceActionReleaseLatches[player_number] = 1;
             } else {
-                if (gPlayerProcessedInput[player_number] & 1)
+                if (gPlayerProcessedInput[player_number] & INPUT_UP)
                     choice = 0;
-                else if (gPlayerProcessedInput[player_number] & 2)
+                else if (gPlayerProcessedInput[player_number] & INPUT_DOWN)
                     choice = 1;
                 if (choice != display->sprite_state) {
                     display->frame = choice - 1;
@@ -147,7 +147,7 @@ struct earthling_state *earthling;
             object->frame = -1;
             mailbox->timer = 175;
         } else if (!gPcmEffectCooldownTicks) {
-            PlaySoundEffect((long)Sfx_MailboxRoar, 50, 0);
+            PlaySoundEffect((long)Sfx_MailboxRoar, AUDIO_PRIORITY_NORMAL, 0);
             earthling->saved_x_or_status = 1;
         }
     } else if (!earthling->state) {
@@ -219,7 +219,7 @@ struct earthling_state *earthling;
                     SetSprite(player, PLAYER_ANIM_EXTRA_LIFE);
                     PlaySoundEffect((long)Sfx_Hallelujah, 92, 1);
                 } else
-                    PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
+                    PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
             } else {
                 gPlayerWizardInteractionStates[player_number] = 2;
                 next_state = 5;
@@ -340,11 +340,11 @@ struct earthling_state *earthling;
                 if (gPlayerLives[player_number] >= 0 && !gSplitScreenEnabled &&
                     (!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
                      (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
-                     (player->animation_group_mask & 0x830400c)))
+                     (player->animation_group_mask & PLAYER_GROUP_SIMPLE_REACTION_MOTION)))
                     SetSprite(player, PLAYER_ANIM_COVER_EARS);
                 PlaySoundEffect((long)Sfx_OperaSing, 90, 1);
             } else
-                PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
+                PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
         } else {
             gPlayerOperaSingerInteractionStates[player_number] = 2;
             next_state = 0;
@@ -428,7 +428,7 @@ short player_number;
     short other_player;
     struct object_state *player;
 
-    if (gPlayer1MapLevel == 26)
+    if (gPlayer1MapLevel == LEVEL_FINAL)
         return;
     other_player = player_number ^ 1;
     player = &gPlayerInfo[other_player];
@@ -438,7 +438,7 @@ short player_number;
          (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
          (player->animation_group_mask & (PLAYER_GROUP_WALK | PLAYER_GROUP_SNEAK | PLAYER_GROUP_SPRING_SHOES))) &&
         !(player->animation_group_mask & PLAYER_GROUP_STATIONARY) &&
-        (ReadMappedPlayerInput(player_number) & 112) &&
+        (ReadMappedPlayerInput(player_number) & INPUT_ACTION_MASK) &&
         !PlayerCreateLifeRequestDisplay(player_number)) {
         SetSprite(player, GetActivePresentSprite(player));
         player = &gPlayerInfo[gLifeRequestDisplayEntity];

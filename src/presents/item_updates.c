@@ -178,10 +178,10 @@ char record_pickup;
                 abs(item->y - state->y) < 8) {
                 if (item->kind < ITEM_GROUND_BASE) {
                     for (slot = 0; slot < 16; slot++) {
-                        if (gPlayerInventory[player][slot] == -1) {
+                        if (gPlayerInventory[player][slot] == PRESENT_NONE) {
                             gPlayerInventory[player][slot] = item->kind;
                             collected = 1;
-                            PlaySound(PSG_DOUBLE_TONE_PULSE, 50);
+                            PlaySound(PSG_DOUBLE_TONE_PULSE, AUDIO_PRIORITY_NORMAL);
                             EarthlingClearMolePlayerContactFlags(state);
                             break;
                         }
@@ -194,19 +194,19 @@ char record_pickup;
                     food -= 64;
                     if (item->kind == ITEM_BUCK) {
                         gPlayerBucks[player]++;
-                        PlaySoundEffect((long)Sfx_Money, 50, 0);
+                        PlaySoundEffect((long)Sfx_Money, AUDIO_PRIORITY_NORMAL, 0);
                     } else {
                         slot = PresentAuxiliarySignedLookup[food];
                         if (slot > 0 && gPlayerHealth[player] >= PlayerGetMaximumHealth(player)) {
                             GenerateSpeech(player, "I'm stuffed", 1);
-                            PlaySoundEffect((long)Sfx_ChowDown, 50, 0);
+                            PlaySoundEffect((long)Sfx_ChowDown, AUDIO_PRIORITY_NORMAL, 0);
                             /* ORIGINAL BUG: The full-health path still removes
                              * the item because collected remains set. */
                             goto pickup_done;
                         } else {
                             gPlayerHealth[player] += slot;
                             if (slot > 0)
-                                PlaySoundEffect((long)Sfx_ChowDown, 50, 0);
+                                PlaySoundEffect((long)Sfx_ChowDown, AUDIO_PRIORITY_NORMAL, 0);
                             else
                                 PlaySound(PSG_TONE_NOISE_BURSTS, 40);
                         }
@@ -285,7 +285,7 @@ short player;
                     (state->animation_group_mask & (long)(PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || state->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
                     state->sprite_state == PLAYER_ANIM_SWIM_IDLE || state->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE ||
                     (state->animation_group_mask & (long)PLAYER_GROUP_ALL_SKATES) ||
-                    (state->animation_group_mask & 0x830c000L)) &&
+                    (state->animation_group_mask & PLAYER_GROUP_REFRESH_POWERUP_END)) &&
                    !(state->animation_group_mask & (long)PLAYER_GROUP_STATIONARY)) {
             sprite = GetActivePresentSprite(state);
             state->draw_flags &= ~ENTITY_SHADOW;
@@ -302,7 +302,7 @@ void ReducePresentTimer()
 {
     short player, show;
 
-    for (player = 0; player <= 1; player++) {
+    for (player = 0; player <= PLAYER_EARL; player++) {
         if (gPlayerPowerups[player] >= 0 && gPlayerLives[player] >= 0 &&
             (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_GHOST &&
             (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST && !gPlayerInventoryOpen[player]) {
@@ -370,7 +370,7 @@ void MapUpdateItemsAndPresents()
     if (gItemBank2Users)
         EntityUpdateLevelItemVisibility(gObjectTable[1], 32);
     EntityUpdateLevelItemVisibility(gDroppedPresentTable, 32);
-    for (player = 0; player <= 1; player++) {
+    for (player = 0; player <= PLAYER_EARL; player++) {
         if (gPlayerLives[player] >= 0 && !gPlayerInventoryOpen[player]) {
             for (bank = 0; bank < 2; bank++) {
                 if (gItemBankUsers[bank] &&
@@ -384,6 +384,6 @@ void MapUpdateItemsAndPresents()
     }
     ReducePresentTimer();
     ProcessPresents();
-    if (gPlayer1MapLevel == 26)
+    if (gPlayer1MapLevel == LEVEL_FINAL)
         FunkatronUpdateSceneEntities();
 }

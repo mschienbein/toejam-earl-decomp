@@ -64,7 +64,7 @@ char level;
         effect->frame_phase = animation->period;
         effect->frame_duration = 1;
         effect->frame = -1;
-        PlaySound(PSG_SHORT_NOISE_FADE_RATE2, 50);
+        PlaySound(PSG_SHORT_NOISE_FADE_RATE2, AUDIO_PRIORITY_NORMAL);
         return 0;
     }
     return 1;
@@ -364,7 +364,7 @@ unsigned short terrain;
         if (promotion != PRESENT_PROMOTION && terrain < TERRAIN_WATER && player->height <= 0 &&
             player->sprite_state != PLAYER_ANIM_GHOST && player->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
             player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_INNERTUBE_WATER_IDLE &&
-            !(player->animation_group_mask & 0x7785bf60L)) {
+            !(player->animation_group_mask & PLAYER_GROUP_BLOCK_RESOURCE_REACTION)) {
             SetSprite(player, (char)(promotion == PRESENT_EXTRA_LIFE ? PLAYER_ANIM_EXTRA_LIFE : PLAYER_ANIM_ITEM_REACTION));
             player->animation_motion_axes = ANIMATION_MOTION_XY;
             StopPlayer(player);
@@ -459,7 +459,7 @@ short player_number;
             --gPlayerBurpsLeft[player_number];
             gPlayerBurpTimers[player_number] = 20 + GetRandomNumber() % 81;
             if (!gPcmEffectCooldownTicks)
-                PlaySoundEffect((long)Sfx_Burp, 50, 0);
+                PlaySoundEffect((long)Sfx_Burp, AUDIO_PRIORITY_NORMAL, 0);
         }
     }
 }
@@ -528,7 +528,7 @@ short player_number;
             if (!gPlayerFallStates[player_number] &&
                 (player->sprite_state == PLAYER_ANIM_IDLE || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
                  (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
-                 (player->animation_group_mask & 0x0834d06c))) {
+                 (player->animation_group_mask & PLAYER_GROUP_RAIN_CLOUD_ZAP))) {
                 gPlayerPendingHurtDamage[player_number] = 2;
                 SetSprite(player, PLAYER_ANIM_ZAPPED);
                 player->animation_motion_axes = ANIMATION_MOTION_XY;
@@ -664,7 +664,7 @@ short player_number, present_number;
         GenerateSpeech(player_number, "Uh oh?!?", 1);
         if (player->sprite_state == PLAYER_ANIM_IDLE || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
             (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
-            (player->animation_group_mask & 0x0830400c)) {
+            (player->animation_group_mask & PLAYER_GROUP_SIMPLE_REACTION_MOTION)) {
             SetSprite(player, PLAYER_ANIM_TOMATO_RAIN);
             StopPlayer(player);
             player->animation_motion_axes = ANIMATION_MOTION_NONE;
@@ -767,9 +767,9 @@ unsigned short terrain;
          (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
          player->sprite_state == PLAYER_ANIM_SWIM_IDLE || player->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE ||
 #if REVISION >= 2
-         (player->animation_group_mask & 0x0804c81c))) {
+         (player->animation_group_mask & (PLAYER_GROUP_REFRESH_PRESENT | PLAYER_GROUP_HITOPS)))) {
 #else
-         (player->animation_group_mask & 0x0004c81c))) {
+         (player->animation_group_mask & PLAYER_GROUP_REFRESH_PRESENT))) {
 #endif
         SetSprite(player, sprite);
         player->velocity_x = 0;

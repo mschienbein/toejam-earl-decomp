@@ -183,7 +183,7 @@ short EndingPlayDialogueAndDeparture()
                 EndingPositionSixPieceComposite(character_x, -50);
             if (!--gCutsceneScriptCountdown) {
                 ++gCutsceneScriptState;
-                PlaySoundEffect((long)Sfx_Running, 50, 0);
+                PlaySoundEffect((long)Sfx_Running, AUDIO_PRIORITY_NORMAL, 0);
                 EndingReleaseSixPieceComposite();
             }
             break;

@@ -357,8 +357,8 @@ void RandomizeInventory()
 
     for (player_number = PLAYER_TOEJAM; player_number <= PLAYER_EARL; ++player_number)
         for (slot = 0; slot < 16; ++slot)
-            if (gPlayerInventory[player_number][slot] != -1 &&
-                gPlayerInventory[player_number][slot] != 27)
+            if (gPlayerInventory[player_number][slot] != PRESENT_NONE &&
+                gPlayerInventory[player_number][slot] != PRESENT_BONUS_HITOPS)
                 gPlayerInventory[player_number][slot] = SelectRandomPresent();
 }
 
@@ -389,7 +389,7 @@ int player_number;
         InventoryRefreshContentsAndWait(player_number ^ 1);
         UpdateAndQueueEntitySprites();
         WaitForNextVBlank(frame / 5);
-        PlaySound(PSG_TONE_PULSE, 50);
+        PlaySound(PSG_TONE_PULSE, AUDIO_PRIORITY_NORMAL);
     }
     gInventoryLabelsSuppressed = 0;
     PresentClearWorldEntityReadiness();
@@ -400,7 +400,7 @@ int player_number;
 /* Process button edges and inventory cursor movement for the two players. */
 void ProcessInventory()
 {
-    short opening[2];
+    short opening[PLAYER_COUNT];
     short player_number;
     struct object_state *object;
 
@@ -411,20 +411,20 @@ void ProcessInventory()
         if (gPlayerLives[player_number] < 0 || object->sprite_state == 5 ||
             object->sprite_state == 6)
             continue;
-        if (!(gPlayerPreviousProcessedInput[player_number] & 16) &&
-            (gPlayerProcessedInput[player_number] & 16)) {
+        if (!(gPlayerPreviousProcessedInput[player_number] & INPUT_BUTTON_B) &&
+            (gPlayerProcessedInput[player_number] & INPUT_BUTTON_B)) {
             ToggleInventory(player_number);
             return;
         }
         if (gPlayerInventoryOpen[player_number]) {
             if (gPlayerInventoryOpen[player_number] == 1 &&
-                !(gPlayerPreviousProcessedInput[player_number] & 32) &&
-                (gPlayerProcessedInput[player_number] & 32)) {
+                !(gPlayerPreviousProcessedInput[player_number] & INPUT_BUTTON_C) &&
+                (gPlayerProcessedInput[player_number] & INPUT_BUTTON_C)) {
                 gInventoryBannerMode[player_number] ^= 1;
                 InventoryDrawActionBanner(player_number, gInventoryBannerMode[player_number], 0);
-                PlaySound(PSG_TONE_PULSE, 50);
-            } else if (!(gPlayerPreviousProcessedInput[player_number] & 64) &&
-                       (gPlayerProcessedInput[player_number] & 64)) {
+                PlaySound(PSG_TONE_PULSE, AUDIO_PRIORITY_NORMAL);
+            } else if (!(gPlayerPreviousProcessedInput[player_number] & INPUT_BUTTON_A) &&
+                       (gPlayerProcessedInput[player_number] & INPUT_BUTTON_A)) {
                 if (gPlayerInventoryOpen[player_number] == 2) {
                     ToggleInventory(player_number);
                     InventoryBuySelectedMailOrderPresent(player_number);
@@ -446,9 +446,9 @@ void ProcessInventory()
                         opening[player_number] = 1;
                     }
                 }
-            } else if (!(gPlayerPreviousProcessedInput[player_number] & 15) &&
-                       (gPlayerProcessedInput[player_number] & 15)) {
-                if (gPlayerProcessedInput[player_number] & 1) {
+            } else if (!(gPlayerPreviousProcessedInput[player_number] & INPUT_DIRECTION_MASK) &&
+                       (gPlayerProcessedInput[player_number] & INPUT_DIRECTION_MASK)) {
+                if (gPlayerProcessedInput[player_number] & INPUT_UP) {
                     if (gPlayerInventorySelectionRow[player_number] > 0)
                         --gPlayerInventorySelectionRow[player_number];
                     else if (gPlayerInventoryOpen[player_number] != 2 &&
@@ -456,19 +456,18 @@ void ProcessInventory()
                         --gPlayerInventoryScrollRow[player_number];
                         InventoryRefreshContentsAndWait(player_number);
                     }
-                } else if (gPlayerProcessedInput[player_number] & 2) {
+                } else if (gPlayerProcessedInput[player_number] & INPUT_DOWN) {
                     if (gPlayerInventorySelectionRow[player_number] < 2)
                         ++gPlayerInventorySelectionRow[player_number];
                     else if (gPlayerInventoryOpen[player_number] != 2 &&
                              gPlayerInventoryScrollRow[player_number] < 5 &&
-                             gPlayerInventory[player_number]
-                                 [(gPlayerInventoryScrollRow[player_number] + 3) * 2] != -1) {
+                             gPlayerInventory[player_number][(gPlayerInventoryScrollRow[player_number] + 3) * 2] != PRESENT_NONE) {
                         ++gPlayerInventoryScrollRow[player_number];
                         InventoryRefreshContentsAndWait(player_number);
                     }
                 } else if (gPlayerInventoryOpen[player_number] != 2)
                     gPlayerInventorySelectionColumn[player_number] ^= 1;
-                PlaySound(PSG_TONE_PULSE, 50);
+                PlaySound(PSG_TONE_PULSE, AUDIO_PRIORITY_NORMAL);
             }
             if (gPlayerInventoryOpen[player_number])
                 InventoryUpdateSelectorEntity(player_number);
@@ -549,16 +548,16 @@ short player;
     while (present == PRESENT_MYSTERY)
         present = SelectRandomPresent();
     if (present == PRESENT_NONE || OpenSelectedPresent(player, present)) {
-        PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
+        PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
         return 0;
     }
     if (gPlayerInventory[player][slot] != 26)
         gPresentInfo[present].identified = 1;
-    while (slot < 15 && gPlayerInventory[player][slot + 1] != -1) {
+    while (slot < 15 && gPlayerInventory[player][slot + 1] != PRESENT_NONE) {
         gPlayerInventory[player][slot] = gPlayerInventory[player][slot + 1];
         ++slot;
     }
-    gPlayerInventory[player][slot] = -1;
+    gPlayerInventory[player][slot] = PRESENT_NONE;
     return present + 1;
 }
 
@@ -569,17 +568,17 @@ short player;
     char slot, present;
 
     if (gPlayerElevatorFlags[player]) {
-        PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
+        PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
         return;
     }
     slot = (gPlayerInventoryScrollRow[player] + gPlayerInventorySelectionRow[player]) * 2 +
            gPlayerInventorySelectionColumn[player];
     present = gPlayerInventory[player][slot];
-    while (slot < 15 && gPlayerInventory[player][slot + 1] != -1) {
+    while (slot < 15 && gPlayerInventory[player][slot + 1] != PRESENT_NONE) {
         gPlayerInventory[player][slot] = gPlayerInventory[player][slot + 1];
         ++slot;
     }
-    gPlayerInventory[player][slot] = -1;
+    gPlayerInventory[player][slot] = PRESENT_NONE;
     if (present != PRESENT_NONE)
         DropPresent(player, present);
 }
@@ -590,7 +589,7 @@ short player;
 {
     char slot, selection;
 
-    for (slot = 0; slot < 16 && gPlayerInventory[player][slot] != -1; ++slot)
+    for (slot = 0; slot < 16 && gPlayerInventory[player][slot] != PRESENT_NONE; ++slot)
         ;
     selection = gPlayerInventorySelectionRow[player];
     if (slot < 16 && gPlayerBucks[player] >= gPlayerMailboxPrices[player][selection]) {
@@ -598,7 +597,7 @@ short player;
         gPlayerInventory[player][slot] = gPlayerMailboxItems[player][selection];
         GenerateSpeech(player, "Got it!", 1);
     } else {
-        PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
+        PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
         if (slot == 16)
             StartDialogue(25, player);
         else
@@ -617,7 +616,7 @@ short player;
            gPlayerInventorySelectionColumn[player];
     present = gPlayerInventory[player][slot];
     if (gPlayerBucks[player] < 2 || present == PRESENT_NONE) {
-        PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
+        PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
         return 0;
     }
     while (present == PRESENT_MYSTERY) {
@@ -632,7 +631,7 @@ short player;
     if (changed)
         gPlayerBucks[player] -= 2;
     else
-        PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
+        PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
     return changed;
 }
 
@@ -787,9 +786,8 @@ short player_number;
     struct object_state *selector;
 
     if (gPlayerInventoryOpen[player_number] != 2) {
-        while (gPlayerInventory[player_number]
-               [(gPlayerInventoryScrollRow[player_number] + gPlayerInventorySelectionRow[player_number]) * 2 +
-                gPlayerInventorySelectionColumn[player_number]] == -1) {
+        while (gPlayerInventory[player_number][(gPlayerInventoryScrollRow[player_number] + gPlayerInventorySelectionRow[player_number]) * 2 +
+         gPlayerInventorySelectionColumn[player_number]] == PRESENT_NONE) {
             if (gPlayerInventorySelectionRow[player_number] == 0 &&
                 gPlayerInventorySelectionColumn[player_number] == 0) {
                 exhausted = 1;

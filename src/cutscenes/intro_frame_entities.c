@@ -1,6 +1,7 @@
 #include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
+#include "sprite_frame_views.h"
 #include "assets_intro.h"
 #include "assets_scenes.h"
 #include "intro_object_calls.h"
@@ -27,8 +28,8 @@ void IntroCreateHiddenFrameEntities()
             object->sprite_count = frame->piece_count;
             object->tile_count = 0;
             for (piece_number = 0; piece_number < frame->piece_count; ++piece_number)
-                object->tile_count += ((struct render_piece (*)[12])(frame + 1))[0][piece_number].width *
-                                      ((struct render_piece (*)[12])(frame + 1))[0][piece_number].height;
+                object->tile_count += ((struct render_frame_piece_view *)frame)->pieces[piece_number].width *
+                                      ((struct render_frame_piece_view *)frame)->pieces[piece_number].height;
             object->current_frame = frame;
             object->x = 170;
             object->y = 160;
@@ -36,7 +37,7 @@ void IntroCreateHiddenFrameEntities()
             object->behavior_flags |= ENTITY_HIDDEN;
             AllocateEntityViewportSprites(object, 0);
             object->sprite_ready = 0;
-            object->sequence = (char *)&IntroHeldFrameStreams[index];
+            object->sequence = &IntroHeldFrameStreams[index].frame;
             object->frames = frames;
             object->frame_phase = 1;
             object->frame_duration = 1;

@@ -107,7 +107,7 @@ short camera;
       screen_row &= 31;
     }
     map = &gPlayer1LevelMap[0][0];
-    if ((gPlayer1MapLevel == 1) || (gPlayer1MapLevel == 26))
+    if ((gPlayer1MapLevel == 1) || (gPlayer1MapLevel == LEVEL_FINAL))
       wraps = 1;
     gCamera1TileColumnCursor--;
     gCameraRowUploadStartColumn[0] = gCamera1TileColumnCursor & 63;
@@ -135,7 +135,7 @@ short camera;
       map_row = map_row >> 3;
       screen_row &= 31;
     }
-    if ((gPlayer2MapLevel == 1) || (gPlayer2MapLevel == 26))
+    if ((gPlayer2MapLevel == 1) || (gPlayer2MapLevel == LEVEL_FINAL))
       wraps = 1;
     gCamera2TileColumnCursor--;
     gCameraRowUploadStartColumn[1] = gCamera2TileColumnCursor & 63;
@@ -342,7 +342,7 @@ short camera;
     map = &gPlayer2LevelMap[0][0];
   }
   gCameraColumnUploadVramColumn[camera] = screen_column;
-  if (((camera == 0) && ((gPlayer1MapLevel == 1) || (gPlayer1MapLevel == 26))) || ((camera == 1) && ((gPlayer2MapLevel == 1) || (gPlayer2MapLevel == 26))))
+  if (((camera == 0) && ((gPlayer1MapLevel == 1) || (gPlayer1MapLevel == LEVEL_FINAL))) || ((camera == 1) && ((gPlayer2MapLevel == 1) || (gPlayer2MapLevel == LEVEL_FINAL))))
     wraps = 1;
   if ((map_x == 0) || (map_x > 19))
   {

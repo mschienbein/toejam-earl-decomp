@@ -1,6 +1,7 @@
 #include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
+#include "sprite_frame_views.h"
 #include "ram_camera.h"
 #include "ram_map.h"
 #include "ram_player.h"
@@ -28,7 +29,7 @@ struct object_state *entity;
         if (parent->tile & VDP_TILE_PRIORITY)
             entity->tile |= VDP_TILE_PRIORITY;
         else
-            entity->tile &= 0x7fff;
+            entity->tile &= ~VDP_TILE_PRIORITY;
     } else if (entity->owner == -1) {
         entity->x = gCamera1PendingX + (unsigned char)entity->attachment_x_or_latch;
         entity->y = gCamera1PendingY + (unsigned char)entity->attachment_y_or_latch;
@@ -70,7 +71,7 @@ struct object_state *first_entity;
                 if (entity->behavior_flags & ENTITY_HIDDEN)
                     gHardwareSpriteTable[sprite_number].y = 1;
                 else {
-                    piece = &((struct render_piece (*)[12])(frame + 1))[0][piece_number];
+                    piece = &((struct render_frame_piece_view *)frame)->pieces[piece_number];
                     if (entity->tile & VDP_TILE_HORIZONTAL_FLIP)
                         gHardwareSpriteTable[sprite_number].x = piece->flipped_x + screen_x;
                     else
@@ -102,7 +103,7 @@ struct object_state *first_entity;
                 if (entity->behavior_flags & ENTITY_HIDDEN)
                     gHardwareSpriteTable[sprite_number].y = 1;
                 else {
-                    piece = &((struct render_piece (*)[12])(frame + 1))[0][piece_number];
+                    piece = &((struct render_frame_piece_view *)frame)->pieces[piece_number];
                     if (entity->tile & VDP_TILE_HORIZONTAL_FLIP)
                         gHardwareSpriteTable[sprite_number].x = piece->flipped_x + screen_x;
                     else
@@ -194,10 +195,10 @@ void SortEntitiesForSpriteDraw()
     struct object_state *entity, *previous, *current;
     short entity_number, entity_count;
 
-    if (gPlayer1MapLevel == 26)
-        entity_count = 40;
+    if (gPlayer1MapLevel == LEVEL_FINAL)
+        entity_count = ENTITY_SLOT_COUNT;
     else
-        entity_count = 26;
+        entity_count = GAMEPLAY_ENTITY_SLOT_COUNT;
     entity = gPlayerInfo;
     for (entity_number = 0; entity_number < entity_count; ++entity_number, ++entity) {
         if (!(entity->draw_flags & ENTITY_ACTIVE))
@@ -283,7 +284,7 @@ short destination_tile;
         SpriteUnpackInterleavedRLE(piece, tile_count);
     else
         SpriteUnpackRLE(piece, tile_count);
-    gSpriteTileBufferOffset += tile_count * 32;
+    gSpriteTileBufferOffset += tile_count * VDP_TILE_BYTES;
     gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = destination_tile;
     gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = tile_count;
     gSpriteGraphicsUploadPending = saved_transfer_flag;
@@ -292,6 +293,7 @@ short destination_tile;
 
 
 #include "sprites.h"
+#include "sprite_frame_views.h"
 #include "ram_sprites.h"
 #include "sprite_calls.h"
 
@@ -371,7 +373,7 @@ int reuse_tiles, viewport;
     for (piece_number = 0; piece_number < frame->piece_count; ++piece_number) {
         /* Twelve is the entity sprite-list capacity, not a fixed ROM-frame
          * extent; this inherited bounded payload view retains word indexing. */
-        piece = &((struct render_piece (*)[12])(frame + 1))[0][piece_number];
+        piece = &((struct render_frame_piece_view *)frame)->pieces[piece_number];
         format = piece->tile_format;
         tile_count = piece->height;
         tile_count &= 255;
@@ -386,9 +388,9 @@ int reuse_tiles, viewport;
             if (elevation < 0 && !((unsigned char)entity->animation_group_mask & PLAYER_GROUP_FALL))
                 discard = ClipSpritePixelsBelowCutoff(piece, elevation);
             if (entity->behavior_flags & ENTITY_MASK_PIXELS)
-                ClearSpriteMaskPixels(tile_count * 32);
+                ClearSpriteMaskPixels(tile_count * VDP_TILE_BYTES);
             if (!discard)
-                gSpriteTileBufferOffset += tile_count * 32;
+                gSpriteTileBufferOffset += tile_count * VDP_TILE_BYTES;
         }
         if (!viewport)
             sprite_number = entity->primary_sprites[piece_number];
@@ -447,16 +449,16 @@ void ProcessEntityAnimationMotion()
     struct render_frame *frame;
     unsigned char sequence_entry;
 
-    if (gPlayer1MapLevel == 26)
-        entity_count = 40;
+    if (gPlayer1MapLevel == LEVEL_FINAL)
+        entity_count = ENTITY_SLOT_COUNT;
     else
-        entity_count = 26;
+        entity_count = GAMEPLAY_ENTITY_SLOT_COUNT;
     entity = gPlayerInfo;
     for (entity_number = 0; entity_number < entity_count; ++entity_number, ++entity) {
         if (!(entity->draw_flags & ENTITY_ACTIVE) || IsSpeechBubbleEntity(entity_number))
             continue;
         if (entity->frame_duration - 1 == 0) {
-            if (entity->tile_count + tile_total > 112)
+            if (entity->tile_count + tile_total > SPRITE_FRAME_TILE_BUDGET)
                 continue;
             next_frame_or_needs_tiles = entity->frame + 1;
             sequence_entry = entity->sequence[next_frame_or_needs_tiles];
@@ -478,7 +480,7 @@ void ProcessEntityAnimationMotion()
             if ((entity->draw_flags & ENTITY_EITHER_VIEW) && next_frame_or_needs_tiles)
                 tile_total += entity->tile_count;
         } else if (!entity->sprite_ready && (entity->draw_flags & ENTITY_EITHER_VIEW) &&
-                   entity->tile_count + tile_total > 112) {
+                   entity->tile_count + tile_total > SPRITE_FRAME_TILE_BUDGET) {
             /* ORIGINAL BUG: this path adds the count only when it is already over 112. */
             tile_total += entity->tile_count;
         }
@@ -510,16 +512,16 @@ void UpdateAndQueueEntitySprites()
     InventorySetCameraSuspension(1);
     while (gSpriteGraphicsUploadPending)
         ;
-    if (!gSplitScreenEnabled && (gPlayerInventoryOpen[0] || gPlayerInventoryOpen[1]))
-        entity_number = 26;
+    if (!gSplitScreenEnabled && (gPlayerInventoryOpen[PLAYER_TOEJAM] || gPlayerInventoryOpen[PLAYER_EARL]))
+        entity_number = GAMEPLAY_ENTITY_SLOT_COUNT;
     else
         entity_number = 0;
     entity = &gPlayerInfo[entity_number];
-    for (; entity_number < 40; ++entity_number, ++entity) {
+    for (; entity_number < ENTITY_SLOT_COUNT; ++entity_number, ++entity) {
         if (!(entity->draw_flags & ENTITY_ACTIVE) || (entity->behavior_flags & ENTITY_SHARED_TILES) ||
             IsSpeechBubbleEntity(entity_number) || (!entity->frame_duration && entity->sprite_ready))
             continue;
-        if (tile_total && entity->tile_count + tile_total > (unsigned long)112)
+        if (tile_total && entity->tile_count + tile_total > (unsigned long)SPRITE_FRAME_TILE_BUDGET)
             continue;
         if (entity->frame_duration && !--entity->frame_duration) {
             entity->frame_duration = entity->frame_phase;
@@ -536,7 +538,7 @@ load_frame:
                 unsigned short reuse_tiles, already_uploaded;
                 entity->frame = next_frame;
                 sequence_entry = entity->sequence[next_frame];
-                if (sequence_entry & 128)
+                if (sequence_entry & ANIMATION_FLIP_HORIZONTAL)
                     entity->tile |= VDP_TILE_HORIZONTAL_FLIP;
                 else
                     entity->tile &= ~VDP_TILE_HORIZONTAL_FLIP;
@@ -573,7 +575,7 @@ load_frame:
         JamOutSynchronizeEntityCopies();
     SortEntitiesForSpriteDraw();
     PositionEntitySprites(gEntityDrawListHead);
-    if (gPlayerInventoryOpen[0] || gPlayerInventoryOpen[1]) {
+    if (gPlayerInventoryOpen[PLAYER_TOEJAM] || gPlayerInventoryOpen[PLAYER_EARL]) {
         PositionEntitySprites(gInventoryDrawListHead);
         InventorySetCameraSuspension(0);
     }

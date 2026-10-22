@@ -1,6 +1,8 @@
 #ifndef TJE_MAP_H
 #define TJE_MAP_H
 
+#include "terrain.h"
+
 /* Complete 196-byte map-generation lookup bank at REV 02 08bf4a.
  * Its terrain-exclusion and directional-input views are shared below. */
 struct map_generation_tables {

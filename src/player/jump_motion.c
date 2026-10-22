@@ -41,7 +41,7 @@ unsigned short terrain;
         return;
     direction = state->sprite_state & DIRECTION_MASK;
     phase = -1;
-    jump = gPlayerProcessedInput[player] & 0x40;
+    jump = gPlayerProcessedInput[player] & INPUT_BUTTON_A;
     if (!jump) {
         gPlayerPhasedJumpArmed[player] = 1;
         gPlayerChoiceActionReleaseLatches[player] = 0;
@@ -76,7 +76,7 @@ unsigned short terrain;
                     gPlayerJumpCounters[player] = 0;
                 else {
                     phase = direction + PLAYER_ANIM_FALL_SPLASH_UP;
-                    PlaySoundEffect((long)Sfx_Splash, 50, 0);
+                    PlaySoundEffect((long)Sfx_Splash, AUDIO_PRIORITY_NORMAL, 0);
                 }
             } else {
                 phase = GetActivePresentSprite(state);
@@ -130,10 +130,10 @@ char phase, jump;
         input = gPlayerProcessedInput[player];
     velocity_x = state->velocity_x;
     velocity_y = state->velocity_y;
-    left = input & 4;
-    right = input & 8;
-    up = input & 1;
-    down = input & 2;
+    left = input & INPUT_LEFT;
+    right = input & INPUT_RIGHT;
+    up = input & INPUT_UP;
+    down = input & INPUT_DOWN;
     if (phase != -1) {
         gPlayerPhasedJumpPhase[player] = phase;
         state->frame = phase - 1;

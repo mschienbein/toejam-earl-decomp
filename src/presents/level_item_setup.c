@@ -36,9 +36,9 @@ void SetupPresentIdentities()
         gPresentInfo[present_number].appearance = -1;
         gPresentInfo[present_number].identified = 0;
     }
-    gPresentInfo[26].appearance = 26;
-    gPresentInfo[27].appearance = 27;
-    gPresentInfo[27].identified = 1;
+    gPresentInfo[PRESENT_MYSTERY].appearance = 26;
+    gPresentInfo[PRESENT_BONUS_HITOPS].appearance = 27;
+    gPresentInfo[PRESENT_BONUS_HITOPS].identified = 1;
     for (present_number = 0; present_number < 26; ++present_number) {
         identity = GetRandomNumber() % 27;
         while (gPresentInfo[identity].appearance != -1)
@@ -54,33 +54,33 @@ void SetupInitialInventory()
     short slot;
 
     for (slot = 0; slot < 16; ++slot) {
-        gPlayerInventory[PLAYER_TOEJAM][slot] = -1;
-        gPlayerInventory[PLAYER_EARL][slot] = -1;
+        gPlayerInventory[PLAYER_TOEJAM][slot] = PRESENT_NONE;
+        gPlayerInventory[PLAYER_EARL][slot] = PRESENT_NONE;
     }
     for (slot = 0; slot < 32; ++slot) {
-        gDroppedPresentTable[slot].kind = -1;
-        gObjectTable[0][slot].kind = -1;
-        gItemBank2Records[slot].kind = -1;
+        gDroppedPresentTable[slot].kind = ITEM_UNUSED;
+        gObjectTable[0][slot].kind = ITEM_UNUSED;
+        gItemBank2Records[slot].kind = ITEM_UNUSED;
     }
     gItemBankLevels[0] = -1;
     gItemBank2Level = -1;
     SetupPresentIdentities();
     if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
         LoadLevelItemBank(1);
-        gPlayerInventory[PLAYER_TOEJAM][0] = 27;
-        gPlayerInventory[PLAYER_TOEJAM][1] = 27;
+        gPlayerInventory[PLAYER_TOEJAM][0] = PRESENT_BONUS_HITOPS;
+        gPlayerInventory[PLAYER_TOEJAM][1] = PRESENT_BONUS_HITOPS;
         if (gPlayer2Lives < 0) {
-            gPlayerInventory[PLAYER_TOEJAM][2] = 27;
-            gPlayerInventory[PLAYER_TOEJAM][3] = 27;
+            gPlayerInventory[PLAYER_TOEJAM][2] = PRESENT_BONUS_HITOPS;
+            gPlayerInventory[PLAYER_TOEJAM][3] = PRESENT_BONUS_HITOPS;
         }
     }
     if (gPlayer2Lives >= 0) {
         LoadLevelItemBank(1);
-        gPlayerInventory[PLAYER_EARL][0] = 27;
-        gPlayerInventory[PLAYER_EARL][1] = 27;
+        gPlayerInventory[PLAYER_EARL][0] = PRESENT_BONUS_HITOPS;
+        gPlayerInventory[PLAYER_EARL][1] = PRESENT_BONUS_HITOPS;
         if (gPlayerLives[PLAYER_TOEJAM] < 0) {
-            gPlayerInventory[PLAYER_EARL][2] = 27;
-            gPlayerInventory[PLAYER_EARL][3] = 27;
+            gPlayerInventory[PLAYER_EARL][2] = PRESENT_BONUS_HITOPS;
+            gPlayerInventory[PLAYER_EARL][3] = PRESENT_BONUS_HITOPS;
         }
     }
 }
@@ -99,7 +99,7 @@ short level;
                 gItemBankLevels[bank] = -1;
                 for (item_number = 0; item_number < 32; ++item_number) {
                     object = gObjectTable[bank][item_number].object;
-                    gObjectTable[bank][item_number].kind = -1;
+                    gObjectTable[bank][item_number].kind = ITEM_UNUSED;
                     if (object) {
                         FreeEntity(object);
                         gObjectTable[bank][item_number].object = 0;
@@ -140,7 +140,7 @@ short terrain;
 {
     short entry;
 
-    terrain &= 0x7f;
+    terrain &= METATILE_BASE_MASK;
     for (entry = 0; entry < 23; ++entry)
         if (LargeItemExcludedTerrainIds[entry] == terrain)
             return 1;
@@ -382,7 +382,7 @@ get_present:
             gObjectTable[bank][slot].x = position_x;
             gObjectTable[bank][slot].y = position_y;
         } else {
-            gObjectTable[bank][slot].kind = -1;
+            gObjectTable[bank][slot].kind = ITEM_UNUSED;
         }
     }
     if (!level)

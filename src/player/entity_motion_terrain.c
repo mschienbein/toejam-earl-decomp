@@ -40,7 +40,7 @@ struct movement_destination *destination;
         terrain = gPlayer1NearbyTerrain[0];
     else
         terrain = gPlayer2NearbyTerrain[0];
-    if (gPlayer1MapLevel == 26 &&
+    if (gPlayer1MapLevel == LEVEL_FINAL &&
         (entity->x != destination->x || entity->y != destination->y)) {
         saved_x = entity->x;
         saved_y = entity->y;
@@ -57,7 +57,7 @@ struct movement_destination *destination;
     }
     property = terrain[destination->tile_y * 5 + destination->tile_x] & TERRAIN_CLASS_MASK;
     if ((long)entity->animation_group_mask & (long)(PLAYER_GROUP_SWIM | PLAYER_GROUP_INNERTUBE_MOVE)) {
-        if (entity->level == 1 || entity->level == 26) {
+        if (entity->level == 1 || entity->level == LEVEL_FINAL) {
             if (destination->x <= 28 || destination->x >= 2652) {
                 destination->x = entity->x;
                 entity->draw_flags |= ENTITY_BLOCKED_X;

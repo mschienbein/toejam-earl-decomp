@@ -32,27 +32,27 @@ short player_number;
     AudioRequestChannelTemplateEffect(FM_EFFECT_CLEAR);
     AudioRequestFmChannelRelease();
     MusicRequestTrackPointerReset();
-    while (ReadMappedPlayerInput(player_number) & 128)
+    while (ReadMappedPlayerInput(player_number) & INPUT_START)
         ;
     for (;;) {
-        if (!reset_selected && (ReadMappedPlayerInput(player_number) & 2)) {
+        if (!reset_selected && (ReadMappedPlayerInput(player_number) & INPUT_DOWN)) {
             DrawPauseChoicePanel(1);
             reset_selected = 1;
             continue;
         }
-        if (reset_selected && (ReadMappedPlayerInput(player_number) & 1)) {
+        if (reset_selected && (ReadMappedPlayerInput(player_number) & INPUT_UP)) {
             DrawPauseChoicePanel(0);
             reset_selected = 0;
             continue;
         }
-        if (ReadMappedPlayerInput(player_number) & 192)
+        if (ReadMappedPlayerInput(player_number) & (INPUT_START | INPUT_BUTTON_A))
             break;
     }
     DrawPauseChoicePanel(-1);
     if (reset_selected)
         RestartFromResetEntry();
     gCurrentMusicSelection = MUSIC_SELECTION_INVALID;
-    while (ReadMappedPlayerInput(player_number) & 192)
+    while (ReadMappedPlayerInput(player_number) & (INPUT_START | INPUT_BUTTON_A))
         ;
 }
 
@@ -69,7 +69,7 @@ short player_number;
     struct object_state *object;
     struct animation_descriptor *animation;
 
-    if (gPlayer1MapLevel == 26) {
+    if (gPlayer1MapLevel == LEVEL_FINAL) {
         RunFinalLevelPauseMenu(player_number);
         return;
     }

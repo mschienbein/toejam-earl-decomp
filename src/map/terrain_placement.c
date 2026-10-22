@@ -111,7 +111,7 @@ register int player;
         row = random % 26;
         random = GetRandomNumber();
         column = random % 19;
-        metatile = map[row * 19 + column];
+        metatile = map[row * MAP_COLUMNS + column];
         if (metatile & 0x4000) {
             --search_counter;
             continue;
@@ -136,7 +136,7 @@ register int player;
     do {
         column = start_column;
         do {
-            metatile = map[row * 19 + column];
+            metatile = map[row * MAP_COLUMNS + column];
             if (!(metatile & 0x4000) &&
                 TerrainValidation(metatile, width, height, &position_x, &position_y, 3)) {
                 position_y += (row + 1) * 64;

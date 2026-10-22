@@ -1,6 +1,7 @@
 #include "player_animation.h"
 #include "player_animation_groups.h"
 #include "earthling_types.h"
+#include "present_types.h"
 #include "entities.h"
 #include "player.h"
 #include "ram_effects.h"
@@ -20,7 +21,7 @@ short separation;
 char mode;
 {
     char special_target = 1;
-    unsigned short distance[2];
+    unsigned short distance[PLAYER_COUNT];
     short delta_x[2], delta_y[2];
     unsigned short selected_player;
     struct object_state *target;
@@ -71,7 +72,7 @@ char mode;
         if (state->level == gPlayerInfo[PLAYER_TOEJAM].level && !gPlayerElevatorFlags[PLAYER_TOEJAM] &&
             (mode != 7 || !gPlayerControlRemapEntities[0])) {
             target = &gPlayerInfo[PLAYER_TOEJAM];
-            if ((mode != EARTHLING_MOLE || (gPlayerInventory[PLAYER_TOEJAM][0] != -1 && !state->attachment_x_or_latch)) &&
+            if ((mode != EARTHLING_MOLE || (gPlayerInventory[PLAYER_TOEJAM][0] != PRESENT_NONE && !state->attachment_x_or_latch)) &&
                 EarthlingCanTargetPlayerState(state, target)) {
                 delta_x[0] = (target->x - state->x) >> 2;
                 if (state->x < target->x)
@@ -86,7 +87,7 @@ char mode;
         if (state->level == gPlayerInfo[PLAYER_EARL].level && !gPlayerElevatorFlags[PLAYER_EARL] &&
             (mode != 7 || !gPlayerControlRemapEntities[1])) {
             target = &gPlayerInfo[PLAYER_EARL];
-            if ((mode != EARTHLING_MOLE || (gPlayerInventory[PLAYER_EARL][0] != -1 && !state->attachment_y_or_latch)) &&
+            if ((mode != EARTHLING_MOLE || (gPlayerInventory[PLAYER_EARL][0] != PRESENT_NONE && !state->attachment_y_or_latch)) &&
                 EarthlingCanTargetPlayerState(state, target)) {
                 delta_x[1] = (target->x - state->x) >> 2;
                 if (state->x < target->x)
@@ -125,11 +126,11 @@ int EarthlingCanTargetPlayerState(state, target)
 struct object_state *state, *target;
 {
     if ((state->sprite_state != 2 &&
-         ((target->animation_group_mask & 0x400b8L) || target->sprite_state == PLAYER_ANIM_IDLE ||
+         ((target->animation_group_mask & PLAYER_GROUP_TARGET_NON_ATTACK) || target->sprite_state == PLAYER_ANIM_IDLE ||
           target->sprite_state == PLAYER_ANIM_ICARUS_IDLE || (target->animation_group_mask & (long)(PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) ||
           target->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE || target->sprite_state == PLAYER_ANIM_WHIRLWIND_RECOVERY || target->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE)) ||
         target->sprite_state == PLAYER_ANIM_SWIM_IDLE || target->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE ||
-        (target->animation_group_mask & 0x0fb57f44L))
+        (target->animation_group_mask & PLAYER_GROUP_TARGET_ACTIVE_MOTION))
         return 1;
     return 0;
 }

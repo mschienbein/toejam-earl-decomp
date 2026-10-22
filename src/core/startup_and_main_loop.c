@@ -73,11 +73,11 @@ short player;
         else input = gController1RawInput;
     }
     if (gControllerButtonsAcSwapped) {
-        mapped = input & 0x9f;
-        if (input & 0x40)
-            mapped |= 0x20;
-        if (input & 0x20)
-            mapped |= 0x40;
+        mapped = input & (INPUT_START | INPUT_BUTTON_B | INPUT_DIRECTION_MASK);
+        if (input & INPUT_BUTTON_A)
+            mapped |= INPUT_BUTTON_C;
+        if (input & INPUT_BUTTON_C)
+            mapped |= INPUT_BUTTON_A;
         return mapped;
     }
     return input;
@@ -109,7 +109,7 @@ void DrawLevelGraphics()
         gLevelPaletteAnimationFrame = (gLevelPaletteAnimationFrame + 1) & 3;
         VDP_COMMAND = 0xc0340000;
         for (colour = 0; colour < 4; ++colour) {
-            if (gPlayer1MapLevel < 26)
+            if (gPlayer1MapLevel < LEVEL_FINAL)
                 VDP_DATA = PaletteAnimationFramesA[gLevelPaletteAnimationFrame][colour];
             else
                 VDP_DATA = PaletteAnimationFramesB[gLevelPaletteAnimationFrame][colour];
@@ -199,7 +199,7 @@ void HandleVBlank()
                 VDP_DATA = gCamera1CommittedY;
                 VDP_COMMAND = 0x7c000003;
                 VDP_DATA = -gCamera1CommittedX;
-                if (gPlayer1MapLevel < 26) {
+                if (gPlayer1MapLevel < LEVEL_FINAL) {
                     VDP_COMMAND = 0x40020010;
                     VDP_DATA = gCamera1CommittedY / 2;
                     VDP_COMMAND = 0x7c020003;
@@ -256,7 +256,7 @@ end_frame:
 /* Switch the lower viewport's sprite chain and scroll registers at horizontal blank. */
 void HandleHBlank()
 {
-    if (gHBlankGraphicsEnabled && gPlayer1MapLevel < 26) {
+    if (gHBlankGraphicsEnabled && gPlayer1MapLevel < LEVEL_FINAL) {
         SelectViewportSpriteChain(1);
         if (gSplitScreenEnabled || gPlayer2InventoryOpen) {
             if (gPlayer2InventoryOpen)
@@ -283,21 +283,21 @@ void GetPlayerInput()
     short player;
     struct object_state *entity;
     entity = gPlayerInfo;
-    for (player = 0; player <= 1; ++player) {
+    for (player = 0; player <= PLAYER_EARL; ++player) {
         gPlayerPreviousProcessedInput[player] = gPlayerProcessedInput[player];
         if (gPlayerLives[player] >= 0) {
             gPlayerProcessedInput[player] = ReadMappedPlayerInput(player);
             if ((entity->animation_group_mask & PLAYER_GROUP_REACTION) || entity->sprite_state == PLAYER_ANIM_WHIRLWIND ||
                 entity->sprite_state == PLAYER_ANIM_WHIRLWIND_RECOVERY || entity->sprite_state == PLAYER_ANIM_GHOST || entity->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST)
-                gPlayerProcessedInput[player] &= 0x80;
+                gPlayerProcessedInput[player] &= INPUT_START;
         } else
             gPlayerProcessedInput[player] = 0;
         if (entity->animation_group_mask & PLAYER_GROUP_STATIONARY)
-            gPlayerProcessedInput[player] &= 0x8f;
+            gPlayerProcessedInput[player] &= (INPUT_START | INPUT_DIRECTION_MASK);
         else if (entity->animation_group_mask & (PLAYER_GROUP_FALL | PLAYER_GROUP_LAND))
-            gPlayerProcessedInput[player] &= 0xcf;
+            gPlayerProcessedInput[player] &= (INPUT_START | INPUT_BUTTON_A | INPUT_DIRECTION_MASK);
         else if ((entity->animation_group_mask & PLAYER_GROUP_ALL_SKATES) || entity->sprite_state == PLAYER_ANIM_FLATTENED)
-            gPlayerProcessedInput[player] &= 0xef;
+            gPlayerProcessedInput[player] &= (INPUT_START | INPUT_BUTTON_A | INPUT_BUTTON_C | INPUT_DIRECTION_MASK);
         entity = &gPlayerInfo[PLAYER_EARL];
     }
 }
@@ -305,11 +305,11 @@ void GetPlayerInput()
 /* Pause on a newly pressed Start button and report whether either player holds it. */
 int CheckStartButton()
 {
-    if ((gPlayerProcessedInput[PLAYER_TOEJAM] | gPlayerProcessedInput[PLAYER_EARL]) & 0x80) {
-        if (gPlayerProcessedInput[PLAYER_TOEJAM] & 0x80) {
-            if (!(gPlayerPreviousProcessedInput[PLAYER_TOEJAM] & 0x80))
+    if ((gPlayerProcessedInput[PLAYER_TOEJAM] | gPlayerProcessedInput[PLAYER_EARL]) & INPUT_START) {
+        if (gPlayerProcessedInput[PLAYER_TOEJAM] & INPUT_START) {
+            if (!(gPlayerPreviousProcessedInput[PLAYER_TOEJAM] & INPUT_START))
                 GamePaused(0);
-        } else if (!(gPlayer2PreviousProcessedInput & 0x80))
+        } else if (!(gPlayer2PreviousProcessedInput & INPUT_START))
             GamePaused(1);
         return 1;
     }
@@ -329,10 +329,10 @@ void ProcessInput()
     input2 = gPlayerProcessedInput[PLAYER_EARL];
     if (CheckStartButton())
         return;
-    if (gPlayer1MapLevel < 26) {
+    if (gPlayer1MapLevel < LEVEL_FINAL) {
         CheckBButton();
-        if ((input1 | input2) & 0x20) {
-            if (input1 & 0x20) {
+        if ((input1 | input2) & INPUT_BUTTON_C) {
+            if (input1 & INPUT_BUTTON_C) {
                 if (!gPlayerInventoryOpen[PLAYER_TOEJAM]) {
                     DrawGameMap(0);
                     return;
@@ -343,7 +343,7 @@ void ProcessInput()
             }
         }
     }
-    for (player = 0; player <= 1; ++player) {
+    for (player = 0; player <= PLAYER_EARL; ++player) {
         if (gPlayerLives[player] >= 0 && !gPlayerInventoryOpen[player]) {
             SpriteChecks(player, gPlayerProcessedInput[player]);
             entity = &gPlayerInfo[player];
@@ -443,7 +443,7 @@ short distance_y, distance_x;
     gCamera2PendingX = gCamera1PendingX;
     gCamera2PendingY = gCamera1PendingY;
     DrawHUD();
-    if (gPlayer1MapLevel < 26)
+    if (gPlayer1MapLevel < LEVEL_FINAL)
         CopyPaletteToCRAMSlot(PaletteGameLine1, 0);
     else
         CopyPaletteToCRAMSlot(PaletteShipScreen_bank3, 0);

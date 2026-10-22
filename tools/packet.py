@@ -21,6 +21,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DECODERS = {}
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import names as namestool  # noqa: E402
 
 
 class PacketError(RuntimeError):
@@ -53,32 +55,38 @@ class Symbols:
     def __init__(self, catalogue: dict, names: dict | None = None):
         self.entries: dict[int, list[dict]] = {}
         self.by_name: dict[str, int] = {}
-        for unit in catalogue["functions"]:
-            self.add({**unit, "name": unit_name(unit), "source": "catalogue", "evidence": "catalogued extent"})
-        if "header" in catalogue:
-            self.add({**catalogue["header"], "name": "header_000000", "kind": "header", "source": "catalogue"})
-        for span in catalogue.get("data", []):
-            self.add({**span, "name": f"data_{span['address']:06x}", "kind": "data", "source": "catalogue"})
-        for address in catalogue.get("labels", []):
-            self.add({"address": address, "name": f"loc_{address:06x}", "kind": "label", "source": "catalogue"})
-        for table in catalogue.get("jump_tables", []):
-            self.add({"address": table["address"], "size": 2 * table["count"], "name": f"jtbl_{table['address']:06x}",
-                      "kind": "jump_table", "source": "catalogue"})
-        for record in (names or {}).get("symbols", []):
+        self.canonical: set[str] = set()   # names.load names and aliases (not the catalogue's spellings)
+        for record in (names or {}).get("symbols", []):   # the canonical names come first
             self.add(record, primary=True)
             for alias in record.get("aliases", []):
                 alias = {"name": alias} if isinstance(alias, str) else alias
                 self.add({**record, **alias, "address": record["address"]})
+        for unit in catalogue["functions"]:
+            self.add({**unit, "name": unit_name(unit), "source": "catalogue", "evidence": "catalogued extent"}, generated=True)
+        if "header" in catalogue:
+            self.add({**catalogue["header"], "name": "header_000000", "kind": "header", "source": "catalogue"}, generated=True)
+        for span in catalogue.get("data", []):
+            self.add({**span, "name": f"data_{span['address']:06x}", "kind": "data", "source": "catalogue"}, generated=True)
+        for address in catalogue.get("labels", []):
+            self.add({"address": address, "name": f"loc_{address:06x}", "kind": "label", "source": "catalogue"}, generated=True)
+        for table in catalogue.get("jump_tables", []):
+            self.add({"address": table["address"], "size": 2 * table["count"], "name": f"jtbl_{table['address']:06x}",
+                      "kind": "jump_table", "source": "catalogue"}, generated=True)
         self.starts = sorted(self.entries)
 
-    def add(self, record: dict, primary: bool = False) -> None:
+    def add(self, record: dict, primary: bool = False, generated: bool = False) -> None:
         record = {**record, "address": number(record["address"])}
         if "size" in record:
             record["size"] = number(record["size"])
         name, address = record["name"], record["address"]
         if name in self.by_name and self.by_name[name] != address:
+            if generated:   # a revision's own address spelling never overrides a canonical identity
+                self.entries.setdefault(address, []).append({**record, "shadowed": True})
+                return
             raise PacketError(f"symbol {name!r} has conflicting addresses")
         self.by_name[name] = address
+        if not generated:
+            self.canonical.add(name)
         entries = self.entries.setdefault(address, [])
         if primary:
             entries.insert(0, record)
@@ -118,10 +126,12 @@ def load_inputs(root: Path, version: str) -> tuple[bytes, dict, Symbols]:
     catalogue = json.loads((root / "config" / version / "catalogue.json").read_text())
     if catalogue["version"] != version or catalogue["rom_sha256"] != hashlib.sha256(rom).hexdigest():
         raise PacketError("catalogue version/ROM identity does not match the selected ROM")
-    names_path = root / "config" / version / "names.json"
-    names = json.loads(names_path.read_text()) if names_path.is_file() else None
-    if names is not None and (names.get("schema_version") != 1 or names.get("version") != version):
-        raise PacketError(f"{names_path}: unsupported names schema/version")
+    try:
+        loaded = namestool.load(version, root)
+    except namestool.NamesError as error:
+        raise PacketError(str(error)) from None
+    names = {"symbols": [{"name": n.name, "address": n.address, "kind": n.kind, "source": n.source, "aliases": list(n.aliases),
+                          **({"size": n.size} if n.size is not None else {})} for n in loaded.values()]}
     return rom, catalogue, Symbols(catalogue, names)
 
 
@@ -188,16 +198,14 @@ class Program:
         return None
 
     def select(self, name: str) -> dict:
-        """A catalogued unit by its spelling (func_XXXXXX, frag_XXXXXX) or its imported name."""
-        match = re.fullmatch(r"(func|frag)_([0-9a-fA-F]{6})", name)
-        if match:
-            address = int(match[2], 16)
-        else:
-            address = self.symbols.by_name.get(name)
-            if address is None:
-                raise PacketError(f"{name}: not func_XXXXXX, frag_XXXXXX or an imported name")
+        """A catalogued unit by its canonical name (imported, or the REV 02 identity func_XXXXXX)."""
+        address = self.symbols.by_name.get(name)
+        if address is None and re.fullmatch(r"(func|frag)_[0-9a-fA-F]{6}", name):
+            address = self.symbols.by_name.get(name.lower())
+        if address is None:
+            raise PacketError(f"{name}: not a catalogued unit's name (func_XXXXXX, frag_XXXXXX or an imported name)")
         unit = self.owner(address)
-        if unit is None or unit["address"] != address or (match and unit_name(unit) != name.lower()):
+        if unit is None or unit["address"] != address:
             raise PacketError(f"{name}: not a catalogued unit start")
         return unit
 

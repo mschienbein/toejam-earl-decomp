@@ -106,8 +106,9 @@ class PacketTest(unittest.TestCase):
         for name in ("func_000301", "func_000999", "NoSuchName"):
             with self.subTest(name=name), self.assertRaises(packet.PacketError):
                 self.program.select(name)
-        with self.assertRaises(packet.PacketError):
-            packet.Symbols(self.catalogue, {"symbols": [{"name": "func_000200", "address": 0x300}]})
+        # another revision's REV 02 identity outranks the catalogue's own address spelling
+        symbols = packet.Symbols(self.catalogue, {"symbols": [{"name": "func_000200", "address": 0x300}]})
+        self.assertEqual(symbols.by_name["func_000200"], 0x300)
 
     def test_symbol_offsets_and_aliases(self):
         self.assertEqual(self.program.symbols.name(0x302), "ChooseCase+0x2")
@@ -179,7 +180,7 @@ class PacketTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             synthetic_repo(root, names={"schema_version": 2, "version": "rev02", "symbols": []})
-            with self.assertRaisesRegex(packet.PacketError, "names schema"):
+            with self.assertRaisesRegex(packet.PacketError, "schema_version"):
                 packet.load_inputs(root, "rev02")
             (root / "orig/rev02/baserom.bin").write_bytes(b"wrong")
             with self.assertRaisesRegex(packet.PacketError, "SHA-256"):

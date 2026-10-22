@@ -107,12 +107,15 @@ def load(version: str, root: Path = ROOT) -> dict[int, int]:
 
 
 def translator(version: str, root: Path = ROOT):
-    """Primary-revision address -> the same place in `version`, or None where there is none.
+    """Primary-revision address -> the same place in `version`, or None where that is not certain.
 
     C names unnamed places by their primary (REV 02) address: `loc_`, `dat_`, `rom_XXXXXX`. Both
-    catalogues list the same functions and data ranges in the same order, so an address keeps its
-    offset inside the corresponding function or data range; vectors, header and RAM do not move.
-    A wrong guess cannot pass: the build compares every byte of the other revision too.
+    catalogues list the same functions and data ranges in the same order. Anchors are the starts of
+    corresponding functions and data ranges plus every imported name both revisions carry (byte-
+    verified when imported). An address keeps its offset from the nearest anchor before it, but only
+    when the next anchor (or the end of the range) is the same distance away in both revisions: where
+    the layout changed in between, the place is ambiguous and the answer is None. Vectors, header and
+    RAM do not move. A wrong answer could not pass anyway: the build compares every byte.
     """
     if version == PRIMARY:
         return lambda address: address
@@ -125,6 +128,25 @@ def translator(version: str, root: Path = ROOT):
     if [kind for *_, kind in ours] != [kind for *_, kind in theirs]:
         raise RevmapError(f"{PRIMARY} and {version} catalogues do not list the same functions and data ranges")
     starts = [start for start, *_ in ours]
+    anchors: list[list[tuple[int, int]]] = [[(o[0], t[0])] for o, t in zip(ours, theirs)]
+    named = {v: {n.name: (n.address, n.size) for n in namestool.parse(json.loads(namestool.path(v, root).read_text()), v).values()
+                 if n.kind != "ram"} for v in (PRIMARY, version)}
+    extents: list[tuple[int, int, int]] = []   # (primary start, size, other start): named objects of equal size
+    for name, (address, size) in named[PRIMARY].items():
+        if name not in named[version]:
+            continue
+        other, other_size = named[version][name]
+        k = bisect.bisect_right(starts, address) - 1
+        if k < 0 or not (theirs[k][0] <= other < theirs[k][0] + theirs[k][1] and address < ours[k][0] + ours[k][1]):
+            continue
+        if address != ours[k][0]:
+            anchors[k].append((address, other))
+        if size and size == other_size:
+            extents.append((address, size, other))
+    for points in anchors:
+        points.sort()
+    extents.sort()
+    extent_starts = [e[0] for e in extents]
     first = starts[0]
 
     def translate(address: int) -> int | None:
@@ -132,8 +154,20 @@ def translator(version: str, root: Path = ROOT):
             return address
         k = bisect.bisect_right(starts, address) - 1
         (start, size, _), (their_start, their_size, _) = ours[k], theirs[k]
-        offset = address - start
-        return their_start + offset if offset < min(size, their_size) else None
+        if address >= start + size:
+            return None
+        points = anchors[k]
+        j = bisect.bisect_right(points, (address, 1 << 32)) - 1
+        here, there = points[j]
+        if address == here:
+            return there
+        after, their_after = points[j + 1] if j + 1 < len(points) else (start + size, their_start + their_size)
+        if after - here == their_after - there:
+            return there + (address - here)
+        e = bisect.bisect_right(extent_starts, address) - 1   # inside a named object of the same size in both
+        if e >= 0 and extents[e][0] <= address < extents[e][0] + extents[e][1]:
+            return extents[e][2] + (address - extents[e][0])
+        return None   # the layout changed between these anchors
 
     return translate
 

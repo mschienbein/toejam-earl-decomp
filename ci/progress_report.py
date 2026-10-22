@@ -21,6 +21,7 @@ only, so CI needs nothing but Python 3.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -77,6 +78,10 @@ def load(version: str) -> tuple[list[dict], set[int], int]:
     if ledger.get("schema_version") != 2:
         raise SystemExit("config/matches.json must be schema_version 2")
     for entry in ledger["functions"]:
+        source = ROOT / entry["source"]
+        if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != entry["source_sha256"]:
+            raise SystemExit(f"matches.json credits {entry['name']} ({entry['version']}) to {entry['source']} as accepted, "
+                             f"but the file differs or is gone: take the change through a checkpoint")
         if entry["version"] != version:
             continue
         address = int(entry["address"], 16)

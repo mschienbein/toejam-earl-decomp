@@ -120,6 +120,8 @@ def prepare(checkpoint: str, jobs: int) -> dict:
         raise AcceptError(f"{folder.relative_to(ROOT)} exists; use a new checkpoint name") from None
     document = {"checkpoint": checkpoint, "prepared_utc": now(), "result": "FAIL", "git": git_head()}
     try:
+        if orphan_sources():
+            raise AcceptError(f"C files not listed in config/sources.json: {orphan_sources()}")
         document["inputs"] = inputs_manifest()
         document["sources"] = {v: sources_digest(v) for v in VERSIONS}
         runs = [build_both(checkpoint, run, jobs) for run in ("a", "b")]
@@ -166,9 +168,26 @@ def review(checkpoint: str, reviewer: str, verdict: str, file: Path) -> dict:
 
 
 def credited_functions(c_units: list[dict], version: str, checkpoint: str) -> list[dict]:
-    return [{"version": version, "address": f["address"], "name": f["name"], "size": f["size"],
-             "source": unit["source"], "source_sha256": unit["sha256"], "checkpoint": checkpoint}
-            for unit in c_units for f in unit["functions"]]
+    """One record per C function; its size is the catalogued code extent (literal data never counts)."""
+    catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text())
+    extent = {f["address"]: f["size"] for f in catalogue["functions"] if f["kind"] == "function"}
+    records = []
+    for unit in c_units:
+        for f in unit["functions"]:
+            address = int(f["address"], 16)
+            if address not in extent:
+                raise AcceptError(f"{version}: {f['name']} at {f['address']} is not a catalogued function")
+            if f["size"] < extent[address]:
+                raise AcceptError(f"{version}: {f['name']} emits {f['size']} bytes, the catalogue says {extent[address]}")
+            records.append({"version": version, "address": f["address"], "name": f["name"], "size": extent[address],
+                            "source": unit["source"], "source_sha256": unit["sha256"], "checkpoint": checkpoint})
+    return records
+
+
+def orphan_sources() -> list[str]:
+    """C files under src/ that config/sources.json does not list (they would never be built or checked)."""
+    listed = {entry["source"] for version in VERSIONS for entry in cunits.load_sources(version)}
+    return sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "src").rglob("*.c") if p.relative_to(ROOT).as_posix() not in listed)
 
 
 def finalize(checkpoint: str, note: str, jobs: int = os.cpu_count() or 4) -> dict:
@@ -204,19 +223,26 @@ def finalize(checkpoint: str, note: str, jobs: int = os.cpu_count() or 4) -> dic
             raise AcceptError(f"{version}: the current tree no longer builds byte-identically")
         if final[version]["c_units"] != prepared["builds"][version]["c_units"]:
             raise AcceptError(f"{version}: the C units built now differ from the prepared ones")
+    if orphan_sources():
+        raise AcceptError(f"C files not listed in config/sources.json: {orphan_sources()}")
     matches = json.loads(MATCHES.read_text())
     if matches.get("schema_version") != 2:
         raise AcceptError("config/matches.json must be schema_version 2")
     ledger = {(f["version"], f["address"]): f for f in matches["functions"]}
+    current = {(version, entry["address"]): entry for version in VERSIONS
+               for entry in credited_functions(final[version]["c_units"], version, checkpoint)}
+    withdrawn = sorted(f"{v} {ledger[(v, a)]['name']} ({a})" for v, a in ledger if (v, a) not in current)
+    if withdrawn:   # credit always describes the current image: nothing credited may silently stop being C
+        raise AcceptError(f"credited functions are no longer built from C: {withdrawn}")
     added, moved = [], []
     for version in VERSIONS:
-        for entry in credited_functions(final[version]["c_units"], version, checkpoint):
+        for entry in [e for (v, _), e in current.items() if v == version]:
             key = (version, entry["address"])
             previous = ledger.get(key)
             if previous is None:
                 added.append(entry)
-            elif (previous["source"], previous["source_sha256"]) != (entry["source"], entry["source_sha256"]):
-                moved.append({"from": previous, "to": entry})
+            elif any(previous[k] != entry[k] for k in ("name", "size", "source", "source_sha256")):
+                moved.append({"from": previous, "to": entry})   # moved, edited or renamed: re-bound to this checkpoint
             else:
                 continue
             ledger[key] = entry
@@ -252,8 +278,12 @@ def main() -> int:
     try:
         if args.command == "prepare":
             document = prepare(args.checkpoint, args.jobs)
-            print(f"{args.checkpoint}: prepare {document['result']} "
-                  + ", ".join(f"{v} {document['builds'][v]['result']}" for v in VERSIONS) + f"; suite {document['suite']['summary']}")
+            if "builds" in document and "suite" in document:
+                print(f"{args.checkpoint}: prepare {document['result']} "
+                      + ", ".join(f"{v} {document['builds'][v]['result']}" for v in VERSIONS)
+                      + f"; suite {document['suite']['summary']}" + (f"; {document['error']}" if "error" in document else ""))
+            else:
+                print(f"{args.checkpoint}: prepare {document['result']}: {document.get('error', 'no builds recorded')}")
             return 0 if document["result"] == "PASS" else 1
         if args.command == "review":
             document = review(args.checkpoint, args.reviewer, args.verdict, args.file)

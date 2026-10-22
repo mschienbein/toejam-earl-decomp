@@ -21,6 +21,7 @@ from elftools.elf.relocation import RelocationSection
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import packet  # noqa: E402
+import revmap  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 # ELF for the Motorola 68000 family, scalar absolute and PC-relative relocations.
@@ -95,6 +96,10 @@ def read_candidate(path: Path, wanted: str) -> Candidate:
 
 
 def original_symbol_address(name: str, symbols: packet.Symbols) -> int | None:
+    translate = getattr(symbols, "translate", None)
+    spelled = re.fullmatch(r"(?:func|frag|loc|data|dat|jtbl|rom|ram)_([0-9a-fA-F]{6})", name)
+    if translate is not None and spelled and name not in symbols.canonical:
+        return translate(int(spelled[1], 16))   # other revisions: address spellings are REV 02 addresses
     if name in symbols.by_name:
         return symbols.by_name[name]
     # Generated absolute labels have address-bearing names, but only accept exact metadata labels
@@ -294,6 +299,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         rom, catalogue, symbols = packet.load_inputs(args.repo, args.version)
+        if args.version != revmap.PRIMARY:
+            symbols.translate = revmap.translator(args.version, args.repo)
         program = packet.Program(rom, catalogue, symbols, packet.decoder(args.repo))
         unit = program.select(args.unit)
         candidate = read_candidate(args.candidate, args.symbol or args.unit)

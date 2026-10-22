@@ -1,5 +1,23 @@
 # Status (current entry first)
 
+## 2026-10-22 — matching waves under way: 105 functions credited, data closed for REV 02
+
+**Result.**
+- **Credited C (REV 02):** 105 of 640 functions, 33,132 of 180,364 bytes (18.4%) through
+  checkpoints c002–c008, every one also matching REV 00 from the same source; c009 (~54 more,
+  including the whole inventory file) is in review. Each checkpoint: two fresh builds of both
+  revisions, the suite, an independent review, a fresh-build finalize.
+- **Authoring loop at scale:** wave authors take one original translation unit at a time
+  (`config/rev02/tus.json`); a reviewer per checkpoint. 9 of ~240 functions tried so far resist
+  (register allocation or scheduling); each is recorded with its closest attempt.
+- **Compiler profile settled further:** `/STRINTEXT` (strings follow their function, as in the
+  ROM); `PEA`/`LEA` of same-file labels are PC-relative like calls; `revision.h` expresses the few
+  REV 00 / REV 02 source differences (e.g. DrawGameMap's REV 02-only reset).
+- **Data:** REV 02 builds every data byte from assets extracted at build time (4,163 typed units,
+  15 raw bytes; `docs/DATA.md`); the progress report counts typed data (99.998%).
+- **Corrections found by matching:** catalogue r3 (switch exit jump), REV 00 inventory tables
+  start eight entries earlier, ResetVDP is plain C (was classified hand-written).
+
 ## 2026-10-21 (night) — compiler identified: Microtec MCC68K 3.3K; matching pipeline built
 
 **Result.**

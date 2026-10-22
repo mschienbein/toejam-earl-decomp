@@ -2,21 +2,7 @@
  "schema_version": 1,
  "units": [
   {
-   "source": "src/core/delay.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/core/selection_cycle.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/core/status_flag.c",
+   "source": "src/core/main_loop.c",
    "versions": [
     "rev02",
     "rev00"
@@ -24,6 +10,13 @@
   },
   {
    "source": "src/core/toggle_camera_flag.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/core/vdp_startup.c",
    "versions": [
     "rev02",
     "rev00"

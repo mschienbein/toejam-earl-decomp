@@ -26,8 +26,9 @@ extern char func_01b02e(), func_01afb8(), func_01af04();
 extern void func_01b078();
 
 /* Consider two object-index slots first, then the two player records. Squared
- * quarter-coordinate distances choose the nearer eligible target. Modes 12,
- * 7, and 14 select the observed specialized steering calls. */
+ * quarter-coordinate distances choose the nearer eligible target. Modes 12
+ * and 7 select steering helpers; mode 14 may call func_01b078 first and then
+ * steers the ordinary way. */
 char func_01aa20(state, maximum_distance, separation, mode)
 struct object_state *state;
 unsigned short maximum_distance;

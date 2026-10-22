@@ -23,6 +23,27 @@
    ]
   },
   {
+   "source": "src/elevator/elevator_query.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/elevator/elevator_scene.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/elevator/elevator_transitions.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/engine/random_counter.c",
    "versions": [
     "rev02",
@@ -170,6 +191,13 @@
    ]
   },
   {
+   "source": "src/player/active_present_sprite.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/player/center_for_split.c",
    "versions": [
     "rev02",
@@ -205,6 +233,13 @@
    ]
   },
   {
+   "source": "src/player/level_fall_and_landings.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/player/mole.c",
    "versions": [
     "rev02",
@@ -219,7 +254,21 @@
    ]
   },
   {
+   "source": "src/player/player_states_and_respawn.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/player/process_movement.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/process_players.c",
    "versions": [
     "rev02",
     "rev00"
@@ -262,6 +311,13 @@
   },
   {
    "source": "src/player/sprite_movement.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/start_falling.c",
    "versions": [
     "rev02",
     "rev00"

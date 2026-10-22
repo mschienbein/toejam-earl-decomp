@@ -1,0 +1,200 @@
+/* Fields reused from accepted src/ui/inventory.c; the record stride is 128 bytes. */
+struct object_state {
+    short x, y, height;
+    short velocity_x, velocity_y, velocity_height;
+    short acceleration_x, acceleration_y, acceleration_height;
+    char reserved_12[3], mode_15, reserved_16[4];
+    char *sequence;
+    char **frames;
+    char reserved_22[4];
+    char frame, frame_phase, frame_duration;
+    unsigned char width, height_pixels;
+    char draw_offset;
+    unsigned short tile;
+    char draw_attribute;
+    unsigned char draw_flags;
+    char reserved_30[26], value_4a, sprite_state, level;
+    unsigned char flags_4d;
+    char reserved_4e[4];
+    unsigned long flags_52;
+    char reserved_56, flag_57, flag_58, reserved_59[5], value_5e;
+    char reserved_5f[33];
+};
+extern struct object_state gPlayerInfo[40];
+
+extern char TOEJAM_FALL_STATE[], gPlayerLives[], gPlayer2Lives, gHighestLevel, ELEVATOR_FLAG[], gPlayer1Powerup[], TOEJAM_JUMP_COUNTER[], Sfx_Splash[];
+extern unsigned char LAND_UNDER_TOEJAM, LAND_UNDER_EARL, gMode2RegSoftcopy, LAND_NEAR_TOEJAM[5][5], LAND_NEAR_EARL[5][5];
+extern void func_0174b6(), func_0143e6(), LOAD_ELEVATOR_1(), func_004dfe(), SetupElevator(), func_017ac8(), PlaceStuffInLevel(), ClearSkipVHBlankFlags(), SetPositionOnNewLevel(), func_00105a(), func_00aa5a(), func_00abbe(), SetSkipVHBlankFlags(), StopPlayer(), SetSprite(), PlaySoundEffect();
+extern int GetActivePresentSprite();
+#define VDP_CONTROL_WORD (*(unsigned short *)0xc00004L)
+
+/* Change levels once both falling players, or the only falling player,
+ * are ready. A supported partner supplies the landing coordinates. */
+void MakePlayerFall(falling)
+char *falling;
+{
+    short player_number;
+    struct object_state *player;
+
+    if ((falling[0] && falling[1]) ||
+        (falling[0] && !TOEJAM_FALL_STATE[1]) ||
+        (falling[1] && !TOEJAM_FALL_STATE[0])) {
+        for (player_number = 0; player_number <= 1; ++player_number) {
+            player = &gPlayerInfo[player_number];
+            if (falling[player_number]) {
+                player->tile |= 0x8000;
+                player->height = 600;
+                player->velocity_height = -640;
+                player->acceleration_height = -16;
+                player->draw_flags |= 0x40;
+                func_0174b6(player->level);
+                func_0143e6(player->level);
+                if (--player->level < 0)
+                    player->level = gHighestLevel;
+                TOEJAM_FALL_STATE[player_number] = 2;
+            }
+            if (gPlayerLives[player_number] < 0)
+                LOAD_ELEVATOR_1();
+        }
+        if (falling[0]) {
+            func_004dfe(0, gPlayerInfo[0].level);
+            SetupElevator(gPlayerInfo[0].level, 0);
+            func_017ac8(gPlayerInfo[0].level);
+            PlaceStuffInLevel(gPlayerInfo[0].level);
+        }
+        if (falling[1]) {
+            func_004dfe(1, gPlayerInfo[1].level);
+            SetupElevator(gPlayerInfo[1].level, 0);
+            func_017ac8(gPlayerInfo[1].level);
+            PlaceStuffInLevel(gPlayerInfo[1].level);
+        }
+        ClearSkipVHBlankFlags();
+        gMode2RegSoftcopy &= 0x3c;
+        VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+        if (gPlayerInfo[0].level == gPlayerInfo[1].level ||
+            gPlayerLives[0] < 0 || gPlayer2Lives < 0) {
+            if (falling[0] && falling[1])
+                SetPositionOnNewLevel(2);
+            else if (falling[0]) {
+                player = &gPlayerInfo[1];
+                if (LAND_UNDER_EARL >= 0x80 ||
+                    ((long)player->flags_52 & 0x20000000L) || player->sprite_state == 5 ||
+                    player->sprite_state == 6 || gPlayer2Lives < 0)
+                    SetPositionOnNewLevel(0);
+                else {
+                    gPlayerInfo[0].x = gPlayerInfo[1].x;
+                    gPlayerInfo[0].y = gPlayerInfo[1].y;
+                    if (ELEVATOR_FLAG[1])
+                        gPlayerInfo[0].y += 12;
+                }
+            } else {
+                player = &gPlayerInfo[0];
+                if (LAND_UNDER_TOEJAM >= 0x80 ||
+                    ((long)player->flags_52 & 0x20000000L) || player->sprite_state == 5 ||
+                    player->sprite_state == 6 || gPlayerLives[0] < 0)
+                    SetPositionOnNewLevel(1);
+                else {
+                    gPlayerInfo[1].x = gPlayerInfo[0].x;
+                    gPlayerInfo[1].y = gPlayerInfo[0].y;
+                    if (ELEVATOR_FLAG[0])
+                        gPlayerInfo[1].y += 12;
+                }
+            }
+        } else {
+            if (falling[0])
+                SetPositionOnNewLevel(0);
+            if (falling[1])
+                SetPositionOnNewLevel(1);
+        }
+        func_00105a(1);
+        func_00aa5a(0);
+        func_00abbe(0);
+        func_00aa5a(1);
+        func_00abbe(1);
+        VDP_CONTROL_WORD = 0x8c89;
+        gMode2RegSoftcopy |= 0x40;
+        VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+        SetSkipVHBlankFlags();
+    }
+}
+
+/* Advance a jump or landing animation and select the next sprite. */
+void func_010086(player, land)
+struct object_state *player;
+unsigned short land;
+{
+    short player_number;
+    char sprite;
+
+    player_number = player->value_5e;
+    if (!player->level || gPlayer1Powerup[player_number] == 1)
+        return;
+    sprite = -1;
+    if (player->flags_52 & 0x80) {
+        if (++TOEJAM_JUMP_COUNTER[player_number] > 9) {
+            sprite = player->sprite_state + 4;
+            player->height = 1;
+        }
+    } else if (player->flags_52 & 0x100) {
+        if (!player->frame_duration) {
+            StopPlayer(player);
+            player->height = 35;
+            player->draw_flags |= 64;
+            sprite = player->sprite_state + 4;
+            player->acceleration_height = -64;
+        }
+    } else if ((player->flags_52 & 0x200) && player->height < 4) {
+        if (land == 0x80) {
+            StopPlayer(player);
+            player->height = 0;
+            player->draw_flags &= ~64;
+            sprite = player->sprite_state + 4;
+            PlaySoundEffect((long)Sfx_Splash, 50, 0);
+        } else {
+            TOEJAM_JUMP_COUNTER[player_number] = 1;
+            TOEJAM_FALL_STATE[player_number] = 2;
+            sprite = player->sprite_state + 0xf0;
+        }
+    }
+    if (sprite != -1)
+        SetSprite(player, sprite);
+}
+
+/* Finish present animations and leave sprite 3 when nearby ground appears. */
+void func_0101b4(player, land)
+struct object_state *player;
+unsigned short land;
+{
+    short player_number, row, column;
+    char sprite;
+
+    player_number = player->value_5e;
+    sprite = -1;
+    if (player->flags_52 & 0x1000) {
+        if (!player->frame_duration)
+            sprite = GetActivePresentSprite(player);
+    } else if ((player->flags_52 & 0x10400) && player->level &&
+               !player->frame_duration) {
+        if (gPlayer1Powerup[player_number] == 2)
+            sprite = 77;
+        else
+            sprite = 3;
+        player->velocity_x = 0;
+        player->velocity_y = 0;
+        player->mode_15 = 0;
+    }
+    if (player->sprite_state == 3) {
+        for (row = 0; row < 5; ++row) {
+            for (column = 0; column < 5; ++column) {
+                if ((short)(player_number == 0 ? LAND_NEAR_TOEJAM[row][column] :
+                            LAND_NEAR_EARL[row][column]) != 0x80) {
+                    sprite = 7;
+                    row = 4;
+                    break;
+                }
+            }
+        }
+    }
+    if (sprite != -1)
+        SetSprite(player, sprite);
+}

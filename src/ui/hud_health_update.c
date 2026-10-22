@@ -69,6 +69,8 @@ short player_number;
         func_00b3e4(player_number);
         func_00b590(player_number);
     }
+    /* (&gPlayerInfo[i])->field rather than gPlayerInfo[i].field: the two compile differently
+     * here and only this spelling reproduces the ROM. */
     if (gPlayerLives[player_number] < 0 || (&gPlayerInfo[player_number])->sprite_state == 5 ||
         (&gPlayerInfo[player_number])->sprite_state == 6 || gLevel912C == 26)
         return;
@@ -95,7 +97,7 @@ short player_number;
     else
         vram_base = 0xfa80;
     VDP_CONTROL = 0x8f04;
-    tile_offset = (short)(displayed_health / 8) * 32 + ((displayed_health >> 1) & 2);
+    tile_offset = (displayed_health / 8) * 32 + ((displayed_health >> 1) & 2);
     pixel_pattern = 0xdddd;
     if (displayed_health <= maximum_health - 4) {
         if (displayed_health & 4)

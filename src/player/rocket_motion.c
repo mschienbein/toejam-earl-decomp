@@ -71,6 +71,8 @@ unsigned short terrain;
             ram_ffda30[player] = 2;
         }
     } else if (direction != (state->sprite & (unsigned long)3))
+        /* The unsigned long mask reproduces the ROM's register order; a plain 3 keeps the size
+         * but swaps scratch registers ([INFERENCE] the original spelling is unknown). */
         sprite = (state->sprite & 0xfc) + direction;
     if (sprite != -1)
         SetSprite(state, sprite);

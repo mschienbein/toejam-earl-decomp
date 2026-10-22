@@ -1,5 +1,5 @@
 extern unsigned char ram_ffb65a[640];
-extern unsigned short ram_ffb8da[];
+extern char ram_ffb8da[8192];
 extern unsigned short ram_ffd8dc[40];   /* word queue; [INFERENCE] capacity: 40 suffices to match, not proved */
 extern unsigned short SPRITE_STATE_TABLE;
 extern unsigned char ram_ffd92e, VBLANK_FLAG_2, ram_ffd932, ram_ffd934;
@@ -20,7 +20,7 @@ short force, tiles_only;
         ram_ffd932 = ram_ffb65a[0xbb];
         ram_ffd934 = ram_ffb65a[0xc3];
     }
-    tile_source = ram_ffb8da;
+    tile_source = (unsigned short *)ram_ffb8da;
     for (queue_index = 0; queue_index < ram_ffd92e; queue_index += 2) {
         word_count = ram_ffd8dc[queue_index + 1] << 4;
         VDPWritesRoutine1(tile_source, ram_ffd8dc[queue_index] << 5, word_count);

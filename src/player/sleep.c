@@ -33,7 +33,9 @@ extern unsigned char P1_KEYDOWN[];
 extern short P1_IDLE_COUNTER[], TOEJAM_SPEECH_COUNTER;
 extern unsigned short GetRandomNumber(), ram_ff91e0, PREGEN_RANDOMS[59];
 extern char Sfx_WakeUpWhisper[], Sfx_WakeUpShout[], Sfx_Snoring[];
-extern int MovePadInputIntoD0(), GetActivePresentSprite(), func_00d904();
+extern long MovePadInputIntoD0();
+extern int GetActivePresentSprite();
+extern short func_00d904();
 extern void StopPlayer(), SetSprite(), func_00d970(), PlaySoundEffect();
 
 /* Start the book-reading sprite and its sixty-tick countdown. */

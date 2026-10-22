@@ -23,6 +23,13 @@
    ]
   },
   {
+   "source": "src/core/toggle_camera_flag.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/data/list_membership.c",
    "versions": [
     "rev02",
@@ -58,7 +65,49 @@
    ]
   },
   {
+   "source": "src/graphics/split_screen_wipe.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/map/terrain_at_position.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/math/random.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/center_for_split.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/process_movement.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/set_camera_position.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/setup_player.c",
    "versions": [
     "rev02",
     "rev00"
@@ -80,6 +129,55 @@
   },
   {
    "source": "src/presents/query_byte.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/entity_depth.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/entity_visibility.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/hide_player_sprites.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/link_player_sprites.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/load_sprites.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/select_first_link.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/set_sprite.c",
    "versions": [
     "rev02",
     "rev00"

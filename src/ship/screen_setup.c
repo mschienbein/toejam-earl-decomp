@@ -374,14 +374,7 @@ int player_number;
 }
 
 /* Flash the final ship palette through the stepped brightness schedule.
- * The signed word views preserve the original palette sign extensions.
- *
- * MATCHING QUALIFICATION: the explicit int conversion after the nine-bit
- * shift is redundant: int and long are both 32 bits in MCC68K 3.3K. It selects
- * the original value/count scratch ownership. Removing it changes the bytes.
- * This is compiler coaxing, not a claim of historical source spelling.
- * No natural spelling tried matched with the pinned MCC68K 3.3K compiler.
- */
+ * The signed word views preserve the original palette sign extensions. */
 void AnimateShipScreenPalette()
 {
     short low_component, middle_component, high_component;
@@ -407,7 +400,7 @@ void AnimateShipScreenPalette()
         }
         for (color_number = 1; color_number < 16; ++color_number) {
             high_component = PaletteFadeLookup[fade_step - 1]
-                [(short)(int)((long)(short)PaletteShipLine3[color_number] >> 9) & 7];
+                [((short)PaletteShipLine3[color_number] >> 9) & 7];
             middle_component = PaletteFadeLookup[fade_step - 1]
                 [(short)((long)(short)PaletteShipLine3[color_number] >> 5) & 7];
             low_component = PaletteFadeLookup[fade_step - 1]

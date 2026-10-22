@@ -1,5 +1,23 @@
 # Status (current entry first)
 
+## 2026-10-22 (evening) — 581 of 603 C functions matched; hand-written code and data from source
+
+**Result.**
+- **Credited C:** 581 of 603 C functions, 164,674 of 175,412 bytes (93.9%), in both revisions
+  from the same source (checkpoints through c025). Every function has a name; 24 shared record
+  fields and 246 constants are named (`include/`), sources live in subsystem folders, and
+  `docs/subsystems/` explains each subsystem with notes for a native port.
+- **Hand-written code as source (ruling R007):** 45 routines (start-up, interrupts, VDP/DMA, RLE
+  unpackers, controllers, Z80 bus and sound interface, MCC68K runtime helpers) are readable 68000
+  assembly in `src/asm/`, and the Z80 sound driver and boot stub are Z80 source in `src/z80/`,
+  assembled in place of generated/extracted units; all reviewed.
+- **Data:** no raw bytes left in either revision; 6 bytes without a reader are typed
+  `unreferenced` with evidence (`docs/DATA.md`).
+- **Denominator r11:** 645 functions = 603 C + 36 hand-written + 6 runtime helpers.
+- **Qualified matches:** a few functions match only with a disclosed compiler-coaxing spelling
+  (`MATCHING QUALIFICATION:` comments); each was reviewed and no natural spelling matched.
+- **Open:** 22 C functions (see `docs/RESUME.md`).
+
 ## 2026-10-22 (morning) — 71% of the C credited; both revisions' data from assets; shared headers
 
 **Result.**

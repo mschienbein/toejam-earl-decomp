@@ -1,0 +1,86 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C007Review",
+  "checkpoint": "c007-wave-04",
+  "source_commit": "064615fe28ec3097545c5667758ebc06b1c4be35",
+  "independence": "No other review was read before this verdict was sealed. Prior-review F1 will be consulted only after this file is written.",
+  "checks": [
+    {
+      "id": "C1",
+      "check": "Re-derive all six changed files with match.py for both revisions",
+      "result": "PASS",
+      "evidence": "match-results.json; all 12 CLI invocations exited 0, all 19 functions per revision MATCH. New map contribution: 12 functions / 6,280 bytes. No options or symbol overrides."
+    },
+    {
+      "id": "C2",
+      "check": "Verify checkpoint prepare manifest, saved receipts, and images",
+      "result": "PASS",
+      "evidence": "prepare-audit.json; all 86 input hashes match; source digests match; all four receipt hashes and on-disk ROM hashes match prepare/pinned originals; 40 C units / 93 functions per run, zero raw words. Prepare suite record is returncode 0 / OK; reviewer did not rerun that suite."
+    },
+    {
+      "id": "C3",
+      "check": "Independent complete normal-source build for both revisions",
+      "result": "PASS",
+      "evidence": "build-results.json and builds/baseline/<revision>/receipt.json. REV 02 sha256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV 00 sha256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228. Exact prepared C-unit records, zero raw words. Normal build_image API with normal sources/data/names/TU spans; only output path differs."
+    },
+    {
+      "id": "C4",
+      "check": "Source restrictions and canonical names",
+      "result": "PASS",
+      "evidence": "All six files inspected: K&R C, no inline assembly, defined byte/code blobs, pragmas, compiler-option injection, register hints, or gotos. Typed VDP macros are ordinary hardware accesses. Canonical names/contiguous placement enforced by matcher; all prepared source options empty."
+    },
+    {
+      "id": "C5",
+      "check": "Typed honest externs and cross-unit type consistency",
+      "result": "QUALIFIED",
+      "evidence": "Map strides, signed coordinate bytes, descriptor offsets, and typed ROM-data extents agree with packets/metadata. func_004f50 returns a narrowed value zero-extended into full D0 and its relevant caller compares unsigned. StackBasedRandom returns full previous RNG state. New declarations are consistent with these observations, but existing callers retain inconsistent declarations; F2/F3. Exact historical equivalent-width type spellings remain [INFERENCE]."
+    },
+    {
+      "id": "C6",
+      "check": "Natural 1991 C and unused initialized-pointer alternatives",
+      "result": "QUALIFIED",
+      "evidence": "F1: simply removing the unused pointer and its qualification matches 374-byte func_0044e2. Three live-pointer alternatives DIFF (386, 374, 268 bytes). Complete simplified three-function file matches both revisions; complete builds with that private replacement PASS both originals. The same unused stack store is emitted without any active_masks local. alternative-results.json; simplified-match-results.json; simplified-build-results.json."
+    },
+    {
+      "id": "C7",
+      "check": "Readability, comments, names, and ORIGINAL BUG markers",
+      "result": "QUALIFIED",
+      "evidence": "Packets/callers support the seeded-map reuse/retry logic, masks/strides, coordinate generation, lookup operations, rejection without RNG restoration, and repeated final-level metadata stores. F1's implied need for an unused source local is refuted. No ORIGINAL BUG markers exist; no gameplay bug requiring one was independently established. Potential implications of the asymmetric player guard or invalid descriptor input remain [INFERENCE], not proven reachable gameplay defects."
+    },
+    {
+      "id": "C8",
+      "check": "Semantic mutation rejected by matcher and complete build",
+      "result": "PASS",
+      "evidence": "Private metatile_words.c changes only pending count 45 to 44, preserving sizes/placement. In both revisions match.match_file reports func_0015a8 DIFF and the other two MATCH; full mutant builds FAIL at first differing byte 0x0015f9 with zero raw words and the mutant source recorded. build-results.json; builds/mutation/<revision>/receipt.json."
+    },
+    {
+      "id": "C9",
+      "check": "Graphics simplifications independently preserve code",
+      "result": "PASS",
+      "evidence": "Scoped source diff removes two register hints and two unsigned-short zero casts. All seven affected-file functions independently MATCH both revisions and are included in the successful complete builds. This conclusion was reached without reading the preceding review."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "low",
+      "file": "src/map/level_changes.c:19-21",
+      "what": "The unused initialized active_masks pointer is unnecessary, despite its disclosed qualification. Deleting it and its comment still emits the observed unused frame-slot store and matches both revisions; the complete simplified unit also passes both full-ROM builds. The store alone does not prove an original source-level unused local.",
+      "suggested_fix": "Delete the qualification comment and active_masks declaration. A complete demonstrated candidate is scratch/agents/C007Review/alternatives/level_changes.c. Any adoption must use a new immutable prepare/checkpoint because prepared source hashes change."
+    },
+    {
+      "id": "F2",
+      "severity": "low",
+      "file": "src/map/change_level.c:9; src/core/main_loop.c:536",
+      "what": "The new correct long-return declaration of StackBasedRandom coexists with an older void-return declaration. The packet returns the previous full RNG state. Existing main-loop callers discard it, and current complete builds match, so no binary defect was observed; the project nevertheless has inconsistent type claims for one cross-unit function.",
+      "suggested_fix": "Use extern long StackBasedRandom() consistently, separating it from main_loop.c's void declaration group or consolidating a shared declaration. Check the changed caller unit before adoption."
+    },
+    {
+      "id": "F3",
+      "severity": "low",
+      "file": "src/map/level_generation.c:14-18; src/data/list_membership.c:4-9",
+      "what": "MapTransitionDescriptors is declared using the new interpreted struct map_transition_descriptor and the older different struct list_descriptor. Both observed ten-byte layouts and used pointer offsets agree and the builds match, but the C object does not have one consistent cross-unit record type.",
+      "suggested_fix": "Consolidate the interpreted descriptor layout and migrate list_membership.c's .bytes field access to the corresponding .shapes field. Preserve its unsized array declaration if needed for original index code generation; record-type agreement is separate from the array bound. Check the caller unit after migration."
+    }
+  ]
+}

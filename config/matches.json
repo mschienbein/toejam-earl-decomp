@@ -233,8 +233,8 @@
    "name": "func_0015a8",
    "size": 106,
    "source": "src/graphics/metatile_words.c",
-   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev00",
@@ -242,8 +242,8 @@
    "name": "func_001612",
    "size": 94,
    "source": "src/graphics/metatile_words.c",
-   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev00",
@@ -251,8 +251,8 @@
    "name": "func_001670",
    "size": 98,
    "source": "src/graphics/metatile_words.c",
-   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev00",
@@ -260,8 +260,8 @@
    "name": "UpdateCameraY",
    "size": 378,
    "source": "src/graphics/camera_row_transfer.c",
-   "source_sha256": "0e3ff4b17c2550c7e9b661d13f1b342da5168cc57a3668939d9c6db274d5b8ce",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "26a50471014f32d7a0e30d62732bd75ec114f035f32b733d0d551d3c351f3a7c",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev00",
@@ -269,8 +269,8 @@
    "name": "func_001b48",
    "size": 96,
    "source": "src/graphics/camera_row_transfer.c",
-   "source_sha256": "0e3ff4b17c2550c7e9b661d13f1b342da5168cc57a3668939d9c6db274d5b8ce",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "26a50471014f32d7a0e30d62732bd75ec114f035f32b733d0d551d3c351f3a7c",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev00",
@@ -278,8 +278,8 @@
    "name": "UpdateCameraX",
    "size": 350,
    "source": "src/graphics/camera_column_transfer.c",
-   "source_sha256": "028e8b7e2a1b7c6df860908d196f1f52dacbdd299b03a8440618ddc45fe8b63e",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "f05bf44f0e26ae00c67d41eaa2a4a4418d87a537a11c70634d17e35804bb3577",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev00",
@@ -287,8 +287,8 @@
    "name": "func_00200a",
    "size": 160,
    "source": "src/graphics/camera_column_transfer.c",
-   "source_sha256": "028e8b7e2a1b7c6df860908d196f1f52dacbdd299b03a8440618ddc45fe8b63e",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "f05bf44f0e26ae00c67d41eaa2a4a4418d87a537a11c70634d17e35804bb3577",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev00",
@@ -397,6 +397,114 @@
    "source": "src/player/center_for_split.c",
    "source_sha256": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
    "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00334a",
+   "name": "func_00334a",
+   "size": 698,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x003604",
+   "name": "func_003604",
+   "size": 996,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0039e8",
+   "name": "func_0039e8",
+   "size": 718,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x003cb6",
+   "name": "func_003cb6",
+   "size": 1214,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x004174",
+   "name": "func_004174",
+   "size": 458,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00433e",
+   "name": "func_00433e",
+   "size": 208,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0044e2",
+   "name": "func_0044e2",
+   "size": 374,
+   "source": "src/map/level_changes.c",
+   "source_sha256": "d9abd3178da9929b910ae975e9bdf75a233703aabb4e84f2228e2ec429c9d060",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x004658",
+   "name": "GenerateLevelSeeds",
+   "size": 110,
+   "source": "src/map/level_changes.c",
+   "source_sha256": "d9abd3178da9929b910ae975e9bdf75a233703aabb4e84f2228e2ec429c9d060",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0046c6",
+   "name": "func_0046c6",
+   "size": 380,
+   "source": "src/map/level_changes.c",
+   "source_sha256": "d9abd3178da9929b910ae975e9bdf75a233703aabb4e84f2228e2ec429c9d060",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x004a1a",
+   "name": "ChangeLevel",
+   "size": 866,
+   "source": "src/map/change_level.c",
+   "source_sha256": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x004d7c",
+   "name": "LoadFinalLevel",
+   "size": 130,
+   "source": "src/map/change_level.c",
+   "source_sha256": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev00",
+   "address": "0x004dfe",
+   "name": "func_004dfe",
+   "size": 128,
+   "source": "src/map/change_level.c",
+   "source_sha256": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev00",
@@ -962,8 +1070,8 @@
    "name": "func_0015a8",
    "size": 106,
    "source": "src/graphics/metatile_words.c",
-   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev02",
@@ -971,8 +1079,8 @@
    "name": "func_001612",
    "size": 94,
    "source": "src/graphics/metatile_words.c",
-   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev02",
@@ -980,8 +1088,8 @@
    "name": "func_001670",
    "size": 98,
    "source": "src/graphics/metatile_words.c",
-   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev02",
@@ -989,8 +1097,8 @@
    "name": "UpdateCameraY",
    "size": 378,
    "source": "src/graphics/camera_row_transfer.c",
-   "source_sha256": "0e3ff4b17c2550c7e9b661d13f1b342da5168cc57a3668939d9c6db274d5b8ce",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "26a50471014f32d7a0e30d62732bd75ec114f035f32b733d0d551d3c351f3a7c",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev02",
@@ -998,8 +1106,8 @@
    "name": "func_001b48",
    "size": 96,
    "source": "src/graphics/camera_row_transfer.c",
-   "source_sha256": "0e3ff4b17c2550c7e9b661d13f1b342da5168cc57a3668939d9c6db274d5b8ce",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "26a50471014f32d7a0e30d62732bd75ec114f035f32b733d0d551d3c351f3a7c",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev02",
@@ -1007,8 +1115,8 @@
    "name": "UpdateCameraX",
    "size": 350,
    "source": "src/graphics/camera_column_transfer.c",
-   "source_sha256": "028e8b7e2a1b7c6df860908d196f1f52dacbdd299b03a8440618ddc45fe8b63e",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "f05bf44f0e26ae00c67d41eaa2a4a4418d87a537a11c70634d17e35804bb3577",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev02",
@@ -1016,8 +1124,8 @@
    "name": "func_00200a",
    "size": 160,
    "source": "src/graphics/camera_column_transfer.c",
-   "source_sha256": "028e8b7e2a1b7c6df860908d196f1f52dacbdd299b03a8440618ddc45fe8b63e",
-   "checkpoint": "c006-waves-02-03"
+   "source_sha256": "f05bf44f0e26ae00c67d41eaa2a4a4418d87a537a11c70634d17e35804bb3577",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev02",
@@ -1126,6 +1234,114 @@
    "source": "src/player/center_for_split.c",
    "source_sha256": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
    "checkpoint": "c004-wave-1b"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00334a",
+   "name": "func_00334a",
+   "size": 698,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x003604",
+   "name": "func_003604",
+   "size": 996,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x0039e8",
+   "name": "func_0039e8",
+   "size": 718,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x003cb6",
+   "name": "func_003cb6",
+   "size": 1214,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x004174",
+   "name": "func_004174",
+   "size": 458,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00433e",
+   "name": "func_00433e",
+   "size": 208,
+   "source": "src/map/level_generation.c",
+   "source_sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x0044e2",
+   "name": "func_0044e2",
+   "size": 374,
+   "source": "src/map/level_changes.c",
+   "source_sha256": "d9abd3178da9929b910ae975e9bdf75a233703aabb4e84f2228e2ec429c9d060",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x004658",
+   "name": "GenerateLevelSeeds",
+   "size": 110,
+   "source": "src/map/level_changes.c",
+   "source_sha256": "d9abd3178da9929b910ae975e9bdf75a233703aabb4e84f2228e2ec429c9d060",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x0046c6",
+   "name": "func_0046c6",
+   "size": 380,
+   "source": "src/map/level_changes.c",
+   "source_sha256": "d9abd3178da9929b910ae975e9bdf75a233703aabb4e84f2228e2ec429c9d060",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x004a1a",
+   "name": "ChangeLevel",
+   "size": 866,
+   "source": "src/map/change_level.c",
+   "source_sha256": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x004d7c",
+   "name": "LoadFinalLevel",
+   "size": 130,
+   "source": "src/map/change_level.c",
+   "source_sha256": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+   "checkpoint": "c007-wave-04"
+  },
+  {
+   "version": "rev02",
+   "address": "0x004dfe",
+   "name": "func_004dfe",
+   "size": 128,
+   "source": "src/map/change_level.c",
+   "source_sha256": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+   "checkpoint": "c007-wave-04"
   },
   {
    "version": "rev02",

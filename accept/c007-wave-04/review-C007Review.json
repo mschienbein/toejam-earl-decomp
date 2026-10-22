@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c007-wave-04",
+ "prepare_sha256": "00135b1de3e3de03bd80ba9c0107a773dbf693bb461ad8c22e1ac0f781c786d7",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T03:03:32Z",
+ "review_file": "review.json",
+ "review_sha256": "731b8e168c7ec3b3065aa59210e7cc100ea2b939bf5d3e157de84217223aa8b5",
+ "reviewer": "C007Review",
+ "verdict": "PASS_WITH_QUALIFICATIONS"
+}

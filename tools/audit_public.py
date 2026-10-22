@@ -57,6 +57,13 @@ ASSET_SUFFIXES = {
 PADDING = b" " * 16
 HEADER_TEXT = (b"(C)SEGA 1991.OCT", b"(C)SEGA 1991.JUL", b"GM MK-1020 -02", b"GM MK-1020 -00")
 ALLOWED_TEXT = {"tests/support.py": (b"SEGA GENESIS" + b" " * 4,)}
+# Committed history blobs whose finding an independent review judged a false positive: exact git
+# blob id and path -> the start of the one reason it suppresses. Any other blob, path or reason is
+# audited normally, so a changed file never inherits the exception.
+REVIEWED_FALSE_POSITIVES = {
+    # An unspaced Z80 length expression in the boot stub (C020 review); written with spaces since 2fc5393.
+    ("76fd193d0b318c6266751e9eee359c569c3df8a4", "src/z80/initial_bootstrap.s"): "opaque URL-safe Base64 run",
+}
 MARKER = re.compile(
     rb"(?m)^\s*(?:[0-9a-fA-F]+\s+<)?"
     rb"\.Li_[0-9a-fA-F]{6,8}>?\s*:")
@@ -134,7 +141,10 @@ NAMESPACE_REFERENCE = re.compile(rb"(?<!\w)[a-z][a-z0-9_]{0,31}:[a-z][a-z0-9_]{0
 HASH_COMPONENT = re.compile(rb"""(?<=/)(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})(?=[/?.#"'`]|$)""")
 PACKAGE_HASH = re.compile(rb"(?<=/packages/)[0-9a-fA-F]{2}/[0-9a-fA-F]{2}/[0-9a-fA-F]{60}(?=/)")
 QUOTED_IDENTIFIER = re.compile(rb"""(["'])([A-Za-z_]\w*)\1""")
-REFERENCE_EXPRESSION = re.compile(rb"[A-Za-z_]\w*(?:[.\[\](),;]+(?:[A-Za-z_]\w*|[0-9]+)?)+")
+# C/assembly reference expressions: identifier and decimal atoms joined by member, index, call,
+# address-of, negation and dereference punctuation (`a->b`, `&a[i]`, `!f(x)`). Every atom is still
+# checked for opacity; no Base64 alphabet character other than letters/digits is a separator here.
+REFERENCE_EXPRESSION = re.compile(rb"[!&*]*[A-Za-z_]\w*(?:(?:[.\[\](),;&!*]|->)+(?:[A-Za-z_]\w*|[0-9]+)?)+")
 INTEL_LINE = re.compile(rb"^[ \t]*:[0-9A-Fa-f]{10,}[ \t]*$")
 SRECORD_LINE = re.compile(rb"^[ \t]*S[0-9][0-9A-Fa-f]{4,}[ \t]*$")
 UU_LINE = re.compile(rb"^M[ -`]{60}[ \t]*$")
@@ -780,7 +790,10 @@ def embedded_kind(raw: bytes, budget: DecodeBudget) -> str | None:
         return "SVG image"
     if len(raw) >= 262 and raw[257:262] == b"ustar":
         return "tar archive"
-    if len(raw) >= 272 and raw[256:260] == b"SEGA":
+    if len(raw) >= 276 and raw[256:260] == b"SEGA" and (raw[272:275] == b"(C)" or not raw[:256].isascii()
+                                                       or CONTROL_BYTES.search(raw[:256])):
+        # A cartridge header: the system name at 0x100 with the copyright field at 0x110 or a binary
+        # vector table before it; "SEGA" merely landing at offset 256 of a text file is not one.
         return "Genesis ROM"
     if raw[0] == 0xE0:
         # IEEE-695 MB: two length-prefixed ASCII identifiers, then the AD record.
@@ -1254,7 +1267,8 @@ def audit(repo: Path, history: bool = False, no_rom: bool = False) -> tuple[list
             if mode != "160000" and size <= blob_limit(path):
                 if key not in cache:
                     cache[key] = content_reasons(path, reader.read(oid), index)
-                reasons += cache[key]
+                reviewed = REVIEWED_FALSE_POSITIVES.get(key)
+                reasons += [r for r in cache[key] if reviewed is None or not r.startswith(reviewed)]
             findings.extend(Finding(source, path, reason) for reason in reasons)
     finally:
         reader.close()

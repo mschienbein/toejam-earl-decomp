@@ -825,6 +825,27 @@ class AuditTest(unittest.TestCase):
         self.assertIsNone(audit_public.opaque_reason("uv.lock", package))
         self.assertIsNone(audit_public.opaque_reason("facts.txt", b"https://example.invalid/" + digest + b"/file"))
 
+    def test_c_reference_expressions_are_not_encoded_runs(self):
+        for line in (b"    MoveDataToVRAM(&gCameraColumnUploadWords[camera][first_count], count - first_count);\n",
+                     b"    if (entity->primary_shadow && !IsSpriteSlotNonReclaimable(entity->primary_shadow)) {\n",
+                     b"        InitializeLevelZeroFixedItems(&gObjectTable[bank][28]); \n"):
+            with self.subTest(line=line[:40]):
+                self.assertIsNone(audit_public.opaque_reason("src/x.c", line))
+        # The same punctuation does not launder encoded data: Base85/Base64 payloads keep their own
+        # characters (or long opaque atoms) and are still reported.
+        payload = base64.b85encode(self.image[17:113])
+        self.assertIn("opaque", audit_public.opaque_reason("src/x.c", b"f(&" + payload + b");\n"))
+        self.assertIn("opaque", audit_public.opaque_reason("src/x.c", b"!" + base64.b64encode(self.image[17:113]) + b"\n"))
+
+    def test_genesis_header_needs_more_than_sega_at_offset_256(self):
+        text = b"/* " + b"x" * 237 + b" */\nextern void SEGAAndIntroVideoRoutine();\n"
+        self.assertEqual(text[256:260], b"SEGA")
+        self.assertIsNone(audit_public.embedded_kind(text, audit_public.DecodeBudget()))
+        header = bytes(256) + b"SEGA GENESIS    (C)SEGA 1991.OCT" + bytes(64)
+        self.assertEqual(audit_public.embedded_kind(header, audit_public.DecodeBudget()), "Genesis ROM")
+        texty = b"x" * 256 + b"SEGA GENESIS    (C)SEGA 1991.OCT" + b"y" * 64   # text vectors, real fields
+        self.assertEqual(audit_public.embedded_kind(texty, audit_public.DecodeBudget()), "Genesis ROM")
+
 
 class PinnedObjdumpAuditTest(unittest.TestCase):
     def test_genuine_objdump_listing_of_generated_style_assembly(self):

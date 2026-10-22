@@ -1,0 +1,140 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C009Review",
+  "checkpoint": "c009-waves-06-08",
+  "source_commit": "c04145ede375e0bd13b1b0df3fbd62a7a2cee953",
+  "independence": "Fresh independent reviewer, not an author. Only the expressly assigned C008Review recommendations were consulted; no other independent review was read before sealing. Writes are restricted to scratch/agents/C009Review; no tracked files, git state or acceptance state were changed.",
+  "checks": [
+    {
+      "id": "C1",
+      "check": "Re-derive all extant changed source files for both revisions",
+      "result": "PASS",
+      "evidence": "match-results.json: 16 ordinary tools/match.py CLI invocations, no --option/--define overrides, all exit 0. Per revision: transition_paths 3, map_population 2, map_drawing 13, map_drawing_controller 1, inventory 37, random_cache 3, region_walk 3, region_cleanup 7 = 69 functions / 138 MATCH results total. Artifacts retained in matches/."
+    },
+    {
+      "id": "C2",
+      "check": "Verify immutable prepare record and saved repeated builds",
+      "result": "PASS",
+      "evidence": "prepare-audit.json: all 91 prepared input hashes equal current inputs, no additions or missing files; both source digests equal prepared values, all 45 unit options are empty. Prepare binds source commit c04145ede375e0bd13b1b0df3fbd62a7a2cee953 and clean recorded paths; suite result 0 / OK. All four saved receipt canonical-JSON hashes match the record; each actual image hash equals its receipt, prepare, and original, with 45 C units / 159 unique functions / zero raw words. Suite not rerun."
+    },
+    {
+      "id": "C3",
+      "check": "Independent complete normal-source ROM builds",
+      "result": "PASS",
+      "evidence": "build-results.json and builds/baseline/: tools/build.py build_image was invoked with the normal source list, names, TU mapping, revision mapping, typed data preparation and jobs=4; only output locations were changed to stay private. Both receipts PASS with exactly the prepared C-unit records, 45 units / 159 functions / zero raw words. REV02 image 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV00 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228."
+    },
+    {
+      "id": "C4",
+      "check": "Breadth and independent semantic source sampling",
+      "result": "PASS",
+      "evidence": "Every changed source was read, including both deleted predecessors. 28 functions from the five adopted units were deeply compared with newly generated original-ROM packets and caller/callee relationships; four prior-fix functions received targeted cross-checks. function-sample.json records all 32 observations. Samples include both large recursive searches, map revelation/controller, inventory input/open/purchase/identify flows, glyph mapping, decimal formatting, both table consumers and compact banners. No gameplay runtime execution is claimed."
+    },
+    {
+      "id": "C5",
+      "check": "K&R C, primary names, compiler options, and prohibited matching devices",
+      "result": "PASS",
+      "evidence": "No inline asm, pragmas, code/data blobs, gotos, register hints, numeric ROM-base casts or biased table-pointer workarounds occur in the changed units. Function/global names and contiguous placement pass the matcher gates. MMIO macros name the real VDP ports; the named-buffer longword cast and named sound-pointer cast are ordinary transfer/API uses, not address-placement tricks. Local sprite/text buffers and padding members are not embedded code. Compiler uses the documented default profile, including /STRINTEXT."
+    },
+    {
+      "id": "C6",
+      "check": "Typed extern declarations consistent across src",
+      "result": "QUALIFIED",
+      "evidence": "Cross-file grep found F2-F6: scalar-versus-table elevator declarations, background-map outer bounds, func_01e38e return width, score signedness, and divergent shared record definitions. Existing VBLANK_FLAG_2 char/unsigned-char declarations and partial entity views also remain mixed before this checkpoint; matching does not make these declarations mutually compatible. Observed object widths/offsets are supported by packets; exact original type spellings where indistinguishable remain [INFERENCE]."
+    },
+    {
+      "id": "C7",
+      "check": "Real revision differences and truthful table extents",
+      "result": "QUALIFIED",
+      "evidence": "Original packets for both revisions show a real 16-byte P1_IDLE_COUNTER reset in DrawGameMap and another in DrawInventory, absent in REV00; those guards are justified. Raw ROM immediate loads prove the corrected REV00 table bases. revision-table-audit.json proves equal physical extents of 28 glyph pointers and 27 name pointers in both revisions, contradicting the claimed 36-entry REV00 tables (F1). Correct constant bounds match the entire inventory unit in both revisions."
+    },
+    {
+      "id": "C8",
+      "check": "Natural alternatives and disclosed compiler-sensitive source",
+      "result": "QUALIFIED",
+      "evidence": "alternative-results.json: literal-zero if/else and ternary each DIFF at 36 versus 38 bytes; ordinary shared color local DIFF at 34; initialized shared color local DIFF at 32, in both revisions. Thus the used zero-valued short remains an explicit source qualification; avoiding a CLR port access is [INFERENCE], not established intent. map-alternative-results.json: one sprite counter DIFF at 288 versus 292; removal of unused level reads DIFF at 624 versus 636, both revisions. Original source comments disclose these observed leftovers. recommended-match-results.json: four private interface/extent candidates MATCH all 63 functions per revision, and recommended-build-results.json shows both complete ROMs still PASS."
+    },
+    {
+      "id": "C9",
+      "check": "Comments, names and ORIGINAL BUG markers",
+      "result": "QUALIFIED",
+      "evidence": "Packets support the map masks, coordinates, record strides, inventory state transitions, table consumers and local descriptive names. Required ORIGINAL BUG markers are present for second-allocation failure, uninitialized CheckBButton counter, -32768 decimal negation, and the prior minimum-long seed negation. The missing scanner-comment correction and wrong B label remain F7/F8. Whether unbounded road-following reaches invalid coordinates or preserved quirks are unintended gameplay defects is [INFERENCE], not asserted."
+    },
+    {
+      "id": "C10",
+      "check": "Moved functions unchanged in substance and not duplicated",
+      "result": "PASS",
+      "evidence": "moved-function-audit.json: both predecessor source hashes equal accepted ledger hashes. func_009e2e is text-identical, definition hash 929628e2497f1578dd525a2daade5a2e8553ee004745b3a84ee0257104615e94. func_006b22 differs solely by .bytes -> .shapes; the replacement descriptor retains ten-byte stride and pointer offset two while adopting the established shared shape. Old source files and source-list entries are gone; each function occurs exactly once per prepared revision. Resistant func_00871a is not credited as C."
+    },
+    {
+      "id": "C11",
+      "check": "C008Review recommendations verified",
+      "result": "QUALIFIED",
+      "evidence": "followup-source.patch and current sources confirm F1 unsigned cache index, F2 unsigned-long range return, F3 [52][19] map backing and elevator_position[8], and F4 exact existing map_generation_tables fields at offsets 16/36 were adopted. Both unnecessary sentinel casts were removed. All 13 functions in the three follow-up units match both revisions. C008 F5 comment clarification was not adopted; new elevator consumers separately reintroduce a conflicting declaration (F2)."
+    },
+    {
+      "id": "C12",
+      "check": "Semantic mutation detected by matching and complete build",
+      "result": "PASS",
+      "evidence": "mutation-scope.json proves the recursive search definition is unchanged and only func_0077ae success return changes from 0 to 2. Both match.py invocations exit 1, with recursive function MATCH and unchanged-size 42-byte wrapper DIFF. mutation-build-results.json: both complete mutant builds return FAIL receipts, first differing byte 0x0077d1, 45 units / 159 functions / zero raw words, with the mutated source explicitly bound. No fallback hides the mutation."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "medium",
+      "file": "src/ui/inventory.c:38-42; config/rev00/names.json:24238,24891; scratch/agents/MatchWave08/report.md:50-52,109-111",
+      "what": "The asserted 28-versus-36 inventory-table revision difference is not real in the ROM data. InventoryCharsTable has 28 pointers in both revisions (REV02 0x0abc42..0x0abcb2, REV00 0x0abbd2..0x0abc42); InventoryNameStringTable has 27 in both (REV02 0x0abe2c..0x0abe98, REV00 0x0abdbc..0x0abe28). The next words are ASCII name data and the signed-byte auxiliary lookup, not additional pointers. Every corresponding pointer and its 14-byte target record translates by -112 bytes / remains identical. The corrected REV00 base addresses are correct, but the names-file prose and author report incorrectly interpret the former +32-byte mapping error as eight extra entries. Exact historical extern declaration spellings remain [INFERENCE].",
+      "suggested_fix": "Keep the corrected REV00 base addresses. Declare InventoryCharsTable[28] and InventoryNameStringTable[27] in both revisions, remove only the table-bound REVISION guard, and correct the extra-eight/36-entry provenance claims. The private recommended/inventory.c does this, still retaining the genuine DrawInventory idle-reset guard; all 37 functions MATCH both revisions and combined recommended full builds PASS. See revision-table-audit.json and the committed REV02 data_units.json 112-/108-byte pointer units."
+    },
+    {
+      "id": "F2",
+      "severity": "low",
+      "file": "src/map/transition_paths.c:8-9; src/map/map_population.c:2",
+      "what": "These new files declare ELEVATOR_POS_TABLE as a single char while change_level.c, level_changes.c, and the just-fixed region_walk.c/region_cleanup.c declare struct elevator_position[8]. Reads use the same leading bytes and match, but the declarations of the same cross-unit object are incompatible; the C008 table-type fix was not propagated into these new consumers.",
+      "suggested_fix": "Reuse struct elevator_position { char x, y; } and the existing [8] declaration, accessing the first three pairs through .x/.y. Private recommended/transition_paths.c and recommended/map_population.c demonstrate all five functions MATCH both revisions; combined recommended ROM builds PASS."
+    },
+    {
+      "id": "F3",
+      "severity": "low",
+      "file": "src/ui/inventory.c:34; src/map/map_drawing.c:25",
+      "what": "The same FontBackgroundByteMap is declared [28][40] in inventory and [32][40] in map drawing. The committed typed data unit is 1280 bytes / [32,40]; inventory merely consumes its first 28 rows. An extern declaration is not a separate leading-slice view.",
+      "suggested_fix": "Use the full [32][40] declaration in inventory while retaining the 28-row upload loop. Private recommended/inventory.c proves all 37 functions still MATCH both revisions and participates in both passing recommended full builds."
+    },
+    {
+      "id": "F4",
+      "severity": "low",
+      "file": "src/ui/inventory.c:70; src/graphics/funkatron_scene.c:38",
+      "what": "The new func_01e38e declaration returns short, whereas its existing caller declares int. The packet returns a sign-extended word, which does not uniquely establish the original C return spelling; inventory ignores this result. No binary defect was observed, but the interface claims disagree.",
+      "suggested_fix": "Use a single evidenced return declaration. The minimal demonstrated choice is the existing extern int func_01e38e() in inventory; recommended/inventory.c matches both revisions. Alternatively choose short only with a checked migration of all callers. Do not present historical short-versus-int spelling as proved."
+    },
+    {
+      "id": "F5",
+      "severity": "low",
+      "file": "src/ui/inventory.c:45; src/core/main_loop.c:18",
+      "what": "Inventory newly declares gPlayerPoints as unsigned short[2], while main_loop.c declares short[]. Inventory has unsigned score comparisons; the existing main loop only increments the words. Bound completeness is compatible, but signed versus unsigned element types are not.",
+      "suggested_fix": "Choose a consistent score-word type. The private recommended/main_loop.c changes its declaration to unsigned short[] and MATCHes all 21 functions in both revisions; together with the recommended inventory file both full ROM builds PASS. This is a consistency proof, not a proof of the historical declaration."
+    },
+    {
+      "id": "F6",
+      "severity": "low",
+      "file": "src/ui/inventory.c:3-31; src/player/mole.c:1-31; src/player/projectiles.c:1-25; src/graphics/funkatron_scene.c:2-33",
+      "what": "The new object_state and present_info definitions are offset-aligned with prior units but are not identical same-tag C types. Inventory splits reserved_30[27] into reserved_30[26]/value_4a and renames sprite to sprite_state; its present_info calls the second member identified where mole calls it reserved. The map units also add another map_player view of gPlayerInfo. Byte matching establishes the observed offsets/strides, not cross-unit C type compatibility. Several partial entity views already predate this checkpoint; this review does not claim they were introduced here.",
+      "suggested_fix": "Consolidate the shared entity/present declarations with the observed named fields, updating existing member accesses consistently, rather than continuing independent same-storage layouts. Preserve the observed offsets and 128-byte entity stride and check every affected unit in both revisions. No complete shared-layout consolidation was implemented or verified by this reviewer."
+    },
+    {
+      "id": "F7",
+      "severity": "low",
+      "file": "src/map/region_cleanup.c:83-85,147-148",
+      "what": "C008Review F1-F4 were adopted, but its F5 scanner-comment correction was not. The comments still describe runs of four/five. Both scans reset the counter to one on a nonqualifying cell without clearing the remembered terrain label; one label, a gap, then three same-label qualifying cells can already trigger the interior threshold. The private scanner-counter-witness.json independently reproduces this source-level witness. Gameplay reachability and whether this was unintended remain [INFERENCE].",
+      "suggested_fix": "Describe counter thresholds and the preserved remembered-label/reset-to-one quirk, rather than claiming strictly contiguous runs. Keep executable code unchanged. If calling it an original bug, retain ORIGINAL BUG: and label the intent/reachability interpretation as [INFERENCE]."
+    },
+    {
+      "id": "F8",
+      "severity": "low",
+      "file": "src/ui/inventory.c:579",
+      "what": "The func_009934 comment calls the value written to both processed-input bytes B, but the code writes 64 (bit 6). The independently regenerated CheckAButton packet tests bit 6; ProcessInventory uses bit 4 to toggle the inventory and bit 6 for its present action. The adjacent func_0098f6 comment correctly calls the same 64 value the present-action button.",
+      "suggested_fix": "Say that the helper sets both input bytes to the present-action/A bit (0x40) before invoking CheckBButton, or simply name the bit without a button label. This is a comment-only correction."
+    }
+  ],
+  "qualification_summary": "Both revisions reproduce exactly, including complete ROM builds, and the negative controls fail correctly. No blocking binary mismatch or prohibited matching device was observed. The medium qualification is the demonstrably false REV00 36-entry table claim; remaining findings concern cross-unit declaration consistency and comment accuracy. Any adoption of private recommended source changes requires a new immutable prepare/checkpoint."
+}

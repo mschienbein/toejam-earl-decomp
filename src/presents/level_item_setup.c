@@ -1,3 +1,9 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "present_types.h"
+#include "terrain.h"
+#include "ram_system.h"
+
 #include "entities.h"
 #define TJE_LOCAL_FUNC_00D9DC
 
@@ -387,4 +393,84 @@ get_present:
     ++LEVEL_PLAYERS_FLAG_1[bank];
     LEVEL_LOADED_1[bank] = level;
     StackBasedRandom(saved_seed);
+}
+
+/* Search the sample perimeter in a randomized orientation, retrying without
+ * the dropped-present overlap check.
+ *
+ * MATCHING QUALIFICATION: scratch is deliberately shared by the coordinate
+ * exchange and the later dropped-present scan, including its 101 sentinel.
+ * These lifetimes do not overlap: the scan initializes scratch before use,
+ * and the next exchange overwrites it before use. Separate meaningful locals
+ * select different registers. No dummy state or no-op expression is needed.
+ * No natural spelling tried matched with the pinned MCC68K 3.3K compiler.
+ */
+void DropPresent(player_number, present)
+short player_number, present;
+{
+    short row, column, scratch, offset_x, offset_y, position_x, position_y;
+    unsigned short random;
+    char pass;
+    unsigned char tile;
+    unsigned char *land;
+    struct object_state *player;
+    struct level_item *destination;
+
+    player = &gPlayerInfo[player_number];
+    if (((long)player->animation_group_mask & (long)PLAYER_GROUP_SWIM) ||
+        player->sprite_state == PLAYER_ANIM_SWIM_IDLE || player->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE)
+        return;
+    if (player_number == PLAYER_TOEJAM)
+        land = &LAND_NEAR_TOEJAM[0][0];
+    else
+        land = &LAND_NEAR_EARL[0][0];
+    destination = &gDroppedPresentTable[gDroppedPresentTableIdx];
+    if (destination->kind != PRESENT_NONE && destination->object) {
+        FreeEntity(destination->object);
+        destination->object = 0;
+    }
+    random = PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
+        (gRandomCacheIndex = 0) : ++gRandomCacheIndex];
+    for (pass = 0; pass < 2; ++pass)
+        for (row = 0; row < 5; ++row)
+            for (column = 0; column < 5; ++column) {
+                offset_y = row;
+                if (random & 1)
+                    offset_y = 4 - offset_y;
+                offset_x = column;
+                if (random & 2)
+                    offset_x = 4 - offset_x;
+                if (random & 4) {
+                    scratch = offset_y;
+                    offset_y = offset_x;
+                    offset_x = scratch;
+                }
+                if (row && row != 4 && column && column != 4)
+                    continue;
+                tile = land[offset_y * 5 + offset_x];
+                if (tile == TERRAIN_VOID || tile == TERRAIN_WATER)
+                    continue;
+                position_x = offset_x * 8;
+                position_x += player->x;
+                position_x -= 16;
+                position_y = offset_y * 8;
+                position_y += player->y;
+                position_y -= 16;
+                if (!pass) {
+                    for (scratch = 0; scratch < 32; ++scratch)
+                        if (gDroppedPresentTable[scratch].kind != PRESENT_NONE &&
+                            gDroppedPresentTable[scratch].level == player->level &&
+                            gDroppedPresentTable[scratch].x == position_x &&
+                            gDroppedPresentTable[scratch].y == position_y)
+                            scratch = 101;
+                    if (scratch > 100)
+                        continue;
+                }
+                destination->kind = present;
+                destination->level = player->level;
+                destination->x = position_x;
+                destination->y = position_y;
+                gDroppedPresentTableIdx = (gDroppedPresentTableIdx + 1) & 31;
+                return;
+            }
 }

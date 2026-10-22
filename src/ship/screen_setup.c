@@ -372,3 +372,50 @@ int player_number;
     TextWriteDecimalTiles(missing_pieces);
     TextWriteStringTiles(" missing rocketship pieces");
 }
+
+/* Flash the final ship palette through the stepped brightness schedule.
+ * The signed word views preserve the original palette sign extensions.
+ *
+ * MATCHING QUALIFICATION: the explicit int conversion after the nine-bit
+ * shift is redundant: int and long are both 32 bits in MCC68K 3.3K. It selects
+ * the original value/count scratch ownership. Removing it changes the bytes.
+ * This is compiler coaxing, not a claim of historical source spelling.
+ * No natural spelling tried matched with the pinned MCC68K 3.3K compiler.
+ */
+void AnimateShipScreenPalette()
+{
+    short low_component, middle_component, high_component;
+    short frame_number, color_number, fade_step = 0;
+    unsigned short palette[16];
+
+    for (frame_number = 0; frame_number < 16; ++frame_number) {
+        palette[frame_number] = 0;
+        AnimateShipScreenBackground(0);
+    }
+    PlaySound(PSG_LONG_NOISE_RISE, 90);
+    for (frame_number = 1; frame_number < 61; ++frame_number) {
+        if (frame_number == 8 || frame_number == 16 || frame_number == 22 ||
+            frame_number == 28 || frame_number == 32 || frame_number == 36 ||
+            frame_number == 38 || frame_number == 40)
+            ++fade_step;
+        else if (frame_number == 44 || frame_number == 48 ||
+                 frame_number == 54 || frame_number == 60)
+            --fade_step;
+        else {
+            AnimateShipScreenBackground(0);
+            continue;
+        }
+        for (color_number = 1; color_number < 16; ++color_number) {
+            high_component = PaletteFadeLookup[fade_step - 1]
+                [(short)(int)((long)(short)PaletteShipLine3[color_number] >> 9) & 7];
+            middle_component = PaletteFadeLookup[fade_step - 1]
+                [(short)((long)(short)PaletteShipLine3[color_number] >> 5) & 7];
+            low_component = PaletteFadeLookup[fade_step - 1]
+                [(short)((long)(short)PaletteShipLine3[color_number] >> 1) & 7];
+            palette[color_number] = (high_component << 9) |
+                (middle_component << 5) | (low_component << 1);
+        }
+        WaitForNextVBlank(1);
+        CopyPaletteToCRAMSlot(palette, 3);
+    }
+}

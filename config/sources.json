@@ -107,6 +107,20 @@
    ]
   },
   {
+   "source": "src/audio/play_sound.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/audio/play_sound_effect.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/audio/request_channel_release.c",
    "versions": [
     "rev02",

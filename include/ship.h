@@ -15,6 +15,7 @@ extern void PlayShipCompletionSequence();
 extern void InitializeShipScreenTilemapAndPalettes();
 extern void ShowShipPieceName();
 extern void ShowMissingShipPieceSummary();
+extern void AnimateShipScreenPalette();
 extern void WaitForShipScreenAcknowledgement();
 extern void ShipUpdatePendingPieceIndicator();
 extern void ShowRandomUncollectedShipPiece();

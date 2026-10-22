@@ -21,6 +21,7 @@ extern unsigned short PaletteAllBlack[];
 extern unsigned short PaletteShipLine1[];
 extern unsigned short PaletteShipLine2[];
 extern unsigned short PaletteShipLine3[];
+extern unsigned char PaletteFadeLookup[][8];
 
 /* Additional selected final-batch storage and resource interfaces. */
 extern unsigned short EndingPaletteA[];

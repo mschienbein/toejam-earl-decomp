@@ -1,0 +1,132 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C026Review",
+  "checkpoint": "c026-seven-matches-readability",
+  "sealed": true,
+  "reviewed_commits": ["dde56ee", "49bf54c"],
+  "qualifications": [
+    {
+      "id": "Q001",
+      "file": "src/camera/camera_tiles_and_scroll.c:55-62",
+      "function": "BuildCameraTileRow",
+      "decision": "ACCEPT",
+      "what": "Five unevaluated sizeof-address observations and reverse declaration order deliberately select the original stack ownership. The redundant metatile-result promotion, split word masks and OR operand order are explicitly disclosed compiler-coaxing source, not asserted historical operations.",
+      "independent_evidence": "All five individual observation removals and nine other natural/reduction alternatives DIFF in both revisions. The unmodified baseline MATCHes both revisions. Private evidence: scratch/agents/C026Review/qualification-probes.json and supplemental-checks.json."
+    },
+    {
+      "id": "Q002",
+      "file": "src/camera/camera_tiles_and_scroll.c:250-257",
+      "function": "BuildCameraTileColumn",
+      "decision": "ACCEPT",
+      "what": "The five sizeof-address observations, reverse declaration order, explicit return promotion and split masks are precisely disclosed. Operand ownership and the loop relation preserve the original lowering without changing the represented tile-building behavior.",
+      "independent_evidence": "All five individual observation removals and ten other alternatives DIFF in both revisions. The baseline MATCHes both revisions. Private evidence: scratch/agents/C026Review/qualification-probes.json and supplemental-checks.json."
+    },
+    {
+      "id": "Q003",
+      "file": "src/map/random_regions_and_cleanup.c:284-289",
+      "function": "MapGrowTerrainRegion",
+      "decision": "ACCEPT",
+      "what": "Four unevaluated address observations and their reverse declaration order select the disclosed trailing frame words. No dummy padding, artificial copied direction, record-layout change or fake interface is introduced.",
+      "independent_evidence": "Each individual observation removal and six other natural/declaration controls DIFF in both revisions; baseline MATCHes. Private evidence: scratch/agents/C026Review/qualification-probes.json and supplemental-checks.json."
+    },
+    {
+      "id": "Q004",
+      "file": "src/player/active_present_falling_and_respawn.c:243-249",
+      "function": "CheckPlayerFalling",
+      "decision": "ACCEPT",
+      "what": "The shared char selected_sprite is a meaningful sprite-ID role reused across disjoint actor-selection lifetimes. Every read is initialized, and the canonical int getter interface is unchanged. Its qualification is conservative disclosure rather than an invented byte-return ABI or unused value.",
+      "independent_evidence": "Independent char, short and int current-player results, and direct getter arguments, all DIFF in both revisions. Baseline MATCHes; the represented getter returns its char local on every path. Private evidence: scratch/agents/C026Review/qualification-probes.json."
+    },
+    {
+      "id": "Q005",
+      "file": "src/sprites/sprite_frame_preparation.c:55-85,105-107",
+      "function": "PrepareEntitySpriteFrame",
+      "decision": "ACCEPT",
+      "what": "The redundant explicit width promotion, int-to-short height ownership and height mask are fully disclosed. The inherited twelve-piece pointer view is identified as entity sprite-list capacity, not a fabricated fixed ROM-frame extent. Shared record types and layout are unchanged.",
+      "independent_evidence": "Eight promotion, mask, multiplication, packed-size, scalar-ownership and ordinary-pointer alternatives DIFF in both revisions; baseline MATCHes. Private evidence: scratch/agents/C026Review/qualification-probes.json."
+    },
+    {
+      "id": "Q006",
+      "file": "src/map/level_generation_and_changes.c:475-481,491-509",
+      "function": "MapConnectAnchorPositions",
+      "decision": "ACCEPT",
+      "what": "The three self-assignments are explicitly disclosed instructionless allocation controls, operate only on initialized genuine targets and do not change RNG calls or gameplay state.",
+      "independent_evidence": "Every one-deletion control, deletion of all identities, and twelve other natural alternatives DIFF in both revisions. Retained linked baseline and identity-removal variants each contain 472 bytes and 189 instructions with identical mnemonic counts. No natural replacement was found. Private evidence: scratch/agents/C026Review/qualification-probes.json and supplemental-checks.json."
+    },
+    {
+      "id": "Q007",
+      "file": "tools/match.py:156-169",
+      "decision": "ACCEPT_TOOL_LIMITATION",
+      "what": "match.py has no Z80 mode and selects the 68000 assembler for every .s input. Four explicit Z80 matcher attempts are recorded as UNSUPPORTED_Z80, not PASS. Both changed Z80 sources were instead assembled through the production pinned-Z80 path and directly compared with their original ROM slices in both revisions: bootstrap 38 bytes and sound driver 1294 bytes, all PASS.",
+      "independent_evidence": "scratch/agents/C026Review/supplemental-checks.json, private matcher-error logs and build/*/z80/."
+    },
+    {
+      "id": "Q008",
+      "file": "src/sprites/sprite_frame_preparation.c; config/rev02/tus.json:20",
+      "decision": "REPORTING_BOUNDARY",
+      "what": "Four merged files cover complete recovered original translation-unit spans. The five-function sprite file is a completely matching contiguous slice from 0x00c85a to 0x00cc82 inside the recovered original span 0x00c170 to 0x00ce82. It satisfies the contiguous-run source rule but must not be described as completing the entire eleven-function original sprite TU."
+    },
+    {
+      "id": "Q009",
+      "decision": "EVIDENCE_BOUNDARY",
+      "what": "The 69 independently tested alternative sources produced 138 DIFF results across the two revisions; all seven unchanged baselines MATCHed both revisions. This is finite negative evidence, not proof that no other natural spelling exists. [INFERENCE] The original historical spelling and the compiler's exact internal allocation mechanism remain unknown."
+    }
+  ],
+  "checks": [
+    {
+      "id": "bytes_changed_sources",
+      "result": "PASS",
+      "what": "204 strict match_file calls: all 102 changed/new C and 68000 assembly units in each revision, 585 routine comparisons per revision, all MATCH. All seven new functions also independently MATCH as standalone baselines in both revisions.",
+      "evidence": "scratch/agents/C026Review/verification.json; matches/; qualification-probes.json"
+    },
+    {
+      "id": "full_builds_and_suite",
+      "result": "PASS",
+      "what": "191 suite tests passed with zero failures, errors or skips. Its two real-ROM full builds are PASS, byte-identical to the pinned originals, with 588 compiled-C functions per revision and zero generated raw-word fallbacks. Only the production build wrapper's output-directory expression was redirected to the reviewer directory; compilation, linking, asset reconstruction, toolchain checks and receipt logic were unchanged.",
+      "evidence": "scratch/agents/C026Review/suite.log; verification.json; build/rev02/receipt.json; build/rev00/receipt.json"
+    },
+    {
+      "id": "prepare_record",
+      "result": "PASS",
+      "what": "Prepared head is 49bf54c. All 255 input-manifest hashes and prepared source digests/options equal the target tree. All four retained prepare receipts have the recorded canonical-JSON digests and unit lists. All four retained build images directly equal their revision originals and agree with their receipt hashes.",
+      "evidence": "scratch/agents/C026Review/structure-checks-r2.json; prepared-images.json"
+    },
+    {
+      "id": "merge_preservation",
+      "result": "PASS",
+      "what": "All thirteen predecessor file texts occur verbatim in the five merged files at dde56ee, including existing comments, includes and qualifications. Subsequent changes are covered by the complete rename-token comparison.",
+      "evidence": "scratch/agents/C026Review/structure-checks-r2.json"
+    },
+    {
+      "id": "qualification_and_packet_review",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "what": "All seven C bodies were inspected against independently generated original-ROM packets. Six disclosed matching qualifications are accepted; MapClearTilePriorityNearPlayer matches naturally. No wrong ABI, invented field/padding, assembly stand-in, byte blob, changed compiler profile, or avoidable fake match was found.",
+      "evidence": "scratch/agents/C026Review/report.md; qualification-probes.json; supplemental-checks.json; private packets/ and probe-evidence/"
+    },
+    {
+      "id": "mechanical_renames",
+      "result": "PASS",
+      "what": "All 204 source/header/include files compare token-for-token against dde56ee after applying only the symbol plan, fourteen guard renames, five scoped member renames and the two final bank-name refinements recorded by 49bf54c. Both expected names documents compare exactly: 193 REV 02 entries and 191 direct REV 00 entries. All 157 renamed existing primary symbols preserve old-name aliases in each revision; the remaining entries add previously unregistered identities. The two missing direct REV 00 entries are inherited labels.",
+      "evidence": "scratch/agents/C026Review/structure-checks-r2.json. The initial comparison against the unamended author plan is retained separately in structure-checks.json; its only differences are the two explicitly recorded bank-name refinements."
+    },
+    {
+      "id": "field_consistency",
+      "result": "PASS",
+      "what": "All five field declarations and twenty-two represented member accesses are consistently renamed. Types, field order and layout are unchanged; no old data/format/count/reusable/flags member-access spelling remains in src or include. The transition flags gain no unsupported bit meanings.",
+      "evidence": "scratch/agents/C026Review/structure-checks-r2.json; include/sprites.h; include/map.h"
+    },
+    {
+      "id": "readability_spotchecks",
+      "result": "PASS",
+      "what": "Twenty renamed identifiers and fifteen new/revised descriptions were individually checked against represented source behavior, including the second earthling-bank aliases, the odd-address owner-byte identity, mixed PSG status and restart sentinel semantics.",
+      "evidence": "scratch/agents/C026Review/readability-spotchecks.json"
+    },
+    {
+      "id": "public_audit_worktree",
+      "result": "PASS",
+      "what": "Production worktree audit, both private ROMs indexed, neither history mode nor no-rom mode: 388 unique Git blobs, one tree, 388 tracked worktree files, zero findings.",
+      "evidence": "scratch/agents/C026Review/verification.json"
+    }
+  ],
+  "findings": []
+}

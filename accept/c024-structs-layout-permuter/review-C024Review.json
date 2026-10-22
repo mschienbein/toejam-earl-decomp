@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c024-structs-layout-permuter",
+ "prepare_sha256": "5db5399bb51d8aa2aa46cb6f5e924d7f08b86dff706fe3d31ee434ebfe5b7429",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T15:04:00Z",
+ "review_file": "review.json",
+ "review_sha256": "5fd9c92ae4852de91bd8c803db51b04dfbfee670919b75a256d56b09658b9a18",
+ "reviewer": "C024Review",
+ "verdict": "FAIL"
+}

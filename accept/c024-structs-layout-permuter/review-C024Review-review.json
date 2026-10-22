@@ -1,0 +1,128 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "C024Review",
+  "checkpoint": "c024-structs-layout-permuter",
+  "sealed_before_other_reviews": true,
+  "implementation_commit": "5f0b3f73c7c58623c75891f0eba526b0eddbf9a6",
+  "baseline_commit": "1216a94",
+  "evidence_root": "scratch/agents/C024Review",
+  "summary": "All requested byte, preparation, reorganization and public-audit gates passed. All 24 field renames and 107 sampled constant uses were supported. The checkpoint fails because AnimateShipScreenPalette has an avoidable matching qualification: an independently discovered natural signed-word shift matches the complete current nine-function source unit in both revisions.",
+  "qualifications": [
+    {
+      "function": "DropPresent",
+      "file": "src/presents/level_item_setup.c:401-411,443-467",
+      "decision": "ACCEPT_WITH_QUALIFICATION",
+      "what": "One signed-word scratch deliberately serves the coordinate exchange and later scan index/101 sentinel. Its lifetimes do not overlap, and every read is preceded by the corresponding initialization or exchange assignment. This is precisely disclosed and introduces no dummy state or no-op.",
+      "independent_natural_alternatives": 8,
+      "versions_tried": ["rev02", "rev00"],
+      "natural_matches": 0,
+      "evidence": ["natural-probes.json", "natural/DropPresent"]
+    },
+    {
+      "function": "PlaySound",
+      "file": "src/audio/play_sound.c:6-16",
+      "decision": "ACCEPT_WITH_QUALIFICATION",
+      "what": "The discarded sizeof(&sound_number) expression has no gameplay effect. The retained matched listing uses the incoming argument stack slot directly and emits no address materialization. Removing the expression produces 46 rather than 44 bytes. The compiler-internal ownership explanation is [INFERENCE], not a proven compiler phase.",
+      "independent_natural_alternatives": 8,
+      "versions_tried": ["rev02", "rev00"],
+      "natural_matches": 0,
+      "evidence": ["natural-probes.json", "natural/PlaySound", "matches/rev02/src/audio/play_sound/playsoun.s"]
+    },
+    {
+      "function": "PlaySoundEffect",
+      "file": "src/audio/play_sound_effect.c:7-20",
+      "decision": "ACCEPT_WITH_QUALIFICATION",
+      "what": "The discarded sizeof(&sample) and sizeof(&stop_channels) expressions have no gameplay effect. Matched code uses the direct stack-to-global long move and direct stack-word test, without address instructions. Individual removal controls both DIFF; removing both gives 72 rather than 64 bytes. Types and scalar ABI remain unchanged. The compiler-internal ownership mechanism is [INFERENCE].",
+      "independent_natural_alternatives": 8,
+      "individual_removal_controls": 2,
+      "versions_tried": ["rev02", "rev00"],
+      "natural_matches": 0,
+      "evidence": ["natural-probes.json", "natural/PlaySoundEffect", "matches/rev02/src/audio/play_sound_effect/playsoun.s"]
+    },
+    {
+      "function": "AnimateShipScreenPalette",
+      "file": "src/ship/screen_setup.c:379-383,409-410",
+      "decision": "REJECT_AVOIDABLE_QUALIFICATION",
+      "what": "The redundant int conversion is disclosed, and removing only that conversion DIFFs, but a natural simplification of the complete high-channel expression matches without it. The claim that this qualification is needed cannot be accepted under the requested no-natural-spelling criterion.",
+      "natural_matching_expression": "((short)PaletteShipLine3[color_number] >> 9) & 7",
+      "independent_natural_alternatives": 9,
+      "versions_tried": ["rev02", "rev00"],
+      "natural_matching_alternatives": 1,
+      "whole_source_match_counts": {"rev02": 9, "rev00": 9},
+      "evidence": ["natural-probes.json", "natural-palette-full.c", "natural-palette-full.json", "natural-palette-full/rev02/stdout.txt", "natural-palette-full/rev00/stdout.txt"]
+    }
+  ],
+  "checks": [
+    {
+      "name": "field_renames_and_storage",
+      "status": "PASS",
+      "details": "Reviewed all 24 field renames against represented readers/writers, declarations and relevant ROM-derived packets/schema. Normalized baseline/current declarators preserve type, signedness, pointer forms, array extents and ordering. Polymorphic fields remain explicitly polymorphic; unused means no represented member consumer, not absence of bulk or unrepresented access.",
+      "evidence": ["semantic-review2.json", "semantic-inventory2.json", "field-uses2.txt", "6a24eff.diff", "movement-producer.txt/func_00dd82.md"]
+    },
+    {
+      "name": "constant_semantics_sample",
+      "status": "PASS",
+      "details": "Independently inventoried 246 introduced names and 1853 current-tree code-token uses. Deliberately reviewed 107 uses of 107 distinct names across camera, core, earthlings, jamout, map, player, presents, ship, sprites and UI. Sample rows bind numeric values, exact source locations and semantic rationales. No sampled wrong-domain/count substitution was found. This is a sample, not exhaustive proof of every use.",
+      "evidence": ["semantic-review2.json", "semantic-inventory2.json", "constant-uses2.txt", "pixel-policy.txt/func_00c920.md", "collision-policy.txt/func_025d80.md"]
+    },
+    {
+      "name": "header_hygiene",
+      "status": "PASS",
+      "details": "All 246 introduced constants have one definition, their recorded numeric value, and the declared subsystem-owning header. No introduced duplicate or wrong-owner definitions. Player animation IDs/groups, present/world-item IDs, Earthling IDs, PSG IDs, FM-template IDs, music IDs and terrain/metatile values retain separate namespaces.",
+      "evidence": ["semantic-inventory2.json", "semantic-review2.json"]
+    },
+    {
+      "name": "changed_and_moved_source_matching",
+      "status": "PASS",
+      "details": "Ran official tools/match.py on all 125 C files and 15 supported 68000 assembly files for each revision: 280 unit checks, zero failures, 626 function MATCH reports per revision. All 111 changed or moved supported source paths are covered. These function totals include assembly and are not C-progress credit.",
+      "evidence": ["matches.json", "matches/rev02", "matches/rev00"]
+    },
+    {
+      "name": "fresh_full_build_rev02",
+      "status": "PASS",
+      "details": "Fresh private full-ROM build through unchanged tools/build.py entrypoints. Image is 1048576 bytes with the pinned expected SHA-256, zero raw instruction words, all 140 prepared supported source units identical, and both Z80 programs built. Private output was used because the build CLI has no output-directory option.",
+      "image_sha256": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+      "evidence": ["builds.json", "builds/rev02/receipt.json"]
+    },
+    {
+      "name": "fresh_full_build_rev00",
+      "status": "PASS",
+      "details": "Fresh private full-ROM build through unchanged tools/build.py entrypoints. Image is 1048576 bytes with the pinned expected SHA-256, zero raw instruction words, all 140 prepared supported source units identical, and both Z80 programs built.",
+      "image_sha256": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+      "evidence": ["builds.json", "builds/rev00/receipt.json"]
+    },
+    {
+      "name": "prepare_record_verification",
+      "status": "PASS",
+      "details": "Preparation is PASS with a recorded suite returncode zero/OK. All 263 input hashes equal the reviewed worktree. All four retained prepare receipts have the recorded canonical JSON hashes, exact prepared unit lists and PASS expected/actual identities; all four retained ROM images hash to their receipts. The suite was not rerun by this reviewer.",
+      "evidence": ["metadata.json", "accept/c024-structs-layout-permuter/prepare.json"]
+    },
+    {
+      "name": "reorganization_content_identity",
+      "status": "PASS",
+      "details": "git diff -M shows exactly the plan's 52 R100 source moves, identical old/new blobs and modes, with no source content changes. The sole non-rename edit is config/sources.json; parsed entries are exactly the prescribed path translations plus reordering, with versions/options/other entry data unchanged.",
+      "evidence": ["reorganization-raw.txt", "b7a7c5e.diff", "metadata.json"]
+    },
+    {
+      "name": "independent_qualification_alternatives",
+      "status": "FAIL",
+      "details": "Exercised 39 candidates/78 strict linked comparisons in both revisions, with eight successful qualified controls and zero experiment ERROR results. Thirty-three natural alternatives were tried: eight each for DropPresent, PlaySound and PlaySoundEffect, and nine for AnimateShipScreenPalette. One palette alternative MATCHes in both revisions and also MATCHes all nine functions of the complete current source unit. See C024R1.",
+      "evidence": ["natural-probes.json", "natural-palette-full.json"]
+    },
+    {
+      "name": "public_worktree_audit",
+      "status": "PASS",
+      "details": "Ran tools/audit_public.py --repo G with both private ROMs available: exit zero, 385 unique Git blobs, one tree, 385 tracked worktree files, two ROMs indexed, zero findings. No history audit was run.",
+      "evidence": ["audit.json"]
+    }
+  ],
+  "findings": [
+    {
+      "id": "C024R1",
+      "severity": "high",
+      "file": "src/ship/screen_setup.c:379-383,409-410",
+      "what": "The new redundant-int matching qualification is avoidable. Replacing only `(short)(int)((long)(short)PaletteShipLine3[color_number] >> 9) & 7` with `((short)PaletteShipLine3[color_number] >> 9) & 7` preserves the signed-word view and yields nine MATCH reports for the entire current source unit in both REV 02 and REV 00. Ordinary integral promotion supplies the required 32-bit shift; no extra hint, temporary, interface change or no-op is needed. This is a real failure of the checkpoint's explicit natural-source acceptance criterion, not a byte mismatch or an accusation about the author's search history.",
+      "suggested_fix": "Adopt the independently matched natural expression, remove the redundant-int MATCHING QUALIFICATION and associated no-natural-spelling statement, and prepare a corrected checkpoint rather than finalizing the immutable original prepare against changed sources. Full-unit candidate and exact commands/results are private at scratch/agents/C024Review/natural-palette-full.c and natural-palette-full.json."
+    }
+  ]
+}

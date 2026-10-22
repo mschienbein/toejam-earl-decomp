@@ -39,7 +39,7 @@ extern char ram_ff911c, ram_ff911d, gLevel912C, gLevel912E, SPLIT_SCREEN;
 extern char ELEVATOR_FLAG[];
 extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
 extern short EARL_CAMERA_NEWX, EARL_CAMERA_NEWY;
-extern int abs();
+extern long abs();
 extern void func_00d970(), func_00d8f2();
 
 /* Background frames have a four-byte header followed by ten-byte parts.
@@ -58,7 +58,7 @@ extern struct transition_frame *Spr_TransitionBackground[];
 extern struct ride_speech SpeechStringPointers[14];
 extern struct elevator_entity *ram_ffda6e;
 extern char gPlayerLives[], gPlayer2Lives, ram_ffda6b, ram_ffda6c;
-extern char TOEJAM_FALL_STATE, ram_ffda23;
+extern char TOEJAM_FALL_STATE[], ram_ffda23;
 extern char VBLANK_FLAG_2, VBLANK_FLAG_7, VBLANK_FLAG_8;
 extern unsigned char gMode2RegSoftcopy, ram_ffd92e, ram_ffb715, ram_ffd932;
 struct setup_sprite {
@@ -132,16 +132,16 @@ char state;
     entity->sprite_state = state;
 }
 
-/* Convert the saved map-cell coordinates into an elevator position. */
-void func_012762(elevator)
-struct elevator_record *elevator;
+/* Convert the saved map-cell coordinates into the player's position. */
+void func_012762(player)
+struct elevator_entity *player;
 {
     char map_x, map_y;
 
     map_x = ram_ff911c;
     map_y = ram_ff911d;
-    elevator->x = (map_x + 2) * 16 * 8 - 16;
-    elevator->y = (map_y + 2) * 8 * 8 - 5;
+    player->x = (map_x + 2) * 16 * 8 - 16;
+    player->y = (map_y + 2) * 8 * 8 - 5;
 }
 
 /* Mark both secondary elevator records as absent. */
@@ -464,7 +464,7 @@ void func_013036()
         player = &gPlayerInfo[0];
         gPlayerInfo[0].elevation = 0;
         StopPlayer(player);
-        TOEJAM_FALL_STATE = 0;
+        TOEJAM_FALL_STATE[0] = 0;
         SetSprite(player, 0);
         player->state_flags &= 0xaf;
         player->tile_base &= 0x7fff;

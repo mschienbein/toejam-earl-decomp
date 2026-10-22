@@ -23,6 +23,13 @@
    ]
   },
   {
+   "source": "src/earthlings/bank_expiry.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/elevator/elevator_query.c",
    "versions": [
     "rev02",
@@ -108,6 +115,13 @@
   },
   {
    "source": "src/map/change_level.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/map/elevator_icon.c",
    "versions": [
     "rev02",
     "rev00"
@@ -339,6 +353,27 @@
   },
   {
    "source": "src/player/targeting.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/item_updates.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/level_item_setup.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/present_effects.c",
    "versions": [
     "rev02",
     "rev00"

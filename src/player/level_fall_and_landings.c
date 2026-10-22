@@ -24,7 +24,8 @@ extern struct object_state gPlayerInfo[40];
 
 extern char TOEJAM_FALL_STATE[], gPlayerLives[], gPlayer2Lives, gHighestLevel, ELEVATOR_FLAG[], gPlayer1Powerup[], TOEJAM_JUMP_COUNTER[], Sfx_Splash[];
 extern unsigned char LAND_UNDER_TOEJAM, LAND_UNDER_EARL, gMode2RegSoftcopy, LAND_NEAR_TOEJAM[5][5], LAND_NEAR_EARL[5][5];
-extern void func_0174b6(), func_0143e6(), LOAD_ELEVATOR_1(), func_004dfe(), SetupElevator(), func_017ac8(), PlaceStuffInLevel(), ClearSkipVHBlankFlags(), SetPositionOnNewLevel(), func_00105a(), func_00aa5a(), func_00abbe(), SetSkipVHBlankFlags(), StopPlayer(), SetSprite(), PlaySoundEffect();
+extern void func_0174b6(), func_0143e6(), LOAD_ELEVATOR_1(), func_004dfe(), func_017ac8(), PlaceStuffInLevel(), ClearSkipVHBlankFlags(), SetPositionOnNewLevel(), func_00105a(), func_00aa5a(), func_00abbe(), SetSkipVHBlankFlags(), StopPlayer(), SetSprite(), PlaySoundEffect();
+extern char SetupElevator();
 extern int GetActivePresentSprite();
 #define VDP_CONTROL_WORD (*(unsigned short *)0xc00004L)
 
@@ -77,6 +78,8 @@ char *falling;
                 SetPositionOnNewLevel(2);
             else if (falling[0]) {
                 player = &gPlayerInfo[1];
+                /* (long) view of flags_52: the signed 32-bit test reproduces the ROM's D0 mask and allocation;
+                 * the stored field stays unsigned ([INFERENCE] the original spelling is unknown). */
                 if (LAND_UNDER_EARL >= 0x80 ||
                     ((long)player->flags_52 & 0x20000000L) || player->sprite_state == 5 ||
                     player->sprite_state == 6 || gPlayer2Lives < 0)

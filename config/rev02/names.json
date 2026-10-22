@@ -9603,14 +9603,14 @@
       "address": "0x00DCC2",
       "kind": "function",
       "source": "naming pass A (NameSmithA, reviewed by NameReviewA)",
-      "evidence": "Canonical C requires an equal level and exclusive absolute distances below 16 on x and 5 on y. Its packet identifies CheckPlayerFalling and func_00dd82 as callers, so the predicate concerns entity world positions rather than hardware-sprite overlap (source: src/player/entity_motion_proximity.c:6; packet: PlayerNames/packets/func_00dcc2.json)."
+      "evidence": "Canonical C requires an equal level and exclusive absolute distances below 16 on x and 5 on y. Its packet identifies CheckPlayerFalling and func_00dd82 as callers, so the predicate concerns entity world positions rather than hardware-sprite overlap (source: src/player/entity_motion_terrain.c:6; packet: PlayerNames/packets/func_00dcc2.json)."
     },
     {
       "name": "EntityIsWithinRange",
       "address": "0x00DD1E",
       "kind": "function",
       "source": "naming pass A (NameSmithA, reviewed by NameReviewA)",
-      "evidence": "Canonical C compares two object_state records on the same level and requires their absolute x/y separations to be below the caller-supplied limits. Packet callers include earthling touch handlers, func_010294, func_01bb62, and func_01d084, confirming a shared positional-range predicate (source: src/player/entity_motion_proximity.c:19; packet: PlayerNames/packets/func_00dd1e.json)."
+      "evidence": "Canonical C compares two object_state records on the same level and requires their absolute x/y separations to be below the caller-supplied limits. Packet callers include earthling touch handlers, func_010294, func_01bb62, and func_01d084, confirming a shared positional-range predicate (source: src/player/entity_motion_terrain.c:19; packet: PlayerNames/packets/func_00dd1e.json)."
     },
     {
       "name": "PlayerProcessTerrainMotion",

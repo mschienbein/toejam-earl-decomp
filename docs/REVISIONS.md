@@ -9,7 +9,7 @@ to REV 00.
 | | REV 00 — *ToeJam & Earl (World)* | REV 02 — *(Rev A)* |
 |---|---|---|
 | Cartridge header | `(C)SEGA 1991.JUL`, `GM MK-1020 -00` | `(C)SEGA 1991.OCT`, `GM MK-1020 -02` |
-| Code | 112 bytes shorter | seven functions changed |
+| Code | 112 bytes shorter | eight functions changed |
 | Data | identical content; addresses inside moved | same |
 
 ## What changed in the code
@@ -18,8 +18,8 @@ Of 648 paired code entries (645 functions and three fragments), 431 are byte-ide
 differ only in addresses, because the
 code or data they refer to moved (REV 02's changes push everything after them by up to 112
 bytes): the pairing verifies this with address-masked instruction signatures, and every matched
-one builds both revisions from one unchanged source. Seven functions differ in their logic; all
-seven read as fixes to REV 00 behaviour:
+one builds both revisions from one unchanged source. Eight functions differ in their logic; all
+eight read as fixes to REV 00 behaviour:
 
 | Function (file) | REV 02 change |
 |---|---|
@@ -30,6 +30,7 @@ seven read as fixes to REV 00 behaviour:
 | `DrawInventory` (`src/ui/inventory.c`) | Opening the inventory resets the opener's idle counter too. |
 | `TitleScreenVideo` (`src/cutscenes/title_and_transition.c`) | The 1,200-tick title wait restarts the global `gFrameCounter` at zero instead of measuring from the value it had on entry. |
 | `SEGAVideo` (`src/cutscenes/sega_logo.c`) | The Sega logo restarts `gFrameCounter` at zero before its 120-tick fade, as above. |
+| `PlayerProcessTerrainMotion` (`src/player/entity_motion_terrain.c`) | Terrain motion is also skipped while the player plays a lean animation (`PLAYER_GROUP_LEAN` joins `TERRAIN_MOTION_PAUSED_GROUPS`); same size, one wider mask constant. |
 
 The two idle-counter resets and the sleep guard together keep a player from dozing off because
 time spent in the map, the inventory or a choice prompt counted as idle time. The `gFrameCounter`
@@ -47,6 +48,6 @@ header (release month, serial suffix, checksum) and the fill after the last unit
 ## How this was established
 
 `tools/revmap.py` pairs the catalogued functions of both revisions and verifies the pairing with
-masked instruction signatures; the seven logic changes are the functions whose REV 00 bytes need
+masked instruction signatures; the eight logic changes are the functions whose REV 00 bytes need
 a `#if REVISION` block to match (every other function matches both revisions from one unchanged
 source). The data comparison translates every differing address through the same map.

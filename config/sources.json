@@ -583,13 +583,6 @@
    ]
   },
   {
-   "source": "src/player/entity_motion_proximity.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/player/entity_motion_terrain.c",
    "versions": [
     "rev02",

@@ -23,7 +23,7 @@ assembly source instead. The typed-data badges count data bytes rebuilt from typ
 | Still generated assembly | — | 6 C functions | the same 6 |
 
 Both revisions build from the same sources; the per-build `REVISION` value covers their few
-differences (seven bug fixes in REV 02, [docs/REVISIONS.md](docs/REVISIONS.md)), so a function
+differences (eight bug fixes in REV 02, [docs/REVISIONS.md](docs/REVISIONS.md)), so a function
 matched for one is checked and credited for both, and CI reports each revision to ByteMatch
 separately. History: [docs/STATUS.md](docs/STATUS.md); what remains: [docs/RESUME.md](docs/RESUME.md).
 

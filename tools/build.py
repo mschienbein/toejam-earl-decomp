@@ -336,9 +336,16 @@ def place_c_units(c_units: list, units: list[Unit], symbols: Symbols) -> list[Un
             if label_address.get(name) != base + offset:
                 raise BuildError(f"{cu.source.name}: {name} would land at 0x{base + offset:06x}; functions must use their "
                                  f"canonical names and be one contiguous run in ROM order")
-        covered = [u for u in units if base <= u.address < base + cu.size]
-        if not covered or covered[0].address != base or covered[-1].end != base + cu.size:
-            raise BuildError(f"{cu.source.name}: its {cu.size} bytes do not end on a unit boundary at 0x{base + cu.size:06x}")
+        end = base + cu.size
+        straddled = [u for u in units if u.kind == "data" and u.address < end < u.end]
+        if straddled:   # string literals after the code reach into a data range: the rest stays data
+            data = straddled[0]
+            units = sorted([u for u in units if u is not data] +
+                           [Unit(f"{data.name}_head", data.address, end - data.address, "data"),
+                            Unit(f"data_{end:06x}", end, data.end - end, "data")], key=lambda u: u.address)
+        covered = [u for u in units if base <= u.address < end]
+        if not covered or covered[0].address != base or covered[-1].end != end:
+            raise BuildError(f"{cu.source.name}: its {cu.size} bytes do not end on a unit boundary at 0x{end:06x}")
         if any(u.kind == "header" or u.name in replaced for u in covered):
             raise BuildError(f"{cu.source.name}: overlaps the header or another C unit")
         cu.address = base

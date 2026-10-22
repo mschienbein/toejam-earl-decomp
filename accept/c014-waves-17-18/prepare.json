@@ -1,0 +1,5835 @@
+{
+ "builds": {
+  "rev00": {
+   "c_units": [
+    {
+     "address": "0x0004dc",
+     "functions": [
+      {
+       "address": "0x0004dc",
+       "name": "DrawLevelGraphics",
+       "size": 112
+      },
+      {
+       "address": "0x00054c",
+       "name": "ClearSkipVHBlankFlags",
+       "size": 14
+      },
+      {
+       "address": "0x00055a",
+       "name": "SetSkipVHBlankFlags",
+       "size": 18
+      },
+      {
+       "address": "0x00056c",
+       "name": "GetSkipVBlankFlag",
+       "size": 12
+      },
+      {
+       "address": "0x000578",
+       "name": "WaitForNextVBlank",
+       "size": 38
+      },
+      {
+       "address": "0x00059e",
+       "name": "func_00059e",
+       "size": 78
+      },
+      {
+       "address": "0x0005ec",
+       "name": "HandleVBlank",
+       "size": 620
+      },
+      {
+       "address": "0x000858",
+       "name": "HandleHBlank",
+       "size": 224
+      },
+      {
+       "address": "0x000938",
+       "name": "GetPlayerInput",
+       "size": 236
+      },
+      {
+       "address": "0x000a24",
+       "name": "CheckStartButton",
+       "size": 74
+      },
+      {
+       "address": "0x000a6e",
+       "name": "ProcessInput",
+       "size": 372
+      },
+      {
+       "address": "0x000be2",
+       "name": "func_000be2",
+       "size": 76
+      },
+      {
+       "address": "0x000c2e",
+       "name": "func_000c2e",
+       "size": 336
+      },
+      {
+       "address": "0x000d7e",
+       "name": "func_000d7e",
+       "size": 360
+      },
+      {
+       "address": "0x000ee6",
+       "name": "func_000ee6",
+       "size": 208
+      },
+      {
+       "address": "0x000fb6",
+       "name": "func_000fb6",
+       "size": 164
+      },
+      {
+       "address": "0x00105a",
+       "name": "func_00105a",
+       "size": 368
+      },
+      {
+       "address": "0x0011ca",
+       "name": "DelayRoutine1",
+       "size": 14
+      },
+      {
+       "address": "0x0011d8",
+       "name": "InitialiseTheZ80",
+       "size": 138
+      },
+      {
+       "address": "0x001262",
+       "name": "func_001262",
+       "size": 36
+      },
+      {
+       "address": "0x001286",
+       "name": "FurtherInitialisation",
+       "size": 776
+      }
+     ],
+     "options": [],
+     "sha256": "6094047abd0bbca963fe92f54249a55b04e17dec8449abc61217e8a0aa03a9a6",
+     "size": 4274,
+     "source": "src/core/main_loop.c"
+    },
+    {
+     "address": "0x00158e",
+     "functions": [
+      {
+       "address": "0x00158e",
+       "name": "ToggleLOC_00FF8196",
+       "size": 26
+      }
+     ],
+     "options": [],
+     "sha256": "00aac6d1b7d34b1f77806365c2856eb571999c297ae110d1a05888d57a0e078f",
+     "size": 26,
+     "source": "src/core/toggle_camera_flag.c"
+    },
+    {
+     "address": "0x00035c",
+     "functions": [
+      {
+       "address": "0x00035c",
+       "name": "ResetVDP",
+       "size": 162
+      },
+      {
+       "address": "0x0003fe",
+       "name": "VDPInitialisation",
+       "size": 12
+      },
+      {
+       "address": "0x00040a",
+       "name": "MovePadInputIntoD0",
+       "size": 96
+      }
+     ],
+     "options": [],
+     "sha256": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+     "size": 270,
+     "source": "src/core/vdp_startup.c"
+    },
+    {
+     "address": "0x0187f2",
+     "functions": [
+      {
+       "address": "0x0187f2",
+       "name": "func_018834",
+       "size": 186
+      },
+      {
+       "address": "0x0188ac",
+       "name": "func_0188ee",
+       "size": 382
+      },
+      {
+       "address": "0x018a2a",
+       "name": "func_018a6c",
+       "size": 520
+      },
+      {
+       "address": "0x018c32",
+       "name": "func_018c74",
+       "size": 110
+      },
+      {
+       "address": "0x018ca0",
+       "name": "func_018ce2",
+       "size": 194
+      }
+     ],
+     "options": [],
+     "sha256": "b99e459c23af5e9ffd9d1234ed6204ef327d74eb7d6c7e1f2d3b20cede00f57a",
+     "size": 1392,
+     "source": "src/earthlings/abilities_and_sleep.c"
+    },
+    {
+     "address": "0x01a362",
+     "functions": [
+      {
+       "address": "0x01a362",
+       "name": "func_01a3a4",
+       "size": 894
+      },
+      {
+       "address": "0x01a6e0",
+       "name": "func_01a722",
+       "size": 206
+      },
+      {
+       "address": "0x01a7ae",
+       "name": "func_01a7f0",
+       "size": 176
+      },
+      {
+       "address": "0x01a85e",
+       "name": "func_01a8a0",
+       "size": 384
+      }
+     ],
+     "options": [],
+     "sha256": "db48645347e4d4955bd4b753848a647d27861f310142bcfcbba070f5520e6218",
+     "size": 1660,
+     "source": "src/earthlings/animation_behaviours.c"
+    },
+    {
+     "address": "0x017474",
+     "functions": [
+      {
+       "address": "0x017474",
+       "name": "func_0174b6",
+       "size": 360
+      }
+     ],
+     "options": [],
+     "sha256": "2e44a550c5a9511fad97e8bf7e24eceed7997f98d5e331e0ac054d1e3791b254",
+     "size": 360,
+     "source": "src/earthlings/bank_expiry.c"
+    },
+    {
+     "address": "0x019cfc",
+     "functions": [
+      {
+       "address": "0x019cfc",
+       "name": "func_019d3e",
+       "size": 212
+      },
+      {
+       "address": "0x019dd0",
+       "name": "func_019e12",
+       "size": 252
+      },
+      {
+       "address": "0x019ecc",
+       "name": "func_019f0e",
+       "size": 1174
+      }
+     ],
+     "options": [],
+     "sha256": "451f0972c442794ba83448a7499e2d0ffbca32c4e6ffb0c6d2223c34d7b23be4",
+     "size": 1638,
+     "source": "src/earthlings/behaviour_tu28.c"
+    },
+    {
+     "address": "0x018e3c",
+     "functions": [
+      {
+       "address": "0x018e3c",
+       "name": "DamageEarthling",
+       "size": 160
+      },
+      {
+       "address": "0x018edc",
+       "name": "func_018f1e",
+       "size": 188
+      },
+      {
+       "address": "0x018f98",
+       "name": "DoVikingAbility",
+       "size": 172
+      },
+      {
+       "address": "0x019044",
+       "name": "func_019086",
+       "size": 138
+      },
+      {
+       "address": "0x0190ce",
+       "name": "ProcessEarthlings",
+       "size": 92
+      }
+     ],
+     "options": [],
+     "sha256": "0957bf3f5fe719697c1f72b7be3099f51bda5ddc6b1eef922bde5eb1e145b40c",
+     "size": 750,
+     "source": "src/earthlings/damage_and_processing.c"
+    },
+    {
+     "address": "0x01971a",
+     "functions": [
+      {
+       "address": "0x01971a",
+       "name": "func_01975c",
+       "size": 280
+      },
+      {
+       "address": "0x019832",
+       "name": "AI_GenericEnemyThink",
+       "size": 1226
+      }
+     ],
+     "options": [],
+     "sha256": "34430ed665b482a4bcfba0227e6a3c15ed4926eb5b66649a53f44fbd55a89b49",
+     "size": 1506,
+     "source": "src/earthlings/generic_enemy_tu27.c"
+    },
+    {
+     "address": "0x01966e",
+     "functions": [
+      {
+       "address": "0x01966e",
+       "name": "func_0196b0",
+       "size": 172
+      }
+     ],
+     "options": [],
+     "sha256": "af1e840ea54e212248ec0466fe238e9dc2207d23867ea90a1decd8ef23bd0a9b",
+     "size": 172,
+     "source": "src/earthlings/movement_decision.c"
+    },
+    {
+     "address": "0x0175dc",
+     "functions": [
+      {
+       "address": "0x0175dc",
+       "name": "CheckEarthlingOverlap",
+       "size": 252
+      },
+      {
+       "address": "0x0176d8",
+       "name": "func_01771a",
+       "size": 178
+      },
+      {
+       "address": "0x01778a",
+       "name": "FindSpawnLocationForEarthling",
+       "size": 712
+      },
+      {
+       "address": "0x017a52",
+       "name": "func_017a94",
+       "size": 52
+      },
+      {
+       "address": "0x017a86",
+       "name": "func_017ac8",
+       "size": 1102
+      },
+      {
+       "address": "0x017ed4",
+       "name": "SetupInitialEarthlings",
+       "size": 102
+      },
+      {
+       "address": "0x017f3a",
+       "name": "SetEarthlingState",
+       "size": 210
+      },
+      {
+       "address": "0x01800c",
+       "name": "func_01804e",
+       "size": 176
+      },
+      {
+       "address": "0x0180bc",
+       "name": "func_0180fe",
+       "size": 78
+      },
+      {
+       "address": "0x01810a",
+       "name": "func_01814c",
+       "size": 478
+      },
+      {
+       "address": "0x0182e8",
+       "name": "LoadInEarthlings",
+       "size": 354
+      }
+     ],
+     "options": [],
+     "sha256": "f1586b6d358341ca952ef3e3006a4f600d2eae2c04067204e9d4bbee228f26f6",
+     "size": 3694,
+     "source": "src/earthlings/spawning_and_loading.c"
+    },
+    {
+     "address": "0x01912a",
+     "functions": [
+      {
+       "address": "0x01912a",
+       "name": "func_01916c",
+       "size": 102
+      },
+      {
+       "address": "0x019190",
+       "name": "func_0191d2",
+       "size": 552
+      },
+      {
+       "address": "0x0193b8",
+       "name": "func_0193fa",
+       "size": 50
+      },
+      {
+       "address": "0x0193ea",
+       "name": "func_01942c",
+       "size": 94
+      },
+      {
+       "address": "0x019448",
+       "name": "func_01948a",
+       "size": 550
+      }
+     ],
+     "options": [],
+     "sha256": "ac91d390c39089a32c514345703971974990e802d8aa67d978d22ff8c58487f4",
+     "size": 1348,
+     "source": "src/earthlings/state_dispatch_tu26.c"
+    },
+    {
+     "address": "0x0139d4",
+     "functions": [
+      {
+       "address": "0x0139d4",
+       "name": "ProcessElevator",
+       "size": 58
+      }
+     ],
+     "options": [],
+     "sha256": "e01cdbfe71d97e114bfbbe8657cf74f5f72a7fe65293843adfbeb1af0ba6d0d0",
+     "size": 58,
+     "source": "src/elevator/elevator_query.c"
+    },
+    {
+     "address": "0x012664",
+     "functions": [
+      {
+       "address": "0x012664",
+       "name": "func_012694",
+       "size": 206
+      },
+      {
+       "address": "0x012732",
+       "name": "func_012762",
+       "size": 58
+      },
+      {
+       "address": "0x01276c",
+       "name": "LOAD_ELEVATOR_1",
+       "size": 32
+      },
+      {
+       "address": "0x01278c",
+       "name": "SetupElevator",
+       "size": 380
+      },
+      {
+       "address": "0x012908",
+       "name": "SetupInitialElevator",
+       "size": 60
+      },
+      {
+       "address": "0x012944",
+       "name": "func_012974",
+       "size": 226
+      },
+      {
+       "address": "0x012a26",
+       "name": "func_012a56",
+       "size": 298
+      },
+      {
+       "address": "0x012b50",
+       "name": "func_012b80",
+       "size": 396
+      },
+      {
+       "address": "0x012cdc",
+       "name": "func_012d0c",
+       "size": 172
+      },
+      {
+       "address": "0x012d88",
+       "name": "func_012db8",
+       "size": 112
+      },
+      {
+       "address": "0x012df8",
+       "name": "LoadFinalLevelMap",
+       "size": 268
+      },
+      {
+       "address": "0x012f04",
+       "name": "func_012f34",
+       "size": 258
+      },
+      {
+       "address": "0x013006",
+       "name": "func_013036",
+       "size": 298
+      },
+      {
+       "address": "0x013130",
+       "name": "func_013160",
+       "size": 174
+      },
+      {
+       "address": "0x0131de",
+       "name": "func_01320e",
+       "size": 96
+      },
+      {
+       "address": "0x01323e",
+       "name": "func_01326e",
+       "size": 482
+      },
+      {
+       "address": "0x013420",
+       "name": "func_013450",
+       "size": 190
+      },
+      {
+       "address": "0x0134de",
+       "name": "ElevatorRideVBlank",
+       "size": 98
+      },
+      {
+       "address": "0x013540",
+       "name": "func_013570",
+       "size": 414
+      },
+      {
+       "address": "0x0136de",
+       "name": "func_01370e",
+       "size": 120
+      },
+      {
+       "address": "0x013756",
+       "name": "func_013786",
+       "size": 638
+      }
+     ],
+     "options": [],
+     "sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+     "size": 4976,
+     "source": "src/elevator/elevator_scene.c"
+    },
+    {
+     "address": "0x013a0e",
+     "functions": [
+      {
+       "address": "0x013a0e",
+       "name": "func_013a3e",
+       "size": 186
+      },
+      {
+       "address": "0x013ac8",
+       "name": "func_013af8",
+       "size": 114
+      },
+      {
+       "address": "0x013b3a",
+       "name": "ProcessElevatorStep1",
+       "size": 972
+      },
+      {
+       "address": "0x013f06",
+       "name": "ProcessElevatorStep2",
+       "size": 614
+      },
+      {
+       "address": "0x01416c",
+       "name": "ProcessElevators",
+       "size": 10
+      }
+     ],
+     "options": [],
+     "sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+     "size": 1896,
+     "source": "src/elevator/elevator_transitions.c"
+    },
+    {
+     "address": "0x01c730",
+     "functions": [
+      {
+       "address": "0x01c730",
+       "name": "SetTomatoRainTomatoes",
+       "size": 68
+      }
+     ],
+     "options": [],
+     "sha256": "a50ddc7efbda20aaac2f7c443b0c32a8cd01aad6a87d2d195a05458509b561af",
+     "size": 68,
+     "source": "src/engine/random_counter.c"
+    },
+    {
+     "address": "0x0282fe",
+     "functions": [
+      {
+       "address": "0x0282fe",
+       "name": "func_02836c",
+       "size": 92
+      }
+     ],
+     "options": [],
+     "sha256": "9394842f37d066cf7c2b0fe0d0068d0171c71d964cfebde77a38b855a73accbc",
+     "size": 92,
+     "source": "src/engine/reset_sequence.c"
+    },
+    {
+     "address": "0x001eac",
+     "functions": [
+      {
+       "address": "0x001eac",
+       "name": "UpdateCameraX",
+       "size": 350
+      },
+      {
+       "address": "0x00200a",
+       "name": "func_00200a",
+       "size": 160
+      }
+     ],
+     "options": [],
+     "sha256": "f05bf44f0e26ae00c67d41eaa2a4a4418d87a537a11c70634d17e35804bb3577",
+     "size": 510,
+     "source": "src/graphics/camera_column_transfer.c"
+    },
+    {
+     "address": "0x00267a",
+     "functions": [
+      {
+       "address": "0x00267a",
+       "name": "func_00267a",
+       "size": 636
+      },
+      {
+       "address": "0x0028f6",
+       "name": "func_0028f6",
+       "size": 1396
+      }
+     ],
+     "options": [],
+     "sha256": "22031b87f71db1d0a466782e423c64c6e3ea68722154c275bfff085c9065bd61",
+     "size": 2032,
+     "source": "src/graphics/camera_follow.c"
+    },
+    {
+     "address": "0x00219c",
+     "functions": [
+      {
+       "address": "0x00219c",
+       "name": "func_00219c",
+       "size": 206
+      },
+      {
+       "address": "0x00226a",
+       "name": "TryUpdateCameraY",
+       "size": 104
+      },
+      {
+       "address": "0x0022d2",
+       "name": "TryUpdateCameraX",
+       "size": 104
+      },
+      {
+       "address": "0x00233a",
+       "name": "MoveCameraUp",
+       "size": 172
+      },
+      {
+       "address": "0x0023e6",
+       "name": "MoveCameraDown",
+       "size": 202
+      },
+      {
+       "address": "0x0024b0",
+       "name": "MoveCameraLeft",
+       "size": 172
+      },
+      {
+       "address": "0x00255c",
+       "name": "MoveCameraRight",
+       "size": 172
+      }
+     ],
+     "options": [],
+     "sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+     "size": 1132,
+     "source": "src/graphics/camera_motion.c"
+    },
+    {
+     "address": "0x0019ce",
+     "functions": [
+      {
+       "address": "0x0019ce",
+       "name": "UpdateCameraY",
+       "size": 378
+      },
+      {
+       "address": "0x001b48",
+       "name": "func_001b48",
+       "size": 96
+      }
+     ],
+     "options": [],
+     "sha256": "26a50471014f32d7a0e30d62732bd75ec114f035f32b733d0d551d3c351f3a7c",
+     "size": 474,
+     "source": "src/graphics/camera_row_transfer.c"
+    },
+    {
+     "address": "0x02300e",
+     "functions": [
+      {
+       "address": "0x02300e",
+       "name": "func_023086",
+       "size": 206
+      },
+      {
+       "address": "0x0230dc",
+       "name": "func_023154",
+       "size": 724
+      }
+     ],
+     "options": [],
+     "sha256": "fcd5d3ae68aad167741c336cc3ebd03cb1209557581af696122a17a3d1abf8cd",
+     "size": 930,
+     "source": "src/graphics/funkatron_scene.c"
+    },
+    {
+     "address": "0x0015a8",
+     "functions": [
+      {
+       "address": "0x0015a8",
+       "name": "func_0015a8",
+       "size": 106
+      },
+      {
+       "address": "0x001612",
+       "name": "func_001612",
+       "size": 94
+      },
+      {
+       "address": "0x001670",
+       "name": "func_001670",
+       "size": 98
+      }
+     ],
+     "options": [],
+     "sha256": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+     "size": 298,
+     "source": "src/graphics/metatile_words.c"
+    },
+    {
+     "address": "0x002e6a",
+     "functions": [
+      {
+       "address": "0x002e6a",
+       "name": "func_002e6a",
+       "size": 416
+      }
+     ],
+     "options": [],
+     "sha256": "7df2629826fcd72dec42f220b5e754eb68e964599a0b78be548d770c8aaca2fa",
+     "size": 416,
+     "source": "src/graphics/split_screen_wipe.c"
+    },
+    {
+     "address": "0x004a1a",
+     "functions": [
+      {
+       "address": "0x004a1a",
+       "name": "ChangeLevel",
+       "size": 866
+      },
+      {
+       "address": "0x004d7c",
+       "name": "LoadFinalLevel",
+       "size": 130
+      },
+      {
+       "address": "0x004dfe",
+       "name": "func_004dfe",
+       "size": 128
+      }
+     ],
+     "options": [],
+     "sha256": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+     "size": 1124,
+     "source": "src/map/change_level.c"
+    },
+    {
+     "address": "0x014176",
+     "functions": [
+      {
+       "address": "0x014176",
+       "name": "Map_DrawElevator",
+       "size": 210
+      }
+     ],
+     "options": [],
+     "sha256": "3136e95d0a18629a9dea2d08bd7b02ab0b741182e364634f2bd7337b7a54b215",
+     "size": 210,
+     "source": "src/map/elevator_icon.c"
+    },
+    {
+     "address": "0x0044e2",
+     "functions": [
+      {
+       "address": "0x0044e2",
+       "name": "func_0044e2",
+       "size": 374
+      },
+      {
+       "address": "0x004658",
+       "name": "GenerateLevelSeeds",
+       "size": 110
+      },
+      {
+       "address": "0x0046c6",
+       "name": "func_0046c6",
+       "size": 380
+      }
+     ],
+     "options": [],
+     "sha256": "fc032ea61eb1d8409a947f7e0cddb94a3f3294b853d1a00cc1de4decb007f64a",
+     "size": 864,
+     "source": "src/map/level_changes.c"
+    },
+    {
+     "address": "0x00334a",
+     "functions": [
+      {
+       "address": "0x00334a",
+       "name": "func_00334a",
+       "size": 698
+      },
+      {
+       "address": "0x003604",
+       "name": "func_003604",
+       "size": 996
+      },
+      {
+       "address": "0x0039e8",
+       "name": "func_0039e8",
+       "size": 718
+      },
+      {
+       "address": "0x003cb6",
+       "name": "func_003cb6",
+       "size": 1214
+      },
+      {
+       "address": "0x004174",
+       "name": "func_004174",
+       "size": 458
+      },
+      {
+       "address": "0x00433e",
+       "name": "func_00433e",
+       "size": 208
+      }
+     ],
+     "options": [],
+     "sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+     "size": 4292,
+     "source": "src/map/level_generation.c"
+    },
+    {
+     "address": "0x0077d8",
+     "functions": [
+      {
+       "address": "0x0077d8",
+       "name": "func_0077d8",
+       "size": 44
+      },
+      {
+       "address": "0x007804",
+       "name": "func_007804",
+       "size": 164
+      },
+      {
+       "address": "0x0078a8",
+       "name": "func_0078a8",
+       "size": 636
+      },
+      {
+       "address": "0x007b24",
+       "name": "func_007b24",
+       "size": 194
+      },
+      {
+       "address": "0x007be6",
+       "name": "DisplayMap",
+       "size": 876
+      },
+      {
+       "address": "0x007f52",
+       "name": "LoadMapIntoVRAM",
+       "size": 388
+      },
+      {
+       "address": "0x0080d6",
+       "name": "LoadLevel1Tiles",
+       "size": 134
+      },
+      {
+       "address": "0x00815c",
+       "name": "func_00815c",
+       "size": 214
+      },
+      {
+       "address": "0x008232",
+       "name": "func_008232",
+       "size": 292
+      },
+      {
+       "address": "0x008356",
+       "name": "func_008356",
+       "size": 58
+      },
+      {
+       "address": "0x008390",
+       "name": "Map_DrawPlayer",
+       "size": 316
+      },
+      {
+       "address": "0x0084cc",
+       "name": "Map_DrawShipPiece",
+       "size": 446
+      },
+      {
+       "address": "0x00868a",
+       "name": "DrawMapCharacters",
+       "size": 144
+      }
+     ],
+     "options": [],
+     "sha256": "5719137a13d5b561c2ad9cba9702f3e52a50da0b2b2f2b72f4943888823f2829",
+     "size": 3906,
+     "source": "src/map/map_drawing.c"
+    },
+    {
+     "address": "0x008836",
+     "functions": [
+      {
+       "address": "0x008836",
+       "name": "DrawGameMap",
+       "size": 812
+      }
+     ],
+     "options": [],
+     "sha256": "5dd57556d0b6e2eb734298a02a468b31cc47244e63063567afccb31abd81911c",
+     "size": 812,
+     "source": "src/map/map_drawing_controller.c"
+    },
+    {
+     "address": "0x0072f0",
+     "functions": [
+      {
+       "address": "0x0072f0",
+       "name": "func_0072f0",
+       "size": 1214
+      },
+      {
+       "address": "0x0077ae",
+       "name": "func_0077ae",
+       "size": 42
+      }
+     ],
+     "options": [],
+     "sha256": "1054721e9e6db844d296545c1196e663cce862aaac470f93cbb44d944cc2e95f",
+     "size": 1256,
+     "source": "src/map/map_population.c"
+    },
+    {
+     "address": "0x005afa",
+     "functions": [
+      {
+       "address": "0x005afa",
+       "name": "func_005afa",
+       "size": 260
+      },
+      {
+       "address": "0x005bfe",
+       "name": "func_005bfe",
+       "size": 1200
+      },
+      {
+       "address": "0x0060ae",
+       "name": "func_0060ae",
+       "size": 540
+      },
+      {
+       "address": "0x0062ca",
+       "name": "func_0062ca",
+       "size": 544
+      },
+      {
+       "address": "0x0064ea",
+       "name": "func_0064ea",
+       "size": 112
+      },
+      {
+       "address": "0x00655a",
+       "name": "func_00655a",
+       "size": 450
+      },
+      {
+       "address": "0x00671c",
+       "name": "func_00671c",
+       "size": 1030
+      }
+     ],
+     "options": [],
+     "sha256": "d8a34bf44750a715edcbce019dec1aa23bd004e314c11b6dc89d0e13fd8ddab1",
+     "size": 4136,
+     "source": "src/map/region_cleanup.c"
+    },
+    {
+     "address": "0x004fee",
+     "functions": [
+      {
+       "address": "0x004fee",
+       "name": "func_004fee",
+       "size": 980
+      },
+      {
+       "address": "0x0053c2",
+       "name": "func_0053c2",
+       "size": 440
+      },
+      {
+       "address": "0x00557a",
+       "name": "func_00557a",
+       "size": 508
+      }
+     ],
+     "options": [],
+     "sha256": "47ea53484634191bfd0f8905fd3c96e2a87eecbbc8ec4ab610005df8e5c1b450",
+     "size": 1928,
+     "source": "src/map/region_walk.c"
+    },
+    {
+     "address": "0x00d9bc",
+     "functions": [
+      {
+       "address": "0x00d9bc",
+       "name": "func_00d9dc",
+       "size": 250
+      }
+     ],
+     "options": [],
+     "sha256": "750a167566afd5dde8f7e73112915b1bd3fcdc54489f0da585539315742a6b2a",
+     "size": 250,
+     "source": "src/map/terrain_at_position.c"
+    },
+    {
+     "address": "0x00e72e",
+     "functions": [
+      {
+       "address": "0x00e72e",
+       "name": "TerrainValidation",
+       "size": 744
+      },
+      {
+       "address": "0x00ea16",
+       "name": "SetPositionOnNewLevel",
+       "size": 952
+      }
+     ],
+     "options": [],
+     "sha256": "517f6c5da7a8c06183771329b0f5b0b5a140da8608fc1858b01f9177469a106f",
+     "size": 1696,
+     "source": "src/map/terrain_placement.c"
+    },
+    {
+     "address": "0x006b22",
+     "functions": [
+      {
+       "address": "0x006b22",
+       "name": "func_006b22",
+       "size": 82
+      },
+      {
+       "address": "0x006b74",
+       "name": "func_006b74",
+       "size": 1652
+      },
+      {
+       "address": "0x0071e8",
+       "name": "func_0071e8",
+       "size": 264
+      }
+     ],
+     "options": [],
+     "sha256": "f2ca7c117bd299e58ff5cc334ba1ef791470f3ceeface145fbc893dff7b7a1d4",
+     "size": 1998,
+     "source": "src/map/transition_paths.c"
+    },
+    {
+     "address": "0x004e7e",
+     "functions": [
+      {
+       "address": "0x004e7e",
+       "name": "GetRandomNumber",
+       "size": 106
+      },
+      {
+       "address": "0x004ee8",
+       "name": "StackBasedRandom",
+       "size": 46
+      },
+      {
+       "address": "0x004f16",
+       "name": "PreGenerateRandoms",
+       "size": 58
+      }
+     ],
+     "options": [],
+     "sha256": "27dcd3209b7869c2f96c1bfd20e07983c1218215e18be1270bc753ec767c40fb",
+     "size": 210,
+     "source": "src/math/random_cache.c"
+    },
+    {
+     "address": "0x00f570",
+     "functions": [
+      {
+       "address": "0x00f570",
+       "name": "GetActivePresentSprite",
+       "size": 270
+      }
+     ],
+     "options": [],
+     "sha256": "a6ddfe66c565149b0cf59c49d0c3d02708d48dc10c22518047fc2c0f368dc9a2",
+     "size": 270,
+     "source": "src/player/active_present_sprite.c"
+    },
+    {
+     "address": "0x00300a",
+     "functions": [
+      {
+       "address": "0x00300a",
+       "name": "func_00300a",
+       "size": 832
+      }
+     ],
+     "options": [],
+     "sha256": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
+     "size": 832,
+     "source": "src/player/center_for_split.c"
+    },
+    {
+     "address": "0x00dca2",
+     "functions": [
+      {
+       "address": "0x00dca2",
+       "name": "func_00dcc2",
+       "size": 92
+      },
+      {
+       "address": "0x00dcfe",
+       "name": "func_00dd1e",
+       "size": 100
+      }
+     ],
+     "options": [],
+     "sha256": "51a611e0e9dd514136b8fd49233ce36a7a119af4b7672b9e1c95b1a8b4fa27ef",
+     "size": 192,
+     "source": "src/player/entity_motion_proximity.c"
+    },
+    {
+     "address": "0x00e15a",
+     "functions": [
+      {
+       "address": "0x00e15a",
+       "name": "func_00e17a",
+       "size": 616
+      },
+      {
+       "address": "0x00e3c2",
+       "name": "StopPlayer",
+       "size": 30
+      },
+      {
+       "address": "0x00e3e0",
+       "name": "func_00e400",
+       "size": 16
+      },
+      {
+       "address": "0x00e3f0",
+       "name": "func_00e410",
+       "size": 18
+      }
+     ],
+     "options": [],
+     "sha256": "a0360158c9ce30520f15efc5666cc02a13b1e4105aed6e1446651fc516bc2fc6",
+     "size": 680,
+     "source": "src/player/entity_motion_terrain.c"
+    },
+    {
+     "address": "0x0120f6",
+     "functions": [
+      {
+       "address": "0x0120f6",
+       "name": "func_012116",
+       "size": 494
+      }
+     ],
+     "options": [],
+     "sha256": "26c50879dfd17b497249b71206feac6ec6c9bf1c68024f900580a51b8df397ab",
+     "size": 494,
+     "source": "src/player/high_five.c"
+    },
+    {
+     "address": "0x011aa0",
+     "functions": [
+      {
+       "address": "0x011aa0",
+       "name": "func_011ac0",
+       "size": 792
+      },
+      {
+       "address": "0x011db8",
+       "name": "func_011dd8",
+       "size": 592
+      }
+     ],
+     "options": [],
+     "sha256": "7566e0d6d8b822114428e8fd3c611700769c56147e06d22e4f55ba275afe38a6",
+     "size": 1384,
+     "source": "src/player/jump_motion.c"
+    },
+    {
+     "address": "0x00fd78",
+     "functions": [
+      {
+       "address": "0x00fd78",
+       "name": "MakePlayerFall",
+       "size": 750
+      },
+      {
+       "address": "0x010066",
+       "name": "func_010086",
+       "size": 302
+      },
+      {
+       "address": "0x010194",
+       "name": "func_0101b4",
+       "size": 224
+      }
+     ],
+     "options": [],
+     "sha256": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+     "size": 1276,
+     "source": "src/player/level_fall_and_landings.c"
+    },
+    {
+     "address": "0x021f30",
+     "functions": [
+      {
+       "address": "0x021f30",
+       "name": "DoMoleAbility",
+       "size": 474
+      },
+      {
+       "address": "0x02210a",
+       "name": "MoleAbility",
+       "size": 458
+      }
+     ],
+     "options": [],
+     "sha256": "d3940f23467de1d58b334233e8002e2700283c5ae09bc6e3b24c91e09213d576",
+     "size": 932,
+     "source": "src/player/mole.c"
+    },
+    {
+     "address": "0x01137e",
+     "functions": [
+      {
+       "address": "0x01137e",
+       "name": "OpenRocketSkates",
+       "size": 196
+      }
+     ],
+     "options": [],
+     "sha256": "576af03d40428b3e5cb9fea2c4dd10559a0ec65939d749fc9b8216327bbdb329",
+     "size": 196,
+     "source": "src/player/open_rocket_skates.c"
+    },
+    {
+     "address": "0x01042e",
+     "functions": [
+      {
+       "address": "0x01042e",
+       "name": "func_01044e",
+       "size": 478
+      },
+      {
+       "address": "0x01060c",
+       "name": "func_01062c",
+       "size": 390
+      },
+      {
+       "address": "0x010792",
+       "name": "func_0107b2",
+       "size": 438
+      },
+      {
+       "address": "0x010948",
+       "name": "func_010968",
+       "size": 334
+      },
+      {
+       "address": "0x010a96",
+       "name": "func_010ab6",
+       "size": 744
+      },
+      {
+       "address": "0x010d7e",
+       "name": "KillThePlayer",
+       "size": 292
+      },
+      {
+       "address": "0x010ea2",
+       "name": "func_010ec2",
+       "size": 314
+      }
+     ],
+     "options": [],
+     "sha256": "02c10451a3e8e21817368f978e0af98cd912ef524df8499636d3d73ac9120e6d",
+     "size": 2990,
+     "source": "src/player/player_states_and_respawn.c"
+    },
+    {
+     "address": "0x00e402",
+     "functions": [
+      {
+       "address": "0x00e402",
+       "name": "ProcessMovement",
+       "size": 812
+      }
+     ],
+     "options": [],
+     "sha256": "44d2a1d2ff66a6181967140688707f4298b2c0818e5d11016568dcda8203801a",
+     "size": 812,
+     "source": "src/player/process_movement.c"
+    },
+    {
+     "address": "0x0111c8",
+     "functions": [
+      {
+       "address": "0x0111c8",
+       "name": "ProcessPlayers",
+       "size": 438
+      }
+     ],
+     "options": [],
+     "sha256": "94c9547258d8276081e15877147f0461726956f724c0b4f57bf7d3fccd349b2f",
+     "size": 438,
+     "source": "src/player/process_players.c"
+    },
+    {
+     "address": "0x01beb8",
+     "functions": [
+      {
+       "address": "0x01beb8",
+       "name": "func_01befa",
+       "size": 654
+      },
+      {
+       "address": "0x01c146",
+       "name": "func_01c188",
+       "size": 282
+      }
+     ],
+     "options": [],
+     "sha256": "2917e25d1d02057ce2285da60ecf3148553ea1d2ea858285688aca42a20ad97e",
+     "size": 936,
+     "source": "src/player/projectiles.c"
+    },
+    {
+     "address": "0x011442",
+     "functions": [
+      {
+       "address": "0x011442",
+       "name": "func_011462",
+       "size": 376
+      },
+      {
+       "address": "0x0115ba",
+       "name": "func_0115da",
+       "size": 706
+      },
+      {
+       "address": "0x01187c",
+       "name": "func_01189c",
+       "size": 480
+      }
+     ],
+     "options": [],
+     "sha256": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+     "size": 1562,
+     "source": "src/player/rocket_motion.c"
+    },
+    {
+     "address": "0x002608",
+     "functions": [
+      {
+       "address": "0x002608",
+       "name": "func_002608",
+       "size": 114
+      }
+     ],
+     "options": [],
+     "sha256": "b28b009534e042875aad25650fcd13c364254da7157633d52c8e11d2b82a17a1",
+     "size": 114,
+     "source": "src/player/set_camera_position.c"
+    },
+    {
+     "address": "0x00d1d6",
+     "functions": [
+      {
+       "address": "0x00d1d6",
+       "name": "SetupPlayer",
+       "size": 528
+      }
+     ],
+     "options": [],
+     "sha256": "58c22d9d57c3d0db0738438274e03faab01d231e9ffc10e533047e293d478a21",
+     "size": 528,
+     "source": "src/player/setup_player.c"
+    },
+    {
+     "address": "0x0122e4",
+     "functions": [
+      {
+       "address": "0x0122e4",
+       "name": "OpenSchoolBook",
+       "size": 62
+      },
+      {
+       "address": "0x012322",
+       "name": "ProcessSleep",
+       "size": 834
+      }
+     ],
+     "options": [],
+     "sha256": "b876edb43d4fbabc9285ebd6ccc0d2dffa8b99c356b19508a35817e2701c42ad",
+     "size": 896,
+     "source": "src/player/sleep.c"
+    },
+    {
+     "address": "0x00efec",
+     "functions": [
+      {
+       "address": "0x00efec",
+       "name": "func_00f00c",
+       "size": 630
+      },
+      {
+       "address": "0x00f262",
+       "name": "func_00f282",
+       "size": 782
+      }
+     ],
+     "options": [],
+     "sha256": "0edb6a1fb6430a63a2522bbee0227956cb69516cedde3231cac1056da72d9508",
+     "size": 1412,
+     "source": "src/player/sprite_movement.c"
+    },
+    {
+     "address": "0x00f7dc",
+     "functions": [
+      {
+       "address": "0x00f7dc",
+       "name": "SetToejamFalling",
+       "size": 226
+      },
+      {
+       "address": "0x00f8be",
+       "name": "func_00f8de",
+       "size": 142
+      },
+      {
+       "address": "0x00f94c",
+       "name": "func_00f96c",
+       "size": 292
+      }
+     ],
+     "options": [],
+     "sha256": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+     "size": 660,
+     "source": "src/player/start_falling.c"
+    },
+    {
+     "address": "0x011a5c",
+     "functions": [
+      {
+       "address": "0x011a5c",
+       "name": "func_011a7c",
+       "size": 68
+      }
+     ],
+     "options": [],
+     "sha256": "c7efa71b8b811b6faf7863925e88a85b6b5af8f507810bef8ea24e3dd7912273",
+     "size": 68,
+     "source": "src/player/start_motion_mode.c"
+    },
+    {
+     "address": "0x01aec2",
+     "functions": [
+      {
+       "address": "0x01aec2",
+       "name": "func_01af04",
+       "size": 180
+      }
+     ],
+     "options": [],
+     "sha256": "b4470d7adca9ee147d0270dfba5e3adc250205f22dee4365cb5465d2d25e1ed6",
+     "size": 180,
+     "source": "src/player/steering.c"
+    },
+    {
+     "address": "0x01afec",
+     "functions": [
+      {
+       "address": "0x01afec",
+       "name": "func_01b02e",
+       "size": 74
+      },
+      {
+       "address": "0x01b036",
+       "name": "func_01b078",
+       "size": 50
+      }
+     ],
+     "options": [],
+     "sha256": "b5e646577a976a78ecfebacab57f6a1d130b844487d421112fa23636a0b346c1",
+     "size": 124,
+     "source": "src/player/target_motion_helpers.c"
+    },
+    {
+     "address": "0x01a9de",
+     "functions": [
+      {
+       "address": "0x01a9de",
+       "name": "func_01aa20",
+       "size": 1138
+      },
+      {
+       "address": "0x01ae50",
+       "name": "func_01ae92",
+       "size": 114
+      }
+     ],
+     "options": [],
+     "sha256": "bb0da769ee8a5b3985b2c8aef0ad531d4b501ac3fec61cc1003f352257d9d08b",
+     "size": 1252,
+     "source": "src/player/targeting.c"
+    },
+    {
+     "address": "0x014ffe",
+     "functions": [
+      {
+       "address": "0x014ffe",
+       "name": "func_01502e",
+       "size": 282
+      },
+      {
+       "address": "0x015118",
+       "name": "func_015148",
+       "size": 322
+      },
+      {
+       "address": "0x01525a",
+       "name": "func_01528a",
+       "size": 56
+      },
+      {
+       "address": "0x015292",
+       "name": "EatYummyFood",
+       "size": 52
+      },
+      {
+       "address": "0x0152c6",
+       "name": "EatYuckyFood",
+       "size": 52
+      },
+      {
+       "address": "0x0152fa",
+       "name": "EatFudgeSundae",
+       "size": 40
+      },
+      {
+       "address": "0x015322",
+       "name": "func_015352",
+       "size": 668
+      },
+      {
+       "address": "0x0155be",
+       "name": "func_0155ee",
+       "size": 188
+      },
+      {
+       "address": "0x01567a",
+       "name": "func_0156aa",
+       "size": 426
+      },
+      {
+       "address": "0x015824",
+       "name": "ReducePresentTimer",
+       "size": 340
+      },
+      {
+       "address": "0x015978",
+       "name": "func_0159a8",
+       "size": 144
+      },
+      {
+       "address": "0x015a08",
+       "name": "func_015a38",
+       "size": 302
+      }
+     ],
+     "options": [],
+     "sha256": "204557a0651ee4534620272fe1a00f4600b3acbd2a5a093534b2f2fea26d1a5c",
+     "size": 2872,
+     "source": "src/presents/item_updates.c"
+    },
+    {
+     "address": "0x014248",
+     "functions": [
+      {
+       "address": "0x014248",
+       "name": "SetupPresentIdentities",
+       "size": 150
+      },
+      {
+       "address": "0x0142de",
+       "name": "SetupInitialInventory",
+       "size": 216
+      },
+      {
+       "address": "0x0143b6",
+       "name": "func_0143e6",
+       "size": 192
+      },
+      {
+       "address": "0x014476",
+       "name": "func_0144a6",
+       "size": 164
+      },
+      {
+       "address": "0x01451a",
+       "name": "func_01454a",
+       "size": 48
+      },
+      {
+       "address": "0x01454a",
+       "name": "LoadLevel2AndUp",
+       "size": 726
+      },
+      {
+       "address": "0x014820",
+       "name": "func_014850",
+       "size": 698
+      },
+      {
+       "address": "0x014ada",
+       "name": "SelectRandomPresent",
+       "size": 134
+      },
+      {
+       "address": "0x014b60",
+       "name": "PlaceStuffInLevel",
+       "size": 646
+      }
+     ],
+     "options": [],
+     "sha256": "c38299e654b7759e8b624d2be2d5a92ce43bf78f23182240eb89b2a1394d1357",
+     "size": 2974,
+     "source": "src/presents/level_item_setup.c"
+    },
+    {
+     "address": "0x015b36",
+     "functions": [
+      {
+       "address": "0x015b36",
+       "name": "func_015b66",
+       "size": 190
+      },
+      {
+       "address": "0x015bf4",
+       "name": "OpenDecoy",
+       "size": 302
+      },
+      {
+       "address": "0x015d22",
+       "name": "func_015d52",
+       "size": 84
+      },
+      {
+       "address": "0x015d76",
+       "name": "func_015da6",
+       "size": 64
+      },
+      {
+       "address": "0x015db6",
+       "name": "func_015de6",
+       "size": 192
+      },
+      {
+       "address": "0x015e76",
+       "name": "PresentIsDoorway",
+       "size": 334
+      },
+      {
+       "address": "0x015fc4",
+       "name": "func_015ff4",
+       "size": 164
+      },
+      {
+       "address": "0x016068",
+       "name": "func_016098",
+       "size": 274
+      },
+      {
+       "address": "0x01617a",
+       "name": "func_0161aa",
+       "size": 580
+      },
+      {
+       "address": "0x0163be",
+       "name": "PerformPromotion",
+       "size": 610
+      },
+      {
+       "address": "0x016620",
+       "name": "BummerLifePromo",
+       "size": 658
+      },
+      {
+       "address": "0x0168b2",
+       "name": "func_0168e2",
+       "size": 256
+      },
+      {
+       "address": "0x0169b2",
+       "name": "PresentIsRainCloud",
+       "size": 232
+      },
+      {
+       "address": "0x016a9a",
+       "name": "func_016aca",
+       "size": 458
+      },
+      {
+       "address": "0x016c64",
+       "name": "OpenBoomBox",
+       "size": 256
+      },
+      {
+       "address": "0x016d64",
+       "name": "func_016d94",
+       "size": 236
+      },
+      {
+       "address": "0x016e50",
+       "name": "ProcessPresents",
+       "size": 116
+      },
+      {
+       "address": "0x016ec4",
+       "name": "OpenSelectedPresent",
+       "size": 864
+      },
+      {
+       "address": "0x017224",
+       "name": "SetupSelectedPresent",
+       "size": 592
+      }
+     ],
+     "options": [],
+     "sha256": "a7f23d58ac5df5c59c57fa66c32b2a8a45affccdf3fa8578832ded721668c1d5",
+     "size": 6462,
+     "source": "src/presents/present_effects.c"
+    },
+    {
+     "address": "0x022b7e",
+     "functions": [
+      {
+       "address": "0x022b7e",
+       "name": "func_022bf6",
+       "size": 130
+      },
+      {
+       "address": "0x022c00",
+       "name": "func_022c78",
+       "size": 112
+      },
+      {
+       "address": "0x022c70",
+       "name": "CheckForTelephone",
+       "size": 810
+      }
+     ],
+     "options": [],
+     "sha256": "a2ebe7e9fb73563f5cd26ec8b27157671c66c0d1ab127348abc9b6242a142c81",
+     "size": 1052,
+     "source": "src/presents/telephone.c"
+    },
+    {
+     "address": "0x00cafc",
+     "functions": [
+      {
+       "address": "0x00cafc",
+       "name": "ClearLOC_00FFB8DA",
+       "size": 56
+      }
+     ],
+     "options": [],
+     "sha256": "7fa1d41084444852eafc92c120b55dfabd0e1e663648805f26f39590e05ab578",
+     "size": 56,
+     "source": "src/sprites/copy_sprite_tiles.c"
+    },
+    {
+     "address": "0x00bfdc",
+     "functions": [
+      {
+       "address": "0x00bfdc",
+       "name": "Process2FEntityBit0",
+       "size": 308
+      },
+      {
+       "address": "0x00c110",
+       "name": "Process2FEntityFlag",
+       "size": 64
+      }
+     ],
+     "options": [],
+     "sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+     "size": 372,
+     "source": "src/sprites/entity_depth.c"
+    },
+    {
+     "address": "0x00d1a4",
+     "functions": [
+      {
+       "address": "0x00d1a4",
+       "name": "SetRAMIndexes",
+       "size": 50
+      }
+     ],
+     "options": [],
+     "sha256": "bae2558fd1cf3a31d7d97edf027973a1f469d83538df66fce2eecdee0efbef56",
+     "size": 50,
+     "source": "src/sprites/entity_indexes.c"
+    },
+    {
+     "address": "0x00d3e6",
+     "functions": [
+      {
+       "address": "0x00d3e6",
+       "name": "func_00d406",
+       "size": 384
+      },
+      {
+       "address": "0x00d566",
+       "name": "func_00d586",
+       "size": 58
+      },
+      {
+       "address": "0x00d5a0",
+       "name": "func_00d5c0",
+       "size": 58
+      },
+      {
+       "address": "0x00d5da",
+       "name": "func_00d5fa",
+       "size": 24
+      },
+      {
+       "address": "0x00d5f2",
+       "name": "func_00d612",
+       "size": 30
+      },
+      {
+       "address": "0x00d610",
+       "name": "func_00d630",
+       "size": 130
+      },
+      {
+       "address": "0x00d692",
+       "name": "func_00d6b2",
+       "size": 94
+      },
+      {
+       "address": "0x00d6f0",
+       "name": "Process2FEntityBit6",
+       "size": 102
+      },
+      {
+       "address": "0x00d756",
+       "name": "func_00d776",
+       "size": 164
+      },
+      {
+       "address": "0x00d7fa",
+       "name": "OpeningPresents7",
+       "size": 216
+      },
+      {
+       "address": "0x00d8d2",
+       "name": "func_00d8f2",
+       "size": 18
+      },
+      {
+       "address": "0x00d8e4",
+       "name": "func_00d904",
+       "size": 108
+      },
+      {
+       "address": "0x00d950",
+       "name": "func_00d970",
+       "size": 108
+      }
+     ],
+     "options": [],
+     "sha256": "6da051475558af78958286d809b44263824b5c7dabc5a0e27f2d92c64660566c",
+     "size": 1494,
+     "source": "src/sprites/entity_slots_tu14.c"
+    },
+    {
+     "address": "0x00c150",
+     "functions": [
+      {
+       "address": "0x00c150",
+       "name": "func_00c170",
+       "size": 210
+      },
+      {
+       "address": "0x00c222",
+       "name": "func_00c242",
+       "size": 696
+      },
+      {
+       "address": "0x00c4da",
+       "name": "func_00c4fa",
+       "size": 438
+      },
+      {
+       "address": "0x00c690",
+       "name": "func_00c6b0",
+       "size": 248
+      }
+     ],
+     "options": [],
+     "sha256": "6001250abf14628273f4cac147867f88a6e61402b9bd466f05d442a7acd1d719",
+     "size": 1592,
+     "source": "src/sprites/entity_sprite_order.c"
+    },
+    {
+     "address": "0x00bdb8",
+     "functions": [
+      {
+       "address": "0x00bdb8",
+       "name": "func_00bdd8",
+       "size": 218
+      },
+      {
+       "address": "0x00be92",
+       "name": "func_00beb2",
+       "size": 276
+      },
+      {
+       "address": "0x00bfa6",
+       "name": "func_00bfc6",
+       "size": 54
+      }
+     ],
+     "options": [],
+     "sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+     "size": 548,
+     "source": "src/sprites/entity_visibility.c"
+    },
+    {
+     "address": "0x00d132",
+     "functions": [
+      {
+       "address": "0x00d132",
+       "name": "func_00d152",
+       "size": 114
+      }
+     ],
+     "options": [],
+     "sha256": "bd1ef46f7a3aaca9a5ab1d27c35f413e3a61af36aec13f539efdfbc4e9768d3a",
+     "size": 114,
+     "source": "src/sprites/hide_player_sprites.c"
+    },
+    {
+     "address": "0x00d05a",
+     "functions": [
+      {
+       "address": "0x00d05a",
+       "name": "func_00d07a",
+       "size": 216
+      }
+     ],
+     "options": [],
+     "sha256": "282d0d72c6c1765cee6a12c069da8c9243e8369dfd30351f4209da863f415a1e",
+     "size": 216,
+     "source": "src/sprites/link_player_sprites.c"
+    },
+    {
+     "address": "0x00ced0",
+     "functions": [
+      {
+       "address": "0x00ced0",
+       "name": "SpriteLoadingStuff",
+       "size": 202
+      }
+     ],
+     "options": [],
+     "sha256": "86130df95800b5b4c7661d71125cb667762b42ec9c8bacda73ef9013b0439c2a",
+     "size": 202,
+     "source": "src/sprites/load_sprites.c"
+    },
+    {
+     "address": "0x00cf9a",
+     "functions": [
+      {
+       "address": "0x00cf9a",
+       "name": "func_00cfba",
+       "size": 64
+      }
+     ],
+     "options": [],
+     "sha256": "b3e3a7ddef1b1d6b905d63826e4981048e4ccf276a1b092a8b4b51028398f844",
+     "size": 64,
+     "source": "src/sprites/select_first_link.c"
+    },
+    {
+     "address": "0x00ce62",
+     "functions": [
+      {
+       "address": "0x00ce62",
+       "name": "SetSprite",
+       "size": 110
+      }
+     ],
+     "options": [],
+     "sha256": "1bf175b4ae9f2d0de4a9a1fe44ffdf302ae54953591a91a07ea7ad9184c8a59e",
+     "size": 110,
+     "source": "src/sprites/set_sprite.c"
+    },
+    {
+     "address": "0x00cfda",
+     "functions": [
+      {
+       "address": "0x00cfda",
+       "name": "func_00cffa",
+       "size": 20
+      },
+      {
+       "address": "0x00cfee",
+       "name": "func_00d00e",
+       "size": 20
+      },
+      {
+       "address": "0x00d002",
+       "name": "func_00d022",
+       "size": 44
+      },
+      {
+       "address": "0x00d02e",
+       "name": "func_00d04e",
+       "size": 44
+      }
+     ],
+     "options": [],
+     "sha256": "c4313bf9635c4c345e6a6fa5f305c1db83384404afe2ed96eefe367b5faba5ca",
+     "size": 128,
+     "source": "src/sprites/sprite_links_vdp.c"
+    },
+    {
+     "address": "0x00c83a",
+     "functions": [
+      {
+       "address": "0x00c83a",
+       "name": "func_00c85a",
+       "size": 146
+      },
+      {
+       "address": "0x00c8cc",
+       "name": "func_00c8ec",
+       "size": 52
+      }
+     ],
+     "options": [],
+     "sha256": "1c268c8f9559af6b854b516d73bec297a27bd02de250270e6e099f1521240af7",
+     "size": 198,
+     "source": "src/sprites/sprite_pixel_masks.c"
+    },
+    {
+     "address": "0x00b0ac",
+     "functions": [
+      {
+       "address": "0x00b0ac",
+       "name": "func_00b0cc",
+       "size": 192
+      },
+      {
+       "address": "0x00b16c",
+       "name": "func_00b18c",
+       "size": 600
+      }
+     ],
+     "options": [],
+     "sha256": "01dfb7654d59718ecf78b77fbc0d10b2c3cf8046547869e784d5b6042b53979d",
+     "size": 792,
+     "source": "src/ui/hud_health_update.c"
+    },
+    {
+     "address": "0x00aa3a",
+     "functions": [
+      {
+       "address": "0x00aa3a",
+       "name": "func_00aa5a",
+       "size": 356
+      },
+      {
+       "address": "0x00ab9e",
+       "name": "func_00abbe",
+       "size": 268
+      },
+      {
+       "address": "0x00acaa",
+       "name": "func_00acca",
+       "size": 192
+      },
+      {
+       "address": "0x00ad6a",
+       "name": "func_00ad8a",
+       "size": 262
+      },
+      {
+       "address": "0x00ae70",
+       "name": "func_00ae90",
+       "size": 40
+      }
+     ],
+     "options": [],
+     "sha256": "031623d7105584e4411bf1b4387cafe1e64277b95764a39a2181b5ccf986003f",
+     "size": 1118,
+     "source": "src/ui/hud_initialization.c"
+    },
+    {
+     "address": "0x00b62a",
+     "functions": [
+      {
+       "address": "0x00b62a",
+       "name": "func_00b64a",
+       "size": 260
+      },
+      {
+       "address": "0x00b72e",
+       "name": "DrawHUD",
+       "size": 330
+      },
+      {
+       "address": "0x00b878",
+       "name": "GetScoreForPromo",
+       "size": 54
+      },
+      {
+       "address": "0x00b8ae",
+       "name": "CheckPromotionScore",
+       "size": 142
+      },
+      {
+       "address": "0x00b93c",
+       "name": "func_00b95c",
+       "size": 326
+      },
+      {
+       "address": "0x00ba82",
+       "name": "func_00baa2",
+       "size": 246
+      },
+      {
+       "address": "0x00bb78",
+       "name": "SetupTheMainGame",
+       "size": 176
+      },
+      {
+       "address": "0x00bc28",
+       "name": "HealthAndLivesChecks",
+       "size": 400
+      }
+     ],
+     "options": [],
+     "sha256": "5f4e0ae1a1fe8f5a7b592b752b74cb338ef3a56a0b563d1b4eb93ca90215b11a",
+     "size": 1934,
+     "source": "src/ui/hud_status.c"
+    },
+    {
+     "address": "0x008b62",
+     "functions": [
+      {
+       "address": "0x008b62",
+       "name": "ForceTextBackgroundColorToBlack",
+       "size": 38
+      },
+      {
+       "address": "0x008b88",
+       "name": "func_008b98",
+       "size": 42
+      },
+      {
+       "address": "0x008bb2",
+       "name": "SetVHBlankFlag2",
+       "size": 10
+      },
+      {
+       "address": "0x008bbc",
+       "name": "ClearVHBlankFlag2",
+       "size": 24
+      },
+      {
+       "address": "0x008bd4",
+       "name": "func_008be4",
+       "size": 120
+      },
+      {
+       "address": "0x008c4c",
+       "name": "func_008c5c",
+       "size": 28
+      },
+      {
+       "address": "0x008c68",
+       "name": "func_008c78",
+       "size": 128
+      },
+      {
+       "address": "0x008ce8",
+       "name": "func_008cf8",
+       "size": 348
+      },
+      {
+       "address": "0x008e44",
+       "name": "SetMailOrderPresents",
+       "size": 230
+      },
+      {
+       "address": "0x008f2a",
+       "name": "DrawInventory",
+       "size": 242
+      },
+      {
+       "address": "0x00901c",
+       "name": "func_00903c",
+       "size": 136
+      },
+      {
+       "address": "0x0090a4",
+       "name": "func_0090c4",
+       "size": 34
+      },
+      {
+       "address": "0x0090c6",
+       "name": "func_0090e6",
+       "size": 30
+      },
+      {
+       "address": "0x0090e4",
+       "name": "ToggleInventory",
+       "size": 286
+      },
+      {
+       "address": "0x009202",
+       "name": "CheckIfOpenForBoth",
+       "size": 292
+      },
+      {
+       "address": "0x009326",
+       "name": "RandomizeInventory",
+       "size": 100
+      },
+      {
+       "address": "0x00938a",
+       "name": "RandomizePresents",
+       "size": 274
+      },
+      {
+       "address": "0x00949c",
+       "name": "ProcessInventory",
+       "size": 972
+      },
+      {
+       "address": "0x009868",
+       "name": "CheckBButton",
+       "size": 110
+      },
+      {
+       "address": "0x0098d6",
+       "name": "func_0098f6",
+       "size": 62
+      },
+      {
+       "address": "0x009914",
+       "name": "func_009934",
+       "size": 62
+      },
+      {
+       "address": "0x009952",
+       "name": "func_009972",
+       "size": 80
+      },
+      {
+       "address": "0x0099a2",
+       "name": "OpenPresent",
+       "size": 312
+      },
+      {
+       "address": "0x009ada",
+       "name": "func_009afa",
+       "size": 252
+      },
+      {
+       "address": "0x009bd6",
+       "name": "func_009bf6",
+       "size": 312
+      },
+      {
+       "address": "0x009d0e",
+       "name": "func_009d2e",
+       "size": 256
+      },
+      {
+       "address": "0x009e0e",
+       "name": "func_009e2e",
+       "size": 348
+      },
+      {
+       "address": "0x009f6a",
+       "name": "func_009f8a",
+       "size": 52
+      },
+      {
+       "address": "0x009f9e",
+       "name": "func_009fbe",
+       "size": 150
+      },
+      {
+       "address": "0x00a034",
+       "name": "func_00a054",
+       "size": 150
+      },
+      {
+       "address": "0x00a0ca",
+       "name": "func_00a0ea",
+       "size": 226
+      },
+      {
+       "address": "0x00a1ac",
+       "name": "func_00a1cc",
+       "size": 276
+      },
+      {
+       "address": "0x00a2c0",
+       "name": "func_00a2e0",
+       "size": 192
+      },
+      {
+       "address": "0x00a380",
+       "name": "OpeningPresents4",
+       "size": 106
+      },
+      {
+       "address": "0x00a3ea",
+       "name": "LoadPresentsIntoInventory",
+       "size": 522
+      },
+      {
+       "address": "0x00a5f4",
+       "name": "func_00a614",
+       "size": 362
+      },
+      {
+       "address": "0x00a75e",
+       "name": "func_00a77e",
+       "size": 732
+      }
+     ],
+     "options": [],
+     "sha256": "957bb13b6a792537d34db76028b72cb591e244d3214f0c842e410534d260024d",
+     "size": 7896,
+     "source": "src/ui/inventory.c"
+    },
+    {
+     "address": "0x01daee",
+     "functions": [
+      {
+       "address": "0x01daee",
+       "name": "func_01db30",
+       "size": 234
+      },
+      {
+       "address": "0x01dbd8",
+       "name": "GamePaused",
+       "size": 718
+      }
+     ],
+     "options": [],
+     "sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+     "size": 952,
+     "source": "src/ui/pause.c"
+    }
+   ],
+   "image_sha256": [
+    "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+    "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228"
+   ],
+   "raw_words": 0,
+   "receipt_sha256": [
+    "8dfa51831f24f2e2c4898f96cd4751db4a13fe2a01c014fa9b8df363ca63127d",
+    "056b27f225d0b3227fad175bc6a160d8e6217e2784efdeaa973fc9726b8cc95f"
+   ],
+   "result": "PASS"
+  },
+  "rev02": {
+   "c_units": [
+    {
+     "address": "0x0004dc",
+     "functions": [
+      {
+       "address": "0x0004dc",
+       "name": "DrawLevelGraphics",
+       "size": 112
+      },
+      {
+       "address": "0x00054c",
+       "name": "ClearSkipVHBlankFlags",
+       "size": 14
+      },
+      {
+       "address": "0x00055a",
+       "name": "SetSkipVHBlankFlags",
+       "size": 18
+      },
+      {
+       "address": "0x00056c",
+       "name": "GetSkipVBlankFlag",
+       "size": 12
+      },
+      {
+       "address": "0x000578",
+       "name": "WaitForNextVBlank",
+       "size": 38
+      },
+      {
+       "address": "0x00059e",
+       "name": "func_00059e",
+       "size": 78
+      },
+      {
+       "address": "0x0005ec",
+       "name": "HandleVBlank",
+       "size": 620
+      },
+      {
+       "address": "0x000858",
+       "name": "HandleHBlank",
+       "size": 224
+      },
+      {
+       "address": "0x000938",
+       "name": "GetPlayerInput",
+       "size": 236
+      },
+      {
+       "address": "0x000a24",
+       "name": "CheckStartButton",
+       "size": 74
+      },
+      {
+       "address": "0x000a6e",
+       "name": "ProcessInput",
+       "size": 372
+      },
+      {
+       "address": "0x000be2",
+       "name": "func_000be2",
+       "size": 76
+      },
+      {
+       "address": "0x000c2e",
+       "name": "func_000c2e",
+       "size": 336
+      },
+      {
+       "address": "0x000d7e",
+       "name": "func_000d7e",
+       "size": 360
+      },
+      {
+       "address": "0x000ee6",
+       "name": "func_000ee6",
+       "size": 208
+      },
+      {
+       "address": "0x000fb6",
+       "name": "func_000fb6",
+       "size": 164
+      },
+      {
+       "address": "0x00105a",
+       "name": "func_00105a",
+       "size": 368
+      },
+      {
+       "address": "0x0011ca",
+       "name": "DelayRoutine1",
+       "size": 14
+      },
+      {
+       "address": "0x0011d8",
+       "name": "InitialiseTheZ80",
+       "size": 138
+      },
+      {
+       "address": "0x001262",
+       "name": "func_001262",
+       "size": 36
+      },
+      {
+       "address": "0x001286",
+       "name": "FurtherInitialisation",
+       "size": 776
+      }
+     ],
+     "options": [],
+     "sha256": "6094047abd0bbca963fe92f54249a55b04e17dec8449abc61217e8a0aa03a9a6",
+     "size": 4274,
+     "source": "src/core/main_loop.c"
+    },
+    {
+     "address": "0x00158e",
+     "functions": [
+      {
+       "address": "0x00158e",
+       "name": "ToggleLOC_00FF8196",
+       "size": 26
+      }
+     ],
+     "options": [],
+     "sha256": "00aac6d1b7d34b1f77806365c2856eb571999c297ae110d1a05888d57a0e078f",
+     "size": 26,
+     "source": "src/core/toggle_camera_flag.c"
+    },
+    {
+     "address": "0x00035c",
+     "functions": [
+      {
+       "address": "0x00035c",
+       "name": "ResetVDP",
+       "size": 162
+      },
+      {
+       "address": "0x0003fe",
+       "name": "VDPInitialisation",
+       "size": 12
+      },
+      {
+       "address": "0x00040a",
+       "name": "MovePadInputIntoD0",
+       "size": 96
+      }
+     ],
+     "options": [],
+     "sha256": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+     "size": 270,
+     "source": "src/core/vdp_startup.c"
+    },
+    {
+     "address": "0x018834",
+     "functions": [
+      {
+       "address": "0x018834",
+       "name": "func_018834",
+       "size": 186
+      },
+      {
+       "address": "0x0188ee",
+       "name": "func_0188ee",
+       "size": 382
+      },
+      {
+       "address": "0x018a6c",
+       "name": "func_018a6c",
+       "size": 520
+      },
+      {
+       "address": "0x018c74",
+       "name": "func_018c74",
+       "size": 110
+      },
+      {
+       "address": "0x018ce2",
+       "name": "func_018ce2",
+       "size": 194
+      }
+     ],
+     "options": [],
+     "sha256": "b99e459c23af5e9ffd9d1234ed6204ef327d74eb7d6c7e1f2d3b20cede00f57a",
+     "size": 1392,
+     "source": "src/earthlings/abilities_and_sleep.c"
+    },
+    {
+     "address": "0x01a3a4",
+     "functions": [
+      {
+       "address": "0x01a3a4",
+       "name": "func_01a3a4",
+       "size": 894
+      },
+      {
+       "address": "0x01a722",
+       "name": "func_01a722",
+       "size": 206
+      },
+      {
+       "address": "0x01a7f0",
+       "name": "func_01a7f0",
+       "size": 176
+      },
+      {
+       "address": "0x01a8a0",
+       "name": "func_01a8a0",
+       "size": 384
+      }
+     ],
+     "options": [],
+     "sha256": "db48645347e4d4955bd4b753848a647d27861f310142bcfcbba070f5520e6218",
+     "size": 1660,
+     "source": "src/earthlings/animation_behaviours.c"
+    },
+    {
+     "address": "0x0174b6",
+     "functions": [
+      {
+       "address": "0x0174b6",
+       "name": "func_0174b6",
+       "size": 360
+      }
+     ],
+     "options": [],
+     "sha256": "2e44a550c5a9511fad97e8bf7e24eceed7997f98d5e331e0ac054d1e3791b254",
+     "size": 360,
+     "source": "src/earthlings/bank_expiry.c"
+    },
+    {
+     "address": "0x019d3e",
+     "functions": [
+      {
+       "address": "0x019d3e",
+       "name": "func_019d3e",
+       "size": 212
+      },
+      {
+       "address": "0x019e12",
+       "name": "func_019e12",
+       "size": 252
+      },
+      {
+       "address": "0x019f0e",
+       "name": "func_019f0e",
+       "size": 1174
+      }
+     ],
+     "options": [],
+     "sha256": "451f0972c442794ba83448a7499e2d0ffbca32c4e6ffb0c6d2223c34d7b23be4",
+     "size": 1638,
+     "source": "src/earthlings/behaviour_tu28.c"
+    },
+    {
+     "address": "0x018e7e",
+     "functions": [
+      {
+       "address": "0x018e7e",
+       "name": "DamageEarthling",
+       "size": 160
+      },
+      {
+       "address": "0x018f1e",
+       "name": "func_018f1e",
+       "size": 188
+      },
+      {
+       "address": "0x018fda",
+       "name": "DoVikingAbility",
+       "size": 172
+      },
+      {
+       "address": "0x019086",
+       "name": "func_019086",
+       "size": 138
+      },
+      {
+       "address": "0x019110",
+       "name": "ProcessEarthlings",
+       "size": 92
+      }
+     ],
+     "options": [],
+     "sha256": "0957bf3f5fe719697c1f72b7be3099f51bda5ddc6b1eef922bde5eb1e145b40c",
+     "size": 750,
+     "source": "src/earthlings/damage_and_processing.c"
+    },
+    {
+     "address": "0x01975c",
+     "functions": [
+      {
+       "address": "0x01975c",
+       "name": "func_01975c",
+       "size": 280
+      },
+      {
+       "address": "0x019874",
+       "name": "AI_GenericEnemyThink",
+       "size": 1226
+      }
+     ],
+     "options": [],
+     "sha256": "34430ed665b482a4bcfba0227e6a3c15ed4926eb5b66649a53f44fbd55a89b49",
+     "size": 1506,
+     "source": "src/earthlings/generic_enemy_tu27.c"
+    },
+    {
+     "address": "0x0196b0",
+     "functions": [
+      {
+       "address": "0x0196b0",
+       "name": "func_0196b0",
+       "size": 172
+      }
+     ],
+     "options": [],
+     "sha256": "af1e840ea54e212248ec0466fe238e9dc2207d23867ea90a1decd8ef23bd0a9b",
+     "size": 172,
+     "source": "src/earthlings/movement_decision.c"
+    },
+    {
+     "address": "0x01761e",
+     "functions": [
+      {
+       "address": "0x01761e",
+       "name": "CheckEarthlingOverlap",
+       "size": 252
+      },
+      {
+       "address": "0x01771a",
+       "name": "func_01771a",
+       "size": 178
+      },
+      {
+       "address": "0x0177cc",
+       "name": "FindSpawnLocationForEarthling",
+       "size": 712
+      },
+      {
+       "address": "0x017a94",
+       "name": "func_017a94",
+       "size": 52
+      },
+      {
+       "address": "0x017ac8",
+       "name": "func_017ac8",
+       "size": 1102
+      },
+      {
+       "address": "0x017f16",
+       "name": "SetupInitialEarthlings",
+       "size": 102
+      },
+      {
+       "address": "0x017f7c",
+       "name": "SetEarthlingState",
+       "size": 210
+      },
+      {
+       "address": "0x01804e",
+       "name": "func_01804e",
+       "size": 176
+      },
+      {
+       "address": "0x0180fe",
+       "name": "func_0180fe",
+       "size": 78
+      },
+      {
+       "address": "0x01814c",
+       "name": "func_01814c",
+       "size": 478
+      },
+      {
+       "address": "0x01832a",
+       "name": "LoadInEarthlings",
+       "size": 354
+      }
+     ],
+     "options": [],
+     "sha256": "f1586b6d358341ca952ef3e3006a4f600d2eae2c04067204e9d4bbee228f26f6",
+     "size": 3694,
+     "source": "src/earthlings/spawning_and_loading.c"
+    },
+    {
+     "address": "0x01916c",
+     "functions": [
+      {
+       "address": "0x01916c",
+       "name": "func_01916c",
+       "size": 102
+      },
+      {
+       "address": "0x0191d2",
+       "name": "func_0191d2",
+       "size": 552
+      },
+      {
+       "address": "0x0193fa",
+       "name": "func_0193fa",
+       "size": 50
+      },
+      {
+       "address": "0x01942c",
+       "name": "func_01942c",
+       "size": 94
+      },
+      {
+       "address": "0x01948a",
+       "name": "func_01948a",
+       "size": 550
+      }
+     ],
+     "options": [],
+     "sha256": "ac91d390c39089a32c514345703971974990e802d8aa67d978d22ff8c58487f4",
+     "size": 1348,
+     "source": "src/earthlings/state_dispatch_tu26.c"
+    },
+    {
+     "address": "0x013a04",
+     "functions": [
+      {
+       "address": "0x013a04",
+       "name": "ProcessElevator",
+       "size": 58
+      }
+     ],
+     "options": [],
+     "sha256": "e01cdbfe71d97e114bfbbe8657cf74f5f72a7fe65293843adfbeb1af0ba6d0d0",
+     "size": 58,
+     "source": "src/elevator/elevator_query.c"
+    },
+    {
+     "address": "0x012694",
+     "functions": [
+      {
+       "address": "0x012694",
+       "name": "func_012694",
+       "size": 206
+      },
+      {
+       "address": "0x012762",
+       "name": "func_012762",
+       "size": 58
+      },
+      {
+       "address": "0x01279c",
+       "name": "LOAD_ELEVATOR_1",
+       "size": 32
+      },
+      {
+       "address": "0x0127bc",
+       "name": "SetupElevator",
+       "size": 380
+      },
+      {
+       "address": "0x012938",
+       "name": "SetupInitialElevator",
+       "size": 60
+      },
+      {
+       "address": "0x012974",
+       "name": "func_012974",
+       "size": 226
+      },
+      {
+       "address": "0x012a56",
+       "name": "func_012a56",
+       "size": 298
+      },
+      {
+       "address": "0x012b80",
+       "name": "func_012b80",
+       "size": 396
+      },
+      {
+       "address": "0x012d0c",
+       "name": "func_012d0c",
+       "size": 172
+      },
+      {
+       "address": "0x012db8",
+       "name": "func_012db8",
+       "size": 112
+      },
+      {
+       "address": "0x012e28",
+       "name": "LoadFinalLevelMap",
+       "size": 268
+      },
+      {
+       "address": "0x012f34",
+       "name": "func_012f34",
+       "size": 258
+      },
+      {
+       "address": "0x013036",
+       "name": "func_013036",
+       "size": 298
+      },
+      {
+       "address": "0x013160",
+       "name": "func_013160",
+       "size": 174
+      },
+      {
+       "address": "0x01320e",
+       "name": "func_01320e",
+       "size": 96
+      },
+      {
+       "address": "0x01326e",
+       "name": "func_01326e",
+       "size": 482
+      },
+      {
+       "address": "0x013450",
+       "name": "func_013450",
+       "size": 190
+      },
+      {
+       "address": "0x01350e",
+       "name": "ElevatorRideVBlank",
+       "size": 98
+      },
+      {
+       "address": "0x013570",
+       "name": "func_013570",
+       "size": 414
+      },
+      {
+       "address": "0x01370e",
+       "name": "func_01370e",
+       "size": 120
+      },
+      {
+       "address": "0x013786",
+       "name": "func_013786",
+       "size": 638
+      }
+     ],
+     "options": [],
+     "sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+     "size": 4976,
+     "source": "src/elevator/elevator_scene.c"
+    },
+    {
+     "address": "0x013a3e",
+     "functions": [
+      {
+       "address": "0x013a3e",
+       "name": "func_013a3e",
+       "size": 186
+      },
+      {
+       "address": "0x013af8",
+       "name": "func_013af8",
+       "size": 114
+      },
+      {
+       "address": "0x013b6a",
+       "name": "ProcessElevatorStep1",
+       "size": 972
+      },
+      {
+       "address": "0x013f36",
+       "name": "ProcessElevatorStep2",
+       "size": 614
+      },
+      {
+       "address": "0x01419c",
+       "name": "ProcessElevators",
+       "size": 10
+      }
+     ],
+     "options": [],
+     "sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+     "size": 1896,
+     "source": "src/elevator/elevator_transitions.c"
+    },
+    {
+     "address": "0x01c772",
+     "functions": [
+      {
+       "address": "0x01c772",
+       "name": "SetTomatoRainTomatoes",
+       "size": 68
+      }
+     ],
+     "options": [],
+     "sha256": "a50ddc7efbda20aaac2f7c443b0c32a8cd01aad6a87d2d195a05458509b561af",
+     "size": 68,
+     "source": "src/engine/random_counter.c"
+    },
+    {
+     "address": "0x02836c",
+     "functions": [
+      {
+       "address": "0x02836c",
+       "name": "func_02836c",
+       "size": 92
+      }
+     ],
+     "options": [],
+     "sha256": "9394842f37d066cf7c2b0fe0d0068d0171c71d964cfebde77a38b855a73accbc",
+     "size": 92,
+     "source": "src/engine/reset_sequence.c"
+    },
+    {
+     "address": "0x001eac",
+     "functions": [
+      {
+       "address": "0x001eac",
+       "name": "UpdateCameraX",
+       "size": 350
+      },
+      {
+       "address": "0x00200a",
+       "name": "func_00200a",
+       "size": 160
+      }
+     ],
+     "options": [],
+     "sha256": "f05bf44f0e26ae00c67d41eaa2a4a4418d87a537a11c70634d17e35804bb3577",
+     "size": 510,
+     "source": "src/graphics/camera_column_transfer.c"
+    },
+    {
+     "address": "0x00267a",
+     "functions": [
+      {
+       "address": "0x00267a",
+       "name": "func_00267a",
+       "size": 636
+      },
+      {
+       "address": "0x0028f6",
+       "name": "func_0028f6",
+       "size": 1396
+      }
+     ],
+     "options": [],
+     "sha256": "22031b87f71db1d0a466782e423c64c6e3ea68722154c275bfff085c9065bd61",
+     "size": 2032,
+     "source": "src/graphics/camera_follow.c"
+    },
+    {
+     "address": "0x00219c",
+     "functions": [
+      {
+       "address": "0x00219c",
+       "name": "func_00219c",
+       "size": 206
+      },
+      {
+       "address": "0x00226a",
+       "name": "TryUpdateCameraY",
+       "size": 104
+      },
+      {
+       "address": "0x0022d2",
+       "name": "TryUpdateCameraX",
+       "size": 104
+      },
+      {
+       "address": "0x00233a",
+       "name": "MoveCameraUp",
+       "size": 172
+      },
+      {
+       "address": "0x0023e6",
+       "name": "MoveCameraDown",
+       "size": 202
+      },
+      {
+       "address": "0x0024b0",
+       "name": "MoveCameraLeft",
+       "size": 172
+      },
+      {
+       "address": "0x00255c",
+       "name": "MoveCameraRight",
+       "size": 172
+      }
+     ],
+     "options": [],
+     "sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+     "size": 1132,
+     "source": "src/graphics/camera_motion.c"
+    },
+    {
+     "address": "0x0019ce",
+     "functions": [
+      {
+       "address": "0x0019ce",
+       "name": "UpdateCameraY",
+       "size": 378
+      },
+      {
+       "address": "0x001b48",
+       "name": "func_001b48",
+       "size": 96
+      }
+     ],
+     "options": [],
+     "sha256": "26a50471014f32d7a0e30d62732bd75ec114f035f32b733d0d551d3c351f3a7c",
+     "size": 474,
+     "source": "src/graphics/camera_row_transfer.c"
+    },
+    {
+     "address": "0x023086",
+     "functions": [
+      {
+       "address": "0x023086",
+       "name": "func_023086",
+       "size": 206
+      },
+      {
+       "address": "0x023154",
+       "name": "func_023154",
+       "size": 724
+      }
+     ],
+     "options": [],
+     "sha256": "fcd5d3ae68aad167741c336cc3ebd03cb1209557581af696122a17a3d1abf8cd",
+     "size": 930,
+     "source": "src/graphics/funkatron_scene.c"
+    },
+    {
+     "address": "0x0015a8",
+     "functions": [
+      {
+       "address": "0x0015a8",
+       "name": "func_0015a8",
+       "size": 106
+      },
+      {
+       "address": "0x001612",
+       "name": "func_001612",
+       "size": 94
+      },
+      {
+       "address": "0x001670",
+       "name": "func_001670",
+       "size": 98
+      }
+     ],
+     "options": [],
+     "sha256": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+     "size": 298,
+     "source": "src/graphics/metatile_words.c"
+    },
+    {
+     "address": "0x002e6a",
+     "functions": [
+      {
+       "address": "0x002e6a",
+       "name": "func_002e6a",
+       "size": 416
+      }
+     ],
+     "options": [],
+     "sha256": "7df2629826fcd72dec42f220b5e754eb68e964599a0b78be548d770c8aaca2fa",
+     "size": 416,
+     "source": "src/graphics/split_screen_wipe.c"
+    },
+    {
+     "address": "0x004a1a",
+     "functions": [
+      {
+       "address": "0x004a1a",
+       "name": "ChangeLevel",
+       "size": 866
+      },
+      {
+       "address": "0x004d7c",
+       "name": "LoadFinalLevel",
+       "size": 130
+      },
+      {
+       "address": "0x004dfe",
+       "name": "func_004dfe",
+       "size": 128
+      }
+     ],
+     "options": [],
+     "sha256": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+     "size": 1124,
+     "source": "src/map/change_level.c"
+    },
+    {
+     "address": "0x0141a6",
+     "functions": [
+      {
+       "address": "0x0141a6",
+       "name": "Map_DrawElevator",
+       "size": 210
+      }
+     ],
+     "options": [],
+     "sha256": "3136e95d0a18629a9dea2d08bd7b02ab0b741182e364634f2bd7337b7a54b215",
+     "size": 210,
+     "source": "src/map/elevator_icon.c"
+    },
+    {
+     "address": "0x0044e2",
+     "functions": [
+      {
+       "address": "0x0044e2",
+       "name": "func_0044e2",
+       "size": 374
+      },
+      {
+       "address": "0x004658",
+       "name": "GenerateLevelSeeds",
+       "size": 110
+      },
+      {
+       "address": "0x0046c6",
+       "name": "func_0046c6",
+       "size": 380
+      }
+     ],
+     "options": [],
+     "sha256": "fc032ea61eb1d8409a947f7e0cddb94a3f3294b853d1a00cc1de4decb007f64a",
+     "size": 864,
+     "source": "src/map/level_changes.c"
+    },
+    {
+     "address": "0x00334a",
+     "functions": [
+      {
+       "address": "0x00334a",
+       "name": "func_00334a",
+       "size": 698
+      },
+      {
+       "address": "0x003604",
+       "name": "func_003604",
+       "size": 996
+      },
+      {
+       "address": "0x0039e8",
+       "name": "func_0039e8",
+       "size": 718
+      },
+      {
+       "address": "0x003cb6",
+       "name": "func_003cb6",
+       "size": 1214
+      },
+      {
+       "address": "0x004174",
+       "name": "func_004174",
+       "size": 458
+      },
+      {
+       "address": "0x00433e",
+       "name": "func_00433e",
+       "size": 208
+      }
+     ],
+     "options": [],
+     "sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+     "size": 4292,
+     "source": "src/map/level_generation.c"
+    },
+    {
+     "address": "0x0077d8",
+     "functions": [
+      {
+       "address": "0x0077d8",
+       "name": "func_0077d8",
+       "size": 44
+      },
+      {
+       "address": "0x007804",
+       "name": "func_007804",
+       "size": 164
+      },
+      {
+       "address": "0x0078a8",
+       "name": "func_0078a8",
+       "size": 636
+      },
+      {
+       "address": "0x007b24",
+       "name": "func_007b24",
+       "size": 194
+      },
+      {
+       "address": "0x007be6",
+       "name": "DisplayMap",
+       "size": 876
+      },
+      {
+       "address": "0x007f52",
+       "name": "LoadMapIntoVRAM",
+       "size": 388
+      },
+      {
+       "address": "0x0080d6",
+       "name": "LoadLevel1Tiles",
+       "size": 134
+      },
+      {
+       "address": "0x00815c",
+       "name": "func_00815c",
+       "size": 214
+      },
+      {
+       "address": "0x008232",
+       "name": "func_008232",
+       "size": 292
+      },
+      {
+       "address": "0x008356",
+       "name": "func_008356",
+       "size": 58
+      },
+      {
+       "address": "0x008390",
+       "name": "Map_DrawPlayer",
+       "size": 316
+      },
+      {
+       "address": "0x0084cc",
+       "name": "Map_DrawShipPiece",
+       "size": 446
+      },
+      {
+       "address": "0x00868a",
+       "name": "DrawMapCharacters",
+       "size": 144
+      }
+     ],
+     "options": [],
+     "sha256": "5719137a13d5b561c2ad9cba9702f3e52a50da0b2b2f2b72f4943888823f2829",
+     "size": 3906,
+     "source": "src/map/map_drawing.c"
+    },
+    {
+     "address": "0x008836",
+     "functions": [
+      {
+       "address": "0x008836",
+       "name": "DrawGameMap",
+       "size": 828
+      }
+     ],
+     "options": [],
+     "sha256": "5dd57556d0b6e2eb734298a02a468b31cc47244e63063567afccb31abd81911c",
+     "size": 828,
+     "source": "src/map/map_drawing_controller.c"
+    },
+    {
+     "address": "0x0072f0",
+     "functions": [
+      {
+       "address": "0x0072f0",
+       "name": "func_0072f0",
+       "size": 1214
+      },
+      {
+       "address": "0x0077ae",
+       "name": "func_0077ae",
+       "size": 42
+      }
+     ],
+     "options": [],
+     "sha256": "1054721e9e6db844d296545c1196e663cce862aaac470f93cbb44d944cc2e95f",
+     "size": 1256,
+     "source": "src/map/map_population.c"
+    },
+    {
+     "address": "0x005afa",
+     "functions": [
+      {
+       "address": "0x005afa",
+       "name": "func_005afa",
+       "size": 260
+      },
+      {
+       "address": "0x005bfe",
+       "name": "func_005bfe",
+       "size": 1200
+      },
+      {
+       "address": "0x0060ae",
+       "name": "func_0060ae",
+       "size": 540
+      },
+      {
+       "address": "0x0062ca",
+       "name": "func_0062ca",
+       "size": 544
+      },
+      {
+       "address": "0x0064ea",
+       "name": "func_0064ea",
+       "size": 112
+      },
+      {
+       "address": "0x00655a",
+       "name": "func_00655a",
+       "size": 450
+      },
+      {
+       "address": "0x00671c",
+       "name": "func_00671c",
+       "size": 1030
+      }
+     ],
+     "options": [],
+     "sha256": "d8a34bf44750a715edcbce019dec1aa23bd004e314c11b6dc89d0e13fd8ddab1",
+     "size": 4136,
+     "source": "src/map/region_cleanup.c"
+    },
+    {
+     "address": "0x004fee",
+     "functions": [
+      {
+       "address": "0x004fee",
+       "name": "func_004fee",
+       "size": 980
+      },
+      {
+       "address": "0x0053c2",
+       "name": "func_0053c2",
+       "size": 440
+      },
+      {
+       "address": "0x00557a",
+       "name": "func_00557a",
+       "size": 508
+      }
+     ],
+     "options": [],
+     "sha256": "47ea53484634191bfd0f8905fd3c96e2a87eecbbc8ec4ab610005df8e5c1b450",
+     "size": 1928,
+     "source": "src/map/region_walk.c"
+    },
+    {
+     "address": "0x00d9dc",
+     "functions": [
+      {
+       "address": "0x00d9dc",
+       "name": "func_00d9dc",
+       "size": 250
+      }
+     ],
+     "options": [],
+     "sha256": "750a167566afd5dde8f7e73112915b1bd3fcdc54489f0da585539315742a6b2a",
+     "size": 250,
+     "source": "src/map/terrain_at_position.c"
+    },
+    {
+     "address": "0x00e74e",
+     "functions": [
+      {
+       "address": "0x00e74e",
+       "name": "TerrainValidation",
+       "size": 744
+      },
+      {
+       "address": "0x00ea36",
+       "name": "SetPositionOnNewLevel",
+       "size": 952
+      }
+     ],
+     "options": [],
+     "sha256": "517f6c5da7a8c06183771329b0f5b0b5a140da8608fc1858b01f9177469a106f",
+     "size": 1696,
+     "source": "src/map/terrain_placement.c"
+    },
+    {
+     "address": "0x006b22",
+     "functions": [
+      {
+       "address": "0x006b22",
+       "name": "func_006b22",
+       "size": 82
+      },
+      {
+       "address": "0x006b74",
+       "name": "func_006b74",
+       "size": 1652
+      },
+      {
+       "address": "0x0071e8",
+       "name": "func_0071e8",
+       "size": 264
+      }
+     ],
+     "options": [],
+     "sha256": "f2ca7c117bd299e58ff5cc334ba1ef791470f3ceeface145fbc893dff7b7a1d4",
+     "size": 1998,
+     "source": "src/map/transition_paths.c"
+    },
+    {
+     "address": "0x004e7e",
+     "functions": [
+      {
+       "address": "0x004e7e",
+       "name": "GetRandomNumber",
+       "size": 106
+      },
+      {
+       "address": "0x004ee8",
+       "name": "StackBasedRandom",
+       "size": 46
+      },
+      {
+       "address": "0x004f16",
+       "name": "PreGenerateRandoms",
+       "size": 58
+      }
+     ],
+     "options": [],
+     "sha256": "27dcd3209b7869c2f96c1bfd20e07983c1218215e18be1270bc753ec767c40fb",
+     "size": 210,
+     "source": "src/math/random_cache.c"
+    },
+    {
+     "address": "0x00f590",
+     "functions": [
+      {
+       "address": "0x00f590",
+       "name": "GetActivePresentSprite",
+       "size": 270
+      }
+     ],
+     "options": [],
+     "sha256": "a6ddfe66c565149b0cf59c49d0c3d02708d48dc10c22518047fc2c0f368dc9a2",
+     "size": 270,
+     "source": "src/player/active_present_sprite.c"
+    },
+    {
+     "address": "0x00300a",
+     "functions": [
+      {
+       "address": "0x00300a",
+       "name": "func_00300a",
+       "size": 832
+      }
+     ],
+     "options": [],
+     "sha256": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
+     "size": 832,
+     "source": "src/player/center_for_split.c"
+    },
+    {
+     "address": "0x00dcc2",
+     "functions": [
+      {
+       "address": "0x00dcc2",
+       "name": "func_00dcc2",
+       "size": 92
+      },
+      {
+       "address": "0x00dd1e",
+       "name": "func_00dd1e",
+       "size": 100
+      }
+     ],
+     "options": [],
+     "sha256": "51a611e0e9dd514136b8fd49233ce36a7a119af4b7672b9e1c95b1a8b4fa27ef",
+     "size": 192,
+     "source": "src/player/entity_motion_proximity.c"
+    },
+    {
+     "address": "0x00e17a",
+     "functions": [
+      {
+       "address": "0x00e17a",
+       "name": "func_00e17a",
+       "size": 616
+      },
+      {
+       "address": "0x00e3e2",
+       "name": "StopPlayer",
+       "size": 30
+      },
+      {
+       "address": "0x00e400",
+       "name": "func_00e400",
+       "size": 16
+      },
+      {
+       "address": "0x00e410",
+       "name": "func_00e410",
+       "size": 18
+      }
+     ],
+     "options": [],
+     "sha256": "a0360158c9ce30520f15efc5666cc02a13b1e4105aed6e1446651fc516bc2fc6",
+     "size": 680,
+     "source": "src/player/entity_motion_terrain.c"
+    },
+    {
+     "address": "0x012116",
+     "functions": [
+      {
+       "address": "0x012116",
+       "name": "func_012116",
+       "size": 494
+      }
+     ],
+     "options": [],
+     "sha256": "26c50879dfd17b497249b71206feac6ec6c9bf1c68024f900580a51b8df397ab",
+     "size": 494,
+     "source": "src/player/high_five.c"
+    },
+    {
+     "address": "0x011ac0",
+     "functions": [
+      {
+       "address": "0x011ac0",
+       "name": "func_011ac0",
+       "size": 792
+      },
+      {
+       "address": "0x011dd8",
+       "name": "func_011dd8",
+       "size": 592
+      }
+     ],
+     "options": [],
+     "sha256": "7566e0d6d8b822114428e8fd3c611700769c56147e06d22e4f55ba275afe38a6",
+     "size": 1384,
+     "source": "src/player/jump_motion.c"
+    },
+    {
+     "address": "0x00fd98",
+     "functions": [
+      {
+       "address": "0x00fd98",
+       "name": "MakePlayerFall",
+       "size": 750
+      },
+      {
+       "address": "0x010086",
+       "name": "func_010086",
+       "size": 302
+      },
+      {
+       "address": "0x0101b4",
+       "name": "func_0101b4",
+       "size": 224
+      }
+     ],
+     "options": [],
+     "sha256": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+     "size": 1276,
+     "source": "src/player/level_fall_and_landings.c"
+    },
+    {
+     "address": "0x021fa8",
+     "functions": [
+      {
+       "address": "0x021fa8",
+       "name": "DoMoleAbility",
+       "size": 474
+      },
+      {
+       "address": "0x022182",
+       "name": "MoleAbility",
+       "size": 458
+      }
+     ],
+     "options": [],
+     "sha256": "d3940f23467de1d58b334233e8002e2700283c5ae09bc6e3b24c91e09213d576",
+     "size": 932,
+     "source": "src/player/mole.c"
+    },
+    {
+     "address": "0x01139e",
+     "functions": [
+      {
+       "address": "0x01139e",
+       "name": "OpenRocketSkates",
+       "size": 196
+      }
+     ],
+     "options": [],
+     "sha256": "576af03d40428b3e5cb9fea2c4dd10559a0ec65939d749fc9b8216327bbdb329",
+     "size": 196,
+     "source": "src/player/open_rocket_skates.c"
+    },
+    {
+     "address": "0x01044e",
+     "functions": [
+      {
+       "address": "0x01044e",
+       "name": "func_01044e",
+       "size": 478
+      },
+      {
+       "address": "0x01062c",
+       "name": "func_01062c",
+       "size": 390
+      },
+      {
+       "address": "0x0107b2",
+       "name": "func_0107b2",
+       "size": 438
+      },
+      {
+       "address": "0x010968",
+       "name": "func_010968",
+       "size": 334
+      },
+      {
+       "address": "0x010ab6",
+       "name": "func_010ab6",
+       "size": 744
+      },
+      {
+       "address": "0x010d9e",
+       "name": "KillThePlayer",
+       "size": 292
+      },
+      {
+       "address": "0x010ec2",
+       "name": "func_010ec2",
+       "size": 314
+      }
+     ],
+     "options": [],
+     "sha256": "02c10451a3e8e21817368f978e0af98cd912ef524df8499636d3d73ac9120e6d",
+     "size": 2990,
+     "source": "src/player/player_states_and_respawn.c"
+    },
+    {
+     "address": "0x00e422",
+     "functions": [
+      {
+       "address": "0x00e422",
+       "name": "ProcessMovement",
+       "size": 812
+      }
+     ],
+     "options": [],
+     "sha256": "44d2a1d2ff66a6181967140688707f4298b2c0818e5d11016568dcda8203801a",
+     "size": 812,
+     "source": "src/player/process_movement.c"
+    },
+    {
+     "address": "0x0111e8",
+     "functions": [
+      {
+       "address": "0x0111e8",
+       "name": "ProcessPlayers",
+       "size": 438
+      }
+     ],
+     "options": [],
+     "sha256": "94c9547258d8276081e15877147f0461726956f724c0b4f57bf7d3fccd349b2f",
+     "size": 438,
+     "source": "src/player/process_players.c"
+    },
+    {
+     "address": "0x01befa",
+     "functions": [
+      {
+       "address": "0x01befa",
+       "name": "func_01befa",
+       "size": 654
+      },
+      {
+       "address": "0x01c188",
+       "name": "func_01c188",
+       "size": 282
+      }
+     ],
+     "options": [],
+     "sha256": "2917e25d1d02057ce2285da60ecf3148553ea1d2ea858285688aca42a20ad97e",
+     "size": 936,
+     "source": "src/player/projectiles.c"
+    },
+    {
+     "address": "0x011462",
+     "functions": [
+      {
+       "address": "0x011462",
+       "name": "func_011462",
+       "size": 376
+      },
+      {
+       "address": "0x0115da",
+       "name": "func_0115da",
+       "size": 706
+      },
+      {
+       "address": "0x01189c",
+       "name": "func_01189c",
+       "size": 480
+      }
+     ],
+     "options": [],
+     "sha256": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+     "size": 1562,
+     "source": "src/player/rocket_motion.c"
+    },
+    {
+     "address": "0x002608",
+     "functions": [
+      {
+       "address": "0x002608",
+       "name": "func_002608",
+       "size": 114
+      }
+     ],
+     "options": [],
+     "sha256": "b28b009534e042875aad25650fcd13c364254da7157633d52c8e11d2b82a17a1",
+     "size": 114,
+     "source": "src/player/set_camera_position.c"
+    },
+    {
+     "address": "0x00d1f6",
+     "functions": [
+      {
+       "address": "0x00d1f6",
+       "name": "SetupPlayer",
+       "size": 528
+      }
+     ],
+     "options": [],
+     "sha256": "58c22d9d57c3d0db0738438274e03faab01d231e9ffc10e533047e293d478a21",
+     "size": 528,
+     "source": "src/player/setup_player.c"
+    },
+    {
+     "address": "0x012304",
+     "functions": [
+      {
+       "address": "0x012304",
+       "name": "OpenSchoolBook",
+       "size": 62
+      },
+      {
+       "address": "0x012342",
+       "name": "ProcessSleep",
+       "size": 850
+      }
+     ],
+     "options": [],
+     "sha256": "b876edb43d4fbabc9285ebd6ccc0d2dffa8b99c356b19508a35817e2701c42ad",
+     "size": 912,
+     "source": "src/player/sleep.c"
+    },
+    {
+     "address": "0x00f00c",
+     "functions": [
+      {
+       "address": "0x00f00c",
+       "name": "func_00f00c",
+       "size": 630
+      },
+      {
+       "address": "0x00f282",
+       "name": "func_00f282",
+       "size": 782
+      }
+     ],
+     "options": [],
+     "sha256": "0edb6a1fb6430a63a2522bbee0227956cb69516cedde3231cac1056da72d9508",
+     "size": 1412,
+     "source": "src/player/sprite_movement.c"
+    },
+    {
+     "address": "0x00f7fc",
+     "functions": [
+      {
+       "address": "0x00f7fc",
+       "name": "SetToejamFalling",
+       "size": 226
+      },
+      {
+       "address": "0x00f8de",
+       "name": "func_00f8de",
+       "size": 142
+      },
+      {
+       "address": "0x00f96c",
+       "name": "func_00f96c",
+       "size": 292
+      }
+     ],
+     "options": [],
+     "sha256": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+     "size": 660,
+     "source": "src/player/start_falling.c"
+    },
+    {
+     "address": "0x011a7c",
+     "functions": [
+      {
+       "address": "0x011a7c",
+       "name": "func_011a7c",
+       "size": 68
+      }
+     ],
+     "options": [],
+     "sha256": "c7efa71b8b811b6faf7863925e88a85b6b5af8f507810bef8ea24e3dd7912273",
+     "size": 68,
+     "source": "src/player/start_motion_mode.c"
+    },
+    {
+     "address": "0x01af04",
+     "functions": [
+      {
+       "address": "0x01af04",
+       "name": "func_01af04",
+       "size": 180
+      }
+     ],
+     "options": [],
+     "sha256": "b4470d7adca9ee147d0270dfba5e3adc250205f22dee4365cb5465d2d25e1ed6",
+     "size": 180,
+     "source": "src/player/steering.c"
+    },
+    {
+     "address": "0x01b02e",
+     "functions": [
+      {
+       "address": "0x01b02e",
+       "name": "func_01b02e",
+       "size": 74
+      },
+      {
+       "address": "0x01b078",
+       "name": "func_01b078",
+       "size": 50
+      }
+     ],
+     "options": [],
+     "sha256": "b5e646577a976a78ecfebacab57f6a1d130b844487d421112fa23636a0b346c1",
+     "size": 124,
+     "source": "src/player/target_motion_helpers.c"
+    },
+    {
+     "address": "0x01aa20",
+     "functions": [
+      {
+       "address": "0x01aa20",
+       "name": "func_01aa20",
+       "size": 1138
+      },
+      {
+       "address": "0x01ae92",
+       "name": "func_01ae92",
+       "size": 114
+      }
+     ],
+     "options": [],
+     "sha256": "bb0da769ee8a5b3985b2c8aef0ad531d4b501ac3fec61cc1003f352257d9d08b",
+     "size": 1252,
+     "source": "src/player/targeting.c"
+    },
+    {
+     "address": "0x01502e",
+     "functions": [
+      {
+       "address": "0x01502e",
+       "name": "func_01502e",
+       "size": 282
+      },
+      {
+       "address": "0x015148",
+       "name": "func_015148",
+       "size": 322
+      },
+      {
+       "address": "0x01528a",
+       "name": "func_01528a",
+       "size": 56
+      },
+      {
+       "address": "0x0152c2",
+       "name": "EatYummyFood",
+       "size": 52
+      },
+      {
+       "address": "0x0152f6",
+       "name": "EatYuckyFood",
+       "size": 52
+      },
+      {
+       "address": "0x01532a",
+       "name": "EatFudgeSundae",
+       "size": 40
+      },
+      {
+       "address": "0x015352",
+       "name": "func_015352",
+       "size": 668
+      },
+      {
+       "address": "0x0155ee",
+       "name": "func_0155ee",
+       "size": 188
+      },
+      {
+       "address": "0x0156aa",
+       "name": "func_0156aa",
+       "size": 426
+      },
+      {
+       "address": "0x015854",
+       "name": "ReducePresentTimer",
+       "size": 340
+      },
+      {
+       "address": "0x0159a8",
+       "name": "func_0159a8",
+       "size": 144
+      },
+      {
+       "address": "0x015a38",
+       "name": "func_015a38",
+       "size": 302
+      }
+     ],
+     "options": [],
+     "sha256": "204557a0651ee4534620272fe1a00f4600b3acbd2a5a093534b2f2fea26d1a5c",
+     "size": 2872,
+     "source": "src/presents/item_updates.c"
+    },
+    {
+     "address": "0x014278",
+     "functions": [
+      {
+       "address": "0x014278",
+       "name": "SetupPresentIdentities",
+       "size": 150
+      },
+      {
+       "address": "0x01430e",
+       "name": "SetupInitialInventory",
+       "size": 216
+      },
+      {
+       "address": "0x0143e6",
+       "name": "func_0143e6",
+       "size": 192
+      },
+      {
+       "address": "0x0144a6",
+       "name": "func_0144a6",
+       "size": 164
+      },
+      {
+       "address": "0x01454a",
+       "name": "func_01454a",
+       "size": 48
+      },
+      {
+       "address": "0x01457a",
+       "name": "LoadLevel2AndUp",
+       "size": 726
+      },
+      {
+       "address": "0x014850",
+       "name": "func_014850",
+       "size": 698
+      },
+      {
+       "address": "0x014b0a",
+       "name": "SelectRandomPresent",
+       "size": 134
+      },
+      {
+       "address": "0x014b90",
+       "name": "PlaceStuffInLevel",
+       "size": 646
+      }
+     ],
+     "options": [],
+     "sha256": "c38299e654b7759e8b624d2be2d5a92ce43bf78f23182240eb89b2a1394d1357",
+     "size": 2974,
+     "source": "src/presents/level_item_setup.c"
+    },
+    {
+     "address": "0x015b66",
+     "functions": [
+      {
+       "address": "0x015b66",
+       "name": "func_015b66",
+       "size": 190
+      },
+      {
+       "address": "0x015c24",
+       "name": "OpenDecoy",
+       "size": 302
+      },
+      {
+       "address": "0x015d52",
+       "name": "func_015d52",
+       "size": 84
+      },
+      {
+       "address": "0x015da6",
+       "name": "func_015da6",
+       "size": 64
+      },
+      {
+       "address": "0x015de6",
+       "name": "func_015de6",
+       "size": 192
+      },
+      {
+       "address": "0x015ea6",
+       "name": "PresentIsDoorway",
+       "size": 334
+      },
+      {
+       "address": "0x015ff4",
+       "name": "func_015ff4",
+       "size": 164
+      },
+      {
+       "address": "0x016098",
+       "name": "func_016098",
+       "size": 274
+      },
+      {
+       "address": "0x0161aa",
+       "name": "func_0161aa",
+       "size": 580
+      },
+      {
+       "address": "0x0163ee",
+       "name": "PerformPromotion",
+       "size": 610
+      },
+      {
+       "address": "0x016650",
+       "name": "BummerLifePromo",
+       "size": 658
+      },
+      {
+       "address": "0x0168e2",
+       "name": "func_0168e2",
+       "size": 256
+      },
+      {
+       "address": "0x0169e2",
+       "name": "PresentIsRainCloud",
+       "size": 232
+      },
+      {
+       "address": "0x016aca",
+       "name": "func_016aca",
+       "size": 458
+      },
+      {
+       "address": "0x016c94",
+       "name": "OpenBoomBox",
+       "size": 256
+      },
+      {
+       "address": "0x016d94",
+       "name": "func_016d94",
+       "size": 236
+      },
+      {
+       "address": "0x016e80",
+       "name": "ProcessPresents",
+       "size": 116
+      },
+      {
+       "address": "0x016ef4",
+       "name": "OpenSelectedPresent",
+       "size": 864
+      },
+      {
+       "address": "0x017254",
+       "name": "SetupSelectedPresent",
+       "size": 610
+      }
+     ],
+     "options": [],
+     "sha256": "a7f23d58ac5df5c59c57fa66c32b2a8a45affccdf3fa8578832ded721668c1d5",
+     "size": 6480,
+     "source": "src/presents/present_effects.c"
+    },
+    {
+     "address": "0x022bf6",
+     "functions": [
+      {
+       "address": "0x022bf6",
+       "name": "func_022bf6",
+       "size": 130
+      },
+      {
+       "address": "0x022c78",
+       "name": "func_022c78",
+       "size": 112
+      },
+      {
+       "address": "0x022ce8",
+       "name": "CheckForTelephone",
+       "size": 810
+      }
+     ],
+     "options": [],
+     "sha256": "a2ebe7e9fb73563f5cd26ec8b27157671c66c0d1ab127348abc9b6242a142c81",
+     "size": 1052,
+     "source": "src/presents/telephone.c"
+    },
+    {
+     "address": "0x00cb1c",
+     "functions": [
+      {
+       "address": "0x00cb1c",
+       "name": "ClearLOC_00FFB8DA",
+       "size": 56
+      }
+     ],
+     "options": [],
+     "sha256": "7fa1d41084444852eafc92c120b55dfabd0e1e663648805f26f39590e05ab578",
+     "size": 56,
+     "source": "src/sprites/copy_sprite_tiles.c"
+    },
+    {
+     "address": "0x00bffc",
+     "functions": [
+      {
+       "address": "0x00bffc",
+       "name": "Process2FEntityBit0",
+       "size": 308
+      },
+      {
+       "address": "0x00c130",
+       "name": "Process2FEntityFlag",
+       "size": 64
+      }
+     ],
+     "options": [],
+     "sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+     "size": 372,
+     "source": "src/sprites/entity_depth.c"
+    },
+    {
+     "address": "0x00d1c4",
+     "functions": [
+      {
+       "address": "0x00d1c4",
+       "name": "SetRAMIndexes",
+       "size": 50
+      }
+     ],
+     "options": [],
+     "sha256": "bae2558fd1cf3a31d7d97edf027973a1f469d83538df66fce2eecdee0efbef56",
+     "size": 50,
+     "source": "src/sprites/entity_indexes.c"
+    },
+    {
+     "address": "0x00d406",
+     "functions": [
+      {
+       "address": "0x00d406",
+       "name": "func_00d406",
+       "size": 384
+      },
+      {
+       "address": "0x00d586",
+       "name": "func_00d586",
+       "size": 58
+      },
+      {
+       "address": "0x00d5c0",
+       "name": "func_00d5c0",
+       "size": 58
+      },
+      {
+       "address": "0x00d5fa",
+       "name": "func_00d5fa",
+       "size": 24
+      },
+      {
+       "address": "0x00d612",
+       "name": "func_00d612",
+       "size": 30
+      },
+      {
+       "address": "0x00d630",
+       "name": "func_00d630",
+       "size": 130
+      },
+      {
+       "address": "0x00d6b2",
+       "name": "func_00d6b2",
+       "size": 94
+      },
+      {
+       "address": "0x00d710",
+       "name": "Process2FEntityBit6",
+       "size": 102
+      },
+      {
+       "address": "0x00d776",
+       "name": "func_00d776",
+       "size": 164
+      },
+      {
+       "address": "0x00d81a",
+       "name": "OpeningPresents7",
+       "size": 216
+      },
+      {
+       "address": "0x00d8f2",
+       "name": "func_00d8f2",
+       "size": 18
+      },
+      {
+       "address": "0x00d904",
+       "name": "func_00d904",
+       "size": 108
+      },
+      {
+       "address": "0x00d970",
+       "name": "func_00d970",
+       "size": 108
+      }
+     ],
+     "options": [],
+     "sha256": "6da051475558af78958286d809b44263824b5c7dabc5a0e27f2d92c64660566c",
+     "size": 1494,
+     "source": "src/sprites/entity_slots_tu14.c"
+    },
+    {
+     "address": "0x00c170",
+     "functions": [
+      {
+       "address": "0x00c170",
+       "name": "func_00c170",
+       "size": 210
+      },
+      {
+       "address": "0x00c242",
+       "name": "func_00c242",
+       "size": 696
+      },
+      {
+       "address": "0x00c4fa",
+       "name": "func_00c4fa",
+       "size": 438
+      },
+      {
+       "address": "0x00c6b0",
+       "name": "func_00c6b0",
+       "size": 248
+      }
+     ],
+     "options": [],
+     "sha256": "6001250abf14628273f4cac147867f88a6e61402b9bd466f05d442a7acd1d719",
+     "size": 1592,
+     "source": "src/sprites/entity_sprite_order.c"
+    },
+    {
+     "address": "0x00bdd8",
+     "functions": [
+      {
+       "address": "0x00bdd8",
+       "name": "func_00bdd8",
+       "size": 218
+      },
+      {
+       "address": "0x00beb2",
+       "name": "func_00beb2",
+       "size": 276
+      },
+      {
+       "address": "0x00bfc6",
+       "name": "func_00bfc6",
+       "size": 54
+      }
+     ],
+     "options": [],
+     "sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+     "size": 548,
+     "source": "src/sprites/entity_visibility.c"
+    },
+    {
+     "address": "0x00d152",
+     "functions": [
+      {
+       "address": "0x00d152",
+       "name": "func_00d152",
+       "size": 114
+      }
+     ],
+     "options": [],
+     "sha256": "bd1ef46f7a3aaca9a5ab1d27c35f413e3a61af36aec13f539efdfbc4e9768d3a",
+     "size": 114,
+     "source": "src/sprites/hide_player_sprites.c"
+    },
+    {
+     "address": "0x00d07a",
+     "functions": [
+      {
+       "address": "0x00d07a",
+       "name": "func_00d07a",
+       "size": 216
+      }
+     ],
+     "options": [],
+     "sha256": "282d0d72c6c1765cee6a12c069da8c9243e8369dfd30351f4209da863f415a1e",
+     "size": 216,
+     "source": "src/sprites/link_player_sprites.c"
+    },
+    {
+     "address": "0x00cef0",
+     "functions": [
+      {
+       "address": "0x00cef0",
+       "name": "SpriteLoadingStuff",
+       "size": 202
+      }
+     ],
+     "options": [],
+     "sha256": "86130df95800b5b4c7661d71125cb667762b42ec9c8bacda73ef9013b0439c2a",
+     "size": 202,
+     "source": "src/sprites/load_sprites.c"
+    },
+    {
+     "address": "0x00cfba",
+     "functions": [
+      {
+       "address": "0x00cfba",
+       "name": "func_00cfba",
+       "size": 64
+      }
+     ],
+     "options": [],
+     "sha256": "b3e3a7ddef1b1d6b905d63826e4981048e4ccf276a1b092a8b4b51028398f844",
+     "size": 64,
+     "source": "src/sprites/select_first_link.c"
+    },
+    {
+     "address": "0x00ce82",
+     "functions": [
+      {
+       "address": "0x00ce82",
+       "name": "SetSprite",
+       "size": 110
+      }
+     ],
+     "options": [],
+     "sha256": "1bf175b4ae9f2d0de4a9a1fe44ffdf302ae54953591a91a07ea7ad9184c8a59e",
+     "size": 110,
+     "source": "src/sprites/set_sprite.c"
+    },
+    {
+     "address": "0x00cffa",
+     "functions": [
+      {
+       "address": "0x00cffa",
+       "name": "func_00cffa",
+       "size": 20
+      },
+      {
+       "address": "0x00d00e",
+       "name": "func_00d00e",
+       "size": 20
+      },
+      {
+       "address": "0x00d022",
+       "name": "func_00d022",
+       "size": 44
+      },
+      {
+       "address": "0x00d04e",
+       "name": "func_00d04e",
+       "size": 44
+      }
+     ],
+     "options": [],
+     "sha256": "c4313bf9635c4c345e6a6fa5f305c1db83384404afe2ed96eefe367b5faba5ca",
+     "size": 128,
+     "source": "src/sprites/sprite_links_vdp.c"
+    },
+    {
+     "address": "0x00c85a",
+     "functions": [
+      {
+       "address": "0x00c85a",
+       "name": "func_00c85a",
+       "size": 146
+      },
+      {
+       "address": "0x00c8ec",
+       "name": "func_00c8ec",
+       "size": 52
+      }
+     ],
+     "options": [],
+     "sha256": "1c268c8f9559af6b854b516d73bec297a27bd02de250270e6e099f1521240af7",
+     "size": 198,
+     "source": "src/sprites/sprite_pixel_masks.c"
+    },
+    {
+     "address": "0x00b0cc",
+     "functions": [
+      {
+       "address": "0x00b0cc",
+       "name": "func_00b0cc",
+       "size": 192
+      },
+      {
+       "address": "0x00b18c",
+       "name": "func_00b18c",
+       "size": 600
+      }
+     ],
+     "options": [],
+     "sha256": "01dfb7654d59718ecf78b77fbc0d10b2c3cf8046547869e784d5b6042b53979d",
+     "size": 792,
+     "source": "src/ui/hud_health_update.c"
+    },
+    {
+     "address": "0x00aa5a",
+     "functions": [
+      {
+       "address": "0x00aa5a",
+       "name": "func_00aa5a",
+       "size": 356
+      },
+      {
+       "address": "0x00abbe",
+       "name": "func_00abbe",
+       "size": 268
+      },
+      {
+       "address": "0x00acca",
+       "name": "func_00acca",
+       "size": 192
+      },
+      {
+       "address": "0x00ad8a",
+       "name": "func_00ad8a",
+       "size": 262
+      },
+      {
+       "address": "0x00ae90",
+       "name": "func_00ae90",
+       "size": 40
+      }
+     ],
+     "options": [],
+     "sha256": "031623d7105584e4411bf1b4387cafe1e64277b95764a39a2181b5ccf986003f",
+     "size": 1118,
+     "source": "src/ui/hud_initialization.c"
+    },
+    {
+     "address": "0x00b64a",
+     "functions": [
+      {
+       "address": "0x00b64a",
+       "name": "func_00b64a",
+       "size": 260
+      },
+      {
+       "address": "0x00b74e",
+       "name": "DrawHUD",
+       "size": 330
+      },
+      {
+       "address": "0x00b898",
+       "name": "GetScoreForPromo",
+       "size": 54
+      },
+      {
+       "address": "0x00b8ce",
+       "name": "CheckPromotionScore",
+       "size": 142
+      },
+      {
+       "address": "0x00b95c",
+       "name": "func_00b95c",
+       "size": 326
+      },
+      {
+       "address": "0x00baa2",
+       "name": "func_00baa2",
+       "size": 246
+      },
+      {
+       "address": "0x00bb98",
+       "name": "SetupTheMainGame",
+       "size": 176
+      },
+      {
+       "address": "0x00bc48",
+       "name": "HealthAndLivesChecks",
+       "size": 400
+      }
+     ],
+     "options": [],
+     "sha256": "5f4e0ae1a1fe8f5a7b592b752b74cb338ef3a56a0b563d1b4eb93ca90215b11a",
+     "size": 1934,
+     "source": "src/ui/hud_status.c"
+    },
+    {
+     "address": "0x008b72",
+     "functions": [
+      {
+       "address": "0x008b72",
+       "name": "ForceTextBackgroundColorToBlack",
+       "size": 38
+      },
+      {
+       "address": "0x008b98",
+       "name": "func_008b98",
+       "size": 42
+      },
+      {
+       "address": "0x008bc2",
+       "name": "SetVHBlankFlag2",
+       "size": 10
+      },
+      {
+       "address": "0x008bcc",
+       "name": "ClearVHBlankFlag2",
+       "size": 24
+      },
+      {
+       "address": "0x008be4",
+       "name": "func_008be4",
+       "size": 120
+      },
+      {
+       "address": "0x008c5c",
+       "name": "func_008c5c",
+       "size": 28
+      },
+      {
+       "address": "0x008c78",
+       "name": "func_008c78",
+       "size": 128
+      },
+      {
+       "address": "0x008cf8",
+       "name": "func_008cf8",
+       "size": 348
+      },
+      {
+       "address": "0x008e54",
+       "name": "SetMailOrderPresents",
+       "size": 230
+      },
+      {
+       "address": "0x008f3a",
+       "name": "DrawInventory",
+       "size": 258
+      },
+      {
+       "address": "0x00903c",
+       "name": "func_00903c",
+       "size": 136
+      },
+      {
+       "address": "0x0090c4",
+       "name": "func_0090c4",
+       "size": 34
+      },
+      {
+       "address": "0x0090e6",
+       "name": "func_0090e6",
+       "size": 30
+      },
+      {
+       "address": "0x009104",
+       "name": "ToggleInventory",
+       "size": 286
+      },
+      {
+       "address": "0x009222",
+       "name": "CheckIfOpenForBoth",
+       "size": 292
+      },
+      {
+       "address": "0x009346",
+       "name": "RandomizeInventory",
+       "size": 100
+      },
+      {
+       "address": "0x0093aa",
+       "name": "RandomizePresents",
+       "size": 274
+      },
+      {
+       "address": "0x0094bc",
+       "name": "ProcessInventory",
+       "size": 972
+      },
+      {
+       "address": "0x009888",
+       "name": "CheckBButton",
+       "size": 110
+      },
+      {
+       "address": "0x0098f6",
+       "name": "func_0098f6",
+       "size": 62
+      },
+      {
+       "address": "0x009934",
+       "name": "func_009934",
+       "size": 62
+      },
+      {
+       "address": "0x009972",
+       "name": "func_009972",
+       "size": 80
+      },
+      {
+       "address": "0x0099c2",
+       "name": "OpenPresent",
+       "size": 312
+      },
+      {
+       "address": "0x009afa",
+       "name": "func_009afa",
+       "size": 252
+      },
+      {
+       "address": "0x009bf6",
+       "name": "func_009bf6",
+       "size": 312
+      },
+      {
+       "address": "0x009d2e",
+       "name": "func_009d2e",
+       "size": 256
+      },
+      {
+       "address": "0x009e2e",
+       "name": "func_009e2e",
+       "size": 348
+      },
+      {
+       "address": "0x009f8a",
+       "name": "func_009f8a",
+       "size": 52
+      },
+      {
+       "address": "0x009fbe",
+       "name": "func_009fbe",
+       "size": 150
+      },
+      {
+       "address": "0x00a054",
+       "name": "func_00a054",
+       "size": 150
+      },
+      {
+       "address": "0x00a0ea",
+       "name": "func_00a0ea",
+       "size": 226
+      },
+      {
+       "address": "0x00a1cc",
+       "name": "func_00a1cc",
+       "size": 276
+      },
+      {
+       "address": "0x00a2e0",
+       "name": "func_00a2e0",
+       "size": 192
+      },
+      {
+       "address": "0x00a3a0",
+       "name": "OpeningPresents4",
+       "size": 106
+      },
+      {
+       "address": "0x00a40a",
+       "name": "LoadPresentsIntoInventory",
+       "size": 522
+      },
+      {
+       "address": "0x00a614",
+       "name": "func_00a614",
+       "size": 362
+      },
+      {
+       "address": "0x00a77e",
+       "name": "func_00a77e",
+       "size": 732
+      }
+     ],
+     "options": [],
+     "sha256": "957bb13b6a792537d34db76028b72cb591e244d3214f0c842e410534d260024d",
+     "size": 7912,
+     "source": "src/ui/inventory.c"
+    },
+    {
+     "address": "0x01db30",
+     "functions": [
+      {
+       "address": "0x01db30",
+       "name": "func_01db30",
+       "size": 234
+      },
+      {
+       "address": "0x01dc1a",
+       "name": "GamePaused",
+       "size": 718
+      }
+     ],
+     "options": [],
+     "sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+     "size": 952,
+     "source": "src/ui/pause.c"
+    }
+   ],
+   "image_sha256": [
+    "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+    "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163"
+   ],
+   "raw_words": 0,
+   "receipt_sha256": [
+    "73ddb6cd67d22d400bdef8eff5d043c7553508ad6787c64c8813ae9c45130e48",
+    "aaa00a4971fb8c0d039965b0ca27731ea118b5224798bfdbbf38cf005a6711c5"
+   ],
+   "result": "PASS"
+  }
+ },
+ "checkpoint": "c014-waves-17-18",
+ "git": {
+  "dirty_paths": [],
+  "head": "11e9c9deed49c8291f9033fdfb5ddfbce44c0af7"
+ },
+ "inputs": {
+  "ci/progress_report.py": "58950f49a02ed4022589eef420bb8210ad731e825e343dc710053500e516a205",
+  "config/rev00/catalogue.json": "83cd810ed4b440fefbd104b5da1d252d6f6d455b891dbe16e6764df190236b6a",
+  "config/rev00/correspondence.json": "e2fb75000b80efcf92d494bd299fd076166374a62b8a85de9376e694f047c2cd",
+  "config/rev00/names.json": "518ae00c9db203631e361555cff277eb8b8d7cda7492d45311da6afde67a8192",
+  "config/rev00/seeds.json": "4dd5a916ab83fe5601f325e5808f131c78d05c2ee218a99e84a1a2c241b29a3b",
+  "config/rev00/tus.json": "70587064450807d10b1ec200138c796856f40cbe54be6e1382fdc5aeae239ba6",
+  "config/rev02/catalogue.json": "1b1b2087b7316e4d3a29d77bc346ae6a6bf660ccee716f3ba0c17bc1658fb969",
+  "config/rev02/classification.json": "10a0be419ebc9cc349d36a36ebf3bc15435a364604e8e5051002cf8528ed2728",
+  "config/rev02/data_inventory.json": "9945b11c0529027fd94b7a8f4f1809f64214f89676ab28c65cfb24099e0eea37",
+  "config/rev02/data_units.json": "48a32b1655c0d66cf24ac6ad63bed646076e27a1de9462da3e0f87e8f7fcd466",
+  "config/rev02/names.json": "1b868de4e1148318f1e2892c0c611fb5f2081ce6ba3e6b7503cf05f9d933104b",
+  "config/rev02/seeds.json": "c09f1e8b952b05d25d6f0328a213a501d21fa23f1559ecbbde3a32c9ea00c8cf",
+  "config/rev02/tus.json": "dde54b766aa5b84b49d76d2899b189cb4979189d53e613f8c47b5e7df675c5c6",
+  "config/sources.json": "78c43bee408dba5334777fae0d81ea04d69819b35bcb3666fea1f543cea15c94",
+  "config/title.json": "f2dad1dcf6e5a1e5aa529a8fddd4f1e22660198dc308518790e442cf893c4fa7",
+  "src/core/main_loop.c": "6094047abd0bbca963fe92f54249a55b04e17dec8449abc61217e8a0aa03a9a6",
+  "src/core/toggle_camera_flag.c": "00aac6d1b7d34b1f77806365c2856eb571999c297ae110d1a05888d57a0e078f",
+  "src/core/vdp_startup.c": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+  "src/earthlings/abilities_and_sleep.c": "b99e459c23af5e9ffd9d1234ed6204ef327d74eb7d6c7e1f2d3b20cede00f57a",
+  "src/earthlings/animation_behaviours.c": "db48645347e4d4955bd4b753848a647d27861f310142bcfcbba070f5520e6218",
+  "src/earthlings/bank_expiry.c": "2e44a550c5a9511fad97e8bf7e24eceed7997f98d5e331e0ac054d1e3791b254",
+  "src/earthlings/behaviour_tu28.c": "451f0972c442794ba83448a7499e2d0ffbca32c4e6ffb0c6d2223c34d7b23be4",
+  "src/earthlings/damage_and_processing.c": "0957bf3f5fe719697c1f72b7be3099f51bda5ddc6b1eef922bde5eb1e145b40c",
+  "src/earthlings/generic_enemy_tu27.c": "34430ed665b482a4bcfba0227e6a3c15ed4926eb5b66649a53f44fbd55a89b49",
+  "src/earthlings/movement_decision.c": "af1e840ea54e212248ec0466fe238e9dc2207d23867ea90a1decd8ef23bd0a9b",
+  "src/earthlings/spawning_and_loading.c": "f1586b6d358341ca952ef3e3006a4f600d2eae2c04067204e9d4bbee228f26f6",
+  "src/earthlings/state_dispatch_tu26.c": "ac91d390c39089a32c514345703971974990e802d8aa67d978d22ff8c58487f4",
+  "src/elevator/elevator_query.c": "e01cdbfe71d97e114bfbbe8657cf74f5f72a7fe65293843adfbeb1af0ba6d0d0",
+  "src/elevator/elevator_scene.c": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+  "src/elevator/elevator_transitions.c": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+  "src/engine/random_counter.c": "a50ddc7efbda20aaac2f7c443b0c32a8cd01aad6a87d2d195a05458509b561af",
+  "src/engine/reset_sequence.c": "9394842f37d066cf7c2b0fe0d0068d0171c71d964cfebde77a38b855a73accbc",
+  "src/graphics/camera_column_transfer.c": "f05bf44f0e26ae00c67d41eaa2a4a4418d87a537a11c70634d17e35804bb3577",
+  "src/graphics/camera_follow.c": "22031b87f71db1d0a466782e423c64c6e3ea68722154c275bfff085c9065bd61",
+  "src/graphics/camera_motion.c": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+  "src/graphics/camera_row_transfer.c": "26a50471014f32d7a0e30d62732bd75ec114f035f32b733d0d551d3c351f3a7c",
+  "src/graphics/funkatron_scene.c": "fcd5d3ae68aad167741c336cc3ebd03cb1209557581af696122a17a3d1abf8cd",
+  "src/graphics/metatile_words.c": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+  "src/graphics/split_screen_wipe.c": "7df2629826fcd72dec42f220b5e754eb68e964599a0b78be548d770c8aaca2fa",
+  "src/map/change_level.c": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+  "src/map/elevator_icon.c": "3136e95d0a18629a9dea2d08bd7b02ab0b741182e364634f2bd7337b7a54b215",
+  "src/map/level_changes.c": "fc032ea61eb1d8409a947f7e0cddb94a3f3294b853d1a00cc1de4decb007f64a",
+  "src/map/level_generation.c": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+  "src/map/map_drawing.c": "5719137a13d5b561c2ad9cba9702f3e52a50da0b2b2f2b72f4943888823f2829",
+  "src/map/map_drawing_controller.c": "5dd57556d0b6e2eb734298a02a468b31cc47244e63063567afccb31abd81911c",
+  "src/map/map_population.c": "1054721e9e6db844d296545c1196e663cce862aaac470f93cbb44d944cc2e95f",
+  "src/map/region_cleanup.c": "d8a34bf44750a715edcbce019dec1aa23bd004e314c11b6dc89d0e13fd8ddab1",
+  "src/map/region_walk.c": "47ea53484634191bfd0f8905fd3c96e2a87eecbbc8ec4ab610005df8e5c1b450",
+  "src/map/terrain_at_position.c": "750a167566afd5dde8f7e73112915b1bd3fcdc54489f0da585539315742a6b2a",
+  "src/map/terrain_placement.c": "517f6c5da7a8c06183771329b0f5b0b5a140da8608fc1858b01f9177469a106f",
+  "src/map/transition_paths.c": "f2ca7c117bd299e58ff5cc334ba1ef791470f3ceeface145fbc893dff7b7a1d4",
+  "src/math/random_cache.c": "27dcd3209b7869c2f96c1bfd20e07983c1218215e18be1270bc753ec767c40fb",
+  "src/player/active_present_sprite.c": "a6ddfe66c565149b0cf59c49d0c3d02708d48dc10c22518047fc2c0f368dc9a2",
+  "src/player/center_for_split.c": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
+  "src/player/entity_motion_proximity.c": "51a611e0e9dd514136b8fd49233ce36a7a119af4b7672b9e1c95b1a8b4fa27ef",
+  "src/player/entity_motion_terrain.c": "a0360158c9ce30520f15efc5666cc02a13b1e4105aed6e1446651fc516bc2fc6",
+  "src/player/high_five.c": "26c50879dfd17b497249b71206feac6ec6c9bf1c68024f900580a51b8df397ab",
+  "src/player/jump_motion.c": "7566e0d6d8b822114428e8fd3c611700769c56147e06d22e4f55ba275afe38a6",
+  "src/player/level_fall_and_landings.c": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+  "src/player/mole.c": "d3940f23467de1d58b334233e8002e2700283c5ae09bc6e3b24c91e09213d576",
+  "src/player/open_rocket_skates.c": "576af03d40428b3e5cb9fea2c4dd10559a0ec65939d749fc9b8216327bbdb329",
+  "src/player/player_states_and_respawn.c": "02c10451a3e8e21817368f978e0af98cd912ef524df8499636d3d73ac9120e6d",
+  "src/player/process_movement.c": "44d2a1d2ff66a6181967140688707f4298b2c0818e5d11016568dcda8203801a",
+  "src/player/process_players.c": "94c9547258d8276081e15877147f0461726956f724c0b4f57bf7d3fccd349b2f",
+  "src/player/projectiles.c": "2917e25d1d02057ce2285da60ecf3148553ea1d2ea858285688aca42a20ad97e",
+  "src/player/rocket_motion.c": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+  "src/player/set_camera_position.c": "b28b009534e042875aad25650fcd13c364254da7157633d52c8e11d2b82a17a1",
+  "src/player/setup_player.c": "58c22d9d57c3d0db0738438274e03faab01d231e9ffc10e533047e293d478a21",
+  "src/player/sleep.c": "b876edb43d4fbabc9285ebd6ccc0d2dffa8b99c356b19508a35817e2701c42ad",
+  "src/player/sprite_movement.c": "0edb6a1fb6430a63a2522bbee0227956cb69516cedde3231cac1056da72d9508",
+  "src/player/start_falling.c": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+  "src/player/start_motion_mode.c": "c7efa71b8b811b6faf7863925e88a85b6b5af8f507810bef8ea24e3dd7912273",
+  "src/player/steering.c": "b4470d7adca9ee147d0270dfba5e3adc250205f22dee4365cb5465d2d25e1ed6",
+  "src/player/target_motion_helpers.c": "b5e646577a976a78ecfebacab57f6a1d130b844487d421112fa23636a0b346c1",
+  "src/player/targeting.c": "bb0da769ee8a5b3985b2c8aef0ad531d4b501ac3fec61cc1003f352257d9d08b",
+  "src/presents/item_updates.c": "204557a0651ee4534620272fe1a00f4600b3acbd2a5a093534b2f2fea26d1a5c",
+  "src/presents/level_item_setup.c": "c38299e654b7759e8b624d2be2d5a92ce43bf78f23182240eb89b2a1394d1357",
+  "src/presents/present_effects.c": "a7f23d58ac5df5c59c57fa66c32b2a8a45affccdf3fa8578832ded721668c1d5",
+  "src/presents/telephone.c": "a2ebe7e9fb73563f5cd26ec8b27157671c66c0d1ab127348abc9b6242a142c81",
+  "src/sprites/copy_sprite_tiles.c": "7fa1d41084444852eafc92c120b55dfabd0e1e663648805f26f39590e05ab578",
+  "src/sprites/entity_depth.c": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+  "src/sprites/entity_indexes.c": "bae2558fd1cf3a31d7d97edf027973a1f469d83538df66fce2eecdee0efbef56",
+  "src/sprites/entity_slots_tu14.c": "6da051475558af78958286d809b44263824b5c7dabc5a0e27f2d92c64660566c",
+  "src/sprites/entity_sprite_order.c": "6001250abf14628273f4cac147867f88a6e61402b9bd466f05d442a7acd1d719",
+  "src/sprites/entity_visibility.c": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+  "src/sprites/hide_player_sprites.c": "bd1ef46f7a3aaca9a5ab1d27c35f413e3a61af36aec13f539efdfbc4e9768d3a",
+  "src/sprites/link_player_sprites.c": "282d0d72c6c1765cee6a12c069da8c9243e8369dfd30351f4209da863f415a1e",
+  "src/sprites/load_sprites.c": "86130df95800b5b4c7661d71125cb667762b42ec9c8bacda73ef9013b0439c2a",
+  "src/sprites/select_first_link.c": "b3e3a7ddef1b1d6b905d63826e4981048e4ccf276a1b092a8b4b51028398f844",
+  "src/sprites/set_sprite.c": "1bf175b4ae9f2d0de4a9a1fe44ffdf302ae54953591a91a07ea7ad9184c8a59e",
+  "src/sprites/sprite_links_vdp.c": "c4313bf9635c4c345e6a6fa5f305c1db83384404afe2ed96eefe367b5faba5ca",
+  "src/sprites/sprite_pixel_masks.c": "1c268c8f9559af6b854b516d73bec297a27bd02de250270e6e099f1521240af7",
+  "src/ui/hud_health_update.c": "01dfb7654d59718ecf78b77fbc0d10b2c3cf8046547869e784d5b6042b53979d",
+  "src/ui/hud_initialization.c": "031623d7105584e4411bf1b4387cafe1e64277b95764a39a2181b5ccf986003f",
+  "src/ui/hud_status.c": "5f4e0ae1a1fe8f5a7b592b752b74cb338ef3a56a0b563d1b4eb93ca90215b11a",
+  "src/ui/inventory.c": "957bb13b6a792537d34db76028b72cb591e244d3214f0c842e410534d260024d",
+  "src/ui/pause.c": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+  "tests/support.py": "1f867274b8e8240091b13b80b0fbb26640f5683b88de0fa8ee05e813616c0a10",
+  "tests/test_analyze.py": "e2a0da7f75b17114639dc0c2ffb28831b4868dad1719e5ea46ae7fa79a67981f",
+  "tests/test_assets.py": "1e7408a41c2d5df5c209c510701c4a105001e8abbc074dcf492b2e7a1d59c3d9",
+  "tests/test_build.py": "fef46ad45a7e08d282a5392362c5f33756f8346c8b96aa34006963ff90bf8f90",
+  "tests/test_denominator.py": "a022810992a01619b881989bd2abf193a612b76b3ee5fcdbe52aa7c8236f5f76",
+  "tests/test_diff.py": "d50dbb11671a797ce23327c823258078b01d2dcb319261696bcb4d5f03283741",
+  "tests/test_mcc.py": "70f25f9c53788a5817239876a7fbc2d825c1e33de0ab7c7e9575500981b229a1",
+  "tests/test_names.py": "98bfec4d972f2b85e5997da0fb298a9674ddde7c939d891832664629ed32a2f1",
+  "tests/test_packet.py": "1a12aacc09c250b0da199fb3c57ca7ebd3fc4e9424930a2f700600a8852ce720",
+  "tests/test_revmap.py": "a86b25fa6ffcf03e7194a9271be80e5b9895641a9a5aa43a5f921a7e3c751a25",
+  "tests/test_rom.py": "4ae9c7be090b77033a70cfedd32e60e2046b6080959f6ce9ab8cae004272a4f4",
+  "tests/toolsmith_support.py": "641911ab2c9703d2a56a269e4f14830fac01dc46c775fa11816aa936aff46d06",
+  "toolchain.lock.json": "a9ee5be5e7a2b46302b65600483533af43ab6c0ff7a381651a87e7069b588c2c",
+  "tools/accept.py": "3df7e3506d51479468de63cba74792e42a70fdf9ef12ceb16cd66763edbe26e1",
+  "tools/analyze.py": "98e141673ac76bf3c8cc5d29942932fe77ec47458ac2ffbf10a0e44c6f7cc09b",
+  "tools/assets.py": "c4f2ad02007a532efcbea47133ac2f9bff36ed929a5a93ca733d123a8255a1fd",
+  "tools/build.py": "4766ff9979c88e7267047fba4f46ce6fda1da8518d4bfc86534187351f4f8752",
+  "tools/cunits.py": "48aef1d39521b0b330c3bcf845bbb7becd5d9a4889cefc28fa60291ab0528464",
+  "tools/denominator.py": "2bee5de03318a8dc794bd918075c7b09ac5ce40fafe9f50d03262781561ddde0",
+  "tools/diff.py": "609fe08dd8bb926fa76c325d55b19c283143843eed52a4af1a4adedb55a46533",
+  "tools/fat12.py": "c54c94f2c997dede069c320c6c15bad5673c1092904ca476827e8f5a66f9dd8b",
+  "tools/m68k.py": "878a630de8708ed9ccb3e1148967ea79c199f1c072c088b1bd969c3c423443f6",
+  "tools/match.py": "b8f94c05a79f48db1b522d61a28ebc86dc0bea948a001420e04e16fcd5888589",
+  "tools/mcc.py": "56f20de34694b2c2e1965b60fe148cf2fd78a61ea0c5dc0858da45cd24c1be87",
+  "tools/names.py": "22b28d20eceaa0a16c778fb73ece8dd7307f99c79530eb4ae4656b2b0671664c",
+  "tools/packet.py": "24a0fa729790b6dfe43668cf7c1c6f8946c0f1275d7fdd9697e5c7bfe50268a2",
+  "tools/revmap.py": "dbf20bab744b638949b22beaa5dd477e95c581b44373023de2abe6debe15ae27",
+  "tools/rom.py": "3774f61f88cf99fe93e8351fb821d808040ac6da65031824b54f74a82cd419a5",
+  "tools/setup.py": "3aa8841fc3564d83f164d0e2c2004baa36101db09845b8255f0e602166a560fc",
+  "tools/toolchain.py": "8f5d38798619b6af815bdcc1bacf0971fd6994a4b9c2961ec9485a58385cd5e7",
+  "tools/tus.py": "1c0c801bdc990d50d28387f6fc250fa2a553150cb2faf66b866c2a89991efe68"
+ },
+ "prepared_utc": "2026-10-22T05:03:50Z",
+ "result": "PASS",
+ "sources": {
+  "rev00": [
+   {
+    "options": [],
+    "sha256": "6094047abd0bbca963fe92f54249a55b04e17dec8449abc61217e8a0aa03a9a6",
+    "source": "src/core/main_loop.c"
+   },
+   {
+    "options": [],
+    "sha256": "00aac6d1b7d34b1f77806365c2856eb571999c297ae110d1a05888d57a0e078f",
+    "source": "src/core/toggle_camera_flag.c"
+   },
+   {
+    "options": [],
+    "sha256": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+    "source": "src/core/vdp_startup.c"
+   },
+   {
+    "options": [],
+    "sha256": "b99e459c23af5e9ffd9d1234ed6204ef327d74eb7d6c7e1f2d3b20cede00f57a",
+    "source": "src/earthlings/abilities_and_sleep.c"
+   },
+   {
+    "options": [],
+    "sha256": "db48645347e4d4955bd4b753848a647d27861f310142bcfcbba070f5520e6218",
+    "source": "src/earthlings/animation_behaviours.c"
+   },
+   {
+    "options": [],
+    "sha256": "2e44a550c5a9511fad97e8bf7e24eceed7997f98d5e331e0ac054d1e3791b254",
+    "source": "src/earthlings/bank_expiry.c"
+   },
+   {
+    "options": [],
+    "sha256": "451f0972c442794ba83448a7499e2d0ffbca32c4e6ffb0c6d2223c34d7b23be4",
+    "source": "src/earthlings/behaviour_tu28.c"
+   },
+   {
+    "options": [],
+    "sha256": "0957bf3f5fe719697c1f72b7be3099f51bda5ddc6b1eef922bde5eb1e145b40c",
+    "source": "src/earthlings/damage_and_processing.c"
+   },
+   {
+    "options": [],
+    "sha256": "34430ed665b482a4bcfba0227e6a3c15ed4926eb5b66649a53f44fbd55a89b49",
+    "source": "src/earthlings/generic_enemy_tu27.c"
+   },
+   {
+    "options": [],
+    "sha256": "af1e840ea54e212248ec0466fe238e9dc2207d23867ea90a1decd8ef23bd0a9b",
+    "source": "src/earthlings/movement_decision.c"
+   },
+   {
+    "options": [],
+    "sha256": "f1586b6d358341ca952ef3e3006a4f600d2eae2c04067204e9d4bbee228f26f6",
+    "source": "src/earthlings/spawning_and_loading.c"
+   },
+   {
+    "options": [],
+    "sha256": "ac91d390c39089a32c514345703971974990e802d8aa67d978d22ff8c58487f4",
+    "source": "src/earthlings/state_dispatch_tu26.c"
+   },
+   {
+    "options": [],
+    "sha256": "e01cdbfe71d97e114bfbbe8657cf74f5f72a7fe65293843adfbeb1af0ba6d0d0",
+    "source": "src/elevator/elevator_query.c"
+   },
+   {
+    "options": [],
+    "sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "source": "src/elevator/elevator_scene.c"
+   },
+   {
+    "options": [],
+    "sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+    "source": "src/elevator/elevator_transitions.c"
+   },
+   {
+    "options": [],
+    "sha256": "a50ddc7efbda20aaac2f7c443b0c32a8cd01aad6a87d2d195a05458509b561af",
+    "source": "src/engine/random_counter.c"
+   },
+   {
+    "options": [],
+    "sha256": "9394842f37d066cf7c2b0fe0d0068d0171c71d964cfebde77a38b855a73accbc",
+    "source": "src/engine/reset_sequence.c"
+   },
+   {
+    "options": [],
+    "sha256": "f05bf44f0e26ae00c67d41eaa2a4a4418d87a537a11c70634d17e35804bb3577",
+    "source": "src/graphics/camera_column_transfer.c"
+   },
+   {
+    "options": [],
+    "sha256": "22031b87f71db1d0a466782e423c64c6e3ea68722154c275bfff085c9065bd61",
+    "source": "src/graphics/camera_follow.c"
+   },
+   {
+    "options": [],
+    "sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+    "source": "src/graphics/camera_motion.c"
+   },
+   {
+    "options": [],
+    "sha256": "26a50471014f32d7a0e30d62732bd75ec114f035f32b733d0d551d3c351f3a7c",
+    "source": "src/graphics/camera_row_transfer.c"
+   },
+   {
+    "options": [],
+    "sha256": "fcd5d3ae68aad167741c336cc3ebd03cb1209557581af696122a17a3d1abf8cd",
+    "source": "src/graphics/funkatron_scene.c"
+   },
+   {
+    "options": [],
+    "sha256": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+    "source": "src/graphics/metatile_words.c"
+   },
+   {
+    "options": [],
+    "sha256": "7df2629826fcd72dec42f220b5e754eb68e964599a0b78be548d770c8aaca2fa",
+    "source": "src/graphics/split_screen_wipe.c"
+   },
+   {
+    "options": [],
+    "sha256": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+    "source": "src/map/change_level.c"
+   },
+   {
+    "options": [],
+    "sha256": "3136e95d0a18629a9dea2d08bd7b02ab0b741182e364634f2bd7337b7a54b215",
+    "source": "src/map/elevator_icon.c"
+   },
+   {
+    "options": [],
+    "sha256": "fc032ea61eb1d8409a947f7e0cddb94a3f3294b853d1a00cc1de4decb007f64a",
+    "source": "src/map/level_changes.c"
+   },
+   {
+    "options": [],
+    "sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+    "source": "src/map/level_generation.c"
+   },
+   {
+    "options": [],
+    "sha256": "5719137a13d5b561c2ad9cba9702f3e52a50da0b2b2f2b72f4943888823f2829",
+    "source": "src/map/map_drawing.c"
+   },
+   {
+    "options": [],
+    "sha256": "5dd57556d0b6e2eb734298a02a468b31cc47244e63063567afccb31abd81911c",
+    "source": "src/map/map_drawing_controller.c"
+   },
+   {
+    "options": [],
+    "sha256": "1054721e9e6db844d296545c1196e663cce862aaac470f93cbb44d944cc2e95f",
+    "source": "src/map/map_population.c"
+   },
+   {
+    "options": [],
+    "sha256": "d8a34bf44750a715edcbce019dec1aa23bd004e314c11b6dc89d0e13fd8ddab1",
+    "source": "src/map/region_cleanup.c"
+   },
+   {
+    "options": [],
+    "sha256": "47ea53484634191bfd0f8905fd3c96e2a87eecbbc8ec4ab610005df8e5c1b450",
+    "source": "src/map/region_walk.c"
+   },
+   {
+    "options": [],
+    "sha256": "750a167566afd5dde8f7e73112915b1bd3fcdc54489f0da585539315742a6b2a",
+    "source": "src/map/terrain_at_position.c"
+   },
+   {
+    "options": [],
+    "sha256": "517f6c5da7a8c06183771329b0f5b0b5a140da8608fc1858b01f9177469a106f",
+    "source": "src/map/terrain_placement.c"
+   },
+   {
+    "options": [],
+    "sha256": "f2ca7c117bd299e58ff5cc334ba1ef791470f3ceeface145fbc893dff7b7a1d4",
+    "source": "src/map/transition_paths.c"
+   },
+   {
+    "options": [],
+    "sha256": "27dcd3209b7869c2f96c1bfd20e07983c1218215e18be1270bc753ec767c40fb",
+    "source": "src/math/random_cache.c"
+   },
+   {
+    "options": [],
+    "sha256": "a6ddfe66c565149b0cf59c49d0c3d02708d48dc10c22518047fc2c0f368dc9a2",
+    "source": "src/player/active_present_sprite.c"
+   },
+   {
+    "options": [],
+    "sha256": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
+    "source": "src/player/center_for_split.c"
+   },
+   {
+    "options": [],
+    "sha256": "51a611e0e9dd514136b8fd49233ce36a7a119af4b7672b9e1c95b1a8b4fa27ef",
+    "source": "src/player/entity_motion_proximity.c"
+   },
+   {
+    "options": [],
+    "sha256": "a0360158c9ce30520f15efc5666cc02a13b1e4105aed6e1446651fc516bc2fc6",
+    "source": "src/player/entity_motion_terrain.c"
+   },
+   {
+    "options": [],
+    "sha256": "26c50879dfd17b497249b71206feac6ec6c9bf1c68024f900580a51b8df397ab",
+    "source": "src/player/high_five.c"
+   },
+   {
+    "options": [],
+    "sha256": "7566e0d6d8b822114428e8fd3c611700769c56147e06d22e4f55ba275afe38a6",
+    "source": "src/player/jump_motion.c"
+   },
+   {
+    "options": [],
+    "sha256": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+    "source": "src/player/level_fall_and_landings.c"
+   },
+   {
+    "options": [],
+    "sha256": "d3940f23467de1d58b334233e8002e2700283c5ae09bc6e3b24c91e09213d576",
+    "source": "src/player/mole.c"
+   },
+   {
+    "options": [],
+    "sha256": "576af03d40428b3e5cb9fea2c4dd10559a0ec65939d749fc9b8216327bbdb329",
+    "source": "src/player/open_rocket_skates.c"
+   },
+   {
+    "options": [],
+    "sha256": "02c10451a3e8e21817368f978e0af98cd912ef524df8499636d3d73ac9120e6d",
+    "source": "src/player/player_states_and_respawn.c"
+   },
+   {
+    "options": [],
+    "sha256": "44d2a1d2ff66a6181967140688707f4298b2c0818e5d11016568dcda8203801a",
+    "source": "src/player/process_movement.c"
+   },
+   {
+    "options": [],
+    "sha256": "94c9547258d8276081e15877147f0461726956f724c0b4f57bf7d3fccd349b2f",
+    "source": "src/player/process_players.c"
+   },
+   {
+    "options": [],
+    "sha256": "2917e25d1d02057ce2285da60ecf3148553ea1d2ea858285688aca42a20ad97e",
+    "source": "src/player/projectiles.c"
+   },
+   {
+    "options": [],
+    "sha256": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+    "source": "src/player/rocket_motion.c"
+   },
+   {
+    "options": [],
+    "sha256": "b28b009534e042875aad25650fcd13c364254da7157633d52c8e11d2b82a17a1",
+    "source": "src/player/set_camera_position.c"
+   },
+   {
+    "options": [],
+    "sha256": "58c22d9d57c3d0db0738438274e03faab01d231e9ffc10e533047e293d478a21",
+    "source": "src/player/setup_player.c"
+   },
+   {
+    "options": [],
+    "sha256": "b876edb43d4fbabc9285ebd6ccc0d2dffa8b99c356b19508a35817e2701c42ad",
+    "source": "src/player/sleep.c"
+   },
+   {
+    "options": [],
+    "sha256": "0edb6a1fb6430a63a2522bbee0227956cb69516cedde3231cac1056da72d9508",
+    "source": "src/player/sprite_movement.c"
+   },
+   {
+    "options": [],
+    "sha256": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+    "source": "src/player/start_falling.c"
+   },
+   {
+    "options": [],
+    "sha256": "c7efa71b8b811b6faf7863925e88a85b6b5af8f507810bef8ea24e3dd7912273",
+    "source": "src/player/start_motion_mode.c"
+   },
+   {
+    "options": [],
+    "sha256": "b4470d7adca9ee147d0270dfba5e3adc250205f22dee4365cb5465d2d25e1ed6",
+    "source": "src/player/steering.c"
+   },
+   {
+    "options": [],
+    "sha256": "b5e646577a976a78ecfebacab57f6a1d130b844487d421112fa23636a0b346c1",
+    "source": "src/player/target_motion_helpers.c"
+   },
+   {
+    "options": [],
+    "sha256": "bb0da769ee8a5b3985b2c8aef0ad531d4b501ac3fec61cc1003f352257d9d08b",
+    "source": "src/player/targeting.c"
+   },
+   {
+    "options": [],
+    "sha256": "204557a0651ee4534620272fe1a00f4600b3acbd2a5a093534b2f2fea26d1a5c",
+    "source": "src/presents/item_updates.c"
+   },
+   {
+    "options": [],
+    "sha256": "c38299e654b7759e8b624d2be2d5a92ce43bf78f23182240eb89b2a1394d1357",
+    "source": "src/presents/level_item_setup.c"
+   },
+   {
+    "options": [],
+    "sha256": "a7f23d58ac5df5c59c57fa66c32b2a8a45affccdf3fa8578832ded721668c1d5",
+    "source": "src/presents/present_effects.c"
+   },
+   {
+    "options": [],
+    "sha256": "a2ebe7e9fb73563f5cd26ec8b27157671c66c0d1ab127348abc9b6242a142c81",
+    "source": "src/presents/telephone.c"
+   },
+   {
+    "options": [],
+    "sha256": "7fa1d41084444852eafc92c120b55dfabd0e1e663648805f26f39590e05ab578",
+    "source": "src/sprites/copy_sprite_tiles.c"
+   },
+   {
+    "options": [],
+    "sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+    "source": "src/sprites/entity_depth.c"
+   },
+   {
+    "options": [],
+    "sha256": "bae2558fd1cf3a31d7d97edf027973a1f469d83538df66fce2eecdee0efbef56",
+    "source": "src/sprites/entity_indexes.c"
+   },
+   {
+    "options": [],
+    "sha256": "6da051475558af78958286d809b44263824b5c7dabc5a0e27f2d92c64660566c",
+    "source": "src/sprites/entity_slots_tu14.c"
+   },
+   {
+    "options": [],
+    "sha256": "6001250abf14628273f4cac147867f88a6e61402b9bd466f05d442a7acd1d719",
+    "source": "src/sprites/entity_sprite_order.c"
+   },
+   {
+    "options": [],
+    "sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+    "source": "src/sprites/entity_visibility.c"
+   },
+   {
+    "options": [],
+    "sha256": "bd1ef46f7a3aaca9a5ab1d27c35f413e3a61af36aec13f539efdfbc4e9768d3a",
+    "source": "src/sprites/hide_player_sprites.c"
+   },
+   {
+    "options": [],
+    "sha256": "282d0d72c6c1765cee6a12c069da8c9243e8369dfd30351f4209da863f415a1e",
+    "source": "src/sprites/link_player_sprites.c"
+   },
+   {
+    "options": [],
+    "sha256": "86130df95800b5b4c7661d71125cb667762b42ec9c8bacda73ef9013b0439c2a",
+    "source": "src/sprites/load_sprites.c"
+   },
+   {
+    "options": [],
+    "sha256": "b3e3a7ddef1b1d6b905d63826e4981048e4ccf276a1b092a8b4b51028398f844",
+    "source": "src/sprites/select_first_link.c"
+   },
+   {
+    "options": [],
+    "sha256": "1bf175b4ae9f2d0de4a9a1fe44ffdf302ae54953591a91a07ea7ad9184c8a59e",
+    "source": "src/sprites/set_sprite.c"
+   },
+   {
+    "options": [],
+    "sha256": "c4313bf9635c4c345e6a6fa5f305c1db83384404afe2ed96eefe367b5faba5ca",
+    "source": "src/sprites/sprite_links_vdp.c"
+   },
+   {
+    "options": [],
+    "sha256": "1c268c8f9559af6b854b516d73bec297a27bd02de250270e6e099f1521240af7",
+    "source": "src/sprites/sprite_pixel_masks.c"
+   },
+   {
+    "options": [],
+    "sha256": "01dfb7654d59718ecf78b77fbc0d10b2c3cf8046547869e784d5b6042b53979d",
+    "source": "src/ui/hud_health_update.c"
+   },
+   {
+    "options": [],
+    "sha256": "031623d7105584e4411bf1b4387cafe1e64277b95764a39a2181b5ccf986003f",
+    "source": "src/ui/hud_initialization.c"
+   },
+   {
+    "options": [],
+    "sha256": "5f4e0ae1a1fe8f5a7b592b752b74cb338ef3a56a0b563d1b4eb93ca90215b11a",
+    "source": "src/ui/hud_status.c"
+   },
+   {
+    "options": [],
+    "sha256": "957bb13b6a792537d34db76028b72cb591e244d3214f0c842e410534d260024d",
+    "source": "src/ui/inventory.c"
+   },
+   {
+    "options": [],
+    "sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+    "source": "src/ui/pause.c"
+   }
+  ],
+  "rev02": [
+   {
+    "options": [],
+    "sha256": "6094047abd0bbca963fe92f54249a55b04e17dec8449abc61217e8a0aa03a9a6",
+    "source": "src/core/main_loop.c"
+   },
+   {
+    "options": [],
+    "sha256": "00aac6d1b7d34b1f77806365c2856eb571999c297ae110d1a05888d57a0e078f",
+    "source": "src/core/toggle_camera_flag.c"
+   },
+   {
+    "options": [],
+    "sha256": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+    "source": "src/core/vdp_startup.c"
+   },
+   {
+    "options": [],
+    "sha256": "b99e459c23af5e9ffd9d1234ed6204ef327d74eb7d6c7e1f2d3b20cede00f57a",
+    "source": "src/earthlings/abilities_and_sleep.c"
+   },
+   {
+    "options": [],
+    "sha256": "db48645347e4d4955bd4b753848a647d27861f310142bcfcbba070f5520e6218",
+    "source": "src/earthlings/animation_behaviours.c"
+   },
+   {
+    "options": [],
+    "sha256": "2e44a550c5a9511fad97e8bf7e24eceed7997f98d5e331e0ac054d1e3791b254",
+    "source": "src/earthlings/bank_expiry.c"
+   },
+   {
+    "options": [],
+    "sha256": "451f0972c442794ba83448a7499e2d0ffbca32c4e6ffb0c6d2223c34d7b23be4",
+    "source": "src/earthlings/behaviour_tu28.c"
+   },
+   {
+    "options": [],
+    "sha256": "0957bf3f5fe719697c1f72b7be3099f51bda5ddc6b1eef922bde5eb1e145b40c",
+    "source": "src/earthlings/damage_and_processing.c"
+   },
+   {
+    "options": [],
+    "sha256": "34430ed665b482a4bcfba0227e6a3c15ed4926eb5b66649a53f44fbd55a89b49",
+    "source": "src/earthlings/generic_enemy_tu27.c"
+   },
+   {
+    "options": [],
+    "sha256": "af1e840ea54e212248ec0466fe238e9dc2207d23867ea90a1decd8ef23bd0a9b",
+    "source": "src/earthlings/movement_decision.c"
+   },
+   {
+    "options": [],
+    "sha256": "f1586b6d358341ca952ef3e3006a4f600d2eae2c04067204e9d4bbee228f26f6",
+    "source": "src/earthlings/spawning_and_loading.c"
+   },
+   {
+    "options": [],
+    "sha256": "ac91d390c39089a32c514345703971974990e802d8aa67d978d22ff8c58487f4",
+    "source": "src/earthlings/state_dispatch_tu26.c"
+   },
+   {
+    "options": [],
+    "sha256": "e01cdbfe71d97e114bfbbe8657cf74f5f72a7fe65293843adfbeb1af0ba6d0d0",
+    "source": "src/elevator/elevator_query.c"
+   },
+   {
+    "options": [],
+    "sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "source": "src/elevator/elevator_scene.c"
+   },
+   {
+    "options": [],
+    "sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+    "source": "src/elevator/elevator_transitions.c"
+   },
+   {
+    "options": [],
+    "sha256": "a50ddc7efbda20aaac2f7c443b0c32a8cd01aad6a87d2d195a05458509b561af",
+    "source": "src/engine/random_counter.c"
+   },
+   {
+    "options": [],
+    "sha256": "9394842f37d066cf7c2b0fe0d0068d0171c71d964cfebde77a38b855a73accbc",
+    "source": "src/engine/reset_sequence.c"
+   },
+   {
+    "options": [],
+    "sha256": "f05bf44f0e26ae00c67d41eaa2a4a4418d87a537a11c70634d17e35804bb3577",
+    "source": "src/graphics/camera_column_transfer.c"
+   },
+   {
+    "options": [],
+    "sha256": "22031b87f71db1d0a466782e423c64c6e3ea68722154c275bfff085c9065bd61",
+    "source": "src/graphics/camera_follow.c"
+   },
+   {
+    "options": [],
+    "sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+    "source": "src/graphics/camera_motion.c"
+   },
+   {
+    "options": [],
+    "sha256": "26a50471014f32d7a0e30d62732bd75ec114f035f32b733d0d551d3c351f3a7c",
+    "source": "src/graphics/camera_row_transfer.c"
+   },
+   {
+    "options": [],
+    "sha256": "fcd5d3ae68aad167741c336cc3ebd03cb1209557581af696122a17a3d1abf8cd",
+    "source": "src/graphics/funkatron_scene.c"
+   },
+   {
+    "options": [],
+    "sha256": "bebb52ddc285265b51b4e0413dc24312a2e2f3440a03f34c28b10d3de8d9f8f2",
+    "source": "src/graphics/metatile_words.c"
+   },
+   {
+    "options": [],
+    "sha256": "7df2629826fcd72dec42f220b5e754eb68e964599a0b78be548d770c8aaca2fa",
+    "source": "src/graphics/split_screen_wipe.c"
+   },
+   {
+    "options": [],
+    "sha256": "771a656e438782ff496c27b67b91aaab09971c1bf6a5684034e21684e8272752",
+    "source": "src/map/change_level.c"
+   },
+   {
+    "options": [],
+    "sha256": "3136e95d0a18629a9dea2d08bd7b02ab0b741182e364634f2bd7337b7a54b215",
+    "source": "src/map/elevator_icon.c"
+   },
+   {
+    "options": [],
+    "sha256": "fc032ea61eb1d8409a947f7e0cddb94a3f3294b853d1a00cc1de4decb007f64a",
+    "source": "src/map/level_changes.c"
+   },
+   {
+    "options": [],
+    "sha256": "40966b3214149ffa20526d739279a1b26d7cf1709fc95d0f8bba8bb8fe2bc1d5",
+    "source": "src/map/level_generation.c"
+   },
+   {
+    "options": [],
+    "sha256": "5719137a13d5b561c2ad9cba9702f3e52a50da0b2b2f2b72f4943888823f2829",
+    "source": "src/map/map_drawing.c"
+   },
+   {
+    "options": [],
+    "sha256": "5dd57556d0b6e2eb734298a02a468b31cc47244e63063567afccb31abd81911c",
+    "source": "src/map/map_drawing_controller.c"
+   },
+   {
+    "options": [],
+    "sha256": "1054721e9e6db844d296545c1196e663cce862aaac470f93cbb44d944cc2e95f",
+    "source": "src/map/map_population.c"
+   },
+   {
+    "options": [],
+    "sha256": "d8a34bf44750a715edcbce019dec1aa23bd004e314c11b6dc89d0e13fd8ddab1",
+    "source": "src/map/region_cleanup.c"
+   },
+   {
+    "options": [],
+    "sha256": "47ea53484634191bfd0f8905fd3c96e2a87eecbbc8ec4ab610005df8e5c1b450",
+    "source": "src/map/region_walk.c"
+   },
+   {
+    "options": [],
+    "sha256": "750a167566afd5dde8f7e73112915b1bd3fcdc54489f0da585539315742a6b2a",
+    "source": "src/map/terrain_at_position.c"
+   },
+   {
+    "options": [],
+    "sha256": "517f6c5da7a8c06183771329b0f5b0b5a140da8608fc1858b01f9177469a106f",
+    "source": "src/map/terrain_placement.c"
+   },
+   {
+    "options": [],
+    "sha256": "f2ca7c117bd299e58ff5cc334ba1ef791470f3ceeface145fbc893dff7b7a1d4",
+    "source": "src/map/transition_paths.c"
+   },
+   {
+    "options": [],
+    "sha256": "27dcd3209b7869c2f96c1bfd20e07983c1218215e18be1270bc753ec767c40fb",
+    "source": "src/math/random_cache.c"
+   },
+   {
+    "options": [],
+    "sha256": "a6ddfe66c565149b0cf59c49d0c3d02708d48dc10c22518047fc2c0f368dc9a2",
+    "source": "src/player/active_present_sprite.c"
+   },
+   {
+    "options": [],
+    "sha256": "7bfc5ded660a7eea34a09816bc8546345f947602527c0e39b7ca8cb53ce1de52",
+    "source": "src/player/center_for_split.c"
+   },
+   {
+    "options": [],
+    "sha256": "51a611e0e9dd514136b8fd49233ce36a7a119af4b7672b9e1c95b1a8b4fa27ef",
+    "source": "src/player/entity_motion_proximity.c"
+   },
+   {
+    "options": [],
+    "sha256": "a0360158c9ce30520f15efc5666cc02a13b1e4105aed6e1446651fc516bc2fc6",
+    "source": "src/player/entity_motion_terrain.c"
+   },
+   {
+    "options": [],
+    "sha256": "26c50879dfd17b497249b71206feac6ec6c9bf1c68024f900580a51b8df397ab",
+    "source": "src/player/high_five.c"
+   },
+   {
+    "options": [],
+    "sha256": "7566e0d6d8b822114428e8fd3c611700769c56147e06d22e4f55ba275afe38a6",
+    "source": "src/player/jump_motion.c"
+   },
+   {
+    "options": [],
+    "sha256": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+    "source": "src/player/level_fall_and_landings.c"
+   },
+   {
+    "options": [],
+    "sha256": "d3940f23467de1d58b334233e8002e2700283c5ae09bc6e3b24c91e09213d576",
+    "source": "src/player/mole.c"
+   },
+   {
+    "options": [],
+    "sha256": "576af03d40428b3e5cb9fea2c4dd10559a0ec65939d749fc9b8216327bbdb329",
+    "source": "src/player/open_rocket_skates.c"
+   },
+   {
+    "options": [],
+    "sha256": "02c10451a3e8e21817368f978e0af98cd912ef524df8499636d3d73ac9120e6d",
+    "source": "src/player/player_states_and_respawn.c"
+   },
+   {
+    "options": [],
+    "sha256": "44d2a1d2ff66a6181967140688707f4298b2c0818e5d11016568dcda8203801a",
+    "source": "src/player/process_movement.c"
+   },
+   {
+    "options": [],
+    "sha256": "94c9547258d8276081e15877147f0461726956f724c0b4f57bf7d3fccd349b2f",
+    "source": "src/player/process_players.c"
+   },
+   {
+    "options": [],
+    "sha256": "2917e25d1d02057ce2285da60ecf3148553ea1d2ea858285688aca42a20ad97e",
+    "source": "src/player/projectiles.c"
+   },
+   {
+    "options": [],
+    "sha256": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+    "source": "src/player/rocket_motion.c"
+   },
+   {
+    "options": [],
+    "sha256": "b28b009534e042875aad25650fcd13c364254da7157633d52c8e11d2b82a17a1",
+    "source": "src/player/set_camera_position.c"
+   },
+   {
+    "options": [],
+    "sha256": "58c22d9d57c3d0db0738438274e03faab01d231e9ffc10e533047e293d478a21",
+    "source": "src/player/setup_player.c"
+   },
+   {
+    "options": [],
+    "sha256": "b876edb43d4fbabc9285ebd6ccc0d2dffa8b99c356b19508a35817e2701c42ad",
+    "source": "src/player/sleep.c"
+   },
+   {
+    "options": [],
+    "sha256": "0edb6a1fb6430a63a2522bbee0227956cb69516cedde3231cac1056da72d9508",
+    "source": "src/player/sprite_movement.c"
+   },
+   {
+    "options": [],
+    "sha256": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+    "source": "src/player/start_falling.c"
+   },
+   {
+    "options": [],
+    "sha256": "c7efa71b8b811b6faf7863925e88a85b6b5af8f507810bef8ea24e3dd7912273",
+    "source": "src/player/start_motion_mode.c"
+   },
+   {
+    "options": [],
+    "sha256": "b4470d7adca9ee147d0270dfba5e3adc250205f22dee4365cb5465d2d25e1ed6",
+    "source": "src/player/steering.c"
+   },
+   {
+    "options": [],
+    "sha256": "b5e646577a976a78ecfebacab57f6a1d130b844487d421112fa23636a0b346c1",
+    "source": "src/player/target_motion_helpers.c"
+   },
+   {
+    "options": [],
+    "sha256": "bb0da769ee8a5b3985b2c8aef0ad531d4b501ac3fec61cc1003f352257d9d08b",
+    "source": "src/player/targeting.c"
+   },
+   {
+    "options": [],
+    "sha256": "204557a0651ee4534620272fe1a00f4600b3acbd2a5a093534b2f2fea26d1a5c",
+    "source": "src/presents/item_updates.c"
+   },
+   {
+    "options": [],
+    "sha256": "c38299e654b7759e8b624d2be2d5a92ce43bf78f23182240eb89b2a1394d1357",
+    "source": "src/presents/level_item_setup.c"
+   },
+   {
+    "options": [],
+    "sha256": "a7f23d58ac5df5c59c57fa66c32b2a8a45affccdf3fa8578832ded721668c1d5",
+    "source": "src/presents/present_effects.c"
+   },
+   {
+    "options": [],
+    "sha256": "a2ebe7e9fb73563f5cd26ec8b27157671c66c0d1ab127348abc9b6242a142c81",
+    "source": "src/presents/telephone.c"
+   },
+   {
+    "options": [],
+    "sha256": "7fa1d41084444852eafc92c120b55dfabd0e1e663648805f26f39590e05ab578",
+    "source": "src/sprites/copy_sprite_tiles.c"
+   },
+   {
+    "options": [],
+    "sha256": "3907746eda1c74412c830dc5f296b6b7791285fd2617a80bb24794500d9b0918",
+    "source": "src/sprites/entity_depth.c"
+   },
+   {
+    "options": [],
+    "sha256": "bae2558fd1cf3a31d7d97edf027973a1f469d83538df66fce2eecdee0efbef56",
+    "source": "src/sprites/entity_indexes.c"
+   },
+   {
+    "options": [],
+    "sha256": "6da051475558af78958286d809b44263824b5c7dabc5a0e27f2d92c64660566c",
+    "source": "src/sprites/entity_slots_tu14.c"
+   },
+   {
+    "options": [],
+    "sha256": "6001250abf14628273f4cac147867f88a6e61402b9bd466f05d442a7acd1d719",
+    "source": "src/sprites/entity_sprite_order.c"
+   },
+   {
+    "options": [],
+    "sha256": "d03ebee69762e5f7f61e91c9e15e2d30469ac9d591a95f40022b233169f21637",
+    "source": "src/sprites/entity_visibility.c"
+   },
+   {
+    "options": [],
+    "sha256": "bd1ef46f7a3aaca9a5ab1d27c35f413e3a61af36aec13f539efdfbc4e9768d3a",
+    "source": "src/sprites/hide_player_sprites.c"
+   },
+   {
+    "options": [],
+    "sha256": "282d0d72c6c1765cee6a12c069da8c9243e8369dfd30351f4209da863f415a1e",
+    "source": "src/sprites/link_player_sprites.c"
+   },
+   {
+    "options": [],
+    "sha256": "86130df95800b5b4c7661d71125cb667762b42ec9c8bacda73ef9013b0439c2a",
+    "source": "src/sprites/load_sprites.c"
+   },
+   {
+    "options": [],
+    "sha256": "b3e3a7ddef1b1d6b905d63826e4981048e4ccf276a1b092a8b4b51028398f844",
+    "source": "src/sprites/select_first_link.c"
+   },
+   {
+    "options": [],
+    "sha256": "1bf175b4ae9f2d0de4a9a1fe44ffdf302ae54953591a91a07ea7ad9184c8a59e",
+    "source": "src/sprites/set_sprite.c"
+   },
+   {
+    "options": [],
+    "sha256": "c4313bf9635c4c345e6a6fa5f305c1db83384404afe2ed96eefe367b5faba5ca",
+    "source": "src/sprites/sprite_links_vdp.c"
+   },
+   {
+    "options": [],
+    "sha256": "1c268c8f9559af6b854b516d73bec297a27bd02de250270e6e099f1521240af7",
+    "source": "src/sprites/sprite_pixel_masks.c"
+   },
+   {
+    "options": [],
+    "sha256": "01dfb7654d59718ecf78b77fbc0d10b2c3cf8046547869e784d5b6042b53979d",
+    "source": "src/ui/hud_health_update.c"
+   },
+   {
+    "options": [],
+    "sha256": "031623d7105584e4411bf1b4387cafe1e64277b95764a39a2181b5ccf986003f",
+    "source": "src/ui/hud_initialization.c"
+   },
+   {
+    "options": [],
+    "sha256": "5f4e0ae1a1fe8f5a7b592b752b74cb338ef3a56a0b563d1b4eb93ca90215b11a",
+    "source": "src/ui/hud_status.c"
+   },
+   {
+    "options": [],
+    "sha256": "957bb13b6a792537d34db76028b72cb591e244d3214f0c842e410534d260024d",
+    "source": "src/ui/inventory.c"
+   },
+   {
+    "options": [],
+    "sha256": "57edfcc4e5aeffea084bbf51624563042abe270a9bfc2cbc6b79ed22db124dcb",
+    "source": "src/ui/pause.c"
+   }
+  ]
+ },
+ "suite": {
+  "returncode": 0,
+  "summary": "OK"
+ }
+}

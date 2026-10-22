@@ -1,0 +1,116 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "C014Review",
+  "checkpoint": "c014-waves-17-18",
+  "source_commit": "11e9c9deed49c8291f9033fdfb5ddfbce44c0af7",
+  "prepare_sha256": "fcd5df02bda049563d8966747322cd2546306f1c4e3edbac635e4768ff5dfc3d",
+  "independence": "Fresh independent reviewer, not an author. Verdict sealed without reading any other review except the expressly authorized C013Review/review.json for F1-F3 regression checks. All created evidence, packets, compiler temporaries, alternatives and build outputs are confined to scratch/agents/C014Review. No tracked file or git state was changed; accept.py review/finalize was not invoked.",
+  "blocking_findings": [
+    "F1"
+  ],
+  "checks": [
+    {
+      "id": "C1",
+      "check": "Verify preparation, saved receipts/images, current input hashes and latest source commit",
+      "result": "PASS",
+      "evidence": "prepare-audit.json: all 128 current manifest entries and both source digests agree with prepare; prepared head equals latest src/config/sources.json commit. Four saved canonical-JSON receipt digests, C-unit records and image hashes agree; every saved image equals its original with zero raw words. Prepare result PASS, dirty_paths empty, suite returncode 0 / OK inspected, not rerun."
+    },
+    {
+      "id": "C2",
+      "check": "Re-derive every changed file with ordinary match.py for both revisions",
+      "result": "PASS",
+      "evidence": "baseline-match-results.json and matches/baseline/: fifteen changed files, thirty CLI invocations, all exit 0; 89 functions per revision, 178 MATCH results. No --define or compiler-option override. Nine new units contain 38 functions / 12274 original code bytes plus ten literal bytes."
+    },
+    {
+      "id": "C3",
+      "check": "Independently rebuild both complete images with the normal source registry",
+      "result": "PASS",
+      "evidence": "baseline-build-results.json and builds/baseline/: normal tools/build.py build_image pipeline, private output destinations, 82 C units / 336 functions / zero raw words each. C-unit records equal prepare. REV02 SHA256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV00 SHA256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228. One fresh reviewer build per revision, separately from the audited two prepare builds per revision."
+    },
+    {
+      "id": "C4",
+      "check": "Inspect prohibited source devices, canonical names and compilation options",
+      "result": "PASS",
+      "evidence": "All nine new source files read; targeted grep over new/modified sources and inspection of registry/receipts. No inline asm, blobs, pragmas, option overrides, numeric function-address or pointer-layout casts. Ordinary named sound-address-to-long casts reflect the observed sound operand convention. Existing VDP MMIO casts are not new matching tricks. Strict canonical-name enforcement passes both match.py and full builds. Interface/layout findings are recorded separately."
+    },
+    {
+      "id": "C5",
+      "check": "Review all files shallowly and at least fifteen functions deeply",
+      "result": "PASS",
+      "evidence": "scope-summary.json and deep-review.json: every one of fifteen changed files reviewed at its relevant code/declaration/comment sites, all nine new bodies read, twenty new functions deeply compared to independent ROM packets, covering all nine new files. Report documents fields, branches, stack/result widths, callers and key data accesses."
+    },
+    {
+      "id": "C6",
+      "check": "Check typed extern declarations across src and validate original interface-bug claims",
+      "result": "QUALIFIED",
+      "evidence": "Repository-wide grep, interface-inventory.json, packets and natural alternatives. Allocator and terrain return-width qualifications are packet-backed and truthful-type alternatives fail; func_020eaa has separate original long-test evidence in OpenEarthlingPresent. Char declarations for func_0196b0/func_01aa20 match every consumer, so their asserted original caller mismatch is not proved. func_015da6 is short, not void. Long abs and P1_MENU_OPEN array alternatives also match. See F2."
+    },
+    {
+      "id": "C7",
+      "check": "Check logical definition extent and shared earthling-record consistency",
+      "result": "FAIL",
+      "evidence": "definition-extent-evidence.json, data_units.json:8429-8431 and reviewer-extracted assets show a valid twenty-fifth logical definition at 0x02638a, hot-tub contact handler, and kind 24 at level 0 slot 18. Current [24] bounds exclude it; all five [25] alternatives match both revisions (F1). Physical earthling field offsets and 18/360-byte record/bank strides agree, but partial same-tag C declarations differ; common 18-byte and 38-byte views match (F3)."
+    },
+    {
+      "id": "C8",
+      "check": "Check readability and honesty of comments/names against packets and callers",
+      "result": "QUALIFIED",
+      "evidence": "Twenty-function packet audit and preserved-bug checks documented in report.md. Existing missing-argument, full-health removal, retry-counter, narrow-result and speech-argument markers agree with packets. Exact historical declarations and semantic labels remain [INFERENCE]. The unsupported helper mismatch claims and the incorrect identification of 019c96 as a common tail are F2/F4."
+    },
+    {
+      "id": "C9",
+      "check": "Verify catalogue r5 merges are real switch extents in both revisions",
+      "result": "PASS",
+      "evidence": "catalogue-r5-evidence.json compares pre-r5/current seeds and extents and independently decodes original-ROM signed table offsets. All six removed seeds are table targets. Generic/019f0e tables have offsets 8,16,24,32; Santa has 10,8,24,38. Packet frame/register setup and common epilogues establish ownership. Complete sizes are 1216,1174,1032 in both revisions. F4 is only a comment correction."
+    },
+    {
+      "id": "C10",
+      "check": "Verify C013 F1-F3 fixes and func_018ce2 declaration correction",
+      "result": "PASS",
+      "evidence": "Both func_015b66 consumers now declare int; level_item_setup/item_updates declare long abs; elevator icon uses eight-byte elevator_record pairs and member [0]; signed-mask/addressing compiler choices are locally disclosed and timer text says masks 12 and 2. present_effects declares int func_018ce2 consistently with its definition. All affected complete files match both revisions."
+    },
+    {
+      "id": "C11",
+      "check": "Try natural alternatives for suspicious choices and proposed corrections",
+      "result": "PASS",
+      "evidence": "Forty-two complete alternative variants, each compiled for both revisions: alternative-results.json, additional-alternative-results.json and shared-definition-results.json. Correct bounds, consistent helper declarations, common record views and removing next_y register hints match. Removing the spawning RNG register hint changes allocation; plain overlap, collapsed coordinate scales and cached-pointer reuse alter size and fail. An initial scalarized record alternative fails in LoadInEarthlings; the matching neutral trailing-array form is retained. No alternatives were adopted."
+    },
+    {
+      "id": "C12",
+      "check": "Mutation sanity for both match.py and complete builds",
+      "result": "PASS",
+      "evidence": "mutation-results.json: change only first vertical velocity -256 to -255 in private target_motion_helpers.c. Both match.py invocations exit 1 with the immediate-word difference. Complete builds with in-memory registry substitution both FAIL, first byte 0x01b043 REV02 / 0x01b001 REV00; receipts include the mutated C source/hash and zero raw words. Canonical registry/source untouched."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "medium",
+      "file": "src/earthlings/spawning_and_loading.c:48; src/earthlings/abilities_and_sleep.c:52; src/earthlings/generic_enemy_tu27.c:45; src/earthlings/behaviour_tu28.c:43; src/earthlings/animation_behaviours.c:41",
+      "what": "Blocking source-model error: EARTHLING_DATA[24] excludes valid category 24. The data inventory explicitly describes a twenty-fifth logical 38-byte record at 0x02638a (37 owned bytes plus its final byte overlapping EarthlingCoordinatePairs), with the hot-tub state/contact definition. LevelEarthlingChoices selects kind 24 at level 0 slot 18, while population/state/display/touch code indexes EARTHLING_DATA by kind, making those accesses outside the declared array. The authors mistook a non-overlapping asset partition for the logical array extent. This is not an original gameplay bug.",
+      "suggested_fix": "Declare EARTHLING_DATA[25] consistently in all five files and preserve/document the final padding-byte overlap as appropriate. All five complete alternatives under alternatives/twenty-five-definitions-* independently MATCH both revisions; evidence is additional-alternative-results.json and definition-extent-evidence.json. Reprepare after correcting the bound."
+    },
+    {
+      "id": "F2",
+      "severity": "low",
+      "file": "src/earthlings/generic_enemy_tu27.c:50-53; src/earthlings/behaviour_tu28.c:47-50; src/earthlings/animation_behaviours.c:44-47; src/earthlings/movement_decision.c:29; src/earthlings/state_dispatch_tu26.c:35-38; src/earthlings/spawning_and_loading.c:77; src/earthlings/abilities_and_sleep.c:62",
+      "what": "Avoidable cross-unit declaration differences remain. The new behavior units declare the char-returning func_0196b0/func_01aa20 as int and call it an ORIGINAL BUG, but correct char declarations together reproduce every consumer, so word result stores do not establish an implicit-int historical declaration. The two new func_015da6 callers declare void although its accepted definition returns short. The new abs consumers use int instead of the existing long convention, and dispatch declares the shared P1_MENU_OPEN array as a scalar. No emitted-byte necessity was found for these choices.",
+      "suggested_fix": "Use extern char for both decision helpers in all three consumers and remove their unsupported ORIGINAL BUG claims; use extern short func_015da6 in dispatch and movement_decision; use long abs in the two new consumers; use the P1_MENU_OPEN array view with [0] at the dispatch test. Every alternative MATCHes both revisions, including both helper declarations together in generic, animation and behavior. Retain the separately packet-backed allocator/terrain qualifications. Historical caller declarations remain [INFERENCE]."
+    },
+    {
+      "id": "F3",
+      "severity": "low",
+      "file": "src/earthlings/spawning_and_loading.c:24-43; src/earthlings/abilities_and_sleep.c:24-43; src/earthlings/damage_and_processing.c:24-28; src/earthlings/state_dispatch_tu26.c:1-8; src/earthlings/movement_decision.c:1-4; src/earthlings/generic_enemy_tu27.c:25-43; src/earthlings/behaviour_tu28.c:22-41; src/earthlings/animation_behaviours.c:21-39",
+      "what": "Physical offsets agree, but the same earthling_state tag denotes different six-, sixteen- and eighteen-byte member sets; the same-tag earthling_definition declarations also differ across external EARTHLING_DATA consumers. Partial consumers currently avoid using the wrong record stride, so no current byte mismatch was found, but this is not one consistent cross-unit C record. Matching common declarations are available.",
+      "suggested_fix": "Reuse a complete shared 18-byte earthling_state and 38-byte earthling_definition, preserving per-kind health/phase reuse and existing neutral two-byte trailing storage where needed. The five common-eighteen-byte-record wave-18 alternatives match both revisions and agree with the three existing wave-17 layouts; all five common-thirty-eight-byte-definition alternatives also match. Prefer normal shared-header consolidation over additional incompatible local views. Do not use the initial scalarized-tail experiment that failed LoadInEarthlings."
+    },
+    {
+      "id": "F4",
+      "severity": "low",
+      "file": "src/earthlings/generic_enemy_tu27.c:109-110",
+      "what": "The ownership comment calls 0x019c96 the common tail. It is the third switch-table target, sets negative horizontal velocity, and branches to 0x019ca4, the actual join. The catalogue merge itself is correct.",
+      "suggested_fix": "Describe 019c86/019c8e/019c96 as merged case entries (and 019c9e as the fourth case), with common tail 019ca4, or omit the unnecessary address-by-address tail claim."
+    }
+  ],
+  "conclusion": "All requested review work is complete. Byte reconstruction, preparation binding, both full images, catalogue r5 ownership, C013 fixes and mutation rejection pass. Acceptance is blocked by F1, the incorrect logical definition bound; F2-F4 are lower-severity qualifications. Private matching corrections are supplied as evidence, not adopted changes. Any source correction requires a new prepared input binding. No independent suite rerun, gameplay validation or recovery of exact historical C source is claimed."
+}

@@ -38,6 +38,7 @@ from elftools.elf.elffile import ELFFile
 from elftools.elf.relocation import RelocationSection
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import assets as assettool  # noqa: E402
 import cunits  # noqa: E402
 import mcc  # noqa: E402
 import m68k  # noqa: E402
@@ -168,11 +169,28 @@ class Symbols:
         return self.absolute.setdefault(address, f"dat_{address:06x}")
 
 
-def render_unit(unit: Unit, symbols: Symbols, raw: set[int], baserom: Path) -> tuple[str, dict[int, int]]:
-    """Assembly text for one unit and the source line of each instruction (1-based)."""
+def render_unit(unit: Unit, symbols: Symbols, raw: set[int], baserom: Path,
+                data: dict | None = None) -> tuple[str, dict[int, int]]:
+    """Assembly text for one unit and the source line of each instruction (1-based).
+
+    Header and data units are the typed data units packed from extracted assets when the version has
+    config/<version>/data_units.json, else slices of the private original.
+    """
     lines = [f'\t.section .text.{unit.name},"ax"' if unit.insns else f'\t.section .text.{unit.name},"a"']
     if not unit.insns:
-        lines.append(f'\t.incbin "{baserom}", 0x{unit.address:x}, 0x{unit.size:x}')
+        if data is None:
+            lines.append(f'\t.incbin "{baserom}", 0x{unit.address:x}, 0x{unit.size:x}')
+            return "\n".join(lines) + "\n", {}
+        cursor = unit.address
+        for address, size, name, path in data["units"]:
+            if address >= unit.end or address + size <= unit.address:
+                continue
+            if address != cursor or address + size > unit.end:
+                raise BuildError(f"{unit.name}: data unit {name} does not tile 0x{unit.address:06x}-0x{unit.end:06x}")
+            lines.append(f'\t.incbin "{path}"\t/* {name} */')
+            cursor = address + size
+        if cursor != unit.end:
+            raise BuildError(f"{unit.name}: data units end at 0x{cursor:06x}, the unit at 0x{unit.end:06x}")
         return "\n".join(lines) + "\n", {}
     local = {symbols.labels[i.address] for i in unit.insns if i.address in symbols.labels}
     body = []
@@ -252,9 +270,36 @@ def linker_script(units: list[Unit], symbols: Symbols, extra: dict[str, int] | N
     return "\n".join(lines) + "\n"
 
 
+def prepare_data(version: str, rom: bytes, catalogue: dict, out: Path) -> dict | None:
+    """Extract the typed data units' assets from the ROM, then pack every unit back from its asset.
+
+    The packed units (out/data/<name>.bin) are what the image is built from; None when the version
+    has no config/<version>/data_units.json yet (its data stays slices of the original).
+    """
+    path = ROOT / "config" / version / "data_units.json"
+    if not path.is_file():
+        return None
+    config = json.loads(path.read_text(encoding="utf-8"))
+    try:
+        assettool.validate_config(config, catalogue)
+        for sub in ("assets", "data"):
+            shutil.rmtree(out / sub, ignore_errors=True)
+        assettool.extract(config, rom, out / "assets")
+        report = assettool.pack(config, out / "assets", out / "data")
+    except assettool.AssetError as error:
+        raise BuildError(f"data units: {error}") from None
+    units = sorted((int(u["address"], 16), u["size"], u["name"], out / "data" / u["path"]) for u in report["units"])
+    kinds = {kind: {"units": c["units"], "bytes": c["bytes"]} for kind, c in sorted(report["counts"].items())}
+    raw_bytes = sum(r["size"] for r in report["raw_only"])
+    return {"units": units, "summary": {"config_sha256": sha256(path.read_bytes()), "units": len(units),
+                                         "bytes": sum(u[1] for u in units), "raw_bytes": raw_bytes,
+                                         "typed_bytes": sum(u[1] for u in units) - raw_bytes,
+                                         "packed_equal_to_extracted": report["all_exact"], "by_kind": kinds}}
+
+
 def tool_hashes() -> dict:
     here = Path(__file__).resolve().parent
-    return {name: sha256((here / name).read_bytes()) for name in ("build.py", "cunits.py", "m68k.py", "mcc.py", "names.py", "revmap.py", "rom.py", "toolchain.py", "tus.py")}
+    return {name: sha256((here / name).read_bytes()) for name in ("assets.py", "build.py", "cunits.py", "m68k.py", "mcc.py", "names.py", "revmap.py", "rom.py", "toolchain.py", "tus.py")}
 
 
 def build(version: str, jobs: int) -> dict:
@@ -266,8 +311,9 @@ def build(version: str, jobs: int) -> dict:
     if catalogue["rom_sha256"] != sha256(rom):
         raise BuildError(f"{catalogue_file.relative_to(ROOT)} was made for a different ROM")
     out = ROOT / "build" / version
+    data = prepare_data(version, rom, catalogue, out)
     result = build_image(rom, baserom, catalogue, out, jobs, namestool.load(version), cunits.load_sources(version),
-                         tus.load(version), revmap.translator(version))
+                         tus.load(version), revmap.translator(version), data)
     result["inputs"]["catalogue_sha256"] = sha256(catalogue_file.read_bytes())
     names_file = namestool.path(version)
     result["inputs"]["names_sha256"] = sha256(names_file.read_bytes()) if names_file.is_file() else None
@@ -348,7 +394,7 @@ def c_unit_definitions(c_units: list, symbols: Symbols, names: dict | None,
 
 def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int, names: dict | None = None,
                 sources: list[dict] | None = None, tus_spans: list[tuple[int, int]] | None = None,
-                translate=lambda address: address) -> dict:
+                translate=lambda address: address, data: dict | None = None) -> dict:
     """Generate, assemble and link every unit into out/; the result is PASS only when byte-identical."""
     started = time.time()
     for sub in ("asm", "obj"):  # units change whenever the catalogue does: never link stale objects
@@ -383,7 +429,7 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
         source = out / "asm" / f"{unit.name}.s"
         obj = out / "obj" / f"{unit.name}.o"
         for _ in range(MAX_ROUNDS):
-            text, line_of = render_unit(unit, symbols, raw, baserom)
+            text, line_of = render_unit(unit, symbols, raw, baserom, data)
             source.write_text(text)
             rejected = assemble(source, obj)
             if not rejected:
@@ -453,6 +499,7 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
                          "emu2_commit": toolchain.LOCK["emu2"]["commit"], "as_flags": mcc.AS_FLAGS} if c_units else None,
         },
         "units": {kind: sum(1 for u in units if u.kind == kind) for kind in ("header", "function", "fragment", "data", "c")},
+        "data": {"source": "assets", **data["summary"]} if data else {"source": "original slices"},
         "c_units": [{"source": str(cu.source.relative_to(ROOT)) if cu.source.is_relative_to(ROOT) else str(cu.source),
                      "sha256": cu.source_sha256, "options": cu.options, "address": f"0x{cu.address:06x}", "size": cu.size,
                      "functions": [{"name": name, "address": f"0x{cu.address + offset:06x}", "size": size}
@@ -481,7 +528,8 @@ def main() -> int:
     args = parser.parse_args()
     try:
         receipt = build(args.version, args.jobs)
-    except (BuildError, romtool.RomError, namestool.NamesError, toolchain.ToolchainError, subprocess.CalledProcessError) as error:
+    except (BuildError, romtool.RomError, namestool.NamesError, toolchain.ToolchainError, subprocess.CalledProcessError,
+            assettool.AssetError) as error:
         detail = getattr(error, "stderr", "") or ""
         print(f"error: {error} {detail}".strip(), file=sys.stderr)
         return 1

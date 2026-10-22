@@ -102,7 +102,7 @@ def build_both(checkpoint: str, run: str, jobs: int) -> dict:
         out.mkdir(parents=True)
         receipt = build.build_image(rom, baserom, catalogue, out, jobs, namestool.load(version),
                                     cunits.load_sources(version), build.tus.load(version),
-                                    build.revmap.translator(version))
+                                    build.revmap.translator(version), build.prepare_data(version, rom, catalogue, out))
         (out / "receipt.json").write_text(json.dumps(receipt, indent=1) + "\n")
         receipts[version] = receipt
     return receipts

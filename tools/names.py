@@ -85,15 +85,20 @@ def load(version: str, root: Path = ROOT) -> dict[int, Name]:
     (config/<version>/correspondence.json, tools/revmap.py) that has no name of its own takes the
     primary function's identity: its imported name, else the primary spelling `func_XXXXXX`. One
     C source then names each function the same way in every revision.
+
+    The typed data units (config/<primary>/data_units.json) name every data unit start that has no
+    imported name; where an imported name exists, the unit's name becomes an alias. Other revisions
+    take them at the corresponding place (tools/revmap.py translator).
     """
     file = path(version, root)
     if not file.is_file():
         return {}
     by_address = parse(json.loads(file.read_text(encoding="utf-8")), version)
+    taken = {spelling for n in by_address.values() for spelling in (n.name, *n.aliases)}
     pairs = correspondence(version, root)
+    primary_version = pairs["primary"] if pairs else version
     if pairs:
         primary = parse(json.loads(path(pairs["primary"], root).read_text(encoding="utf-8")), pairs["primary"])
-        taken = {spelling for n in by_address.values() for spelling in (n.name, *n.aliases)}
         for theirs, ours, size in pairs["functions"]:
             if ours in by_address:
                 continue
@@ -102,7 +107,35 @@ def load(version: str, root: Path = ROOT) -> dict[int, Name]:
                 raise NamesError(f"names: {identity} (primary 0x{theirs:06x}) already names another {version} address")
             by_address[ours] = Name(identity, ours, "function", size, "revision correspondence (tools/revmap.py)")
             taken.add(identity)
+    units = data_units(primary_version, root)
+    if units:
+        if version == primary_version:
+            place = lambda address: address  # noqa: E731
+        else:
+            import revmap  # local import: revmap imports this module
+            place = revmap.translator(version, root)
+        for theirs, name, size in units:
+            ours = place(theirs)
+            if ours is None or name in taken:
+                continue
+            if not IDENT.fullmatch(name) or RESERVED.fullmatch(name):
+                raise NamesError(f"names: data unit {name!r} is not a usable identifier")
+            known = by_address.get(ours)
+            if known is None:
+                by_address[ours] = Name(name, ours, "rom_data", size, "typed data unit (config/data_units.json)")
+            else:
+                by_address[ours] = Name(known.name, ours, known.kind, known.size, known.source, (*known.aliases, name))
+            taken.add(name)
     return by_address
+
+
+def data_units(version: str, root: Path = ROOT) -> list[tuple[int, str, int]]:
+    """(address, name, size) of the typed data units of `version`, if it has data_units.json."""
+    file = root / "config" / version / "data_units.json"
+    if not file.is_file():
+        return []
+    units = json.loads(file.read_text(encoding="utf-8"))["units"]
+    return [(int(u["address"], 16), u["name"], u["size"]) for u in units]
 
 
 def correspondence(version: str, root: Path = ROOT) -> dict | None:

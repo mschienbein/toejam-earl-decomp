@@ -9,7 +9,7 @@ extern void MoveDataToVRAM(), func_0016d2(), UpdateCameraY();
 /* Transfer pending vertical columns using a 128-byte VRAM increment. */
 void UpdateCameraX()
 {
-    register short first_count;
+    short first_count;
     short camera, start_row;
     char count;
 

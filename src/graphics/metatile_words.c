@@ -11,7 +11,7 @@ short camera;
     short column;
 
     for (column = 0; column < 45; column++)
-        ram_ff804e[camera][column] = ram_ff8196 | (unsigned short)0;
+        ram_ff804e[camera][column] = ram_ff8196 | 0;
     ram_ff8108[camera] = 45;
     ram_ff8106[camera] = 1;
 }

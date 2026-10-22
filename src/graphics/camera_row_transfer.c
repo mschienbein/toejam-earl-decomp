@@ -8,7 +8,7 @@ extern void MoveDataToVRAM();
 /* Transfer pending horizontal rows, splitting at the 64-column wrap. */
 void UpdateCameraY()
 {
-    register short first_count;
+    short first_count;
     short camera, start_column, count;
 
     for (camera = 0; camera < 2; camera++) {
@@ -44,7 +44,7 @@ short camera;
     short row;
 
     for (row = 0; row < ram_ff8198; row++)
-        ram_ff810a[camera][row] = ram_ff8196 | (unsigned short)0;
+        ram_ff810a[camera][row] = ram_ff8196 | 0;
     ram_ff818e[camera] = 1;
     ram_ff8190[camera] = ram_ff8199;
 }

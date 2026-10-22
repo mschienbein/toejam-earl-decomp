@@ -107,6 +107,27 @@
    ]
   },
   {
+   "source": "src/map/change_level.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/map/level_changes.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/map/level_generation.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/map/terrain_at_position.c",
    "versions": [
     "rev02",

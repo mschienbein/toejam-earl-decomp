@@ -1,0 +1,2026 @@
+{
+ "added": [
+  {
+   "address": "0x0174b6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0174b6",
+   "size": 360,
+   "source": "src/earthlings/bank_expiry.c",
+   "source_sha256": "2e44a550c5a9511fad97e8bf7e24eceed7997f98d5e331e0ac054d1e3791b254",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0141a6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "Map_DrawElevator",
+   "size": 210,
+   "source": "src/map/elevator_icon.c",
+   "source_sha256": "dcd2a97abebf0c8c6340f2cd5aa12f13766069187dafb4bc621b3674db912648",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01502e",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_01502e",
+   "size": 282,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015148",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015148",
+   "size": 322,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01528a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_01528a",
+   "size": 56,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0152c2",
+   "checkpoint": "c013-waves-15-16",
+   "name": "EatYummyFood",
+   "size": 46,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0152f6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "EatYuckyFood",
+   "size": 46,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01532a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "EatFudgeSundae",
+   "size": 40,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015352",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015352",
+   "size": 656,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0155ee",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0155ee",
+   "size": 188,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0156aa",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0156aa",
+   "size": 426,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015854",
+   "checkpoint": "c013-waves-15-16",
+   "name": "ReducePresentTimer",
+   "size": 340,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0159a8",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0159a8",
+   "size": 144,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015a38",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015a38",
+   "size": 302,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev02"
+  },
+  {
+   "address": "0x014278",
+   "checkpoint": "c013-waves-15-16",
+   "name": "SetupPresentIdentities",
+   "size": 150,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01430e",
+   "checkpoint": "c013-waves-15-16",
+   "name": "SetupInitialInventory",
+   "size": 216,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0143e6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0143e6",
+   "size": 192,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0144a6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0144a6",
+   "size": 164,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01454a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_01454a",
+   "size": 48,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev02"
+  },
+  {
+   "address": "0x01457a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "LoadLevel2AndUp",
+   "size": 726,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev02"
+  },
+  {
+   "address": "0x014850",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_014850",
+   "size": 698,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev02"
+  },
+  {
+   "address": "0x014b0a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "SelectRandomPresent",
+   "size": 134,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev02"
+  },
+  {
+   "address": "0x014b90",
+   "checkpoint": "c013-waves-15-16",
+   "name": "PlaceStuffInLevel",
+   "size": 646,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015b66",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015b66",
+   "size": 190,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015c24",
+   "checkpoint": "c013-waves-15-16",
+   "name": "OpenDecoy",
+   "size": 302,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015d52",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015d52",
+   "size": 84,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015da6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015da6",
+   "size": 64,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015de6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015de6",
+   "size": 192,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015ea6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "PresentIsDoorway",
+   "size": 334,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x015ff4",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015ff4",
+   "size": 164,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x016098",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_016098",
+   "size": 274,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0161aa",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0161aa",
+   "size": 580,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0163ee",
+   "checkpoint": "c013-waves-15-16",
+   "name": "PerformPromotion",
+   "size": 610,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x016650",
+   "checkpoint": "c013-waves-15-16",
+   "name": "BummerLifePromo",
+   "size": 652,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0168e2",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0168e2",
+   "size": 250,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0169e2",
+   "checkpoint": "c013-waves-15-16",
+   "name": "PresentIsRainCloud",
+   "size": 232,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x016aca",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_016aca",
+   "size": 458,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x016c94",
+   "checkpoint": "c013-waves-15-16",
+   "name": "OpenBoomBox",
+   "size": 256,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x016d94",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_016d94",
+   "size": 236,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x016e80",
+   "checkpoint": "c013-waves-15-16",
+   "name": "ProcessPresents",
+   "size": 116,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x016ef4",
+   "checkpoint": "c013-waves-15-16",
+   "name": "OpenSelectedPresent",
+   "size": 854,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x017254",
+   "checkpoint": "c013-waves-15-16",
+   "name": "SetupSelectedPresent",
+   "size": 598,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev02"
+  },
+  {
+   "address": "0x017474",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0174b6",
+   "size": 360,
+   "source": "src/earthlings/bank_expiry.c",
+   "source_sha256": "2e44a550c5a9511fad97e8bf7e24eceed7997f98d5e331e0ac054d1e3791b254",
+   "version": "rev00"
+  },
+  {
+   "address": "0x014176",
+   "checkpoint": "c013-waves-15-16",
+   "name": "Map_DrawElevator",
+   "size": 210,
+   "source": "src/map/elevator_icon.c",
+   "source_sha256": "dcd2a97abebf0c8c6340f2cd5aa12f13766069187dafb4bc621b3674db912648",
+   "version": "rev00"
+  },
+  {
+   "address": "0x014ffe",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_01502e",
+   "size": 282,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015118",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015148",
+   "size": 322,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01525a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_01528a",
+   "size": 56,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015292",
+   "checkpoint": "c013-waves-15-16",
+   "name": "EatYummyFood",
+   "size": 46,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0152c6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "EatYuckyFood",
+   "size": 46,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0152fa",
+   "checkpoint": "c013-waves-15-16",
+   "name": "EatFudgeSundae",
+   "size": 40,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015322",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015352",
+   "size": 656,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0155be",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0155ee",
+   "size": 188,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01567a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0156aa",
+   "size": 426,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015824",
+   "checkpoint": "c013-waves-15-16",
+   "name": "ReducePresentTimer",
+   "size": 340,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015978",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0159a8",
+   "size": 144,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015a08",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015a38",
+   "size": 302,
+   "source": "src/presents/item_updates.c",
+   "source_sha256": "292b72acf591f150cca90b49cb6a9d9f69df964862b3e019a8ddc3d4dbf61420",
+   "version": "rev00"
+  },
+  {
+   "address": "0x014248",
+   "checkpoint": "c013-waves-15-16",
+   "name": "SetupPresentIdentities",
+   "size": 150,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0142de",
+   "checkpoint": "c013-waves-15-16",
+   "name": "SetupInitialInventory",
+   "size": 216,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0143b6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0143e6",
+   "size": 192,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev00"
+  },
+  {
+   "address": "0x014476",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0144a6",
+   "size": 164,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01451a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_01454a",
+   "size": 48,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01454a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "LoadLevel2AndUp",
+   "size": 726,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev00"
+  },
+  {
+   "address": "0x014820",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_014850",
+   "size": 698,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev00"
+  },
+  {
+   "address": "0x014ada",
+   "checkpoint": "c013-waves-15-16",
+   "name": "SelectRandomPresent",
+   "size": 134,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev00"
+  },
+  {
+   "address": "0x014b60",
+   "checkpoint": "c013-waves-15-16",
+   "name": "PlaceStuffInLevel",
+   "size": 646,
+   "source": "src/presents/level_item_setup.c",
+   "source_sha256": "7ddf92aa4ca8121c16ce723309812c032d6ce6ece1f521ecf498d1a51d79cd77",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015b36",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015b66",
+   "size": 190,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015bf4",
+   "checkpoint": "c013-waves-15-16",
+   "name": "OpenDecoy",
+   "size": 302,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015d22",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015d52",
+   "size": 84,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015d76",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015da6",
+   "size": 64,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015db6",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015de6",
+   "size": 192,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015e76",
+   "checkpoint": "c013-waves-15-16",
+   "name": "PresentIsDoorway",
+   "size": 334,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x015fc4",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_015ff4",
+   "size": 164,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x016068",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_016098",
+   "size": 274,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x01617a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0161aa",
+   "size": 580,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0163be",
+   "checkpoint": "c013-waves-15-16",
+   "name": "PerformPromotion",
+   "size": 610,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x016620",
+   "checkpoint": "c013-waves-15-16",
+   "name": "BummerLifePromo",
+   "size": 652,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0168b2",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_0168e2",
+   "size": 250,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0169b2",
+   "checkpoint": "c013-waves-15-16",
+   "name": "PresentIsRainCloud",
+   "size": 232,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x016a9a",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_016aca",
+   "size": 458,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x016c64",
+   "checkpoint": "c013-waves-15-16",
+   "name": "OpenBoomBox",
+   "size": 256,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x016d64",
+   "checkpoint": "c013-waves-15-16",
+   "name": "func_016d94",
+   "size": 236,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x016e50",
+   "checkpoint": "c013-waves-15-16",
+   "name": "ProcessPresents",
+   "size": 116,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x016ec4",
+   "checkpoint": "c013-waves-15-16",
+   "name": "OpenSelectedPresent",
+   "size": 854,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  },
+  {
+   "address": "0x017224",
+   "checkpoint": "c013-waves-15-16",
+   "name": "SetupSelectedPresent",
+   "size": 580,
+   "source": "src/presents/present_effects.c",
+   "source_sha256": "c41f0bcd4ec0af047d024bc0211294f333150f7daf460dd2a6a322dc9e03d925",
+   "version": "rev00"
+  }
+ ],
+ "checkpoint": "c013-waves-15-16",
+ "final_images": {
+  "rev00": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+  "rev02": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163"
+ },
+ "finalized_utc": "2026-10-22T05:02:22Z",
+ "moved": [
+  {
+   "from": {
+    "address": "0x012694",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012694",
+    "size": 206,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x012694",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012694",
+    "size": 206,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012762",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012762",
+    "size": 58,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x012762",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012762",
+    "size": 58,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01279c",
+    "checkpoint": "c012-waves-12-14",
+    "name": "LOAD_ELEVATOR_1",
+    "size": 32,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01279c",
+    "checkpoint": "c013-waves-15-16",
+    "name": "LOAD_ELEVATOR_1",
+    "size": 32,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0127bc",
+    "checkpoint": "c012-waves-12-14",
+    "name": "SetupElevator",
+    "size": 380,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0127bc",
+    "checkpoint": "c013-waves-15-16",
+    "name": "SetupElevator",
+    "size": 380,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012938",
+    "checkpoint": "c012-waves-12-14",
+    "name": "SetupInitialElevator",
+    "size": 60,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x012938",
+    "checkpoint": "c013-waves-15-16",
+    "name": "SetupInitialElevator",
+    "size": 60,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012974",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012974",
+    "size": 226,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x012974",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012974",
+    "size": 226,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012a56",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012a56",
+    "size": 298,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x012a56",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012a56",
+    "size": 298,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012b80",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012b80",
+    "size": 396,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x012b80",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012b80",
+    "size": 396,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012d0c",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012d0c",
+    "size": 172,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x012d0c",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012d0c",
+    "size": 172,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012db8",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012db8",
+    "size": 112,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x012db8",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012db8",
+    "size": 112,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012e28",
+    "checkpoint": "c012-waves-12-14",
+    "name": "LoadFinalLevelMap",
+    "size": 268,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x012e28",
+    "checkpoint": "c013-waves-15-16",
+    "name": "LoadFinalLevelMap",
+    "size": 268,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012f34",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012f34",
+    "size": 258,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x012f34",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012f34",
+    "size": 258,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x013036",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_013036",
+    "size": 298,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x013036",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_013036",
+    "size": 298,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x013160",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_013160",
+    "size": 174,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x013160",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_013160",
+    "size": 174,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01320e",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_01320e",
+    "size": 96,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01320e",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_01320e",
+    "size": 96,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01326e",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_01326e",
+    "size": 482,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01326e",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_01326e",
+    "size": 482,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x013450",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_013450",
+    "size": 190,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x013450",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_013450",
+    "size": 190,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01350e",
+    "checkpoint": "c012-waves-12-14",
+    "name": "ElevatorRideVBlank",
+    "size": 98,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01350e",
+    "checkpoint": "c013-waves-15-16",
+    "name": "ElevatorRideVBlank",
+    "size": 98,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x013570",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_013570",
+    "size": 414,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x013570",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_013570",
+    "size": 414,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01370e",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_01370e",
+    "size": 120,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01370e",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_01370e",
+    "size": 120,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x013786",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_013786",
+    "size": 638,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x013786",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_013786",
+    "size": 638,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00fd98",
+    "checkpoint": "c012-waves-12-14",
+    "name": "MakePlayerFall",
+    "size": 750,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00fd98",
+    "checkpoint": "c013-waves-15-16",
+    "name": "MakePlayerFall",
+    "size": 750,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010086",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_010086",
+    "size": 302,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x010086",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_010086",
+    "size": 302,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0101b4",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_0101b4",
+    "size": 224,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0101b4",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_0101b4",
+    "size": 224,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01044e",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_01044e",
+    "size": 478,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01044e",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_01044e",
+    "size": 478,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01062c",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_01062c",
+    "size": 390,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01062c",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_01062c",
+    "size": 390,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0107b2",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_0107b2",
+    "size": 438,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0107b2",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_0107b2",
+    "size": 438,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010968",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_010968",
+    "size": 334,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x010968",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_010968",
+    "size": 334,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010ab6",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_010ab6",
+    "size": 744,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x010ab6",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_010ab6",
+    "size": 744,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010d9e",
+    "checkpoint": "c012-waves-12-14",
+    "name": "KillThePlayer",
+    "size": 292,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x010d9e",
+    "checkpoint": "c013-waves-15-16",
+    "name": "KillThePlayer",
+    "size": 292,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010ec2",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_010ec2",
+    "size": 314,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x010ec2",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_010ec2",
+    "size": 314,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012664",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012694",
+    "size": 206,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x012664",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012694",
+    "size": 206,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012732",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012762",
+    "size": 58,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x012732",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012762",
+    "size": 58,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01276c",
+    "checkpoint": "c012-waves-12-14",
+    "name": "LOAD_ELEVATOR_1",
+    "size": 32,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01276c",
+    "checkpoint": "c013-waves-15-16",
+    "name": "LOAD_ELEVATOR_1",
+    "size": 32,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01278c",
+    "checkpoint": "c012-waves-12-14",
+    "name": "SetupElevator",
+    "size": 380,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01278c",
+    "checkpoint": "c013-waves-15-16",
+    "name": "SetupElevator",
+    "size": 380,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012908",
+    "checkpoint": "c012-waves-12-14",
+    "name": "SetupInitialElevator",
+    "size": 60,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x012908",
+    "checkpoint": "c013-waves-15-16",
+    "name": "SetupInitialElevator",
+    "size": 60,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012944",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012974",
+    "size": 226,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x012944",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012974",
+    "size": 226,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012a26",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012a56",
+    "size": 298,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x012a26",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012a56",
+    "size": 298,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012b50",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012b80",
+    "size": 396,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x012b50",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012b80",
+    "size": 396,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012cdc",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012d0c",
+    "size": 172,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x012cdc",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012d0c",
+    "size": 172,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012d88",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012db8",
+    "size": 112,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x012d88",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012db8",
+    "size": 112,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012df8",
+    "checkpoint": "c012-waves-12-14",
+    "name": "LoadFinalLevelMap",
+    "size": 268,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x012df8",
+    "checkpoint": "c013-waves-15-16",
+    "name": "LoadFinalLevelMap",
+    "size": 268,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x012f04",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_012f34",
+    "size": 258,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x012f04",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_012f34",
+    "size": 258,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x013006",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_013036",
+    "size": 298,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x013006",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_013036",
+    "size": 298,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x013130",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_013160",
+    "size": 174,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x013130",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_013160",
+    "size": 174,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0131de",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_01320e",
+    "size": 96,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0131de",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_01320e",
+    "size": 96,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01323e",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_01326e",
+    "size": 482,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01323e",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_01326e",
+    "size": 482,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x013420",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_013450",
+    "size": 190,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x013420",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_013450",
+    "size": 190,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0134de",
+    "checkpoint": "c012-waves-12-14",
+    "name": "ElevatorRideVBlank",
+    "size": 98,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0134de",
+    "checkpoint": "c013-waves-15-16",
+    "name": "ElevatorRideVBlank",
+    "size": 98,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x013540",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_013570",
+    "size": 414,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x013540",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_013570",
+    "size": 414,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0136de",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_01370e",
+    "size": 120,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0136de",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_01370e",
+    "size": 120,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x013756",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_013786",
+    "size": 638,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x013756",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_013786",
+    "size": 638,
+    "source": "src/elevator/elevator_scene.c",
+    "source_sha256": "92f74f31c67c15c7009dd05eb146055b9f2ec58ad61d9efe4616a764a514b9fa",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00fd78",
+    "checkpoint": "c012-waves-12-14",
+    "name": "MakePlayerFall",
+    "size": 750,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00fd78",
+    "checkpoint": "c013-waves-15-16",
+    "name": "MakePlayerFall",
+    "size": 750,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010066",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_010086",
+    "size": 302,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x010066",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_010086",
+    "size": 302,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010194",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_0101b4",
+    "size": 224,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x010194",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_0101b4",
+    "size": 224,
+    "source": "src/player/level_fall_and_landings.c",
+    "source_sha256": "9a4e85e332b1653ad77b6b3323d9883408718ae30f62fb03d9b4cacebb606cc1",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01042e",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_01044e",
+    "size": 478,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01042e",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_01044e",
+    "size": 478,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01060c",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_01062c",
+    "size": 390,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01060c",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_01062c",
+    "size": 390,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010792",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_0107b2",
+    "size": 438,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x010792",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_0107b2",
+    "size": 438,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010948",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_010968",
+    "size": 334,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x010948",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_010968",
+    "size": 334,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010a96",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_010ab6",
+    "size": 744,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x010a96",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_010ab6",
+    "size": 744,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010d7e",
+    "checkpoint": "c012-waves-12-14",
+    "name": "KillThePlayer",
+    "size": 292,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x010d7e",
+    "checkpoint": "c013-waves-15-16",
+    "name": "KillThePlayer",
+    "size": 292,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x010ea2",
+    "checkpoint": "c012-waves-12-14",
+    "name": "func_010ec2",
+    "size": 314,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x010ea2",
+    "checkpoint": "c013-waves-15-16",
+    "name": "func_010ec2",
+    "size": 314,
+    "source": "src/player/player_states_and_respawn.c",
+    "source_sha256": "02336ab3306cee7f40bbbcdd241cc92fb71a9b908d60241d48fbba861879c58c",
+    "version": "rev00"
+   }
+  }
+ ],
+ "note": "Main confirmation: waves 15 and 16 and C012's fixes (C013Review PASS_WITH_QUALIFICATIONS: three low declaration/comment notes, its alternatives adopted in the next checkpoint).",
+ "prepare_sha256": "78e35a11d9b74419534a0b96bb47ca4e6c91a50b530e70c700830815366de856",
+ "progress": {
+  "bytes": 89650,
+  "checkpoint": "c013-waves-15-16",
+  "functions": 298,
+  "utc": "2026-10-22T05:02:22Z"
+ },
+ "reviews": [
+  {
+   "reviewer": "C013Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  },
+  {
+   "reviewer": "C013Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  }
+ ]
+}

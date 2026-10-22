@@ -1,0 +1,100 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C013Review",
+  "checkpoint": "c013-waves-15-16",
+  "source_commit": "bf14322cba5f2c2b3ba4d33e65420e7a0852dd81",
+  "prepare_sha256": "78e35a11d9b74419534a0b96bb47ca4e6c91a50b530e70c700830815366de856",
+  "independence": "Fresh independent reviewer, not an author. Verdict sealed without reading any other review except the expressly authorized C012Review/review.json for F1-F4 regression verification. All new evidence, compiler temporaries, packets, candidates and build outputs are confined to scratch/agents/C013Review. No tracked file or git state was modified. No accept.py review/finalize operation was invoked.",
+  "checks": [
+    {
+      "id": "C1",
+      "check": "Verify prepare record, current input hashes and latest source commit",
+      "result": "PASS",
+      "evidence": "prepare-audit.json and scope.json: current hashes of all 119 prepare inputs agree, both current source digests agree, and the latest commit touching src/config/sources.json equals prepared head bf14322cba5f2c2b3ba4d33e65420e7a0852dd81. Prepare records PASS and no dirty paths. The exact source delta since c012 is the five new files plus the three assigned fix files. Four saved canonical-JSON receipt digests, their C-unit records, and saved image hashes agree with prepare; every saved image equals its original, with zero raw words. Saved suite returncode 0 / OK was inspected, not rerun."
+    },
+    {
+      "id": "C2",
+      "check": "Re-derive every changed file in both revisions using ordinary match.py",
+      "result": "PASS",
+      "evidence": "baseline-match-results.json and matches/baseline/: eight changed files, sixteen ordinary CLI invocations, all exit 0, yielding 146 function MATCH results (73 per revision). No --define or --option override. The five new units contain 42 functions, 12838 REV02 code bytes plus 58 literal/alignment bytes; REV00 is eighteen code bytes shorter."
+    },
+    {
+      "id": "C3",
+      "check": "Independently rebuild both complete normal-source images",
+      "result": "PASS",
+      "evidence": "baseline-build-results.json and builds/baseline/: the ordinary tools/build.py build_image path was exercised with normal source registry, names, TU spans, revision translation and typed data; only output destinations were private. Both receipts PASS, with 73 C units / 298 functions / zero raw words, and C-unit records exactly equal prepare. REV02 SHA256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV00 SHA256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228. One fresh reviewer build per revision was performed; the two saved prepare runs per revision were separately audited."
+    },
+    {
+      "id": "C4",
+      "check": "Inspect all changed source files and deeply sample at least fifteen functions",
+      "result": "PASS",
+      "evidence": "observations.json records inspection of all eight changed files and twenty deeply compared new functions across all five new files. Samples cover map-icon DMA, present identities/inventory, bank lifetime, placement/random selection, item allocation/visibility/pickups/hazards, timers, effect allocation, decoy/doorway behavior, promotion fallback, cloud strikes, boom-box expiry and revised present setup. packet-results.json plus packet-additional-results.json retain 72 successful packet.py invocations, separated by revision. No gameplay execution is claimed."
+    },
+    {
+      "id": "C5",
+      "check": "Enforce K&R C, primary names, contiguous functions and prohibited-device rules",
+      "result": "PASS",
+      "evidence": "Source inspection and cross-source grep found no inline assembly, replacement byte/word blobs, pragmas, custom compiler options, numeric game-address casts, biased pointers or address-steering tricks. Numeric pointer macros are VDP hardware ports. Sound descriptors are named data with ordinary long argument conversions. Ordinary match.py enforces primary names and contiguous ROM order for all changed definitions, and all prepared C-unit options are empty."
+    },
+    {
+      "id": "C6",
+      "check": "Verify typed extern consistency and the eighteen-byte earthling record",
+      "result": "QUALIFIED",
+      "evidence": "Cross-src grep confirms shared random/terrain/speech/health/promotion/timer declarations and the C012 fixes. item_updates.c and bank_expiry.c have identical eighteen-byte earthling_state definitions; packets prove X/Y at 6/8, handles at 1/15, twenty records and 360-byte bank stride, agreeing with the accepted map view and mole prefix. F1 identifies avoidable void/int effect-return declarations and reintroduced int/long abs disagreement. F2 identifies the avoidable alternative ELEVATOR_LOCATION object view. Complete private consistent-interface candidates match both revisions. Older reconstructed object/prefix/map views remain; universal ISO C type compatibility is not claimed."
+    },
+    {
+      "id": "C7",
+      "check": "Check preserved argument/interface bugs against original packets and natural typed alternatives",
+      "result": "PASS",
+      "evidence": "LoadLevel2AndUp reads a fourth short at 22(A6), while func_01502e pushes only three four-byte arguments and cleans twelve bytes. Its ORIGINAL BUG marker is accurate. Both new allocator consumers store D0.B without short normalization; a short extern adds MOVE.W D0,D0, growing func_01502e 282->284 and func_015b66 190->192. func_014850 compares full D0 from the unsigned-char terrain getter; the byte extern grows it 698->700. The short music extern grows func_016d94 236->238 by an absent normalization. Each alternative fails both revisions. PerformPromotion really pushes a player-object pointer to GenerateSpeech, whose first parameter is read as a short player index. The full-health food path retains collected=1 and reaches removal; placement's attempt decrement is also observed. These are marked ORIGINAL BUG; an implicit historical declaration is explicitly [INFERENCE], not proven original source."
+    },
+    {
+      "id": "C8",
+      "check": "Justify revision.h guards from both original revisions",
+      "result": "PASS",
+      "evidence": "The complete SetupSelectedPresent packets were inspected for REV02 (598 bytes) and REV00 (580 bytes). Only REV02 tests fall state before the rocket-skate sound/open calls; its final mask is 0x0804c81c versus 0x0004c81c in REV00. The source's guards express exactly those differences, and both whole units match. No other new file needs a revision guard."
+    },
+    {
+      "id": "C9",
+      "check": "Try natural alternatives and assess matching-sensitive source choices",
+      "result": "QUALIFIED",
+      "evidence": "alternative-run-summary.json, interface-alternative-summary.json and alternative-object-metrics.json record sixteen non-mutant alternatives in both revisions. Plain short allocator/byte terrain/short music declarations fail as described above. Removing register hints changes two allocations at unchanged sizes, not a necessity for stylistic rejection. Removing the pickup signed-long cast shortens its emitted code+literals 668->664; direct timer member access shortens 340->336, and a local pointer shortens 340->330. F3 requests local disclosure of the retained choices and correct mask commentary. Conversely, a plain short-circuit placement condition removing goto, and plain doorway shifts removing explicit casts, each preserve every function of their complete file in both revisions. Those simpler spellings are optional readability recommendations, not proof of historical source."
+    },
+    {
+      "id": "C10",
+      "check": "Verify C012 findings F1-F4 resolved",
+      "result": "PASS",
+      "evidence": "observations.json: both player files declare char SetupElevator; elevator_scene now uses long abs, array TOEJAM_FALL_STATE with [0] assignment, and an elevator_entity player parameter/comment for func_012762. Both player units locally explain the signed-long flags views and label unknown historical spelling [INFERENCE]. All three complete fixed files independently MATCH both revisions. Current findings distinguish new occurrences from these resolved hunks."
+    },
+    {
+      "id": "C11",
+      "check": "Mutation sanity against both matcher and full builds",
+      "result": "PASS",
+      "evidence": "mutation-scope.json records the sole source mutation: Map_DrawElevator compares state to 12 instead of 13. Both ordinary matcher invocations exit 1 and DIFF the unchanged-size 210-byte function. Both complete mutant builds write FAIL receipts, with 73 units / 298 functions / zero raw words. Exactly one ROM byte differs: REV02 0x0141d1 and REV00 0x0141a1. Only the substituted C unit's source/hash changes; all function placements/sizes are identical. No fallback to original bytes hides the mutant."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "low",
+      "file": "src/player/player_states_and_respawn.c:27; src/presents/telephone.c:46; src/presents/level_item_setup.c:25; src/presents/item_updates.c:65",
+      "what": "The newly supplied func_015b66 definition returns int and its decoy caller tests the full result, but its two existing external consumers still declare it void. This newly exposed cross-unit return-type mismatch is avoidable, not a preserved original bug. In addition, the two new item units declare int abs while the expressly corrected elevator_scene and its transition neighbor use long abs; these have the same width in MCC68K but remain different C declarations. All consistent-return alternatives reproduce both revisions.",
+      "suggested_fix": "Move func_015b66 out of the void declaration lists into extern int declarations in both callers. alternatives/int-effect-call/player_states_and_respawn.c MATCHes all seven functions and alternatives/int-effect-telephone/telephone.c MATCHes all three, both revisions. Prefer extern long abs() in the two new item units, as independently matching alternatives/long-abs-setup/ and alternatives/long-abs-updates/ demonstrate. This does not by itself reconcile older abs declarations elsewhere."
+    },
+    {
+      "id": "F2",
+      "severity": "low",
+      "file": "src/map/elevator_icon.c:9-13,24,27",
+      "what": "The new map icon unit declares ELEVATOR_LOCATION as an array of sixteen-byte elevator_state records, absorbing each actual secondary eight-byte elevator record into reserved[10]. Existing elevator files declare the same object as eight-byte elevator_record pairs, ELEVATOR_LOCATION[][2]. The chosen stride yields correct bytes and is not an address trick, but creates an avoidable incompatible extern view and hides the already known paired layout.",
+      "suggested_fix": "Reuse struct elevator_record { short x, y; char level, state, entity, timer; }, declare ELEVATOR_LOCATION[][2], and select &ELEVATOR_LOCATION[elevator_number][0]. The complete private alternative alternatives/paired-elevator-record/elevator_icon.c independently MATCHes both revisions without casts or compiler options."
+    },
+    {
+      "id": "F3",
+      "severity": "low",
+      "file": "src/presents/item_updates.c:203-205,332-341",
+      "what": "The new pickup routine's signed-long view of the shared unsigned flags field and the timer's (&gPlayerInfo[player])->sprite_state spelling are matching-sensitive choices disclosed in the author handoff but not locally in source, repeating the kind of honesty qualification just fixed for C012 F4. The tested plain alternatives fail: cast removal saves four emitted bytes; direct timer indexing saves four, and a local pointer saves ten. Also, the timer comment describes twelve-/two-tick bit intervals, but the packet performs timer & 12 and timer & 2: 12 and 2 are masks, not blink periods.",
+      "suggested_fix": "Add brief local compiler-choice qualifications explaining the observed signed-value mask exchanges and address-of/index schedule while keeping common storage unsigned; label exact historical spelling unknown [INFERENCE]. Correct the timer comment to describe masks 12 and 2 near expiration rather than implying twelve-/two-tick periods. No behavioral fix, pointer cast or shared-type change is needed. Retained experimental sources/listings are under alternatives/unsigned-flags/, alternatives/direct-player-index/ and alternatives/timer-player-pointer/."
+    }
+  ],
+  "qualification_summary": "No blocking byte mismatch, stale prepare input, prohibited source device or false-positive mutation control was found. All four assigned C012 findings are resolved. Acceptance remains qualified by three low-severity interface/layout/source-disclosure findings. Two additional natural readability simplifications match and are recorded as optional recommendations in report.md. All experiments remain private and unadopted; any source correction requires a newly prepared checkpoint. No independent suite rerun, gameplay validation or proof of exact historical C source is claimed."
+}

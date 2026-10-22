@@ -11,16 +11,17 @@ Johnson Voorsanger Productions, `GM MK-1020`): C source that compiles back to th
 
 **Status:** both retail revisions rebuild **byte-identically** from this repository's sources plus
 assets extracted from your own dump at build time. The badges above are live (every push to `main`
-uploads a report per revision to [ByteMatch](https://bytematch.dev/mschienbein/toejam-earl-decomp));
-they measure the code written in C — the functions classified as hand-written assembly or compiler
-runtime are not counted there, because they are built from assembly source instead.
+uploads a report per revision to [ByteMatch](https://bytematch.dev/mschienbein/toejam-earl-decomp)).
+The C code and C function badges count only the code written in C; the functions classified as
+hand-written assembly or compiler runtime are not in that count, because they are built from
+assembly source instead. The typed-data badge counts data bytes rebuilt from typed assets.
 
 | Part of the ROM (REV 02) | Built from | Progress (checkpoint c025) |
 |---|---|---|
 | 603 C functions, 175,412 bytes | matched C in `src/` (MCC68K 3.3K, both revisions) | **581 functions, 164,674 bytes (93.9%)**; 22 still generated assembly |
 | 36 hand-written routines + 6 compiler runtime helpers | readable 68000 assembly, `src/asm/` (ruling [R007](docs/rulings/R007-assembly-sources.md)) | all 42 |
 | Z80 sound driver + boot stub, 1,332 bytes | Z80 assembly, `src/z80/` | all |
-| 867,264 bytes of data | typed assets extracted from your dump (`docs/DATA.md`) | all; 6 bytes typed `unreferenced` (no reader found) |
+| 865,932 other data bytes | typed assets extracted from your dump at build time (`docs/DATA.md`) | all; 6 bytes typed `unreferenced` (no reader found) |
 
 REV 00 builds from the same sources (`revision.h` covers its few differences); its C progress is
 the same 581 functions. History: [docs/STATUS.md](docs/STATUS.md); what remains: [docs/RESUME.md](docs/RESUME.md).

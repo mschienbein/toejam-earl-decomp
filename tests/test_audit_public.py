@@ -814,12 +814,15 @@ class AuditTest(unittest.TestCase):
 
 
 class PinnedObjdumpAuditTest(unittest.TestCase):
-    def test_genuine_objdump_listing_from_private_baseline_assembly(self):
-        source = ROOT / "build/rev02/asm/func_027154.s"
+    def test_genuine_objdump_listing_of_generated_style_assembly(self):
         binutils = ROOT / ".cache/toolchain/binutils-2.47-m68k-elf/bin"
-        if not source.is_file() or not (binutils / "m68k-elf-objdump").is_file():
-            self.skipTest("private baseline assembly/pinned binutils not installed")
+        if not (binutils / "m68k-elf-objdump").is_file():
+            self.skipTest("pinned binutils not installed")
         with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "func_000400.s"   # synthetic, written like the generated baseline
+            source.write_text('\t.section .text.func_000400,"ax"\n\t.globl func_000400\nfunc_000400:\n'
+                              ".Li_000400:\tmove.w #0x1234,%d0\n.Li_000404:\tmove.l %d0,(0xff0010).l\n"
+                              ".Li_00040a:\tbeq.s .Li_000400\n.Li_00040c:\trts\n")
             obj = Path(tmp) / "listing.o"
             subprocess.run([str(binutils / "m68k-elf-as"), "-m68000", "--bitwise-or", "--pcrel", "-L",
                             "-o", str(obj), str(source)], check=True, capture_output=True)

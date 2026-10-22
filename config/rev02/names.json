@@ -15096,7 +15096,7 @@
       "source_line": 52388,
       "address": "0x02342A",
       "kind": "function",
-      "size": 238,
+      "size": 298,
       "aliases": [
         {
           "name": "MenuRoutine",

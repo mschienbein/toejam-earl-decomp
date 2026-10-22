@@ -5591,10 +5591,11 @@
       "name": "NewGameMainMenu",
       "class": "compiled_c",
       "confidence": "high",
-      "size": 238,
-      "instruction_bytes": 228,
+      "size": 298,
+      "instruction_bytes": 288,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; 1 stack/frame-displacement data operand instructions; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; 1 stack/frame-displacement data operand instructions; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Catalogue revision r3 (2026-10-21): the extent now includes the switch exit jump after the table and the case bodies that followed it (formerly fragment 0x02351A)."
       ]
     },
     {
@@ -8013,8 +8014,8 @@
   "summary": {
     "compiled_c": {
       "functions": 530,
-      "catalogue_extent_bytes": 168672,
-      "instruction_bytes": 168198
+      "catalogue_extent_bytes": 168732,
+      "instruction_bytes": 168258
     },
     "handwritten_asm": {
       "functions": 19,
@@ -8055,34 +8056,6 @@
       "stack_pointer_adjustments": [],
       "hardware_references": 1,
       "backward_edges": 1,
-      "special_operations": [],
-      "macro_source_lines": [],
-      "proposed_class": "unknown",
-      "confidence": "low"
-    },
-    {
-      "address": "0x02351A",
-      "name": "SelTable_JamOut",
-      "catalogue_kind": "fragment",
-      "size": 58,
-      "instruction_count": 15,
-      "first": "jsr $23706(pc)",
-      "has_frame": false,
-      "has_save_prologue": false,
-      "stack_data_operand_count": 0,
-      "stack_address_take_count": 0,
-      "stack_pointer_adjustment_count": 1,
-      "stack_data_operands": [],
-      "stack_address_takes": [],
-      "stack_pointer_adjustments": [
-        {
-          "address": "0x023528",
-          "mnemonic": "addq.l",
-          "operands": "#$4, a7"
-        }
-      ],
-      "hardware_references": 0,
-      "backward_edges": 0,
       "special_operations": [],
       "macro_source_lines": [],
       "proposed_class": "unknown",

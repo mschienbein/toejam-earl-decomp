@@ -155,6 +155,12 @@ class Analysis:
                     for case in table["targets"]:
                         self.labels.add(case)
                         work.append(case)
+                    # MCC68K follows a switch's table with the statement's exit jump: a BRA to the end
+                    # label, which the table also uses. Nothing jumps to it, but it is the function's code.
+                    after = table["address"] + 2 * table["count"]
+                    exit_jump = m68k.decode_one(self.rom, after) if after < len(self.rom) else None
+                    if exit_jump is not None and exit_jump.base == "bra" and exit_jump.branch_target in table["targets"]:
+                        work.append(after)
                 else:
                     self.computed.append({"address": pc})  # addresses only: no disassembly in the repository
                 return

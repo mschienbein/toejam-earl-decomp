@@ -1,5 +1,25 @@
 # Status (current entry first)
 
+## 2026-10-22 (morning) — 71% of the C credited; both revisions' data from assets; shared headers
+
+**Result.**
+- **Credited C (REV 02):** 419 of 606 C functions, 125,136 of 175,502 bytes (71.3%), every one
+  also matching REV 00 from the same source (checkpoints through c016). All original translation
+  units have had an author pass; ~50 functions in the tree's waiting room (waves 24-29, hard cases)
+  await their checkpoint, and ~25 still resist.
+- **Denominator r9:** 28 more routines classified hand-written with high confidence (corpus
+  statistics over the matched C plus MCC68K probes, independently reviewed), so the C
+  denominator is 606 functions; catalogue r5/r6 fixed switch functions split by imported seeds
+  and two retry loops glued to the sound wrappers.
+- **Shared headers:** `include/` holds 37 per-subsystem K&R headers (one definition per record,
+  proven return types); every source includes only what it uses, which also keeps MCC68K inside
+  its DOS heap. The 27 per-file declaration exceptions each fail with the shared declaration.
+- **Data:** REV 00 now also builds every data byte from extracted assets (`docs/DATA.md`).
+- **Public-repo audit:** `tools/audit_public.py` runs in CI ROM-free and before every push with
+  the ROMs; its known gaps are listed in `docs/AUTHOR_TOOLS.md`.
+- **In flight:** last header migration (waves 24-29, hard cases), naming of the ~430 unnamed
+  functions and the RAM/data spellings, a third hard-cases pass.
+
 ## 2026-10-22 — matching waves under way: 105 functions credited, data closed for REV 02
 
 **Result.**

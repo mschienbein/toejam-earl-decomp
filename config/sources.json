@@ -107,6 +107,83 @@
    ]
   },
   {
+   "source": "src/audio/request_channel_release.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/audio/request_template_effect.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/audio/request_track_reset.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/camera/camera_follow.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/camera/camera_row_transfer.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/camera/camera_scroll.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/camera/metatile_tiles.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/camera/set_camera_position.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/camera/split_screen_wipe.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/camera/split_views.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/camera/toggle_camera_flag.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/core/error_trap.c",
    "versions": [
     "rev02",
@@ -121,35 +198,168 @@
    ]
   },
   {
-   "source": "src/core/toggle_camera_flag.c",
+   "source": "src/cutscenes/collision_scene_entities.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/cutscene/ending.c",
+   "source": "src/cutscenes/composite_entities.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/cutscene/intro_part11.c",
+   "source": "src/cutscenes/cutscene_text.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/cutscene/sega_vblank.c",
+   "source": "src/cutscenes/drifting_entities.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/cutscene/sega_video.c",
+   "source": "src/cutscenes/ending.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/ending_player_entities.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/ending_player_release.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/flying_entities.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/funkotron_scene.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/impact_and_planet_entities.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/intro.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/intro_frame_entities.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/intro_frame_release.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/intro_frame_reveal.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/intro_part11.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/large_player_parts.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/rocketship_allocate.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/rocketship_foreground.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/rocketship_move.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/rocketship_pose.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/rocketship_release.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/sega_logo.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/sega_logo_vblank.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/cutscenes/title_and_transition.c",
    "versions": [
     "rev02",
     "rev00"
@@ -170,21 +380,14 @@
    ]
   },
   {
-   "source": "src/earthlings/behaviour_tu25.c",
+   "source": "src/earthlings/generic_enemy.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/earthlings/behaviour_tu28.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/earthlings/generic_enemy_tu27.c",
+   "source": "src/earthlings/mailbox_earthling.c",
    "versions": [
     "rev02",
     "rev00"
@@ -212,7 +415,42 @@
    ]
   },
   {
-   "source": "src/earthlings/state_dispatch_tu26.c",
+   "source": "src/earthlings/spawning_and_banks.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/steering.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/steering_helpers.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/targeting.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/terrain_animation.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/earthlings/terrain_movement.c",
    "versions": [
     "rev02",
     "rev00"
@@ -240,175 +478,7 @@
    ]
   },
   {
-   "source": "src/engine/effect_slot_lookup.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/effects_and_inventory_display.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_collision_objects.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_ending_create.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_ending_release.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_intro_create.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_intro_release.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_intro_show.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_rocket_animate.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_rocket_create.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_rocket_foreground.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_rocket_move.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/late_helpers_rocket_release.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/engine/reset_sequences.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/graphics/camera_follow.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/graphics/camera_redraw_and_motion.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/graphics/camera_row_transfer.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/graphics/funkatron_scene.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/graphics/metatile_words.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/graphics/split_screen_wipe.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/intro/intro_background_objects.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/intro/intro_flying_objects.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/intro/intro_impact_objects.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/intro/intro_object_slots.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/jam/jamout.c",
+   "source": "src/jamout/jamout.c",
    "versions": [
     "rev02",
     "rev00"
@@ -471,7 +541,7 @@
    ]
   },
   {
-   "source": "src/map/range_and_region_walk.c",
+   "source": "src/map/random_and_regions.c",
    "versions": [
     "rev02",
     "rev00"
@@ -520,13 +590,6 @@
    ]
   },
   {
-   "source": "src/player/center_for_split.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/player/contact_cupid_and_touch.c",
    "versions": [
     "rev02",
@@ -535,6 +598,13 @@
   },
   {
    "source": "src/player/earthling_player_eligibility.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/edge_hop_and_clap.c",
    "versions": [
     "rev02",
     "rev00"
@@ -556,13 +626,6 @@
   },
   {
    "source": "src/player/entity_motion_terrain.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/player/high_five.c",
    "versions": [
     "rev02",
     "rev00"
@@ -625,13 +688,6 @@
    ]
   },
   {
-   "source": "src/player/set_camera_position.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/player/setup_player.c",
    "versions": [
     "rev02",
@@ -667,48 +723,6 @@
    ]
   },
   {
-   "source": "src/player/steering.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/player/target_motion_helpers.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/player/targeting.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/presents/helpers_noop.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/presents/helpers_telephone_clear.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/presents/helpers_telephone_open.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/presents/item_updates.c",
    "versions": [
     "rev02",
@@ -717,6 +731,13 @@
   },
   {
    "source": "src/presents/level_item_setup.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/noop.c",
    "versions": [
     "rev02",
     "rev00"
@@ -738,6 +759,20 @@
   },
   {
    "source": "src/presents/telephone.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/telephone_clear.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/telephone_open.c",
    "versions": [
     "rev02",
     "rev00"
@@ -772,28 +807,7 @@
    ]
   },
   {
-   "source": "src/ship/special_earthling_predicates.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/sound/request_channel_reset.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/sound/request_effect.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/sound/request_pointer_reset.c",
+   "source": "src/speech/speech_bubble_lookup.c",
    "versions": [
     "rev02",
     "rev00"
@@ -822,13 +836,6 @@
   },
   {
    "source": "src/sprites/entity_indexes.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/sprites/entity_slots_tu14.c",
    "versions": [
     "rev02",
     "rev00"
@@ -905,6 +912,13 @@
    ]
   },
   {
+   "source": "src/sprites/sprite_slots.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/ui/hud_health_update.c",
    "versions": [
     "rev02",
@@ -947,21 +961,7 @@
    ]
   },
   {
-   "source": "src/video/cutscene_text.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/video/intro.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/video/title_and_transition.c",
+   "source": "src/ui/window_panels.c",
    "versions": [
     "rev02",
     "rev00"

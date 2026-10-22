@@ -1,5 +1,127 @@
 #include "player_animation.h"
 #include "player_animation_groups.h"
+#include "entities.h"
+#include "player.h"
+#include "ram_ui.h"
+
+/* Check the per-player exclusion byte and the allowed sprite/state masks. */
+int PlayerCanReceiveEarthlingEffect(player, player_number)
+struct object_state *player;
+short player_number;
+{
+    if (!gPlayerInteractionChoiceActive[player_number] &&
+        (!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+         (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+         (player->animation_group_mask & 0x830409c)))
+        return 1;
+    return 0;
+}
+
+
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "earthling_types.h"
+#include "entities.h"
+#include "earthlings.h"
+#include "ram_player.h"
+#include "ram_effects.h"
+#include "assets_audio.h"
+#include "assets_earthlings.h"
+#include "player.h"
+#include "earthling_calls.h"
+#include "elevator_calls.h"
+#include "sprite_calls.h"
+#include "audio_calls.h"
+#include "speech.h"
+#include "random.h"
+
+/* Select a hit pose, move away from the source when the trial position is
+ * clear, and queue the source's damage and the player's speech/sound. */
+int Player_Youch(player_number, earthling)
+short player_number;
+struct earthling_state *earthling;
+{
+    short sprite, attack_direction, trial_x, trial_y, delta_y;
+    struct object_state *player, *attacker;
+
+    player = &gPlayerInfo[player_number];
+    if (earthling->kind == EARTHLING_SHARK) {
+        if (!(player->animation_group_mask & (PLAYER_GROUP_INNERTUBE_MOVE | PLAYER_GROUP_SWIM)) &&
+            player->sprite_state != PLAYER_ANIM_SWIM_IDLE &&
+            player->sprite_state != PLAYER_ANIM_SWIM_NEAR_SHORE &&
+            player->sprite_state != PLAYER_ANIM_INNERTUBE_WATER_IDLE)
+            return 1;
+    } else if (!PlayerCanReceiveEarthlingEffect(player, player_number) &&
+               !(player->animation_group_mask & PLAYER_GROUP_INNERTUBE_MOVE))
+        return 1;
+    attacker = &gPlayerInfo[earthling->object];
+    attack_direction = player->x - attacker->x;
+    delta_y = player->y;
+    delta_y -= attacker->y;
+    /* Initialize the pose and trial position after measuring the hit. */
+    sprite = -1;
+    trial_x = player->x;
+    trial_y = player->y;
+    if (abs(attack_direction) > 10) {
+        if (attack_direction > 0) {
+            sprite = 55;
+            attack_direction = 11;
+            trial_x += 16;
+        } else {
+            sprite = 54;
+            attack_direction = 10;
+            trial_x -= 16;
+        }
+    } else if (delta_y > 0) {
+        sprite = 53;
+        attack_direction = 9;
+        trial_y += 16;
+    } else {
+        sprite = 52;
+        attack_direction = 8;
+        trial_y -= 16;
+    }
+    if (!ElevatorBlocksPlayerMovement(player_number, trial_x, trial_y, 1)) {
+        player->x = trial_x;
+        player->y = trial_y;
+    }
+    if (player->velocity_x > 0)
+        sprite = 55;
+    else if (player->velocity_x < 0)
+        sprite = 54;
+    else if (player->velocity_y > 0)
+        sprite = 53;
+    else if (player->velocity_y < 0)
+        sprite = 52;
+    else if (sprite == -1)
+        sprite = 52;
+    SetSprite(player, sprite);
+    player->animation_motion_axes = ANIMATION_MOTION_XY;
+    player->draw_flags |= ENTITY_SHADOW;
+    if (gPlayerTerrainSinking[player_number])
+        player->height = -3;
+    else
+        player->height = 0;
+    gPlayerPendingHurtDamage[player_number] = EarthlingDefinitions[earthling->kind].damage;
+    if (earthling->kind == EARTHLING_DENTIST || earthling->kind == EARTHLING_DENTIST_VARIANT) {
+        SetEarthlingState(earthling, attack_direction);
+        player = &gPlayerInfo[earthling->object];
+        player->velocity_x = 0;
+        player->velocity_y = 0;
+        player->frame = -1;
+        earthling->saved_x_or_status = 1;
+    }
+    GenerateSpeech(player_number, "Youch!", 1);
+    if (player_number == PLAYER_TOEJAM)
+        PlaySoundEffect((long)Sfx_ToejamYouch, 50, 0);
+    else
+        PlaySoundEffect((long)Sfx_EarlYouch, 50, 0);
+    return 0;
+}
+
+
+#include "player_animation.h"
+#include "player_animation_groups.h"
 #include "present_types.h"
 #include "earthling_types.h"
 #include "terrain.h"

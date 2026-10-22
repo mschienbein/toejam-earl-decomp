@@ -48,4 +48,6 @@ extern char Sfx_JamToejam[];
 extern char Sfx_Meep[];
 extern char SongChannelTemplates[][228];
 
+extern char Sfx_ToejamYouch[];
+extern char Sfx_EarlYouch[];
 #endif

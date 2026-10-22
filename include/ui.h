@@ -14,4 +14,11 @@ struct menu_item {
     short selection;
 };
 
+/* One scripted exchange: who speaks first, who answers, and after how long. */
+struct dialogue_descriptor {
+    char first_speaker, reply_speaker;   /* speaker indices */
+    char *first_line;                    /* opening line */
+    short delay;                         /* ticks before the reply */
+    char *reply;                         /* reply line */
+};
 #endif

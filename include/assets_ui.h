@@ -58,4 +58,5 @@ extern struct render_frame CutsceneOriginalPaletteTextFrame;
 extern struct render_frame *Spr_MenuCursor[];
 extern struct render_frame *Spr_MenuHeader[];
 
+extern struct dialogue_descriptor DialogueDescriptors[58];
 #endif

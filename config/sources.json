@@ -506,14 +506,7 @@
    ]
   },
   {
-   "source": "src/map/map_drawing.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/map/map_drawing_controller.c",
+   "source": "src/map/map_drawing_and_controller.c",
    "versions": [
     "rev02",
     "rev00"
@@ -569,14 +562,7 @@
    ]
   },
   {
-   "source": "src/player/contact_cupid_and_touch.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/player/earthling_player_eligibility.c",
+   "source": "src/player/earthling_damage_reactions.c",
    "versions": [
     "rev02",
     "rev00"
@@ -674,7 +660,7 @@
    ]
   },
   {
-   "source": "src/player/sprite_movement.c",
+   "source": "src/player/sprite_checks_and_movement.c",
    "versions": [
     "rev02",
     "rev00"
@@ -744,13 +730,6 @@
    ]
   },
   {
-   "source": "src/ship/piece_collection.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/ship/piece_level_assignment.c",
    "versions": [
     "rev02",
@@ -758,14 +737,14 @@
    ]
   },
   {
-   "source": "src/ship/screen_acknowledgement.c",
+   "source": "src/ship/ship_screen_and_collection.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/ship/screen_setup.c",
+   "source": "src/speech/speech_and_dialogue.c",
    "versions": [
     "rev02",
     "rev00"
@@ -773,20 +752,6 @@
   },
   {
    "source": "src/speech/speech_bubble_lookup.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/speech/speech_core.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/speech/speech_update.c",
    "versions": [
     "rev02",
     "rev00"
@@ -807,7 +772,7 @@
    ]
   },
   {
-   "source": "src/sprites/entity_sprite_order.c",
+   "source": "src/sprites/entity_sprite_rendering.c",
    "versions": [
     "rev02",
     "rev00"
@@ -850,13 +815,6 @@
   },
   {
    "source": "src/sprites/set_sprite.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/sprites/sprite_frame_preparation.c",
    "versions": [
     "rev02",
     "rev00"

@@ -412,3 +412,257 @@ void AnimateShipScreenPalette()
         CopyPaletteToCRAMSlot(palette, 3);
     }
 }
+
+#include "entities.h"
+#include "core_calls.h"
+#include "ram_system.h"
+#include "ship.h"
+
+/* Animate for at most 240 ticks, or accept and release A/B/C from an enabled pad. */
+void WaitForShipScreenAcknowledgement(player_number)
+short player_number;
+{
+    short pressed_buttons;
+
+    gFrameCounter = 0;
+    while (gFrameCounter < 240) {
+        if (player_number == PLAYER_TOEJAM || player_number == 2) {
+            pressed_buttons = ReadMappedPlayerInput(0);
+            pressed_buttons &= 0x70;
+            if (pressed_buttons) {
+                while (ReadMappedPlayerInput(0) & 0x70 & pressed_buttons)
+                    AnimateShipScreenBackground(0);
+                break;
+            }
+        }
+        if (player_number == PLAYER_EARL || player_number == 2) {
+            pressed_buttons = ReadMappedPlayerInput(1);
+            pressed_buttons &= 0x70;
+            if (pressed_buttons) {
+                while (ReadMappedPlayerInput(1) & 0x70 & pressed_buttons)
+                    AnimateShipScreenBackground(0);
+                break;
+            }
+        }
+        AnimateShipScreenBackground(0);
+    }
+}
+
+#include "hardware.h"
+#include "assets_scenes.h"
+#include "ram_ship.h"
+#include "ram_system.h"
+#include "ram_ui.h"
+#include "ram_sprites.h"
+#include "sprite_calls.h"
+#include "core_calls.h"
+#include "hardware_calls.h"
+#include "ui_calls.h"
+#include "ship.h"
+#include "sprites.h"
+#include "ram_player.h"
+
+/* Unpack collected pieces before uncollected pieces and upload their sprites. */
+/* MATCHING QUALIFICATION: the otherwise redundant int promotion into the
+ * unsigned-word width temporary, and the explicit word conversion on the
+ * first queue index, preserve MCC68K's original scratch ownership. The byte
+ * values are 0..255, so neither conversion changes a value. Plain multiplication,
+ * an unpromoted width temporary, and two direct queue indices do not match.
+ * The separate height mask and word palette boundary also retain the observed
+ * narrowing instructions; no historical source spelling is asserted. */
+void ShowShipPieces(selected_piece, player_number)
+short selected_piece, player_number;
+{
+    unsigned short base_tile = 129;
+    short sprite_number = 0;
+    short ship_number, tile_offset, part_number;
+    short pass;
+    struct render_frame **frames;
+    struct hardware_sprite sprites[50];
+    struct render_piece *part;
+    char (*levels)[10];
+    struct render_frame *frame;
+    char format;
+    short tiles;
+    unsigned short width_in_tiles;
+    char sprite_size;
+
+    levels = &gShipPieceLevelAssignments;
+    DisableBlankingGraphics();
+    gMode2RegSoftcopy &= 0x3c;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
+    UploadQueuedSpriteGraphics(1, 1);
+    InitializeShipScreenTilemapAndPalettes();
+    if (selected_piece >= 0)
+        (*levels)[selected_piece] = 0;
+    frames = (struct render_frame **)IntroAndShipAnimationPointers[1];
+    for (pass = 0; pass < 2; ++pass) {
+        for (ship_number = 0; ship_number < 10; ++ship_number) {
+            if (pass == 0 && (*levels)[ship_number])
+                continue;
+            if (pass == 1 && !(*levels)[ship_number])
+                continue;
+            frame = frames[ship_number];
+            tile_offset = 0;
+            for (part_number = 0; frame->piece_count > part_number; ++part_number) {
+                /* Shared renderer slot-capacity view, not a fixed ROM extent. */
+                part = &((struct render_piece (*)[12])(frame + 1))[0][part_number];
+                format = part->tile_format;
+                tiles = part->height;
+                tiles &= 255;
+                width_in_tiles = (int)part->width;
+                tiles *= width_in_tiles;
+                if (format < 0)
+                    SpriteUnpackInterleavedRLE(part, tiles);
+                else
+                    SpriteUnpackRLE(part, tiles);
+                if ((*levels)[ship_number])
+                    FillSpriteOpaquePixels(tiles);
+                gSpriteTileBufferOffset += tiles << 5;
+                if (ship_number == selected_piece)
+                    format = 3;
+                sprite_size = (part->width - 1) << 2;
+                sprite_size += part->height - 1;
+                sprites[sprite_number].size = sprite_size;
+                sprites[sprite_number].x = part->x + 298;
+                sprites[sprite_number].y = part->y + 288;
+                sprites[sprite_number].link = sprite_number + 1;
+                sprites[sprite_number].tile = ((short)(format & 3) << 13) + VDP_TILE_PRIORITY + base_tile + tile_offset;
+                tile_offset += tiles;
+                ++sprite_number;
+            }
+            gSpriteTileUploadRuns[(short)gSpriteTileUploadQueueWordCount++] = base_tile;
+            gSpriteTileUploadRuns[gSpriteTileUploadQueueWordCount++] = tile_offset;
+            base_tile += tile_offset;
+            UploadQueuedSpriteGraphics(1, 1);
+        }
+    }
+    sprites[sprite_number - 1].link = 0;
+    DmaCopyWordsToVram(sprites, 0xf800, 320);
+    gMode2RegSoftcopy |= 0x40;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
+    if (selected_piece >= 0) {
+        ShowShipPieceName(selected_piece);
+        AnimateShipScreenPalette();
+    } else if (player_number != 2)
+        ShowMissingShipPieceSummary(player_number);
+    for (ship_number = 0; ship_number < 10; ++ship_number) {
+        if ((*levels)[ship_number])
+            break;
+    }
+    if (ship_number < 10) {
+        WaitForShipScreenAcknowledgement(player_number);
+        gMode2RegSoftcopy &= 0x3c;
+        VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
+        RestoreGameplayGraphics();
+        if (gPlayerInventoryOpen[0])
+            InventoryRedrawSynchronously(0);
+        if (gPlayer2InventoryOpen)
+            InventoryRedrawSynchronously(1);
+        if (selected_piece >= 0) {
+            gMode2RegSoftcopy |= 0x40;
+            VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
+            EnableBlankingGraphics();
+        }
+    } else
+        PlayShipCompletionSequence(player_number);
+}
+
+#include "hardware.h"
+#include "entities.h"
+#include "earthlings.h"
+#include "sprites.h"
+#include "assets_sprites.h"
+#include "map_calls.h"
+#include "ram_camera.h"
+#include "ram_map.h"
+#include "ram_player.h"
+#include "ram_ship.h"
+#include "random.h"
+#include "ship.h"
+#include "speech.h"
+#include "sprite_calls.h"
+
+/* Explicit integral value promotions preserve the observed int-valued call
+ * uses with correct shared return declarations; exact historical spelling
+ * remains unknown [INFERENCE]. */
+
+/* Release the collected world object, show the corresponding ship piece,
+ * and restore the appropriate single-screen or split-screen message. */
+void ShipPieceAbility(player_number, ship_piece)
+short player_number;
+struct earthling_state *ship_piece;
+{
+    struct object_state *player;
+    char object_number;
+    short piece_number;
+
+    if (!ship_piece->object)
+        return;
+    player = &gPlayerInfo[player_number];
+    /* [INFERENCE] The original retains this otherwise-unused object read. */
+    object_number = ship_piece->object;
+    for (piece_number = 0; piece_number < 10; ++piece_number) {
+        if (gShipPieceLevelAssignments[piece_number] == player->level)
+            break;
+    }
+    FreeEntity(ship_piece->object);
+    ship_piece->kind = -1;
+    ship_piece->object = 0;
+    ShowShipPieces(piece_number, player_number);
+    if (player_number == PLAYER_TOEJAM || !gSplitScreenEnabled)
+        StartDialogue(2);
+    else
+        GenerateSpeech(1, "Jammin", 1);
+}
+
+/* Create the pending camera-relative indicator only outside split-screen.
+ * Remove an existing indicator when it leaves its fixed screen row. */
+void ShipUpdatePendingPieceIndicator()
+{
+    char *active_object;
+    struct object_state *object;
+    struct animation_descriptor *animation;
+
+    active_object = &gShipPieceIndicatorEntity;
+    if (*active_object) {
+        object = &gPlayerInfo[*active_object];
+        if (object->y - gCamera1PendingY != 224) {
+            FreeEntity(*active_object);
+            *active_object = 0;
+        }
+    } else if (gShipScreenState[4]) {
+        if (!gSplitScreenEnabled) {
+            *active_object = (int)AllocateEntityWithEviction(0);
+            object = &gPlayerInfo[*active_object];
+            object->x = gCamera1PendingX + 160;
+            object->y = gCamera1PendingY + 224;
+            object->height = 112;
+            object->level = gPlayer1MapLevel;
+            object->width = 96;
+            object->height_pixels = 32;
+            object->sprite_count = 3;
+            object->tile_count = 48;
+            object->tile |= VDP_TILE_PRIORITY;
+            animation = &ShipPieceCollectionAnimation;
+            object->sequence = animation->sequence;
+            object->frames = animation->frames;
+            object->frame_duration = 1;
+            object->frame = -1;
+        }
+        gShipScreenState[4] = 0;
+    }
+}
+
+/* Start at a random byte and cycle until an uncollected piece is found.
+ * ORIGINAL BUG: this loop has no exit if all ten entries are zero. */
+void ShowRandomUncollectedShipPiece()
+{
+    short piece_number;
+
+    piece_number = GetRandomNumber() & 255;
+    do {
+        piece_number = (piece_number + 1) % 10;
+    } while (!gShipPieceLevelAssignments[piece_number]);
+    ShowShipPieces(piece_number, 2);
+}

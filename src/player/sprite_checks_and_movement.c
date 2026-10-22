@@ -1,5 +1,90 @@
 #include "player_animation.h"
 #include "player_animation_groups.h"
+#include "entities.h"
+#include "ram_player.h"
+#include "ram_effects.h"
+#include "ram_elevator.h"
+#include "player.h"
+#include "present_calls.h"
+#include "sprite_calls.h"
+#include "elevator_calls.h"
+
+/* Filter movement at world boundaries and during restricted sprite states. */
+void SpriteChecks(player_number, input)
+short player_number, input;
+{
+    unsigned short land;
+    short sprite;
+    int width;
+    int player_y;
+    struct object_state *player;
+
+    if (!player_number) {
+        land = gPlayer1TerrainUnderfoot;
+        player = gPlayerInfo;
+    } else {
+        land = gPlayer2TerrainUnderfoot;
+        player = &gPlayer2Entity;
+    }
+    if (player->draw_flags & ENTITY_SKIP_PHYSICS)
+        return;
+    if (player->sprite_state == PLAYER_ANIM_HULA) {
+        if (gPlayerHulaDanceTicks[player_number] > 0)
+            --gPlayerHulaDanceTicks[player_number];
+        else {
+            SetSprite(player, PLAYER_ANIM_IDLE);
+            player->velocity_x = 0;
+            player->velocity_y = 0;
+        }
+        return;
+    }
+    if ((player->animation_group_mask & 0x77d13760L) ||
+        (player->animation_group_mask & (long)PLAYER_GROUP_REACTION) ||
+        player->sprite_state == PLAYER_ANIM_WHIRLWIND ||
+        player->sprite_state == PLAYER_ANIM_WHIRLWIND_RECOVERY ||
+        player->sprite_state == PLAYER_ANIM_GHOST ||
+        player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST ||
+        player->sprite_state == PLAYER_ANIM_FLATTENED ||
+        ((player->animation_group_mask & (long)PLAYER_GROUP_ICARUS_FLY) && player->height < 4))
+        return;
+    if (gPlayerControlRemapEntities[player_number])
+        input = PlayerRemapDirectionalInput(player_number);
+    if (player->x <= 8)
+        input &= ~4;
+    /* MATCHING QUALIFICATION: these single-use int ownership locals are
+     * assigned inside the comparisons to select the original scratch registers.
+     * Direct field expressions, separate assignments, and block-local
+     * initializers did not match. Neither assignment changes a field or input. */
+    if ((width = player->width) + player->x >= 2672)
+        input &= ~8;
+    if ((player_y = player->y) - player->height_pixels <= 8)
+        input &= ~1;
+    if (player->y >= 1776)
+        input &= ~2;
+    if (gPlayerElevatorFlags[player_number]) {
+        if (!ProcessElevator(gPlayerElevatorFlags[player_number]))
+            input = 0;
+        else
+            input &= ~12;
+    }
+    if ((gDoorwayPlayerContactFlags[0] == ((player_number + 1) | 4) ||
+         gSecondDoorwayPlayerContactFlags == ((player_number + 1) | 4)) && (input & 1))
+        input &= ~12;
+    sprite = player->sprite_state;
+    if (player->animation_group_mask & (long)PLAYER_GROUP_LEAN) {
+        if ((sprite == PLAYER_ANIM_LEAN_UP && (input & 1)) ||
+            (sprite == PLAYER_ANIM_LEAN_DOWN && (input & 2)) ||
+            (sprite == PLAYER_ANIM_LEAN_LEFT && (input & 4)) ||
+            (sprite == PLAYER_ANIM_LEAN_RIGHT && (input & 8)))
+            return;
+        player->velocity_x = 0;
+        player->velocity_y = 0;
+    }
+    PlayerChooseDirectionalMovement(player, player_number, input, land);
+}
+
+#include "player_animation.h"
+#include "player_animation_groups.h"
 #include "present_types.h"
 #include "terrain.h"
 #include "entities.h"

@@ -38,4 +38,6 @@ extern unsigned char ControlRemapDirections[4][10];
 extern unsigned char MapGenerationRangePairs[8][8][2];
 extern char MapGenerationRangeRow[];
 
+/* Twelve frames of the map-cover tile uncovering animation. */
+extern struct render_frame *Spr_MapTileUncover[12];
 #endif

@@ -35,7 +35,8 @@ extern struct scene_descriptor FunkatronSceneDescriptors[30];
 extern struct scene_placement FunkatronScenePlacements[277];
 extern char ram_ffe264[277], ram_ffe390, PLAYER_INDICATOR;
 extern short TOEJAM_CAMERA_NEWX, TOEJAM_CAMERA_NEWY;
-extern int func_00d904(), func_00dd1e(), func_01e38e();
+extern short func_00d904();
+extern int func_00dd1e(), func_01e38e();
 extern void func_00d970(), func_01da0a();
 
 /* Create an object from one placement and one scene descriptor. */

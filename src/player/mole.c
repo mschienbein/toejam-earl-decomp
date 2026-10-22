@@ -32,7 +32,11 @@ extern struct present_info gPresentInfo[28];
 extern char *PresentSpriteTable[28];
 extern unsigned short PREGEN_RANDOMS[59], ram_ff91e0;
 extern char ram_ffe24a[], ram_ffe24c[], dat_0ae4a0[];
-extern int func_00d904(), GetActivePresentSprite(), func_01b0aa(), func_012db8();
+/* ORIGINAL BUG: this file calls func_00d904 as int (an implicit declaration in the original
+ * [INFERENCE]); its definition in sprites/entity_slots_tu14.c returns short. The caller keeps
+ * the low byte, so behaviour is unaffected. */
+extern int func_00d904();
+extern int GetActivePresentSprite(), func_01b0aa(), func_012db8();
 extern void SetSprite(), SetEarthlingState();
 
 /* Remove a random occupied inventory slot, replacing it with the last slot,

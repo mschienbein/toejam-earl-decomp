@@ -27,7 +27,11 @@ extern char ProjectilePlacementTriples[][2][4][3];
 extern struct animation_descriptor AnimationDescriptors_0AEFF6[];
 extern char ram_ffe1c0[4], ram_ffe1cc[4], ELEVATOR_FLAG[], gPlayer1Powerup[];
 extern unsigned char P1_PROCESSED_INPUT[];
-extern int func_00d904(), GetActivePresentSprite();
+/* ORIGINAL BUG: this file calls func_00d904 as int (an implicit declaration in the original
+ * [INFERENCE]); its definition in sprites/entity_slots_tu14.c returns short. The caller keeps
+ * the low byte, so behaviour is unaffected. */
+extern int func_00d904();
+extern int GetActivePresentSprite();
 extern void func_03e4f8(), SetSprite();
 
 /* Find an unused projectile slot, then use the player's facing, input, and

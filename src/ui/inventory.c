@@ -40,7 +40,7 @@ extern char *InventoryNameStringTable[27];
 extern char InventoryCharsUnFall[13], Sfx_Randomize[];
 extern unsigned short gLevelSeeds[26], PREGEN_RANDOMS[59], ram_ff91e0;
 extern unsigned short gPlayerPoints[2];
-extern char gPlayerRank, gPlayer2Rank, gPlayerBucks[];
+extern char gPlayerRank[], gPlayer2Rank, gPlayerBucks[];
 extern char gPlayer1MailboxItems[][3], gPlayer1MailboxPrices[][3];
 extern char gPlayerInventory[][16], gPlayerLives[], ELEVATOR_FLAG[];
 extern char P1_MENU_OPEN[], P1_MENU_SCROLL[], P1_MENU_SEL_ROW[], P1_MENU_SEL_COL[];
@@ -825,7 +825,7 @@ short player_number;
         if (gPlayerPoints[0] > 999)
             func_009f8a(" pts");
         VDP_CONTROL = 0x55a80003L;
-        func_009f8a(RankCharsTable[gPlayerRank]);
+        func_009f8a(RankCharsTable[gPlayerRank[0]]);
     } else {
         if (gPlayerPoints[1] > 99)
             --column;

@@ -65,13 +65,6 @@
    ]
   },
   {
-   "source": "src/graphics/clear_words.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/graphics/funkatron_scene.c",
    "versions": [
     "rev02",
@@ -156,6 +149,13 @@
    ]
   },
   {
+   "source": "src/map/terrain_placement.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/map/transition_paths.c",
    "versions": [
     "rev02",
@@ -177,7 +177,42 @@
    ]
   },
   {
+   "source": "src/player/entity_motion_proximity.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/entity_motion_terrain.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/high_five.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/jump_motion.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/player/mole.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/open_rocket_skates.c",
    "versions": [
     "rev02",
     "rev00"
@@ -198,6 +233,13 @@
    ]
   },
   {
+   "source": "src/player/rocket_motion.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/player/set_camera_position.c",
    "versions": [
     "rev02",
@@ -212,14 +254,28 @@
    ]
   },
   {
-   "source": "src/player/steering.c",
+   "source": "src/player/sleep.c",
    "versions": [
     "rev02",
     "rev00"
    ]
   },
   {
-   "source": "src/player/stop_player.c",
+   "source": "src/player/sprite_movement.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/start_motion_mode.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/steering.c",
    "versions": [
     "rev02",
     "rev00"
@@ -233,20 +289,6 @@
    ]
   },
   {
-   "source": "src/presents/item_flags.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
-   "source": "src/presents/query_byte.c",
-   "versions": [
-    "rev02",
-    "rev00"
-   ]
-  },
-  {
    "source": "src/presents/telephone.c",
    "versions": [
     "rev02",
@@ -254,7 +296,35 @@
    ]
   },
   {
+   "source": "src/sprites/copy_sprite_tiles.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/sprites/entity_depth.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/entity_indexes.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/entity_slots_tu14.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/entity_sprite_order.c",
    "versions": [
     "rev02",
     "rev00"
@@ -297,6 +367,20 @@
   },
   {
    "source": "src/sprites/set_sprite.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/sprite_links_vdp.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/sprites/sprite_pixel_masks.c",
    "versions": [
     "rev02",
     "rev00"

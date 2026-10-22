@@ -246,9 +246,9 @@ void SetupTheMainGame()
 
 /* Apply death, preserve/restore health around the observed state/mask cases,
  * and check promotion. */
-void HealthAndLivesChecks(entity, promotion_flags)
+void HealthAndLivesChecks(entity, terrain_class)
 struct health_entity *entity;
-unsigned short promotion_flags;
+unsigned short terrain_class;
 {
     short player_number = entity->character;
 
@@ -282,5 +282,5 @@ unsigned short promotion_flags;
     if ((entity->flags & 0x80) && entity->sprite_state != 2)
         entity->flags &= 0x7f;
     if (CheckPromotionScore(player_number))
-        PerformPromotion(player_number, 11, promotion_flags);
+        PerformPromotion(player_number, 11, terrain_class);
 }

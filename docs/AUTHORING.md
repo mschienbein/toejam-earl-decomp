@@ -66,6 +66,7 @@ Each was seen to decide a match in this game; none is a general law of MCC68K.
   widening of a `char`-valued `?:`.
 - **Keep parameters unmodified** when the original copies them: separate locals for derived values
   allow in-place shifts on registers.
-- **`register` on one local** can be the only hint needed; qualifying several changes allocation.
+- **`register` is rarely needed.** Qualifying several locals changes allocation; in the one case
+  seen so far the hint turned out unnecessary on review, so try without it first.
 - **Literal types pick scratch registers.** `long` vs `unsigned long` operands and literals can move
   a test from `d1` to `d0`.

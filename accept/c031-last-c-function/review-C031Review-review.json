@@ -1,0 +1,110 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "C031Review",
+  "checkpoint": "c031-last-c-function",
+  "reviewed_commit": "ed6b74685f829e88ca069ea36ad408ab5e821767",
+  "source_sha256": "fc2a7d24435e1307d1b298e05425840572f0de1cfa0cc87968fd79194d1ea346",
+  "prepare_sha256": "85fe4265e991921cb15d1b48b671f86e41fd81748eddb38c1420afed2f062425",
+  "summary": "Bytes, full builds, preparation, suite, public-history audit, target semantics and reformat equivalence all pass. Acceptance fails the requested qualification-precision gate: ordinary matching alternatives remove the step-first sum spelling, inner cell scopes, register hints and destination mask-side cast, including a jointly matching reduction. No binary or gameplay regression was found.",
+  "qualifications": [
+    {
+      "item": "Step-plus-existing-position association",
+      "decision": "NARROW_REQUIRED",
+      "detail": "Ordinary left-associative shifted-position plus fraction plus signed-word step matches all seven functions in both revisions. The specific step-first spelling is not required. A different association placing step before fraction differs, so source sensitivity remains, without uniqueness of the retained spelling.",
+      "evidence": ["evidence/controls.json", "evidence/natural-controls.json"]
+    },
+    {
+      "item": "Scoped signed32 cell stages and register hints",
+      "decision": "PARTIALLY_ACCEPTED",
+      "detail": "Direct-expression controls differ or change target size to 1020 or 1012 bytes. The real signed32 stage and subsequent word conversion survive those controls. However, removing all register hints, moving stages to function scope, or using one shared unscoped signed-int stage each matches all seven functions in both revisions. Do not qualify scopes or hints as necessary.",
+      "evidence": ["evidence/controls.json", "evidence/natural-controls.json", "evidence/reductions.json"]
+    },
+    {
+      "item": "Y fractional output captured through an int assignment",
+      "decision": "ACCEPTED_WITH_QUALIFICATION",
+      "detail": "The actual byte-store capture is precisely disclosed and lossless for 0..255. Direct stores, separate capture, deletion of the capture local, alternate fraction types and separately named Y fraction controls fail. The matching target contains no added capture instruction. Historical source and compiler-internal ownership remain [INFERENCE]; finite failed controls do not prove global uniqueness.",
+      "evidence": ["evidence/controls.json", "evidence/natural-controls.json", "evidence/reductions.json", "evidence/semantic/reducer/proof.json"]
+    },
+    {
+      "item": "Unused long[1] retaining the untouched frame slot",
+      "decision": "ACCEPTED_WITH_QUALIFICATION",
+      "detail": "The packet reserves 16 bytes with the twelve-byte destination at -16(A6) and no direct access overlapping -4..-1(A6). Compiler allocation places the unused array at -4(A6). Removing it or substituting an ordinary unused scalar gives a twelve-byte frame and strict DIFF in both revisions. Historical purpose is unknown [INFERENCE]; no initialized game state is invented.",
+      "evidence": ["evidence/controls.json", "evidence/packet-facts.json"]
+    },
+    {
+      "item": "PlayerApplyTerrainDestination signed-long views",
+      "decision": "PARTIALLY_ACCEPTED",
+      "detail": "Removing the field-side cast, alone or together with the mask-side cast, shrinks the consumer from 616 to 612 bytes and is refused by strict TU placement. Removing only the mask-side cast gives seven MATCH rows in both revisions. The field view survives review; necessity of both casts does not.",
+      "evidence": ["evidence/controls.json", "evidence/reductions.json"]
+    }
+  ],
+  "checks": [
+    {
+      "name": "Strict byte matches",
+      "result": "PASS",
+      "detail": "Canonical complete TU: seven MATCH functions and 1888 bytes in each revision. Target: 1016 bytes at REV 02 0x00dd82 and REV 00 0x00dd62. Default pinned MCC68K 3.3K profile and canonical headers.",
+      "evidence": ["evidence/matches.json", "evidence/packet-facts.json"]
+    },
+    {
+      "name": "Full ROM builds",
+      "result": "PASS",
+      "detail": "Independent complete build.py pipelines with reviewer-local outputs pass both revisions with zero generated raw words. The suite additionally executes both real-ROM builds.",
+      "rev02_image_sha256": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+      "rev00_image_sha256": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+      "evidence": ["evidence/builds.json", "evidence/suite.json"]
+    },
+    {
+      "name": "Prepare binding and clean cutover",
+      "result": "PASS",
+      "detail": "All 247 prepared input hashes equal current inputs. Both prepared a/b receipts for both revisions are PASS and their recomputed normalized hashes agree with prepare. Source hash and seven-function unit records agree. Proximity source absent; only terrain unit registered for both revisions.",
+      "evidence": ["evidence/binding.json"]
+    },
+    {
+      "name": "Complete test suite",
+      "result": "PASS",
+      "detail": "191 tests, zero failures, zero errors, zero skips. Test discovery and bodies unchanged; receipt-equivalent build-output redirection and temporary-directory settings confine writes to reviewer scratch.",
+      "evidence": ["evidence/suite.json", "evidence/suite.log"]
+    },
+    {
+      "name": "Public history audit",
+      "result": "PASS",
+      "detail": "tools/audit_public.py --history: returncode 0, 1593 unique Git blobs, 145 trees, 399 tracked worktree files, both ROMs indexed, zero findings.",
+      "evidence": ["evidence/audit.json"]
+    },
+    {
+      "name": "Target semantics and revision difference",
+      "result": "PASS",
+      "detail": "Fresh packets preserve guards, signed-word product and pixel barriers, full-width position arithmetic, ordered partner/narrow/elevator checks, axis rejection, whirlwind fraction behavior and terrain application. Nine calls retain packet order. Rerun Solo20/Solo19 reduction agrees on all four axis write traces and non-axis AST in both revisions; independent integer models agree on 353440 cases. Paused masks differ only by PLAYER_GROUP_LEAN, as documented in REVISIONS.md.",
+      "boundary": "Target-specific arithmetic/source correspondence; not a gameplay/emulator test or portable ISO-C proof of negative signed left shifts. Historical intent and exact compiler internals remain [INFERENCE].",
+      "evidence": ["evidence/packet-facts.json", "evidence/semantic/reducer/proof.json", "evidence/semantic/axis-checks.json"]
+    },
+    {
+      "name": "Reformat equivalence and readability",
+      "result": "PASS_EXCEPT_QUALIFICATION_PRECISION",
+      "detail": "All seven functions have identical parsed ASTs and parenthesis-normalized preprocessed token sequences between author and canonical sources in both revisions; unique include sets agree. No semantic change from whitespace, braces, parentheses, include relocation or the renamed macro. Names, destination layout and collision/bounds comments accurately describe the packet.",
+      "evidence": ["evidence/semantic/reformat.json"]
+    },
+    {
+      "name": "Natural-alternative challenge",
+      "result": "FAIL_QUALIFICATION_PRECISION",
+      "detail": "35 distinct controls checked in each revision. A combined ordinary reduction removes all hints, inner cell scopes, step-first sum spelling and mask-side cast while retaining seven strict MATCH rows in both revisions. The required qualification-precision criterion is therefore not satisfied by the prepared disclosure.",
+      "evidence": ["evidence/controls.json", "evidence/natural-controls.json", "evidence/reductions.json"]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "medium",
+      "blocking": true,
+      "locations": ["src/player/entity_motion_terrain.c:63-68", "src/player/entity_motion_terrain.c:74", "src/player/entity_motion_terrain.c:100-125", "src/player/entity_motion_terrain.c:198-202", "src/player/entity_motion_terrain.c:234"],
+      "title": "Disclosed constraints include avoidable spellings with matching ordinary alternatives",
+      "detail": "The inner scopes and hints are not required, ordinary left-associative sums match, and the mask-side cast is redundant for matching. These reductions also match when combined. This is a qualification-precision finding, not a byte or behavioral failure. Register hints are ordinary K&R-era style and are not intrinsically artificial.",
+      "required_disposition": "Remove avoidable shapes or explicitly narrow the qualification to the width/normalization stage, actual Y output capture, unused frame object and field-side mask view that survive controls. Any changed source/disclosure requires a fresh prepared-input binding before acceptance.",
+      "counterexample_source": "controls/minimal-cells/entity_motion_terrain.c",
+      "counterexample_sha256": "bacd28bd8b0673bbe899878e89b99b9e37bc1527721ae9c5b9c17272d203e53c",
+      "counterexample_boundary": "Strict matcher proof for all seven functions in both revisions; not adopted or separately full-build-accepted source.",
+      "evidence": ["evidence/reductions.json"]
+    }
+  ],
+  "independence": "Sealed before reading any other independent review. Only reviewer scratch was written deliberately. No tracked file or canonical Git state changed; no acceptance review/finalize command, push or nested agent was used."
+}

@@ -11,7 +11,8 @@ prepare: with config/sources.json as it stands, builds every version twice from 
 review: records an independent reviewer's verdict for the prepared checkpoint (immutable file).
 finalize: requires a PASS prepare, at least one PASS review and no FAIL review, and C sources
   unchanged since prepare; then credits the checkpoint's C units in config/matches.json, appends
-  the REV 02 totals to docs/progress-history.jsonl and writes accept/<checkpoint>/finalize.json.
+  the credited totals (REV 02 at top level, every revision under "versions") to
+  docs/progress-history.jsonl and writes accept/<checkpoint>/finalize.json.
 """
 from __future__ import annotations
 
@@ -254,8 +255,10 @@ def finalize(checkpoint: str, note: str, jobs: int = os.cpu_count() or 4) -> dic
                 continue
             ledger[key] = entry
     matches["functions"] = sorted(ledger.values(), key=lambda f: (f["version"], int(f["address"], 16)))
-    rev02 = [f for f in matches["functions"] if f["version"] == "rev02"]
-    point = {"checkpoint": checkpoint, "utc": now(), "functions": len(rev02), "bytes": sum(f["size"] for f in rev02)}
+    totals = {version: {"functions": sum(1 for f in matches["functions"] if f["version"] == version),
+                        "bytes": sum(f["size"] for f in matches["functions"] if f["version"] == version)}
+              for version in VERSIONS}
+    point = {"checkpoint": checkpoint, "utc": now(), **totals["rev02"], "versions": totals}   # top level: REV 02
     document = {"checkpoint": checkpoint, "finalized_utc": now(), "note": note, "added": added, "moved": moved,
                 "prepare_sha256": sha256((folder / "prepare.json").read_bytes()),
                 "final_images": {v: final[v]["actual"]["sha256"] for v in VERSIONS},

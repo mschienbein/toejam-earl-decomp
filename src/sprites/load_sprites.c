@@ -1,6 +1,6 @@
 extern unsigned char ram_ffb65a[640];
 extern unsigned short ram_ffb8da[];
-extern unsigned short ram_ffd8dc[40];
+extern unsigned short ram_ffd8dc[40];   /* word queue; [INFERENCE] capacity: 40 suffices to match, not proved */
 extern unsigned short SPRITE_STATE_TABLE;
 extern unsigned char ram_ffd92e, VBLANK_FLAG_2, ram_ffd932, ram_ffd934;
 extern void VDPWritesRoutine1();

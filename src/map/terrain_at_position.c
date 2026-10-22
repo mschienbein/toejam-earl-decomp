@@ -5,8 +5,10 @@ extern unsigned char ram_ffda1d;
 extern unsigned char PlayerTilePropertyLookup[398];
 extern unsigned short func_001612();
 
-/* Read the high terrain nibble at a world position. Levels 1 and 26 use
- * terrain 0x80 outside the map; the other levels use terrain 0x90. */
+/* Read the high terrain nibble at a world position. A map coordinate of
+ * zero or past the upper bound reads as terrain 0x80 on levels 1 and 26 and
+ * 0x90 elsewhere ([INFERENCE] callers pass nonnegative coordinates; a
+ * negative one would index the map). */
 unsigned char func_00d9dc(player, world_x, world_y)
 short player, world_x, world_y;
 {

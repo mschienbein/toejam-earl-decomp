@@ -26,7 +26,7 @@ void ProcessMovement()
 {
     struct moving_entity *entity;
     long fixed_position;
-    register unsigned char fraction_z;
+    unsigned char fraction_z;
     unsigned char fraction_y, fraction_x;
     short next_y, next_x, next_z;
 

@@ -58,6 +58,13 @@
    ]
   },
   {
+   "source": "src/graphics/funkatron_scene.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/graphics/glyph_map.c",
    "versions": [
     "rev02",
@@ -93,7 +100,21 @@
    ]
   },
   {
+   "source": "src/player/mole.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/player/process_movement.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/projectiles.c",
    "versions": [
     "rev02",
     "rev00"
@@ -114,7 +135,21 @@
    ]
   },
   {
+   "source": "src/player/steering.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/player/stop_player.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/player/targeting.c",
    "versions": [
     "rev02",
     "rev00"
@@ -129,6 +164,13 @@
   },
   {
    "source": "src/presents/query_byte.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/telephone.c",
    "versions": [
     "rev02",
     "rev00"
@@ -178,6 +220,13 @@
   },
   {
    "source": "src/sprites/set_sprite.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/ui/pause.c",
    "versions": [
     "rev02",
     "rev00"

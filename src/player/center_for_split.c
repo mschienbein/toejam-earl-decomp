@@ -14,7 +14,7 @@ extern void func_00c242(), WaitForNextVBlank(), SpriteLoadingStuff();
  * keeping 26.6 intermediates; restore the world positions after the effect. */
 void func_00300a()
 {
-    long distance, frame_count;
+    long distance, distance_divisor;
     short finished = 0;
     long primary_x, primary_y, secondary_x, secondary_y;
     long primary_dx, primary_dy, secondary_dx, secondary_dy;
@@ -50,8 +50,8 @@ void func_00300a()
         distance = abs(secondary_dx);
     if (distance < abs(secondary_dy))
         distance = abs(secondary_dy);
-    frame_count = (distance >> 7) + 192;
-    distance /= frame_count;
+    distance_divisor = (distance >> 7) + 192;
+    distance /= distance_divisor;
     primary_dx /= distance;
     primary_dy /= distance;
     secondary_dx /= distance;

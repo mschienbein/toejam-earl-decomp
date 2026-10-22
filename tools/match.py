@@ -110,7 +110,10 @@ def side_by_side(expected: bytes, actual: bytes, address: int, rows: int = 12) -
         image = bytes(address) + data + bytes(10)   # decode at the real address so targets read naturally
         out, pc = [], 0
         while pc < len(data):
-            insn = m68k.decode_one(image, address + pc)
+            try:
+                insn = m68k.decode_one(image, address + pc)
+            except Exception:   # literal data after a function: show it as words
+                insn = None
             if insn is None:
                 out.append(f"{address + pc:06x}  .short 0x{int.from_bytes(data[pc:pc + 2], 'big'):04x}")
                 pc += 2

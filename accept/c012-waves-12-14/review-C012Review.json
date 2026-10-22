@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c012-waves-12-14",
+ "prepare_sha256": "6815c598bbef2ff766e3c18a0a5a0d0325ca6b920dfca3c49e4752777d571d53",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T04:46:34Z",
+ "review_file": "review.json",
+ "review_sha256": "d10d382251725b45140b533deb19067770a6908c480c37aff743a81aa6b168de",
+ "reviewer": "C012Review",
+ "verdict": "PASS_WITH_QUALIFICATIONS"
+}

@@ -1178,8 +1178,8 @@
    "name": "func_00b0cc",
    "size": 192,
    "source": "src/ui/hud_health_update.c",
-   "source_sha256": "32ded308b395a174b1b71f035d26ba89f7a169e110547b040f6d0fa98daf9ea1",
-   "checkpoint": "c010-wave-09"
+   "source_sha256": "01dfb7654d59718ecf78b77fbc0d10b2c3cf8046547869e784d5b6042b53979d",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev00",
@@ -1187,8 +1187,8 @@
    "name": "func_00b18c",
    "size": 600,
    "source": "src/ui/hud_health_update.c",
-   "source_sha256": "32ded308b395a174b1b71f035d26ba89f7a169e110547b040f6d0fa98daf9ea1",
-   "checkpoint": "c010-wave-09"
+   "source_sha256": "01dfb7654d59718ecf78b77fbc0d10b2c3cf8046547869e784d5b6042b53979d",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev00",
@@ -1385,8 +1385,8 @@
    "name": "SpriteLoadingStuff",
    "size": 202,
    "source": "src/sprites/load_sprites.c",
-   "source_sha256": "deaa56a1dde7ada7a5a1a9e4414d18f18467393c10416c43c3e628a7f4d46027",
-   "checkpoint": "c004-wave-1b"
+   "source_sha256": "86130df95800b5b4c7661d71125cb667762b42ec9c8bacda73ef9013b0439c2a",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev00",
@@ -1696,6 +1696,141 @@
   },
   {
    "version": "rev00",
+   "address": "0x00f570",
+   "name": "GetActivePresentSprite",
+   "size": 270,
+   "source": "src/player/active_present_sprite.c",
+   "source_sha256": "a6ddfe66c565149b0cf59c49d0c3d02708d48dc10c22518047fc2c0f368dc9a2",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00f7dc",
+   "name": "SetToejamFalling",
+   "size": 218,
+   "source": "src/player/start_falling.c",
+   "source_sha256": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00f8be",
+   "name": "func_00f8de",
+   "size": 142,
+   "source": "src/player/start_falling.c",
+   "source_sha256": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00f94c",
+   "name": "func_00f96c",
+   "size": 292,
+   "source": "src/player/start_falling.c",
+   "source_sha256": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00fd78",
+   "name": "MakePlayerFall",
+   "size": 750,
+   "source": "src/player/level_fall_and_landings.c",
+   "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x010066",
+   "name": "func_010086",
+   "size": 302,
+   "source": "src/player/level_fall_and_landings.c",
+   "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x010194",
+   "name": "func_0101b4",
+   "size": 224,
+   "source": "src/player/level_fall_and_landings.c",
+   "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01042e",
+   "name": "func_01044e",
+   "size": 478,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01060c",
+   "name": "func_01062c",
+   "size": 390,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x010792",
+   "name": "func_0107b2",
+   "size": 438,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x010948",
+   "name": "func_010968",
+   "size": 334,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x010a96",
+   "name": "func_010ab6",
+   "size": 744,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x010d7e",
+   "name": "KillThePlayer",
+   "size": 292,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x010ea2",
+   "name": "func_010ec2",
+   "size": 314,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0111c8",
+   "name": "ProcessPlayers",
+   "size": 438,
+   "source": "src/player/process_players.c",
+   "source_sha256": "94c9547258d8276081e15877147f0461726956f724c0b4f57bf7d3fccd349b2f",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
    "address": "0x01137e",
    "name": "OpenRocketSkates",
    "size": 196,
@@ -1709,8 +1844,8 @@
    "name": "func_011462",
    "size": 376,
    "source": "src/player/rocket_motion.c",
-   "source_sha256": "7e328f832e97a14159f168495f85bf0d82b2329e2165cb3f850ec950d4acff90",
-   "checkpoint": "c011-waves-10-11"
+   "source_sha256": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev00",
@@ -1718,8 +1853,8 @@
    "name": "func_0115da",
    "size": 706,
    "source": "src/player/rocket_motion.c",
-   "source_sha256": "7e328f832e97a14159f168495f85bf0d82b2329e2165cb3f850ec950d4acff90",
-   "checkpoint": "c011-waves-10-11"
+   "source_sha256": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev00",
@@ -1727,8 +1862,8 @@
    "name": "func_01189c",
    "size": 480,
    "source": "src/player/rocket_motion.c",
-   "source_sha256": "7e328f832e97a14159f168495f85bf0d82b2329e2165cb3f850ec950d4acff90",
-   "checkpoint": "c011-waves-10-11"
+   "source_sha256": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev00",
@@ -1772,8 +1907,8 @@
    "name": "OpenSchoolBook",
    "size": 62,
    "source": "src/player/sleep.c",
-   "source_sha256": "dc20e3fc0907e38efa00e225d05f43a63cb3f1c48da0ae11b151d32058c30dff",
-   "checkpoint": "c011-waves-10-11"
+   "source_sha256": "b876edb43d4fbabc9285ebd6ccc0d2dffa8b99c356b19508a35817e2701c42ad",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev00",
@@ -1781,8 +1916,251 @@
    "name": "ProcessSleep",
    "size": 834,
    "source": "src/player/sleep.c",
-   "source_sha256": "dc20e3fc0907e38efa00e225d05f43a63cb3f1c48da0ae11b151d32058c30dff",
-   "checkpoint": "c011-waves-10-11"
+   "source_sha256": "b876edb43d4fbabc9285ebd6ccc0d2dffa8b99c356b19508a35817e2701c42ad",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x012664",
+   "name": "func_012694",
+   "size": 206,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x012732",
+   "name": "func_012762",
+   "size": 58,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01276c",
+   "name": "LOAD_ELEVATOR_1",
+   "size": 32,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01278c",
+   "name": "SetupElevator",
+   "size": 380,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x012908",
+   "name": "SetupInitialElevator",
+   "size": 60,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x012944",
+   "name": "func_012974",
+   "size": 226,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x012a26",
+   "name": "func_012a56",
+   "size": 298,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x012b50",
+   "name": "func_012b80",
+   "size": 396,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x012cdc",
+   "name": "func_012d0c",
+   "size": 172,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x012d88",
+   "name": "func_012db8",
+   "size": 112,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x012df8",
+   "name": "LoadFinalLevelMap",
+   "size": 268,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x012f04",
+   "name": "func_012f34",
+   "size": 258,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x013006",
+   "name": "func_013036",
+   "size": 298,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x013130",
+   "name": "func_013160",
+   "size": 174,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0131de",
+   "name": "func_01320e",
+   "size": 96,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01323e",
+   "name": "func_01326e",
+   "size": 482,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x013420",
+   "name": "func_013450",
+   "size": 190,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0134de",
+   "name": "ElevatorRideVBlank",
+   "size": 98,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x013540",
+   "name": "func_013570",
+   "size": 414,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0136de",
+   "name": "func_01370e",
+   "size": 120,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x013756",
+   "name": "func_013786",
+   "size": 638,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0139d4",
+   "name": "ProcessElevator",
+   "size": 58,
+   "source": "src/elevator/elevator_query.c",
+   "source_sha256": "e01cdbfe71d97e114bfbbe8657cf74f5f72a7fe65293843adfbeb1af0ba6d0d0",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x013a0e",
+   "name": "func_013a3e",
+   "size": 186,
+   "source": "src/elevator/elevator_transitions.c",
+   "source_sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x013ac8",
+   "name": "func_013af8",
+   "size": 114,
+   "source": "src/elevator/elevator_transitions.c",
+   "source_sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x013b3a",
+   "name": "ProcessElevatorStep1",
+   "size": 972,
+   "source": "src/elevator/elevator_transitions.c",
+   "source_sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x013f06",
+   "name": "ProcessElevatorStep2",
+   "size": 614,
+   "source": "src/elevator/elevator_transitions.c",
+   "source_sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01416c",
+   "name": "ProcessElevators",
+   "size": 10,
+   "source": "src/elevator/elevator_transitions.c",
+   "source_sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev00",
@@ -3104,8 +3482,8 @@
    "name": "func_00b0cc",
    "size": 192,
    "source": "src/ui/hud_health_update.c",
-   "source_sha256": "32ded308b395a174b1b71f035d26ba89f7a169e110547b040f6d0fa98daf9ea1",
-   "checkpoint": "c010-wave-09"
+   "source_sha256": "01dfb7654d59718ecf78b77fbc0d10b2c3cf8046547869e784d5b6042b53979d",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev02",
@@ -3113,8 +3491,8 @@
    "name": "func_00b18c",
    "size": 600,
    "source": "src/ui/hud_health_update.c",
-   "source_sha256": "32ded308b395a174b1b71f035d26ba89f7a169e110547b040f6d0fa98daf9ea1",
-   "checkpoint": "c010-wave-09"
+   "source_sha256": "01dfb7654d59718ecf78b77fbc0d10b2c3cf8046547869e784d5b6042b53979d",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev02",
@@ -3311,8 +3689,8 @@
    "name": "SpriteLoadingStuff",
    "size": 202,
    "source": "src/sprites/load_sprites.c",
-   "source_sha256": "deaa56a1dde7ada7a5a1a9e4414d18f18467393c10416c43c3e628a7f4d46027",
-   "checkpoint": "c004-wave-1b"
+   "source_sha256": "86130df95800b5b4c7661d71125cb667762b42ec9c8bacda73ef9013b0439c2a",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev02",
@@ -3622,6 +4000,141 @@
   },
   {
    "version": "rev02",
+   "address": "0x00f590",
+   "name": "GetActivePresentSprite",
+   "size": 270,
+   "source": "src/player/active_present_sprite.c",
+   "source_sha256": "a6ddfe66c565149b0cf59c49d0c3d02708d48dc10c22518047fc2c0f368dc9a2",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00f7fc",
+   "name": "SetToejamFalling",
+   "size": 218,
+   "source": "src/player/start_falling.c",
+   "source_sha256": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00f8de",
+   "name": "func_00f8de",
+   "size": 142,
+   "source": "src/player/start_falling.c",
+   "source_sha256": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00f96c",
+   "name": "func_00f96c",
+   "size": 292,
+   "source": "src/player/start_falling.c",
+   "source_sha256": "8f4a6011356e1a47b1f4adac5abd38f4c38492e0f63a6c8fcb21f395e86a0216",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00fd98",
+   "name": "MakePlayerFall",
+   "size": 750,
+   "source": "src/player/level_fall_and_landings.c",
+   "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x010086",
+   "name": "func_010086",
+   "size": 302,
+   "source": "src/player/level_fall_and_landings.c",
+   "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x0101b4",
+   "name": "func_0101b4",
+   "size": 224,
+   "source": "src/player/level_fall_and_landings.c",
+   "source_sha256": "dd1589023a6e339b3c6938f16df9b1c36b521abba3734132ec3b4b1c818fd7a2",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01044e",
+   "name": "func_01044e",
+   "size": 478,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01062c",
+   "name": "func_01062c",
+   "size": 390,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x0107b2",
+   "name": "func_0107b2",
+   "size": 438,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x010968",
+   "name": "func_010968",
+   "size": 334,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x010ab6",
+   "name": "func_010ab6",
+   "size": 744,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x010d9e",
+   "name": "KillThePlayer",
+   "size": 292,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x010ec2",
+   "name": "func_010ec2",
+   "size": 314,
+   "source": "src/player/player_states_and_respawn.c",
+   "source_sha256": "d418a04ca4a0c3ef27c4479e0172da09e3334a415f1338ea04d07812ae9b654e",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x0111e8",
+   "name": "ProcessPlayers",
+   "size": 438,
+   "source": "src/player/process_players.c",
+   "source_sha256": "94c9547258d8276081e15877147f0461726956f724c0b4f57bf7d3fccd349b2f",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
    "address": "0x01139e",
    "name": "OpenRocketSkates",
    "size": 196,
@@ -3635,8 +4148,8 @@
    "name": "func_011462",
    "size": 376,
    "source": "src/player/rocket_motion.c",
-   "source_sha256": "7e328f832e97a14159f168495f85bf0d82b2329e2165cb3f850ec950d4acff90",
-   "checkpoint": "c011-waves-10-11"
+   "source_sha256": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev02",
@@ -3644,8 +4157,8 @@
    "name": "func_0115da",
    "size": 706,
    "source": "src/player/rocket_motion.c",
-   "source_sha256": "7e328f832e97a14159f168495f85bf0d82b2329e2165cb3f850ec950d4acff90",
-   "checkpoint": "c011-waves-10-11"
+   "source_sha256": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev02",
@@ -3653,8 +4166,8 @@
    "name": "func_01189c",
    "size": 480,
    "source": "src/player/rocket_motion.c",
-   "source_sha256": "7e328f832e97a14159f168495f85bf0d82b2329e2165cb3f850ec950d4acff90",
-   "checkpoint": "c011-waves-10-11"
+   "source_sha256": "3d6e70a433c332328cc6700dee8e6341192778767b7f4d2885bf288874d57322",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev02",
@@ -3698,8 +4211,8 @@
    "name": "OpenSchoolBook",
    "size": 62,
    "source": "src/player/sleep.c",
-   "source_sha256": "dc20e3fc0907e38efa00e225d05f43a63cb3f1c48da0ae11b151d32058c30dff",
-   "checkpoint": "c011-waves-10-11"
+   "source_sha256": "b876edb43d4fbabc9285ebd6ccc0d2dffa8b99c356b19508a35817e2701c42ad",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev02",
@@ -3707,8 +4220,251 @@
    "name": "ProcessSleep",
    "size": 850,
    "source": "src/player/sleep.c",
-   "source_sha256": "dc20e3fc0907e38efa00e225d05f43a63cb3f1c48da0ae11b151d32058c30dff",
-   "checkpoint": "c011-waves-10-11"
+   "source_sha256": "b876edb43d4fbabc9285ebd6ccc0d2dffa8b99c356b19508a35817e2701c42ad",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x012694",
+   "name": "func_012694",
+   "size": 206,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x012762",
+   "name": "func_012762",
+   "size": 58,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01279c",
+   "name": "LOAD_ELEVATOR_1",
+   "size": 32,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x0127bc",
+   "name": "SetupElevator",
+   "size": 380,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x012938",
+   "name": "SetupInitialElevator",
+   "size": 60,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x012974",
+   "name": "func_012974",
+   "size": 226,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x012a56",
+   "name": "func_012a56",
+   "size": 298,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x012b80",
+   "name": "func_012b80",
+   "size": 396,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x012d0c",
+   "name": "func_012d0c",
+   "size": 172,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x012db8",
+   "name": "func_012db8",
+   "size": 112,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x012e28",
+   "name": "LoadFinalLevelMap",
+   "size": 268,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x012f34",
+   "name": "func_012f34",
+   "size": 258,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x013036",
+   "name": "func_013036",
+   "size": 298,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x013160",
+   "name": "func_013160",
+   "size": 174,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01320e",
+   "name": "func_01320e",
+   "size": 96,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01326e",
+   "name": "func_01326e",
+   "size": 482,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x013450",
+   "name": "func_013450",
+   "size": 190,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01350e",
+   "name": "ElevatorRideVBlank",
+   "size": 98,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x013570",
+   "name": "func_013570",
+   "size": 414,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01370e",
+   "name": "func_01370e",
+   "size": 120,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x013786",
+   "name": "func_013786",
+   "size": 638,
+   "source": "src/elevator/elevator_scene.c",
+   "source_sha256": "f2255f8e11510a0fabf95e33ffc2e64869c2efa8a81e9081678c001649f34ebe",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x013a04",
+   "name": "ProcessElevator",
+   "size": 58,
+   "source": "src/elevator/elevator_query.c",
+   "source_sha256": "e01cdbfe71d97e114bfbbe8657cf74f5f72a7fe65293843adfbeb1af0ba6d0d0",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x013a3e",
+   "name": "func_013a3e",
+   "size": 186,
+   "source": "src/elevator/elevator_transitions.c",
+   "source_sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x013af8",
+   "name": "func_013af8",
+   "size": 114,
+   "source": "src/elevator/elevator_transitions.c",
+   "source_sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x013b6a",
+   "name": "ProcessElevatorStep1",
+   "size": 972,
+   "source": "src/elevator/elevator_transitions.c",
+   "source_sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x013f36",
+   "name": "ProcessElevatorStep2",
+   "size": 614,
+   "source": "src/elevator/elevator_transitions.c",
+   "source_sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+   "checkpoint": "c012-waves-12-14"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01419c",
+   "name": "ProcessElevators",
+   "size": 10,
+   "source": "src/elevator/elevator_transitions.c",
+   "source_sha256": "a8222600909c852a66dbe07fef105a1405fcb47d098cb562ed1c7d16d1d34221",
+   "checkpoint": "c012-waves-12-14"
   },
   {
    "version": "rev02",

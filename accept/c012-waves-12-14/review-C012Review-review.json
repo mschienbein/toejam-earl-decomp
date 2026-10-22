@@ -1,0 +1,101 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C012Review",
+  "checkpoint": "c012-waves-12-14",
+  "source_commit": "727663ca8a7442f5e8a74570dbb525284d777e28",
+  "prepare_sha256": "6815c598bbef2ff766e3c18a0a5a0d0325ca6b920dfca3c49e4752777d571d53",
+  "independence": "Fresh independent reviewer, not an author. Verdict sealed without consulting any other review except the expressly assigned C011Review/review.json to verify F1-F4. All writes, compiler temporaries, packets, candidates and build outputs were confined to scratch/agents/C012Review. No tracked files, git state, acceptance records or progress ledgers were changed; accept.py review/finalize was not invoked.",
+  "checks": [
+    {
+      "id": "C1",
+      "check": "Re-derive every changed C file with ordinary match.py in both revisions",
+      "result": "PASS",
+      "evidence": "scope.json, changed-sources.txt and baseline-match-results.json: eight new units / 42 new functions / 12556 REV02 code bytes plus four C011-fix files. All 12 changed C files matched both revisions in 24 normal CLI invocations, exit 0, producing 100 function MATCH results (50 per revision). No --option or --define overrides. Retained listing/object/link evidence: matches/baseline/."
+    },
+    {
+      "id": "C2",
+      "check": "Bind the review to prepare inputs, latest source commit and repeated saved receipts",
+      "result": "PASS",
+      "evidence": "prepare-audit.json: all 114 current input hashes and both source digests equal prepare, with no differing inputs. Latest commit touching src/config/sources.json equals prepared head 727663ca8a7442f5e8a74570dbb525284d777e28; prepare records no dirty paths. The four saved canonical-JSON receipt hashes agree with prepare, saved images equal originals/prepare/receipts, C-unit records agree, all options are empty and raw_words is zero. Recorded suite returncode 0 / OK was inspected, not rerun."
+    },
+    {
+      "id": "C3",
+      "check": "Independently construct both complete normal-source ROMs",
+      "result": "PASS",
+      "evidence": "baseline-build-results.json, builds/baseline/ and build-unit-comparison.json: ordinary tools/build.py build_image path with normal names, sources, TU spans, revision mapping and typed data; only output directories are private. Both receipts PASS, C-unit records exactly equal prepare, 68 units / 256 unique functions / zero raw words. REV02 SHA256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV00 SHA256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228."
+    },
+    {
+      "id": "C4",
+      "check": "All-file inspection and broad deep original-ROM sampling",
+      "result": "PASS",
+      "evidence": "observations.json records full source inspection of all 12 changed files and 24 deeply compared new functions, covering every one of the eight new files. Samples include active sprites, terrain scans, level falling/respawn/dispatch, paired elevator allocation/collision/animation, final-map transfers, speech, scrolling, ride setup/handoff and both transition state machines. packet-results.json retains 90 successful packet.py invocations, with outputs separated by revision. No gameplay execution is claimed."
+    },
+    {
+      "id": "C5",
+      "check": "K&R C, primary names, contiguous runs, compiler settings and prohibited devices",
+      "result": "PASS",
+      "evidence": "Full source inspection and cross-source grep found no inline assembly, replacement blobs, pragmas, source-specific compiler options, ROM address casts, biased pointers or other numeric game-address tricks. Numeric pointer casts are VDP hardware ports. Casts on named sound data and the tile transfer buffer are ordinary value/typed-storage conversions. Normal match.py applies canonical-name/alias and contiguous-ROM-run gates to all 50 changed-file definitions. The eight added files need no revision guards; only the already reviewed sleep file retains its revision.h condition."
+    },
+    {
+      "id": "C6",
+      "check": "Typed extern and reconstructed parameter consistency across src",
+      "result": "QUALIFIED",
+      "evidence": "Cross-source grep confirms getter/terrain/speech/random-cache/elevator-position declarations and the C011 allocator/pad/buffer fixes. F1 identifies new void-versus-char SetupElevator declarations, F2 the scalar-versus-array TOEJAM_FALL_STATE view, and F3 the coordinate helper incorrectly typed/commented as an elevator although its only direct caller supplies a player. Each has a complete private alternative matching both revisions. New elevator_scene int abs versus elevator_transitions long abs is also avoidable: long-abs/elevator_scene.c MATCHes all 21 functions both revisions. Existing older abs/flag/menu disagreements, flat-versus-2D views and entity/hardware-sprite layout consolidation remain; global C interface compatibility is not claimed."
+    },
+    {
+      "id": "C7",
+      "check": "Scrutinize signed-long flags_52 view and try natural alternatives",
+      "result": "QUALIFIED",
+      "evidence": "alternative-summary.json, alternative-match-results.json and object-metrics.json record five alternatives for each whole player unit in both revisions. Removing the cast with either L or plain mask, or reversing operands, grows MakePlayerFall 750->758 bytes (two EXG pairs) and changes func_010ab6 mask scratch D0->D2 at unchanged size 744; all fail. Shift-and-test grows them to 754/746 and fails. Declaring the field long and removing casts MATCHes all 10 functions across the two files in both revisions, but changes the accepted shared unsigned field view and is not a one-unit reconciliation. The retained scalar casts are legal and preserve the tested bit; their compiler-sensitive purpose needs a local source qualification (F4). Exact historical signedness/spelling is [INFERENCE]."
+    },
+    {
+      "id": "C8",
+      "check": "Preserved original bugs and func_001262 historical call interface",
+      "result": "PASS",
+      "evidence": "Fresh packets show SetupElevator invalid ordinary-level exit returning no value, accurately marked ORIGINAL BUG. ProcessElevatorStep2 stores only D0.B from func_001262; the existing short definition is independently inspected. A short extern adds MOVE.W D0,D0, growing Step2 614->616 and failing the next-function-address gate in both revisions. Removing the int declaration entirely MATCHes both complete transition units. The preserved int interface has an ORIGINAL BUG note with the implicit-original declaration explicitly [INFERENCE]. The otherwise-unused func_012d0c character read is observed and locally documented; removing it shrinks the function by four bytes. No added file calls LoadLevel2AndUp, and no additional missing-argument defect was observed in the scoped calls."
+    },
+    {
+      "id": "C9",
+      "check": "Verify C011 findings F1-F4 resolved",
+      "result": "PASS",
+      "evidence": "C011 F1: sleep.c now declares short func_00d904 and long MovePadInputIntoD0 while retaining int GetActivePresentSprite. F2: load_sprites.c now shares char ram_ffb8da[8192] with both consumers and uses a local unsigned-short pointer for DMA. Capacity remains [INFERENCE], not independently proved. F3: rocket_motion.c locally explains the unsigned-long direction-mask register choice and labels historical spelling unknown. F4: hud_health_update.c now locally qualifies the address-of/index spelling and removes the redundant short division-result cast. All four complete files independently MATCH both revisions."
+    },
+    {
+      "id": "C10",
+      "check": "Mutation sanity against match.py and complete ROM builds",
+      "result": "PASS",
+      "evidence": "mutation-scope.json proves the only private source substitution is ProcessElevator comparing state with 4 instead of 3. Both matcher invocations exit 1 and DIFF the unchanged-size 58-byte function. Both complete mutation builds write FAIL receipts with 68 C units / 256 functions / zero raw words. Exactly one ROM byte differs: REV02 0x013a2f, REV00 0x0139ff. build-unit-comparison.json confirms only that unit source/hash changes; all function placements/sizes remain unchanged. No original-byte fallback hides the mutant."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "low",
+      "file": "src/player/level_fall_and_landings.c:27; src/player/player_states_and_respawn.c:27; src/elevator/elevator_scene.c:158",
+      "what": "Both newly added player units declare SetupElevator as void, while its new accepted definition returns char and its elevator caller uses that byte result. This is an avoidable cross-unit return-type mismatch, not required by the original bytes. Changing only those declarations to char preserves every function in both whole files for both revisions. The new scene also chooses int abs while the new transition unit uses long; the scene long alternative independently matches. These do not produce a binary discrepancy, but do not satisfy a claim of consistent extern types.",
+      "suggested_fix": "Move SetupElevator out of the void declaration lists and use extern char SetupElevator() in both player files. Private alternatives/char-SetupElevator/ contains both complete matching files. Prefer the long abs declaration already used by the adjacent transition unit/runtime consumers; alternatives/long-abs/elevator_scene.c matches both revisions. Do not claim the older repository-wide abs disagreement is thereby fully reconciled."
+    },
+    {
+      "id": "F2",
+      "severity": "low",
+      "file": "src/elevator/elevator_scene.c:61,467",
+      "what": "The new scene declares the named TOEJAM_FALL_STATE object as a scalar char and assigns it directly, while the existing and newly added player/graphics units declare the same named object as char[]. This differs from using the separate named ram_ffda23 byte and is an avoidable incompatible extern view. The array declaration and [0] store preserve all 21 scene functions byte-for-byte in both revisions.",
+      "suggested_fix": "Use extern char TOEJAM_FALL_STATE[] and TOEJAM_FALL_STATE[0] = 0. The complete alternative is alternatives/array-fall-state/elevator_scene.c; the combined alternatives/consistent-scene-interfaces/elevator_scene.c also matches both revisions."
+    },
+    {
+      "id": "F3",
+      "severity": "low",
+      "file": "src/elevator/elevator_scene.c:135-145; src/player/player_states_and_respawn.c:233-234",
+      "what": "func_012762 is described as setting an elevator position and accepts struct elevator_record *, but its only catalogued direct caller, func_010968 at 0x010a94, passes a player object. The helper only writes x/y at offsets 0/2, so the incorrect record view happens to reproduce the bytes. The concrete pointer type and comment mislead readers about the caller and object being updated.",
+      "suggested_fix": "Declare its parameter as struct elevator_entity *player, use player->x/y, and describe the saved map-cell coordinates being applied to the player. alternatives/player-coordinate-helper/elevator_scene.c makes only this correction and MATCHes the complete 21-function scene in both revisions; the combined interface alternative also matches. No speculative original bug annotation or address cast is needed."
+    },
+    {
+      "id": "F4",
+      "severity": "low",
+      "file": "src/player/level_fall_and_landings.c:81,93; src/player/player_states_and_respawn.c:260",
+      "what": "The signed-long casts on the shared unsigned flags_52 field exist solely to obtain the observed scratch-register allocation. The author handoff discloses that fact, but neither source file does. Cast-free natural alternatives fail, while making the field long and removing the casts matches both complete units; that does not prove historical signedness and would introduce a different shared-type conflict if adopted only here. The existing legal scalar casts are not prohibited pointer tricks or behavioral bugs, but their reason should not be hidden.",
+      "suggested_fix": "Add a brief local compiler-choice qualification at these tests: the signed 32-bit value view preserves the observed D0 mask/allocation while the common storage remains unsigned; exact historical spelling/signedness is [INFERENCE]. Keep the shared field type unchanged unless an explicit whole-project interface reconciliation is performed. Alternative outcomes and listings are retained under alternatives/ and matches/alternatives-*/."
+    }
+  ],
+  "qualification_summary": "No blocking byte mismatch, prohibited source device, stale prepare input or false-positive mutation control was found. The four C011 fixes are resolved. Acceptance remains qualified by the four low-severity source/interface/readability findings, plus explicitly recorded older interface/layout debt. All proposed alternatives are private experiments, not adopted sources; any source fixes require a newly prepared checkpoint. No independent suite rerun or gameplay execution is claimed."
+}

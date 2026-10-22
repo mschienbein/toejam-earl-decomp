@@ -1,0 +1,101 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C011Review",
+  "checkpoint": "c011-waves-10-11",
+  "source_commit": "3ac9f829ff1512614b053f644344c576b9627d5c",
+  "prepare_sha256": "b0cd24e4272eb25cc7f475c407e31ae336f951255e965415636b41e5c27fa86e",
+  "independence": "Fresh independent reviewer, not an author. Sealed before consulting any other review except the expressly assigned C010Review/review.json. All writes, compiler temporary directories, packets, experiments and builds were confined to scratch/agents/C011Review. No tracked files, git state, acceptance records or progress ledgers were changed. accept.py review/finalize was not invoked.",
+  "checks": [
+    {
+      "id": "C1",
+      "check": "Re-derive match.py on every extant changed C file, both revisions",
+      "result": "PASS",
+      "evidence": "changed-sources.json and baseline-match-results.json: 21 changed C files, 42 normal CLI invocations, all exit 0, 96 functions per revision / 192 MATCH results. No --option or --define overrides. The sixteen added files contain 45 definitions, five moved and forty new; new code is 11944 REV02 bytes. All functions in each file pass the canonical-name and contiguous-ROM-run gates. Compiler listings/objects/link artifacts retained under matches/baseline/."
+    },
+    {
+      "id": "C2",
+      "check": "Verify prepare inputs, source identity and repeated saved receipts",
+      "result": "PASS",
+      "evidence": "prepare-audit.json: all 106 current input hashes agree with prepare, with no additions or missing inputs; both source digests agree. Latest commit touching src/config/sources.json equals prepared head 3ac9f829ff1512614b053f644344c576b9627d5c. Prepare records no dirty paths. All four saved canonical-JSON receipt hashes agree; saved images agree with the originals, prepare and receipts; each contains 60 C units, 214 unique functions and zero raw words. All source options are empty. Recorded suite returncode 0 / OK was inspected, not rerun."
+    },
+    {
+      "id": "C3",
+      "check": "Independently construct both complete normal-source ROMs",
+      "result": "PASS",
+      "evidence": "baseline-build-results.json and builds/baseline/: normal build.py build_image path, normal source configuration, names, TU spans, revision mapping and typed-data preparation; only output directory is private. Both receipts PASS with C-unit records exactly equal to prepare, 60 units / 214 functions / zero raw words. REV02 SHA256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV00 SHA256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228."
+    },
+    {
+      "id": "C4",
+      "check": "All-file source inspection and broad deep semantic sampling",
+      "result": "PASS",
+      "evidence": "observations.json: all sixteen new files inspected in full; 21 functions deeply compared against fresh original-ROM packets, with at least one deep sample in every new file. Samples cover attachment/sorting, packed pixels, VDP links, entity indices, sprite and tile allocation, proximity/collision, map search, movement animation, rocket and jump behavior, high-five health sharing and sleep. packet-results.json records 108 successful fresh packet.py invocations: all 45 added-file definitions plus nine supporting routines, both revisions. No gameplay execution is claimed."
+    },
+    {
+      "id": "C5",
+      "check": "K&R source, canonical names, prohibited devices and revision guards",
+      "result": "PASS",
+      "evidence": "New code uses K&R definitions and typed externs, no inline assembly, replacement byte blobs, pragmas, option overrides, biased ROM pointers or numeric game-address casts. Pointer conversions reinterpret named tile-buffer storage; numeric pointer casts are genuine VDP hardware ports. Two register hints in SetPositionOnNewLevel are ordinary C hints, not ABI overrides. Only sleep.c adds revision.h: fresh packets show REV02 ram_ffe236 idle gating at 0x012610-0x01261e and its absence in REV00 before the idle increment at 0x0125fa. Other revision mapping is handled by the normal tools."
+    },
+    {
+      "id": "C6",
+      "check": "Typed extern declarations across src",
+      "result": "QUALIFIED",
+      "evidence": "Cross-source grep confirms the fixed gPlayerRank array view and matching map/property/random-table declarations. F1 identifies avoidable sleep return-type inconsistencies; F2 identifies the new byte-versus-word tile-buffer interface mismatch. Existing int/long abs declarations, flag/menu disagreements, flat-versus-2D map views and the expressly deferred entity/hardware-sprite layout consolidation remain; global C type compatibility is not claimed. consistent-buffer/load_sprites.c and long-pad-sleep/sleep.c independently MATCH both revisions. long-abs/rocket_motion.c also MATCHes all three functions both revisions."
+    },
+    {
+      "id": "C7",
+      "check": "Judge func_00d904 short definition and historical implicit-int callers",
+      "result": "PASS",
+      "evidence": "short-mole-match-results.json and short-projectiles-match-results.json: replacing only the declaration with short adds MOVE.W D0,D0 immediately after the allocation call, growing the first function by two bytes in each revision; the strict contiguous-run gate rejects the next function address. An explicit char cast on the short result does not avoid it. Removing the int declaration entirely MATCHes both complete caller files in both revisions (implicit-mole/projectiles). An int allocator definition remains 108 bytes but DIFFs. Original packets show mole/projectiles storing only d0.b immediately after the call. Their ORIGINAL BUG notes are supported as recorded interface exceptions; implicit rather than explicitly incorrect original int declarations remains [INFERENCE], correctly labeled in source. Sleep has no such need: its short declaration MATCHes (F1)."
+    },
+    {
+      "id": "C8",
+      "check": "Moved functions unchanged and C010 findings resolved",
+      "result": "QUALIFIED",
+      "evidence": "moved-functions.json compares the previous source commit with current definitions: all five moved functions are text-identical, including parameter/local names; all four superseded files are absent. Normal build has 214 unique functions, with no duplicate credit by placement. C010 F1 is fixed in inventory; C010 F3 is fixed by terrain_class, whose masked land origin is independently confirmed in the ProcessPlayers packet. C010 F2 is not fixed: hud_health_update.c still has both the unqualified address-of/index spelling and the removable short division cast (F4)."
+    },
+    {
+      "id": "C9",
+      "check": "Natural alternatives, honest comments/names and preserved bugs",
+      "result": "QUALIFIED",
+      "evidence": "alternative-summary.json indexes fourteen non-mutant experiments, each checked in both revisions. Unhinted placement retains size but changes register allocation; plain direction mask changes only func_011462 while the other rocket functions match; 3U is rejected by MCC68K. The unsigned-long mask is legitimate C, but its compiler-sensitive choice lacks local disclosure (F3). Boundary-buffer casts are normal typed access, not address tricks. ORIGINAL BUG markers agree with uninitialized tile rollback, exhausted/marked placement search, asymmetric rocket clamps and high-five average-versus-limit storage. Twelve-piece descriptor extent is labeled [INFERENCE]. Historical source spelling and intended repairs are not claimed proven."
+    },
+    {
+      "id": "C10",
+      "check": "Mutation rejected by matcher and full builds without fallback",
+      "result": "PASS",
+      "evidence": "mutation-scope.json proves a single private edit: func_011a7c stores ram_ffda28[player] = 17 instead of 16. Both match.py invocations exit 1 and DIFF the unchanged-size 68-byte function. Both full mutation builds write FAIL receipts, still with 60 C units / 214 functions / zero raw words. Exactly one ROM byte differs: REV02 0x011a9d and REV00 0x011a7d. Only the mutant C-unit source/hash changes in the unit records; function placement and sizes agree. No fallback replaces the mutant with original bytes."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "low",
+      "file": "src/player/sleep.c:36; src/sprites/entity_slots_tu14.c:251; src/core/vdp_startup.c:39",
+      "what": "The new sleep unit still declares func_00d904 as int despite its short definition, without an ORIGINAL BUG interface qualification. Unlike the byte-assignment callers in mole/projectiles, this caller needs no mismatch to match: changing to short preserves both full functions in both revisions. Sleep also declares MovePadInputIntoD0 as int while its accepted definition and several callers use long. Both are 32-bit in this compiler, so no byte difference is observed, but int and long are distinct C interface types.",
+      "suggested_fix": "Use extern short func_00d904() and extern long MovePadInputIntoD0() in sleep.c, retaining int GetActivePresentSprite(). The complete private alternatives/long-pad-sleep/sleep.c independently MATCHes both revisions. Preserve the explicitly qualified int exceptions only in callers where the original bytes actually require them. Carry existing abs int/long disagreements into the shared-interface reconciliation rather than claiming global consistency."
+    },
+    {
+      "id": "F2",
+      "severity": "low",
+      "file": "src/sprites/sprite_pixel_masks.c:7; src/sprites/copy_sprite_tiles.c:2; src/sprites/load_sprites.c:2,23",
+      "what": "The two new tile-buffer consumers declare ram_ffb8da as char[8192], while the accepted DMA consumer still declares the same named object as unsigned short[]. These are incompatible extern types, not merely different local typed pointers. The new bounded byte view is compiler-sensitive and useful, but the cross-unit mismatch is not locally reconciled. No binary discrepancy was observed.",
+      "suggested_fix": "Use the same bounded byte declaration in load_sprites.c and convert that named storage to an unsigned-short pointer locally for DMA traversal. alternatives/consistent-buffer/load_sprites.c does exactly this and independently MATCHes both revisions. Describe the 8192-byte capacity as the inferred available span to the adjacent state word, unless an independent allocation/bounds source is established."
+    },
+    {
+      "id": "F3",
+      "severity": "low",
+      "file": "src/player/rocket_motion.c:73",
+      "what": "The cast on the tiny direction mask, state->sprite & (unsigned long)3, is deliberately compiler-sensitive: replacing it with the plain integer mask preserves the 376-byte function extent but changes scratch registers. The author handoff records that fact, but source has no local disclosure. A conventional 3U spelling is rejected by MCC68K. This is not a prohibited address trick or a behavioral bug; the precise historical spelling remains [INFERENCE].",
+      "suggested_fix": "Add a short local compiler-choice qualification explaining that an unsigned 32-bit mask preserves the observed operand/register order, without claiming it was proved to be the historical source; alternatively retain a simpler independently matching spelling if one is found. No gameplay or control-flow change is requested."
+    },
+    {
+      "id": "F4",
+      "severity": "low",
+      "file": "src/ui/hud_health_update.c:72-73,98",
+      "what": "C010 F2 remains unresolved. This file is unchanged in the checkpoint: the redundant (&gPlayerInfo[index])->sprite_state spelling still lacks its local compiler-choice qualification, and the explicitly removable short cast on displayed_health / 8 remains. The checkpoint commit message mentions removing a redundant cast, but the prepared source still contains it. C010 F1 and F3 are resolved; it would be inaccurate to describe all three findings as fixed.",
+      "suggested_fix": "Keep the previously observed address-of/index code-generation distinction explicitly qualified, and remove the unnecessary division-result cast. alternatives/no-health-narrowing/hud_health_update.c independently MATCHes both functions in both revisions. If intentionally deferred, record F2 as an outstanding qualification instead of claiming it resolved."
+    }
+  ],
+  "qualification_summary": "No blocking byte mismatch, prohibited source device, stale prepare input, unsubstantiated revision guard, changed moved-function body or false-positive negative control was found. All sixteen new files received a deep sample, and both normal full ROMs reproduce exactly. Acceptance is qualified by avoidable sleep/buffer interface differences, an undisclosed compiler-sensitive mask choice and the still-open C010 F2 source qualification. The mole/projectiles implicit-int explanation is experimentally plausible, correctly marked [INFERENCE], and not evidence of a uniquely recovered historical declaration. Existing shared-header/layout and older scalar-interface debt is not claimed resolved. Private alternatives were matched, not adopted or accepted as new checkpoint inputs."
+}

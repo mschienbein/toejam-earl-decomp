@@ -1,0 +1,61 @@
+{
+ "verdict": "FAIL",
+ "reviewer": "C020Review",
+ "checkpoint": "c021-names-hardcases-data-r2",
+ "reviewed_commit": "824497463dc973fd459a19316ac472be83cc3b57",
+ "sealed_before_reading_other_checkpoint_reviews": true,
+ "checks": [
+  {
+   "id": "C021-C01",
+   "status": "PASS",
+   "what": "The prepared input-manifest delta from c020 is exactly tools/audit_public.py and tests/test_audit_public.py; C, assembly, names, classification and data inputs are unchanged. Subsequent worktree fixes were detected during review, so final adversarial checks and tests use immutable 8244974 copies whose SHA-256 hashes equal the c021 prepare record: audit bfd7461168cdc748e7a1587586246ea13d9af40b12a1a68e966fe5af9697f13b; tests 4523abdfe60776cfc775ae286957a3f3fdb740ff7252841245f727b1d8a22e34. This verdict does not assess the in-progress c022 fixes.",
+   "evidence": "scratch/agents/C020Review/delta-manifest.json; scratch/agents/C020Review/delta-frozen-checks.json"
+  },
+  {
+   "id": "C021-C02",
+   "status": "FAIL",
+   "what": "Challenged expression masking with Base85, Z85, Base64, URL-safe Base64 and hex through four unary/address/member wrappers each. All twenty generic controls remain caught with ROM references. However, a lossless standard Base85 encoding of 36 consecutive REV 02 bytes at 0x0008d4 wrapped in f(&<encoding>); is accepted by both ROM-aware and ROM-free content checks. The frozen c020 baseline rejects the same source as an opaque Base85 run. The extended flat grammar masks short mixed-case encoded atoms and malformed punctuation sequences; atom opacity checks do not protect atoms below 48 characters.",
+   "evidence": "scratch/agents/C020Review/delta-frozen-checks.json:expression; scratch/agents/C020Review/delta-expression-probes.json"
+  },
+  {
+   "id": "C021-C03",
+   "status": "FAIL",
+   "what": "The copyright-or-binary-vector condition correctly distinguishes the prior text-header false positive from actual headers and still recognizes binary-vector headers without copyright and text-vector headers with copyright. But increasing the minimum from 272 to 276 creates a decoded-payload regression: exact retail prefixes of 272, 273, 274 and 275 bytes, Base64/Base85/hex encoded, now pass ROM-free content checks in both revisions. All 24 cases are rejected by the frozen c020 baseline. The ROM-aware index still catches them. Across 42 immutable header/encoding comparisons there were no ROM-aware misses; separate mutation probes also preserved the known-ROM backstop.",
+   "evidence": "scratch/agents/C020Review/delta-frozen-checks.json:headers; scratch/agents/C020Review/delta-frozen-header-exception.json:headers"
+  },
+  {
+   "id": "C021-C04",
+   "status": "PASS",
+   "what": "REVIEWED_FALSE_POSITIVES has exactly one complete (40-hex blob id, exact path) key. Independently hashed the actual historical source as a Git blob and obtained 76fd193d0b318c6266751e9eee359c569c3df8a4. In an isolated scratch Git repository, only its matching historical opaque URL-safe Base64 reason is suppressed. Identical content at another path and a changed blob at the original path are reported. Injected independent content/path reasons survive the real filtering control flow. Path reasons and worktree checks are not covered by this exception. No broader suppression was found.",
+   "evidence": "scratch/agents/C020Review/delta-frozen-header-exception.json:exception"
+  },
+  {
+   "id": "C021-C05",
+   "status": "PASS",
+   "what": "Reproduced the requested exact CLI invocation, tools/audit_public.py --history, with both ROMs: exit 0, PASS, 1085 unique Git blobs, 105 trees, 351 tracked worktree files, 2 ROMs indexed, 0 findings. This clean-repository result does not exercise or disprove the newly demonstrated laundering and truncated-prefix bypasses.",
+   "evidence": "scratch/agents/C020Review/delta-public-history.json"
+  },
+  {
+   "id": "C021-C06",
+   "status": "PASS",
+   "what": "Executed all 60 tests from the immutable c021 audit test module. Fifty-nine passed initially; one encountered a reviewer harness-relative-path error when locating tools/audit_public.py. Corrected only the isolated scratch fixture layout and retried that single test successfully; no product assertion failed and no test was skipped. The new security counterexamples are absent from those passing fixtures.",
+   "evidence": "scratch/agents/C020Review/delta-frozen-tests.log; scratch/agents/C020Review/delta-frozen-ci-test-retry.json; scratch/agents/C020Review/delta-frozen-ci-test-retry.log"
+  }
+ ],
+ "findings": [
+  {
+   "id": "C021-F001",
+   "severity": "high",
+   "file": "tools/audit_public.py:147,217-221",
+   "what": "The expanded REFERENCE_EXPRESSION can launder genuine ROM material through the normal ROM-aware public gate. Standard Base85 encoding of REV 02 [0x0008d4,0x0008f8), wrapped as f(&<encoding>);, yields no content_reasons with both reference ROMs indexed, and also none in ROM-free mode. Standard decoding of the inner encoding reproduces the 36 original bytes exactly (SHA-256 4c3f95c47af77f2015053ce573e0d6a4bc6f6b16302887070c7647c69f416238). The pre-delta tool rejects the source as an opaque 50-character Base85 run at entropy 4.659. The flat expression mask accepts encoded punctuation/identifier sequences without establishing legitimate references; its short atoms evade the 48-character opacity threshold. Once masked, the ordinary decoder examines the wrapper-shifted Base85 token and misses the original byte grouping. Exact private reproduction is retained in delta-frozen-checks.json rather than copied into public-source recommendations.",
+   "suggested_fix": "Keep the older expression rule separate from the new unary/member forms and permit only a narrowly validated reference shape with independently justified atoms; do not exempt arbitrary short mixed-case atoms merely because they fit identifier syntax. Add this exact private-ROM counterexample plus synthetic structural equivalents and assert rejection both with ROMs and ROM-free, while retaining the legitimate current-expression positives. The no-Base64-punctuation argument does not establish safety for Base85/Z85 punctuation."
+  },
+  {
+   "id": "C021-F002",
+   "severity": "medium",
+   "file": "tools/audit_public.py:793-797",
+   "what": "The new len(raw) >= 276 condition drops previously detected 272–275-byte Genesis prefixes. Exact first-272/273/274/275-byte prefixes of either retail ROM now pass ROM-free content_reasons when encoded as Base64, Base85 or hex; all 24 corresponding cases are rejected by the frozen prior tool. The inputs retain real binary vectors and SEGA at 0x100, so the false-positive fix does not require excluding them. The normal ROM-aware gate still detects these windows, but the ROM-free embedded-payload defense has regressed, including decoded payloads.",
+   "suggested_fix": "Retain the previous 272-byte minimum and apply the copyright-or-binary-vector condition without increasing that bound. Slicing the optional copyright field is safe for short buffers, and binary-vector evidence is already available. Add 272–275-byte encoded-prefix regressions in both ROM-aware and ROM-free modes alongside the text-header positive."
+  }
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c021-names-hardcases-data-r2",
+ "prepare_sha256": "44827e26a00c533521a76fd441d97944803f6cc2804dcb257cacd48e9f29379b",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T13:29:30Z",
+ "review_file": "delta-review.json",
+ "review_sha256": "45ce4aa48011e0aef464a6b2ce046947fcf6c92c00bdce6ee1404d4c8b4a2685",
+ "reviewer": "C020Review",
+ "verdict": "FAIL"
+}

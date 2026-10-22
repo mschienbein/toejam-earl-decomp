@@ -68,11 +68,12 @@ def compile_c(source: Path, include_dirs: list[Path] = (), options: list[str] = 
         os.symlink(compiler, drive / "MCC68K" / "MCC68K.EXE")
         work = drive / "WORK"
         work.mkdir()
-        for k, folder in enumerate(include_dirs):
-            target = drive / f"INC{k}"
-            target.mkdir()
-            for header in Path(folder).glob("*.h"):
-                shutil.copy2(header, target / header.name.upper())
+        for folder in include_dirs:   # MCC68K finds "name.h" in the current directory; keep relative paths
+            folder = Path(folder)
+            for header in sorted(folder.rglob("*.h")) if folder.is_dir() else []:
+                target = work / header.relative_to(folder).as_posix().upper()
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(header, target)
         name = dos_name(source.stem)
         shutil.copy2(source, work / f"{name}.C")
         env = {**os.environ, "EMU2_DRIVE_C": str(drive), "EMU2_CWD": "C:\\WORK",

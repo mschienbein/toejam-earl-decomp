@@ -29,6 +29,17 @@ the evidence; each claim is observed in the ROM or cited, else marked [INFERENCE
   the assembler's branch sizing (the ROM has 235 forward word branches that would fit a byte
   displacement, as a one-pass assembler sizes forward references; ASM68K 6.6A is on the same disks).
 
+## Writing C for MCC68K 3.3K
+
+- **K&R C.** Observed 2026-10-21: function prototypes (`int f(short a);`), the `signed` keyword and
+  `volatile` are rejected; old-style definitions (`short f(a) short a; { ... }`) and `void` work.
+  Declare functions as `extern short f();`. Headers for game code must use only K&R constructs
+  (typedefs, structs, enums, `unsigned`); host-side layout checks live in separate files.
+- **Identifiers.** The compiler prefixes C names with a dot (`.name`); `tools/mcc.py` removes it,
+  so C functions and globals are spelled with the project's symbol names.
+- **Options.** Default options reproduce every function matched so far. Options are written with a
+  leading slash (`/optimize=time`); a bare word becomes a listing file name.
+
 ## Evidence that the game is compiled C
 
 - REV 00 → REV 02 changes register allocation in the function at REV 02 `0x27A10` the way a compiler

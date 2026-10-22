@@ -30,6 +30,7 @@ import mcc  # noqa: E402
 import names as namestool  # noqa: E402
 import rom as romtool  # noqa: E402
 import toolchain  # noqa: E402
+import revmap  # noqa: E402
 import tus  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,16 +42,22 @@ class MatchError(RuntimeError):
 
 
 def symbol_table(version: str) -> dict[str, int]:
-    """Every name with a known original address: build ELF symbols, catalogue functions, imported names."""
+    """Every name with a known original address: build ELF symbols, catalogue functions, imported names.
+
+    Address spellings always mean primary-revision addresses (`resolve` translates them), so another
+    revision's own address-spelled labels are left out.
+    """
+    primary = version == revmap.PRIMARY
     table: dict[str, int] = {}
     elf_path = ROOT / "build" / version / "toejam.elf"
     if elf_path.is_file():
         with elf_path.open("rb") as stream:
             for sym in ELFFile(stream).get_section_by_name(".symtab").iter_symbols():
-                if sym.name and not sym.name.startswith(".L") and sym["st_info"]["type"] != "STT_SECTION":
+                if sym.name and not sym.name.startswith(".L") and sym["st_info"]["type"] != "STT_SECTION" \
+                        and (primary or not ADDRESSED.match(sym.name)):
                     table[sym.name] = sym["st_value"]
     catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text())
-    for f in catalogue["functions"]:
+    for f in catalogue["functions"] if primary else []:
         table.setdefault(f"func_{f['address']:06x}", f["address"])
     for name in namestool.load(version).values():
         for spelling in (name.name, *name.aliases):
@@ -82,8 +89,12 @@ def undefined_symbols(obj: Path) -> list[str]:
 ADDRESSED = re.compile(r"^(func|loc|dat|rom|ram)_([0-9a-f]{6})$")
 
 
-def resolve(name: str, table: dict[str, int]) -> int:
-    """A referenced symbol's original address: a known name, or an address-spelled name."""
+def resolve(name: str, table: dict[str, int], translate=lambda address: address) -> int:
+    """A referenced symbol's original address: a known name, or an address-spelled name.
+
+    Address spellings are primary-revision (REV 02) addresses; `translate` (tools/revmap.py) moves
+    them to the revision being matched.
+    """
     if name in table:
         return table[name]
     m = ADDRESSED.match(name)
@@ -91,7 +102,10 @@ def resolve(name: str, table: dict[str, int]) -> int:
         address = int(m.group(2), 16)
         if (m.group(1) == "ram") != (address >= 0xFF0000):
             raise MatchError(f"{name}: ram_ names RAM (0xFF0000-0xFFFFFF), the others ROM")
-        return address
+        moved = translate(address)
+        if moved is None:
+            raise MatchError(f"{name}: no corresponding place in this revision")
+        return moved
     raise MatchError(f"{name} is referenced but has no known address (add it to names.json, or spell it ram_XXXXXX/dat_XXXXXX)")
 
 
@@ -125,10 +139,11 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
     catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text())
     extents = {f["address"]: f["size"] for f in catalogue["functions"]}
     table = {**symbol_table(version), **(defines or {})}
+    translate = revmap.translator(version)
     unit = mcc.dos_name(source.stem).lower()
     def address_of(name: str) -> int | None:
         try:
-            return resolve(name, table)
+            return resolve(name, table, translate)
         except MatchError:
             return None
 
@@ -153,7 +168,7 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
                 raise MatchError(f"{name}: in the file it would be at 0x{base + offset:06x}, but the original is at "
                                  f"0x{table[name]:06x} (functions must be a contiguous run in ROM order)")
         script = ["SECTIONS {", f"  .text 0x{base:x} : {{ *(.text.{unit}) }}", "  .data : { *(.data) }", "}"]
-        script += [f"{n} = 0x{resolve(n, table):x};" for n in undefined_symbols(obj)]
+        script += [f"{n} = 0x{resolve(n, table, translate):x};" for n in undefined_symbols(obj)]
         (work / "match.ld").write_text("\n".join(script) + "\n")
         elf = work / f"{unit}.elf"
         result = subprocess.run([str(toolchain.tool("m68k-elf", "ld")), "-T", str(work / "match.ld"), "-o", str(elf), str(obj)],

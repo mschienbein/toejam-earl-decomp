@@ -43,6 +43,7 @@ import m68k  # noqa: E402
 import rom as romtool  # noqa: E402
 import names as namestool  # noqa: E402
 import toolchain  # noqa: E402
+import revmap  # noqa: E402
 import tus  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -252,7 +253,7 @@ def linker_script(units: list[Unit], symbols: Symbols, extra: dict[str, int] | N
 
 def tool_hashes() -> dict:
     here = Path(__file__).resolve().parent
-    return {name: sha256((here / name).read_bytes()) for name in ("build.py", "cunits.py", "m68k.py", "mcc.py", "names.py", "rom.py", "toolchain.py", "tus.py")}
+    return {name: sha256((here / name).read_bytes()) for name in ("build.py", "cunits.py", "m68k.py", "mcc.py", "names.py", "revmap.py", "rom.py", "toolchain.py", "tus.py")}
 
 
 def build(version: str, jobs: int) -> dict:
@@ -265,7 +266,7 @@ def build(version: str, jobs: int) -> dict:
         raise BuildError(f"{catalogue_file.relative_to(ROOT)} was made for a different ROM")
     out = ROOT / "build" / version
     result = build_image(rom, baserom, catalogue, out, jobs, namestool.load(version), cunits.load_sources(version),
-                         tus.load(version))
+                         tus.load(version), revmap.translator(version))
     result["inputs"]["catalogue_sha256"] = sha256(catalogue_file.read_bytes())
     names_file = namestool.path(version)
     result["inputs"]["names_sha256"] = sha256(names_file.read_bytes()) if names_file.is_file() else None
@@ -274,8 +275,13 @@ def build(version: str, jobs: int) -> dict:
     return receipt
 
 
-def place_c_units(c_units: list, units: list[Unit], symbols: Symbols, names: dict | None) -> tuple[list[Unit], dict[str, int]]:
-    """Put each C unit in place of the catalogued units it reproduces; the definitions it needs."""
+def place_c_units(c_units: list, units: list[Unit], symbols: Symbols, names: dict | None,
+                  translate=lambda address: address) -> tuple[list[Unit], dict[str, int]]:
+    """Put each C unit in place of the catalogued units it reproduces; the definitions it needs.
+
+    Address-spelled names in C (`loc_`/`dat_`/`rom_`/`ram_XXXXXX`) are primary-revision (REV 02)
+    addresses; `translate` (tools/revmap.py) moves them to the revision being built.
+    """
     label_address = {label: address for address, label in symbols.labels.items()}
     replaced: set[str] = set()
     placed: list[Unit] = []
@@ -310,18 +316,29 @@ def place_c_units(c_units: list, units: list[Unit], symbols: Symbols, names: dic
         for spelling in (name.name, *name.aliases):
             known[spelling] = name.address
     for cu in c_units:
-        for name in sorted(cu.undefined - provided):
-            if name in known:
+        for name in sorted(cu.undefined):
+            m = re.fullmatch(r"(func|loc|dat|rom|ram)_([0-9a-f]{6})", name)
+            if m and name not in known:
+                address = translate(int(m.group(2), 16))
+                if address is None:
+                    raise BuildError(f"{cu.source.name}: {name} has no corresponding place in this revision")
+                if name in label_address and label_address[name] != address:
+                    raise BuildError(f"{cu.source.name}: {name} means primary-revision 0x{m.group(2)}, but this "
+                                     f"revision has its own label {name}; name the place in names.json")
+                if name not in provided:
+                    extra[name] = address
+            elif name in provided:
+                continue
+            elif name in known:
                 extra[name] = known[name]
-            elif m := re.fullmatch(r"(func|loc|dat|rom|ram)_([0-9a-f]{6})", name):
-                extra[name] = int(m.group(2), 16)
             else:
                 raise BuildError(f"{cu.source.name}: references {name}, which has no known address")
     return remaining, extra
 
 
 def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int, names: dict | None = None,
-                sources: list[dict] | None = None, tus_spans: list[tuple[int, int]] | None = None) -> dict:
+                sources: list[dict] | None = None, tus_spans: list[tuple[int, int]] | None = None,
+                translate=lambda address: address) -> dict:
     """Generate, assemble and link every unit into out/; the result is PASS only when byte-identical."""
     started = time.time()
     for sub in ("asm", "obj"):  # units change whenever the catalogue does: never link stale objects
@@ -337,7 +354,7 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
     spans = tus_spans or []
     c_units = list(pool.map(lambda entry: cunits.compile_unit(entry, out, address_of=by_label.get, spans=spans),
                             sources or []))
-    units, extra = place_c_units(c_units, units, symbols, names)
+    units, extra = place_c_units(c_units, units, symbols, names, translate)
     code_units = [u for u in units if u.insns]
     raw: set[int] = set()
     for u in code_units:  # first pass names every reference, so labels are fixed before any file is written

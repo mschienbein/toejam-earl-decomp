@@ -90,7 +90,8 @@ def prepare(checkpoint: str, jobs: int) -> dict:
             shutil.rmtree(out, ignore_errors=True)
             out.mkdir(parents=True)
             receipt = build.build_image(rom, baserom, catalogue, out, jobs, namestool.load(version),
-                                        cunits.load_sources(version), build.tus.load(version))
+                                        cunits.load_sources(version), build.tus.load(version),
+                                        build.revmap.translator(version))
             (out / "receipt.json").write_text(json.dumps(receipt, indent=1) + "\n")
             receipts.append(receipt)
         same = receipts[0]["actual"]["sha256"] == receipts[1]["actual"]["sha256"]

@@ -79,8 +79,38 @@ def parse(document: dict, version: str | None = None) -> dict[int, Name]:
 
 
 def load(version: str, root: Path = ROOT) -> dict[int, Name]:
-    """The validated names for `version`, or no names when the file does not exist."""
+    """The validated names for `version`, or no names when the file does not exist.
+
+    For a revision other than the primary one, every function paired with a primary function
+    (config/<version>/correspondence.json, tools/revmap.py) that has no name of its own takes the
+    primary function's identity: its imported name, else the primary spelling `func_XXXXXX`. One
+    C source then names each function the same way in every revision.
+    """
     file = path(version, root)
     if not file.is_file():
         return {}
-    return parse(json.loads(file.read_text(encoding="utf-8")), version)
+    by_address = parse(json.loads(file.read_text(encoding="utf-8")), version)
+    pairs = correspondence(version, root)
+    if pairs:
+        primary = parse(json.loads(path(pairs["primary"], root).read_text(encoding="utf-8")), pairs["primary"])
+        taken = {spelling for n in by_address.values() for spelling in (n.name, *n.aliases)}
+        for theirs, ours, size in pairs["functions"]:
+            if ours in by_address:
+                continue
+            identity = primary[theirs].name if theirs in primary else f"func_{theirs:06x}"
+            if identity in taken:
+                raise NamesError(f"names: {identity} (primary 0x{theirs:06x}) already names another {version} address")
+            by_address[ours] = Name(identity, ours, "function", size, "revision correspondence (tools/revmap.py)")
+            taken.add(identity)
+    return by_address
+
+
+def correspondence(version: str, root: Path = ROOT) -> dict | None:
+    """config/<version>/correspondence.json as (primary address, own address, own size) triples."""
+    file = root / "config" / version / "correspondence.json"
+    if not file.is_file():
+        return None
+    document = json.loads(file.read_text(encoding="utf-8"))
+    primary = document["primary"]
+    return {"primary": primary,
+            "functions": [(int(p[primary], 16), int(p[version], 16), p["size"][1]) for p in document["functions"]]}

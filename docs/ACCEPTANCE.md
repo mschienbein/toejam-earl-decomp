@@ -44,13 +44,21 @@ append-only.
 - `tools/match.py src/x.c` — author loop: compile with MCC68K 3.3K (under emu2), adapt the
   Microtec syntax for GNU as (`tools/mcc.py`; no instruction changes), link at the original address
   with every reference resolved to its original address, compare bytes; side-by-side diff on a miss.
+  Addresses come only from `config/<version>/names.json` (REV 02 identities in other revisions) and
+  address spellings (REV 02 addresses); `--define` may add an unknown name for an experiment but
+  never move a known one, and a named place must be written with its name.
 - `config/sources.json` — the C units in the build: `{"source", "versions", "options"}`. Each unit's
-  functions carry their canonical names (imported name, else `func_XXXXXX`) and replace one
-  contiguous run of catalogued units exactly (`tools/cunits.py`); receipts list every C unit with
-  its sha256, address and size and bind the compiler identity. A C unit never falls back to raw
+  functions carry their canonical names and replace one contiguous run of catalogued units exactly
+  (`tools/cunits.py`); receipts list every C unit and function with its sha256, address and size and
+  the hashes of the compiler, emulator and binutils actually run (checked against
+  `toolchain.lock.json` and the installation record before use). A C unit never falls back to raw
   words: a mismatch fails the build.
-- `tools/accept.py prepare --checkpoint cNNN-name` — two fresh builds of REV 02 and REV 00 (both PASS,
-  identical images) and the full suite, recorded once in `accept/<checkpoint>/prepare.json`;
-  `review` records an independent reviewer's verdict; `finalize` (needs a PASS prepare, a PASS
-  review, no FAIL review and unchanged sources) credits the units in `config/matches.json` and
-  appends `docs/progress-history.jsonl`.
+- `tools/accept.py prepare --checkpoint cNNN-name` — claims the name, records a manifest of every
+  input (`src`, `include`, `config`, `tools`, `ci`, `tests`, the lock file), builds REV 02 and REV 00
+  twice from scratch (both PASS, identical images) and runs the suite; the record is written even
+  when something fails. `review` records an independent reviewer's verdict. `finalize` needs a PASS
+  prepare, a PASS review and no FAIL review, C sources and headers identical to the prepared ones,
+  and a fresh build of both revisions that PASSes with exactly the prepared C units; then it writes
+  `finalize.json` once, credits each function by version and address in `config/matches.json`
+  (schema 2: a function moved to another file replaces its record, never counts twice) and appends
+  `docs/progress-history.jsonl`.

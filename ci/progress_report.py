@@ -7,7 +7,9 @@ ByteMatch ingests an objdiff `Report` (objdiff-core/protos/report.proto, report 
 JSON mapping, uint64 as strings) uploaded as a GitHub Actions artifact named `<version>_report`.
 No ROM is needed:
 - the denominator is the committed function catalogue config/<version>/catalogue.json (every
-  function the analyzer found; fragments are code reached only by jumps and are not counted);
+  function the analyzer found; fragments are code reached only by jumps and are not counted), less
+  the functions config/<version>/classification.json classifies with high confidence as not C
+  (hand-written assembly, compiler runtime, Sega library code);
 - the numerator is every function credited in config/matches.json, which changes only when the
   integrator accepts a C build that is byte-identical to the original (docs/ACCEPTANCE.md).
 Disassembled-but-not-decompiled code earns nothing: the byte-identical assembly baseline is the
@@ -54,9 +56,23 @@ def measures(fns: list[dict], matched: set[int], data_total: int = 0) -> dict:
     }
 
 
+NON_C = ("handwritten_asm", "runtime_helper", "sega_library")
+
+
+def excluded(version: str) -> set[int]:
+    """Functions positively classified as not C (high confidence): never in the C denominator."""
+    path = ROOT / "config" / version / "classification.json"
+    if not path.is_file():
+        return set()
+    entries = json.loads(path.read_text(encoding="utf-8"))["functions"]
+    return {int(e["address"], 16) for e in entries if e["class"] in NON_C and e["confidence"] == "high"}
+
+
 def load(version: str) -> tuple[list[dict], set[int], int]:
     catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text(encoding="utf-8"))
-    functions = sorted((f for f in catalogue["functions"] if f["kind"] == "function"), key=lambda f: f["address"])
+    not_c = excluded(version)
+    functions = sorted((f for f in catalogue["functions"] if f["kind"] == "function" and f["address"] not in not_c),
+                       key=lambda f: f["address"])
     known = {f["address"] for f in functions}
     by_name = {name: address for address, name in display_names(version).items()}
     matched: set[int] = set()

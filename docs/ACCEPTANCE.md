@@ -30,6 +30,15 @@ A function is credited in `config/matches.json` only when all hold:
 `ci/progress_report.py` counts only `config/matches.json`; generated assembly, hand-written
 assembly, runtime helpers and data are never C progress.
 
+## The denominator (what 100% means)
+
+The C denominator is every catalogued REV 02 function (`config/rev02/catalogue.json`) except those
+`config/rev02/classification.json` classifies **with high confidence** as not C (`handwritten_asm`,
+`runtime_helper`, `sega_library`). Medium/low-confidence non-C and `unknown` functions stay in the
+denominator until their evidence is upgraded. Catalogue and classification change only together with a
+recorded revision in `docs/denominator-history.jsonl` (`tools/denominator.py`), which CI verifies is
+append-only.
+
 ## Tooling
 
 - `tools/match.py src/x.c` — author loop: compile with MCC68K 3.3K (under emu2), adapt the

@@ -47,3 +47,25 @@ acceptance rules: `docs/ACCEPTANCE.md`.
   the assembler section of `docs/COMPILER.md`); the code before or after the branch differs.
 - Record what you tried. A function that resists every plain spelling may be hand-written
   assembly; the classification records the evidence for that, never a guess.
+
+## Idioms observed so far
+
+Each was seen to decide a match in this game; none is a general law of MCC68K.
+
+- **Bounded arrays index with words.** `extern char table[80];` gives a sign-extended word index
+  and `.w` addressing; an unsized `table[]` or a pointer gives long index arithmetic, and a `(short)`
+  cast does not substitute for the bound.
+- **Take a record pointer once.** `p = &defs[i];` then `p->a`, `p->b` matches where repeating
+  `defs[i].a`, `defs[i].b` recomputes the address each time.
+- **Initialisers and assignments order code differently.** Initialising locals in their
+  declarations places those stores before hoisted address loads; plain assignments after the
+  declarations follow source order.
+- **Operand order of commutative operators shows.** `a == b` and `b == a` (likewise `^`, `+`)
+  load in different orders.
+- **Byte temporaries keep byte code.** A named `char` temporary and an `if/else` avoid the int
+  widening of a `char`-valued `?:`.
+- **Keep parameters unmodified** when the original copies them: separate locals for derived values
+  allow in-place shifts on registers.
+- **`register` on one local** can be the only hint needed; qualifying several changes allocation.
+- **Literal types pick scratch registers.** `long` vs `unsigned long` operands and literals can move
+  a test from `d1` to `d0`.

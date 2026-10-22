@@ -1,0 +1,95 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C016Review",
+  "checkpoint": "c016-headers-waves-17-23",
+  "sealed": true,
+  "sealed_utc": "2026-10-22T08:59:27.367448+00:00",
+  "source_commit": "35def9c707aa5bf0d895cb292d7ee3f17e299ada",
+  "prepare_sha256": "08ffdedf1d5a933867ed383435a41f7cb6a5761ad707bd5587101072350720a4",
+  "independence": "Fresh independent reviewer, not an author. Verdict sealed without reading another C016 review. Only the expressly requested earlier failed C014Review and C015Review findings were consulted. Author reports were leads, not proof. All created reports, alternatives, packets, compiler temporaries, layout probes and full-build outputs are confined to scratch/agents/C016Review. No canonical file, git state or acceptance record was changed; accept.py review/finalize was not invoked.",
+  "blocking_findings": [],
+  "checks": [
+    {
+      "id": "C1",
+      "check": "Recompute preparation binding and verify saved fresh-build evidence",
+      "result": "PASS",
+      "evidence": "prepare-audit.json: all 196 current input hashes and both 103-source digests equal prepare; prepared source commit agrees with the requested scoped git log. All four saved receipt digests, C-unit records, image hashes and pinned original images agree, with 103 units / 419 functions / zero raw words each. Recorded suite returncode 0 and summary OK inspected, not rerun. sealed-input-binding.json confirms all 148 prepared source/header inputs and the registry remain unchanged."
+    },
+    {
+      "id": "C2",
+      "check": "Independently run match.py on every source for both revisions",
+      "result": "PASS",
+      "evidence": "baseline-matches.json and baseline-match-summary.json: 206 ordinary CLI invocations, all exit 0; 419 MATCH results for REV 02 and 419 for REV 00, no DIFF, no source changed during its invocation, no compiler options or symbol overrides. Compiler listings, assembly, objects, linked ELFs and command outputs are retained under matches/baseline."
+    },
+    {
+      "id": "C3",
+      "check": "Independently rebuild both complete ROMs",
+      "result": "PASS",
+      "evidence": "build-summary.json and builds/{rev02,rev00}/receipt.json: ordinary build.build_image with the same prepare_data, source registry, names, translation and TU inputs used by acceptance, changing only the output directory into reviewer scratch. Both full builds PASS with 103 units / 419 functions / zero raw words and images directly equal to their originals. REV 02 SHA-256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV 00 SHA-256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228."
+    },
+    {
+      "id": "C4",
+      "check": "Audit record ownership, target layout, K&R syntax and shared return interfaces",
+      "result": "PASS",
+      "evidence": "header-interface-audit.json, represented-return-interfaces.json and target-layout-results.json: 45 active headers, comprising 37 supplied/updated overlay headers plus eight retained headers; 20 sole shared record definitions, no duplicate extern provider, 925 extern names (487 functions / 438 objects), and all 419 represented definitions agree with their shared return declarations. MCC68K-generated and assembled constant data independently verifies all 180 size/offset constants. The only source-local record is the unrelated twelve-byte movement_destination prefix. No forbidden executable C constructs, obsolete aggregate includes, orphan sources or missing registered sources were found."
+    },
+    {
+      "id": "C5",
+      "check": "Verify necessity of the remaining 27 per-file declaration exceptions",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "evidence": "exception-final-summary.json, exception-experiments.json and exception-corrected-include-results.json: independently replaced every one of the 27 exceptions, not merely eight samples, by its actual shared provider, removing the corresponding local declaration and opt-out. All 54 final source/revision experiments fail by byte mismatch or function-contiguity enforcement, not setup/heap/compiler failure. Initial experiments for two projectile alternatives imported a new header before unrelated opt-outs; four reviewer-harness redeclaration errors were preserved, corrected, and excluded from necessity evidence. Remaining views are 23 caller return-width qualifications and four compatible incomplete-array views. Historical missing declarations remain [INFERENCE], not recovered facts."
+    },
+    {
+      "id": "C6",
+      "check": "Recount selective imported declarations and inspect consolidation design",
+      "result": "PASS",
+      "evidence": "declaration-count-audit.json: host preprocessing independently reproduces all 103 final imported/local counts, totaling 24,416 imported declarations and 27 local externs. declaration-count-before-restored.json reconstructs the eight changed baseline guard configurations from the recorded pre-split local names/import lists; together with the other 95 configurations, it reproduces 52,317 pre-split imports. No catch-all replacement or forwarding shim remains. The 8192-byte buffer span and ABI-only interfaces are explicitly qualified rather than overclaimed."
+    },
+    {
+      "id": "C7",
+      "check": "Verify C014Review F1-F4 and C015Review F1-F4 are resolved",
+      "result": "PASS",
+      "evidence": "earlier-findings-resolution.json records all eight resolutions. Logical-earthling-bound-evidence.json directly verifies kind 24 at level-zero slot eighteen and the record-24 final-byte overlap at 0263af; the sole declaration is now [25]. Shared earthling layouts and helper returns are consistent, and the generic-AI case table independently joins at 019ca4. Spawning uses the shared char func_020eaa without an opt-out; visibility uses gPlayerInfo[40] without an exception. Remapper/allocator comments and both descriptor resource-count names are corrected. Every affected source matches both revisions."
+    },
+    {
+      "id": "C8",
+      "check": "Diff ten migrated sources against their accepted c013 versions",
+      "result": "PASS",
+      "evidence": "migration-sample.json and migration/src contain exact git-show ddf2990 originals, full diffs and body diffs for main_loop, bank_expiry, elevator_scene, funk atron scene (funkatron_scene.c), level_generation, random_cache, player_states_and_respawn, item_updates, entity_slots_tu14 and inventory. Inspected body changes are record/member migration, equivalent hardware names, explicit scalar/payload views, proper bounded-array base expressions, declaration removal and requested comment corrections; no unrelated control-flow or arithmetic change was found."
+    },
+    {
+      "id": "C9",
+      "check": "Deeply review wave-21-23 functions against newly generated original-ROM packets",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "evidence": "deep-sample.json and deep-packet-assembly.txt record sixteen complete source/packet inspections covering speech, eviction, land mutation/path/revision differences, ship placement/pixels/background/collection/predicates, mailbox/wizard/opera interactions, Santa present dropping and telephone placement. The three ProcessLand revision guards correspond to six REV 02 comparisons absent in REV 00 (702 versus 648 bytes). Packet-backed original bugs and caller-width qualifications are disclosed, not repaired. One optional speech replacement-policy comment clarification is F1. Unique historical source and gameplay reachability are not claimed."
+    },
+    {
+      "id": "C10",
+      "check": "Reject one header-offset mutation and one source-value mutation through matching and full builds",
+      "result": "PASS",
+      "evidence": "mutation-results.json: both experiments were made only in private copied roots and tested in both revisions. Swapping object_state x/y offsets (size remains 128) makes match.py DIFF and the full build refuse changed function placement. Changing ToggleLOC_00FF8196's enabled value from 0x8000 to 0x4000 makes match.py DIFF and both ordinary CLI full builds produce FAIL receipts and wrong image hashes. All eight negative commands return nonzero; no C mismatch falls back to raw words."
+    },
+    {
+      "id": "C11",
+      "check": "Preserve existing credited coverage and identify actual pending credit",
+      "result": "PASS",
+      "evidence": "header-interface-audit.json: each revision contains 419 distinct functions, including all 298 already credited functions and exactly 121 not yet credited. No credited address/name is lost. The only moved credited entry is SetTomatoRainTomatoes, from the obsolete engine/random_counter.c into presents/projectile_effects.c, with no duplicate definition."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "low",
+      "file": "src/speech/speech_core.c:24-25",
+      "what": "Cosmetic precision: the comment says a full speech pool replaces the oldest bubble. The actual policy selects the smallest signed remaining lifetime, as observed at 01e0e6..01e114. Because the same function supports a next-bubble lifetime override, age and remaining lifetime need not be equivalent. The C correctly implements the original policy; this is not a byte, layout or acceptance blocker.",
+      "suggested_fix": "Optionally say 'replacing the bubble with the least remaining lifetime' or 'earliest-expiring bubble'. No executable change is requested."
+    }
+  ],
+  "qualifications": [
+    "The 23 incompatible caller result views and four compatible incomplete-array views are independently necessary for these complete matching candidates. They establish current code-generation necessity, not unique recovery of a 1991 declaration [INFERENCE].",
+    "The 68 unrepresented/ABI-only function return spellings, inferred 8192-byte buffer span, uninterpreted AF040 slot zero and extra physical speech group retain the limitations documented by the delivered headers and author report. No invented complete layout is approved.",
+    "Preserved original uninitialized values and omitted arguments are reviewed as packet-backed matching-source qualifications, not as portable-C safety or gameplay-correctness claims.",
+    "No independent unit-suite rerun, gameplay execution, accept review/finalize operation or canonical source correction was performed. The successful suite evidence is the prepared record, whose input binding was independently checked."
+  ],
+  "conclusion": "All requested byte reconstruction, preparation binding, header/interface design, exception-necessity, migration, deep-function and mutation checks pass. All eight earlier findings are resolved. No blocking defect was found; approval carries the explicitly documented source-model/compiler qualifications and one optional wording correction."
+}

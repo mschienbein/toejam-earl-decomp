@@ -1,0 +1,896 @@
+{
+ "added": [
+  {
+   "address": "0x0004dc",
+   "checkpoint": "c006-waves-02-03",
+   "name": "DrawLevelGraphics",
+   "size": 112,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00054c",
+   "checkpoint": "c006-waves-02-03",
+   "name": "ClearSkipVHBlankFlags",
+   "size": 14,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00055a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "SetSkipVHBlankFlags",
+   "size": 18,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x000578",
+   "checkpoint": "c006-waves-02-03",
+   "name": "WaitForNextVBlank",
+   "size": 38,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00059e",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_00059e",
+   "size": 78,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0005ec",
+   "checkpoint": "c006-waves-02-03",
+   "name": "HandleVBlank",
+   "size": 620,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x000858",
+   "checkpoint": "c006-waves-02-03",
+   "name": "HandleHBlank",
+   "size": 224,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x000938",
+   "checkpoint": "c006-waves-02-03",
+   "name": "GetPlayerInput",
+   "size": 236,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x000a24",
+   "checkpoint": "c006-waves-02-03",
+   "name": "CheckStartButton",
+   "size": 74,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x000a6e",
+   "checkpoint": "c006-waves-02-03",
+   "name": "ProcessInput",
+   "size": 372,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x000be2",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_000be2",
+   "size": 76,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x000c2e",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_000c2e",
+   "size": 336,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x000d7e",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_000d7e",
+   "size": 360,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x000ee6",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_000ee6",
+   "size": 208,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x000fb6",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_000fb6",
+   "size": 164,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00105a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_00105a",
+   "size": 368,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0011d8",
+   "checkpoint": "c006-waves-02-03",
+   "name": "InitialiseTheZ80",
+   "size": 138,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x001286",
+   "checkpoint": "c006-waves-02-03",
+   "name": "FurtherInitialisation",
+   "size": 776,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00035c",
+   "checkpoint": "c006-waves-02-03",
+   "name": "ResetVDP",
+   "size": 162,
+   "source": "src/core/vdp_startup.c",
+   "source_sha256": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0003fe",
+   "checkpoint": "c006-waves-02-03",
+   "name": "VDPInitialisation",
+   "size": 12,
+   "source": "src/core/vdp_startup.c",
+   "source_sha256": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00040a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "MovePadInputIntoD0",
+   "size": 96,
+   "source": "src/core/vdp_startup.c",
+   "source_sha256": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+   "version": "rev02"
+  },
+  {
+   "address": "0x001eac",
+   "checkpoint": "c006-waves-02-03",
+   "name": "UpdateCameraX",
+   "size": 350,
+   "source": "src/graphics/camera_column_transfer.c",
+   "source_sha256": "028e8b7e2a1b7c6df860908d196f1f52dacbdd299b03a8440618ddc45fe8b63e",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00200a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_00200a",
+   "size": 160,
+   "source": "src/graphics/camera_column_transfer.c",
+   "source_sha256": "028e8b7e2a1b7c6df860908d196f1f52dacbdd299b03a8440618ddc45fe8b63e",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00267a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_00267a",
+   "size": 636,
+   "source": "src/graphics/camera_follow.c",
+   "source_sha256": "22031b87f71db1d0a466782e423c64c6e3ea68722154c275bfff085c9065bd61",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0028f6",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_0028f6",
+   "size": 1396,
+   "source": "src/graphics/camera_follow.c",
+   "source_sha256": "22031b87f71db1d0a466782e423c64c6e3ea68722154c275bfff085c9065bd61",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00219c",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_00219c",
+   "size": 206,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00226a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "TryUpdateCameraY",
+   "size": 104,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0022d2",
+   "checkpoint": "c006-waves-02-03",
+   "name": "TryUpdateCameraX",
+   "size": 104,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00233a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "MoveCameraUp",
+   "size": 172,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0023e6",
+   "checkpoint": "c006-waves-02-03",
+   "name": "MoveCameraDown",
+   "size": 202,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0024b0",
+   "checkpoint": "c006-waves-02-03",
+   "name": "MoveCameraLeft",
+   "size": 172,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev02"
+  },
+  {
+   "address": "0x00255c",
+   "checkpoint": "c006-waves-02-03",
+   "name": "MoveCameraRight",
+   "size": 172,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0019ce",
+   "checkpoint": "c006-waves-02-03",
+   "name": "UpdateCameraY",
+   "size": 378,
+   "source": "src/graphics/camera_row_transfer.c",
+   "source_sha256": "0e3ff4b17c2550c7e9b661d13f1b342da5168cc57a3668939d9c6db274d5b8ce",
+   "version": "rev02"
+  },
+  {
+   "address": "0x001b48",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_001b48",
+   "size": 96,
+   "source": "src/graphics/camera_row_transfer.c",
+   "source_sha256": "0e3ff4b17c2550c7e9b661d13f1b342da5168cc57a3668939d9c6db274d5b8ce",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0015a8",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_0015a8",
+   "size": 106,
+   "source": "src/graphics/metatile_words.c",
+   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
+   "version": "rev02"
+  },
+  {
+   "address": "0x001612",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_001612",
+   "size": 94,
+   "source": "src/graphics/metatile_words.c",
+   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
+   "version": "rev02"
+  },
+  {
+   "address": "0x001670",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_001670",
+   "size": 98,
+   "source": "src/graphics/metatile_words.c",
+   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
+   "version": "rev02"
+  },
+  {
+   "address": "0x0004dc",
+   "checkpoint": "c006-waves-02-03",
+   "name": "DrawLevelGraphics",
+   "size": 112,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00054c",
+   "checkpoint": "c006-waves-02-03",
+   "name": "ClearSkipVHBlankFlags",
+   "size": 14,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00055a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "SetSkipVHBlankFlags",
+   "size": 18,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x000578",
+   "checkpoint": "c006-waves-02-03",
+   "name": "WaitForNextVBlank",
+   "size": 38,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00059e",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_00059e",
+   "size": 78,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0005ec",
+   "checkpoint": "c006-waves-02-03",
+   "name": "HandleVBlank",
+   "size": 620,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x000858",
+   "checkpoint": "c006-waves-02-03",
+   "name": "HandleHBlank",
+   "size": 224,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x000938",
+   "checkpoint": "c006-waves-02-03",
+   "name": "GetPlayerInput",
+   "size": 236,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x000a24",
+   "checkpoint": "c006-waves-02-03",
+   "name": "CheckStartButton",
+   "size": 74,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x000a6e",
+   "checkpoint": "c006-waves-02-03",
+   "name": "ProcessInput",
+   "size": 372,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x000be2",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_000be2",
+   "size": 76,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x000c2e",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_000c2e",
+   "size": 336,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x000d7e",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_000d7e",
+   "size": 360,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x000ee6",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_000ee6",
+   "size": 208,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x000fb6",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_000fb6",
+   "size": 164,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00105a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_00105a",
+   "size": 368,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0011d8",
+   "checkpoint": "c006-waves-02-03",
+   "name": "InitialiseTheZ80",
+   "size": 138,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x001286",
+   "checkpoint": "c006-waves-02-03",
+   "name": "FurtherInitialisation",
+   "size": 776,
+   "source": "src/core/main_loop.c",
+   "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00035c",
+   "checkpoint": "c006-waves-02-03",
+   "name": "ResetVDP",
+   "size": 162,
+   "source": "src/core/vdp_startup.c",
+   "source_sha256": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0003fe",
+   "checkpoint": "c006-waves-02-03",
+   "name": "VDPInitialisation",
+   "size": 12,
+   "source": "src/core/vdp_startup.c",
+   "source_sha256": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00040a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "MovePadInputIntoD0",
+   "size": 96,
+   "source": "src/core/vdp_startup.c",
+   "source_sha256": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+   "version": "rev00"
+  },
+  {
+   "address": "0x001eac",
+   "checkpoint": "c006-waves-02-03",
+   "name": "UpdateCameraX",
+   "size": 350,
+   "source": "src/graphics/camera_column_transfer.c",
+   "source_sha256": "028e8b7e2a1b7c6df860908d196f1f52dacbdd299b03a8440618ddc45fe8b63e",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00200a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_00200a",
+   "size": 160,
+   "source": "src/graphics/camera_column_transfer.c",
+   "source_sha256": "028e8b7e2a1b7c6df860908d196f1f52dacbdd299b03a8440618ddc45fe8b63e",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00267a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_00267a",
+   "size": 636,
+   "source": "src/graphics/camera_follow.c",
+   "source_sha256": "22031b87f71db1d0a466782e423c64c6e3ea68722154c275bfff085c9065bd61",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0028f6",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_0028f6",
+   "size": 1396,
+   "source": "src/graphics/camera_follow.c",
+   "source_sha256": "22031b87f71db1d0a466782e423c64c6e3ea68722154c275bfff085c9065bd61",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00219c",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_00219c",
+   "size": 206,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00226a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "TryUpdateCameraY",
+   "size": 104,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0022d2",
+   "checkpoint": "c006-waves-02-03",
+   "name": "TryUpdateCameraX",
+   "size": 104,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00233a",
+   "checkpoint": "c006-waves-02-03",
+   "name": "MoveCameraUp",
+   "size": 172,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0023e6",
+   "checkpoint": "c006-waves-02-03",
+   "name": "MoveCameraDown",
+   "size": 202,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0024b0",
+   "checkpoint": "c006-waves-02-03",
+   "name": "MoveCameraLeft",
+   "size": 172,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev00"
+  },
+  {
+   "address": "0x00255c",
+   "checkpoint": "c006-waves-02-03",
+   "name": "MoveCameraRight",
+   "size": 172,
+   "source": "src/graphics/camera_motion.c",
+   "source_sha256": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0019ce",
+   "checkpoint": "c006-waves-02-03",
+   "name": "UpdateCameraY",
+   "size": 378,
+   "source": "src/graphics/camera_row_transfer.c",
+   "source_sha256": "0e3ff4b17c2550c7e9b661d13f1b342da5168cc57a3668939d9c6db274d5b8ce",
+   "version": "rev00"
+  },
+  {
+   "address": "0x001b48",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_001b48",
+   "size": 96,
+   "source": "src/graphics/camera_row_transfer.c",
+   "source_sha256": "0e3ff4b17c2550c7e9b661d13f1b342da5168cc57a3668939d9c6db274d5b8ce",
+   "version": "rev00"
+  },
+  {
+   "address": "0x0015a8",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_0015a8",
+   "size": 106,
+   "source": "src/graphics/metatile_words.c",
+   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
+   "version": "rev00"
+  },
+  {
+   "address": "0x001612",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_001612",
+   "size": 94,
+   "source": "src/graphics/metatile_words.c",
+   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
+   "version": "rev00"
+  },
+  {
+   "address": "0x001670",
+   "checkpoint": "c006-waves-02-03",
+   "name": "func_001670",
+   "size": 98,
+   "source": "src/graphics/metatile_words.c",
+   "source_sha256": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
+   "version": "rev00"
+  }
+ ],
+ "checkpoint": "c006-waves-02-03",
+ "final_images": {
+  "rev00": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+  "rev02": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163"
+ },
+ "finalized_utc": "2026-10-22T02:45:44Z",
+ "moved": [
+  {
+   "from": {
+    "address": "0x00056c",
+    "checkpoint": "c002-first-matches",
+    "name": "GetSkipVBlankFlag",
+    "size": 12,
+    "source": "src/core/status_flag.c",
+    "source_sha256": "f0aa5be7bd586b566e4fca5b042b057c486ee36df24e16eef06aacddf692e4ea",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x00056c",
+    "checkpoint": "c006-waves-02-03",
+    "name": "GetSkipVBlankFlag",
+    "size": 12,
+    "source": "src/core/main_loop.c",
+    "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0011ca",
+    "checkpoint": "c002-first-matches",
+    "name": "DelayRoutine1",
+    "size": 14,
+    "source": "src/core/delay.c",
+    "source_sha256": "5cbe282860fd99c87b3112a2d40eb4cf6cc8a75870b4ba80229a22b0566078af",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x0011ca",
+    "checkpoint": "c006-waves-02-03",
+    "name": "DelayRoutine1",
+    "size": 14,
+    "source": "src/core/main_loop.c",
+    "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001262",
+    "checkpoint": "c002-first-matches",
+    "name": "func_001262",
+    "size": 36,
+    "source": "src/core/selection_cycle.c",
+    "source_sha256": "66cfe64d04136e37f95bc26f61e2e12a0080cc97c2579edd6e908b28e40cfbe0",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x001262",
+    "checkpoint": "c006-waves-02-03",
+    "name": "func_001262",
+    "size": 36,
+    "source": "src/core/main_loop.c",
+    "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01aa20",
+    "checkpoint": "c004-wave-1b",
+    "name": "func_01aa20",
+    "size": 1138,
+    "source": "src/player/targeting.c",
+    "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01aa20",
+    "checkpoint": "c006-waves-02-03",
+    "name": "func_01aa20",
+    "size": 1138,
+    "source": "src/player/targeting.c",
+    "source_sha256": "bb0da769ee8a5b3985b2c8aef0ad531d4b501ac3fec61cc1003f352257d9d08b",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01ae92",
+    "checkpoint": "c004-wave-1b",
+    "name": "func_01ae92",
+    "size": 114,
+    "source": "src/player/targeting.c",
+    "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+    "version": "rev02"
+   },
+   "to": {
+    "address": "0x01ae92",
+    "checkpoint": "c006-waves-02-03",
+    "name": "func_01ae92",
+    "size": 114,
+    "source": "src/player/targeting.c",
+    "source_sha256": "bb0da769ee8a5b3985b2c8aef0ad531d4b501ac3fec61cc1003f352257d9d08b",
+    "version": "rev02"
+   }
+  },
+  {
+   "from": {
+    "address": "0x00056c",
+    "checkpoint": "c002-first-matches",
+    "name": "GetSkipVBlankFlag",
+    "size": 12,
+    "source": "src/core/status_flag.c",
+    "source_sha256": "f0aa5be7bd586b566e4fca5b042b057c486ee36df24e16eef06aacddf692e4ea",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x00056c",
+    "checkpoint": "c006-waves-02-03",
+    "name": "GetSkipVBlankFlag",
+    "size": 12,
+    "source": "src/core/main_loop.c",
+    "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x0011ca",
+    "checkpoint": "c002-first-matches",
+    "name": "DelayRoutine1",
+    "size": 14,
+    "source": "src/core/delay.c",
+    "source_sha256": "5cbe282860fd99c87b3112a2d40eb4cf6cc8a75870b4ba80229a22b0566078af",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x0011ca",
+    "checkpoint": "c006-waves-02-03",
+    "name": "DelayRoutine1",
+    "size": 14,
+    "source": "src/core/main_loop.c",
+    "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x001262",
+    "checkpoint": "c002-first-matches",
+    "name": "func_001262",
+    "size": 36,
+    "source": "src/core/selection_cycle.c",
+    "source_sha256": "66cfe64d04136e37f95bc26f61e2e12a0080cc97c2579edd6e908b28e40cfbe0",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x001262",
+    "checkpoint": "c006-waves-02-03",
+    "name": "func_001262",
+    "size": 36,
+    "source": "src/core/main_loop.c",
+    "source_sha256": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01a9de",
+    "checkpoint": "c004-wave-1b",
+    "name": "func_01aa20",
+    "size": 1138,
+    "source": "src/player/targeting.c",
+    "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01a9de",
+    "checkpoint": "c006-waves-02-03",
+    "name": "func_01aa20",
+    "size": 1138,
+    "source": "src/player/targeting.c",
+    "source_sha256": "bb0da769ee8a5b3985b2c8aef0ad531d4b501ac3fec61cc1003f352257d9d08b",
+    "version": "rev00"
+   }
+  },
+  {
+   "from": {
+    "address": "0x01ae50",
+    "checkpoint": "c004-wave-1b",
+    "name": "func_01ae92",
+    "size": 114,
+    "source": "src/player/targeting.c",
+    "source_sha256": "17eb93c71658326ecf5c6a58c94906e8922b0de21361c1644730e590b747ed36",
+    "version": "rev00"
+   },
+   "to": {
+    "address": "0x01ae50",
+    "checkpoint": "c006-waves-02-03",
+    "name": "func_01ae92",
+    "size": 114,
+    "source": "src/player/targeting.c",
+    "source_sha256": "bb0da769ee8a5b3985b2c8aef0ad531d4b501ac3fec61cc1003f352257d9d08b",
+    "version": "rev00"
+   }
+  }
+ ],
+ "note": "Main confirmation: waves 02 and 03 (C006Review PASS_WITH_QUALIFICATIONS; C005Review's four findings resolved). Optional cleanups (two casts, two register hints) go to the next checkpoint.",
+ "prepare_sha256": "3acfef7f8226d28575f220cebefde02b2c9b72bd8ac0a265d8e97a8160077e18",
+ "progress": {
+  "bytes": 20684,
+  "checkpoint": "c006-waves-02-03",
+  "functions": 81,
+  "utc": "2026-10-22T02:45:44Z"
+ },
+ "reviews": [
+  {
+   "reviewer": "C006Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  },
+  {
+   "reviewer": "C006Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  }
+ ]
+}

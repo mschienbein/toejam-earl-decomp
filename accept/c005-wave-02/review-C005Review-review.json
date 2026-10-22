@@ -1,0 +1,151 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "C005Review",
+  "checkpoint": "c005-wave-02",
+  "commit": "5ae45481c6bb1ae65eab244f7598574c2c81ce9f",
+  "sealed_utc": "2026-10-22T02:24:24.840220+00:00",
+  "source_sha256": {
+    "src/core/vdp_startup.c": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+    "src/core/main_loop.c": "3da6a7e4a2891d49009043a4ef642b9e55f84983eb95b2fa5bb16c8153008dfb",
+    "src/player/targeting.c": "bb0da769ee8a5b3985b2c8aef0ad531d4b501ac3fec61cc1003f352257d9d08b"
+  },
+  "checks": [
+    {
+      "id": "C005-MATCH",
+      "status": "PASS",
+      "what": "Fresh match.py runs on all three changed C files in both revisions, with no options/defines: vdp_startup 3/3, main_loop 21/21, targeting 2/2; every command exits 0. The two new C runs contain 4544 bytes, including 62 previously accepted bytes.",
+      "evidence": [
+        "fresh-matches.json",
+        "checks/vdp_startup-rev02.txt",
+        "checks/vdp_startup-rev00.txt",
+        "checks/main_loop-rev02.txt",
+        "checks/main_loop-rev00.txt",
+        "checks/targeting-rev02.txt",
+        "checks/targeting-rev00.txt"
+      ]
+    },
+    {
+      "id": "C005-PREPARE",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "what": "All 32 C source hashes/options per revision, all four normalized receipt hashes, all four stored images, and all receipt build-tool hashes agree with preparation and title pins. The recorded suite is OK, return code 0; it was not rerun. One of 78 manifest paths, ci/progress_report.py, changed concurrently; Main explicitly confirmed separate out-of-scope tooling work. No targeted C/header discrepancy was found.",
+      "evidence": [
+        "prepare-verification.json"
+      ]
+    },
+    {
+      "id": "C005-BUILD",
+      "status": "PASS",
+      "what": "Fresh private build_image baseline builds using all 32 configured C units and normal typed-data preparation produce pinned original full images in both revisions, zero differing bytes and zero raw instruction words.",
+      "evidence": [
+        "full-build-results.json",
+        "checks/full-builds.txt",
+        "full-builds/baseline/rev02/receipt.json",
+        "full-builds/baseline/rev00/receipt.json"
+      ]
+    },
+    {
+      "id": "C005-SOURCE",
+      "status": "FAIL",
+      "what": "No inline assembly, code blobs, pragmas, per-unit options, or symbol overrides found. Compiled symbols use REV 02 identities and all checked address spellings are genuinely unnamed. Four global aliases differ from the required primary names; three other-file helpers lack typed externs; GetRandomNumber has an avoidable incompatible return declaration. See C005-F1 through C005-F3.",
+      "evidence": [
+        "symbol-audit.json",
+        "experiments/canonical_names.c",
+        "experiments/explicit_void_externs.c",
+        "experiments/random_short.c"
+      ]
+    },
+    {
+      "id": "C005-NATURAL",
+      "status": "FAIL",
+      "what": "The principal declared-width rationale is refuted: only changing GetRandomNumber to extern unsigned short preserves all 21 matches in both revisions. Frame zero-initialization at either tested point adds 2 bytes; the named-seed initialization also misses. Early-return, incomplete-map-extent, and Z80-last-increment alternatives do not match. All four proposed source/comment fixes combined match all 21 functions in both revisions. The uninitialized-frame reconstruction remains a qualification; its exact historical source is [INFERENCE].",
+      "evidence": [
+        "experiment-results.json",
+        "checks/random_short-rev02.txt",
+        "checks/random_short-rev00.txt",
+        "checks/frame_decl_zero-rev02.txt",
+        "checks/frame_loop_zero-rev02.txt",
+        "checks/combined_source_fixes-rev02.txt",
+        "checks/combined_source_fixes-rev00.txt",
+        "experiments/combined_source_fixes.c"
+      ]
+    },
+    {
+      "id": "C005-RESETVDP",
+      "status": "PASS",
+      "what": "Confirmed plain-C reproducibility of all 162 ResetVDP bytes in both revisions: 20 ordinary word hardware-port assignments, 20 eight-byte MOVE instructions, then two-byte RTS. Existing medium-confidence assembly evidence does not exclude C. [INFERENCE] Historical C provenance is not uniquely proved by matching output.",
+      "evidence": [
+        "packets/func_00035c.md",
+        "matches/vdp_startup-rev02/vdpstart.SRC",
+        "checks/vdp_startup-rev02.txt",
+        "checks/vdp_startup-rev00.txt"
+      ]
+    },
+    {
+      "id": "C005-READABILITY",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "what": "Local/field names and most comments are evidence-based; map extent and historical frame explanation retain inference labels. Common-tail goto is supported by the ROM and an unsuccessful natural early-return alternative. Correct the random-width rationale and add the required ORIGINAL BUG: marker.",
+      "evidence": [
+        "report.md",
+        "experiment-results.json"
+      ]
+    },
+    {
+      "id": "C005-TARGETING",
+      "status": "PASS",
+      "what": "Independently observed that mode 14 may call func_01b078 and then returns ordinary func_01af04 steering. After verdict-seal.json was written, only requested previous finding C004-01 was read; the changed neutral comment resolves it exactly. Targeting matches both revisions.",
+      "evidence": [
+        "checks/targeting-rev02.txt",
+        "checks/targeting-rev00.txt",
+        "verdict-seal.json",
+        "report.md"
+      ]
+    },
+    {
+      "id": "C005-MUTATION",
+      "status": "PASS",
+      "what": "Private same-size mutation SKIP_HBLANK_FLAG = 1 -> 2: matcher exits 1 in both revisions, only SetSkipVHBlankFlags differs, other 20 functions match. Full builder FAIL receipts in both revisions; each image differs at exactly one byte, 0x000565, with zero raw instruction words. Unmodified baseline full builds PASS.",
+      "evidence": [
+        "mutation-match-results.json",
+        "checks/mutation-match-rev02.txt",
+        "checks/mutation-match-rev00.txt",
+        "full-build-results.json",
+        "full-builds/mutation/rev02/receipt.json",
+        "full-builds/mutation/rev00/receipt.json"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "C005-F1",
+      "severity": "medium",
+      "file": "src/core/main_loop.c:544-546",
+      "what": "GetRandomNumber is declared long although its accepted definition returns unsigned short. The comment and author rationale imply a full-width caller declaration is needed for matching, but changing only this declaration to extern unsigned short GetRandomNumber(); still matches all 21 functions in REV 02 and REV 00. This is an avoidable cross-unit type mismatch, not a necessary qualification.",
+      "suggested_fix": "Use extern unsigned short GetRandomNumber(); and remove or correct the surrounding declaration-width rationale. The private random_short.c experiment is the isolated byte-identical correction in both revisions."
+    },
+    {
+      "id": "C005-F2",
+      "severity": "medium",
+      "file": "src/core/main_loop.c:547-590",
+      "what": "Four global spellings are supported aliases rather than the canonical names configured for their addresses: ImgTextBase -> ImageTextBase; InventoryOpenDropTiles -> InventoryLabelOpen; InventoryIdentifyTiles -> InventoryLabelIdentify; InventoryLabelTileCounts -> InventoryLabelIdentifySize. The two count words also have individual canonical names InventoryLabelIdentifySize and InventoryLabelOpenSize. All address-spelled functions/RAM symbols checked are genuinely unnamed.",
+      "suggested_fix": "Use the primary canonical names and declare/use the two size words separately. The canonical_names.c experiment and the combined correction both match all 21 functions in both revisions."
+    },
+    {
+      "id": "C005-F3",
+      "severity": "low",
+      "file": "src/core/main_loop.c:98-112",
+      "what": "func_00059e calls func_00d022, func_00d04e, and func_00d00e without extern declarations, relying on implicit int-returning functions. AUTHORING.md requires explicitly typed extern declarations for other files. These are hardware-writing helpers whose results this caller does not use.",
+      "suggested_fix": "Add extern void func_00d022(), func_00d04e(), func_00d00e(); beside the other helper declarations. The isolated explicit_void_externs.c experiment matches all 21 functions in both revisions."
+    },
+    {
+      "id": "C005-F4",
+      "severity": "low",
+      "file": "src/core/main_loop.c:554-558,622",
+      "what": "The uninitialized frame read is candidly described and its register behavior is reproducible, but the comment omits the required ORIGINAL BUG: marker for preserved source-level bugs. [INFERENCE] That the historical source had this same uninitialized local is not uniquely proved by ROM bytes.",
+      "suggested_fix": "Add the required ORIGINAL BUG: marker while retaining the distinction between the observed D2 register reuse and the inferred historical source bug. Do not initialize frame silently: tested initializers change the bytes. Keep this as an explicit source-level qualification."
+    }
+  ],
+  "report": "report.md",
+  "independent_seal": "verdict-seal.json",
+  "qualification": "The matching source reads an uninitialized frame local; tested natural initializers did not match. [INFERENCE] The original historical source may have had the same source-level bug, but ROM bytes alone do not prove it.",
+  "disposition": "Apply the demonstrated source-rule corrections and prepare a new immutable checkpoint for independent review. No canonical files were edited by this reviewer."
+}

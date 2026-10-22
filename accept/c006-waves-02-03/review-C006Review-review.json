@@ -1,0 +1,152 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C006Review",
+  "checkpoint": "c006-waves-02-03",
+  "commit": "be55f65d222253f09dba8517f9b0d3eba28bfac2",
+  "sealed_utc": "2026-10-22T02:44:08.918721+00:00",
+  "source_sha256": {
+    "src/core/vdp_startup.c": "131c79e946666a021e533209a5640f1aacac37ce9aab887d4d8699a34a040c27",
+    "src/core/main_loop.c": "3b685b91edfb18af05edc15132a6e6526fc7c54b51fe1440dc55356f74fabb65",
+    "src/graphics/metatile_words.c": "586ed69237dcea9017ebbda8e1bd4a559ea15a96e676116e3c77e6e91f8f445c",
+    "src/graphics/camera_row_transfer.c": "0e3ff4b17c2550c7e9b661d13f1b342da5168cc57a3668939d9c6db274d5b8ce",
+    "src/graphics/camera_column_transfer.c": "028e8b7e2a1b7c6df860908d196f1f52dacbdd299b03a8440618ddc45fe8b63e",
+    "src/graphics/camera_motion.c": "90ebc4a548f2efca3596f9e5513fcf445d168709e6c91f3bbb439a553b70ae86",
+    "src/graphics/camera_follow.c": "22031b87f71db1d0a466782e423c64c6e3ea68722154c275bfff085c9065bd61"
+  },
+  "checks": [
+    {
+      "id": "C006-MATCH",
+      "status": "PASS",
+      "what": "Fourteen fresh match.py commands with default options and no defines: all seven target files, both revisions. All 40 functions / 8990 original bytes MATCH in each revision; every command exits 0.",
+      "evidence": [
+        "fresh-matches.json",
+        "checks/",
+        "matches/"
+      ]
+    },
+    {
+      "id": "C006-PREPARE",
+      "status": "PASS",
+      "what": "Verified all 83 input-manifest hashes, all 37 configured C source hashes/options per revision, all four normalized receipt hashes and stored full-image hashes, both original pins, receipt tool hashes and executed compiler/binutils identities. No input drift at initial verification or verdict seal. All four prepared builds are PASS with zero raw words; recorded suite is returncode 0, OK. The suite was not rerun.",
+      "evidence": [
+        "prepare-verification.json"
+      ]
+    },
+    {
+      "id": "C006-PRIOR-FINDINGS",
+      "status": "PASS",
+      "what": "All four required C005 findings are resolved: F1 uses extern unsigned short GetRandomNumber() and removes the false width rationale; F2 uses all four primary data names and the two individually named size words; F3 adds explicit void externs for func_00d022, func_00d04e and func_00d00e; F4 adds ORIGINAL BUG: and retains the inference distinction. Fresh matches and an independent frame-zero experiment support these dispositions.",
+      "evidence": [
+        "report.md",
+        "checks/main_loop-rev02.txt",
+        "checks/main_loop-rev00.txt",
+        "checks/frame_zero-rev02.txt",
+        "checks/frame_zero-rev00.txt",
+        "packets/func_001286.md"
+      ]
+    },
+    {
+      "id": "C006-SOURCE",
+      "status": "PASS",
+      "what": "Inspected all target source, compiled symbol sets and relevant accepted callers/definitions. No inline assembly, code arrays, pragmas, per-unit options, symbol overrides or untyped other-file calls found. All emitted symbols are primary names or genuinely unnamed REV 02 identities. Return widths, signed byte reads, 128-byte entity views, transfer-buffer dimensions and typed metatile-map dimensions agree with observed accesses. The six Z80-bootstrap writes are actual original runtime hardware writes, not a replacement 68000 byte blob.",
+      "evidence": [
+        "symbol-audit.json",
+        "packet-results.json",
+        "packets/",
+        "report.md"
+      ]
+    },
+    {
+      "id": "C006-NATURAL",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "what": "Ten natural alternatives tested in both revisions, plus three whole-file simplifications in both revisions. Plain | 0 matches the row-fill OR; removing either transfer register hint matches. Whole metatile/row-transfer/column-transfer files with the two zero casts and two register hints removed all MATCH both revisions. Direct blank fills shorten the functions by 8 bytes; named blank locals add 4 bytes. Both signed/unsigned word-return overlay alternatives produce 100 rather than 98 bytes. Initializing frame adds 2 bytes to FurtherInitialisation. See the recorded qualifications and optional C006-F1.",
+      "evidence": [
+        "experiment-results.json",
+        "simplification-results.json",
+        "experiments/",
+        "experiment-builds/"
+      ]
+    },
+    {
+      "id": "C006-READABILITY",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "what": "Behaviour comments, natural locals and graphics/core placement agree with packets and callers. Camera selectors, wrap limits, pending flags, viewport thresholds and 24.8 accumulators are evidence-based. The map-table bound is explicitly inferred. The frame local is now candidly marked ORIGINAL BUG: and its historical-source claim remains [INFERENCE]. The blank-fill zero OR is observed but its historical spelling is not uniquely recoverable.",
+      "evidence": [
+        "report.md",
+        "packets/func_0015a8.md",
+        "packets/func_001b48.md",
+        "packets/func_00267a.md",
+        "packets/func_0028f6.md",
+        "packets/func_001286.md"
+      ]
+    },
+    {
+      "id": "C006-RESETVDP",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "what": "Reproduced ResetVDP as 20 ordinary C word-port assignments and RTS, all 162 bytes in both revisions. Its existing handwritten_asm classification is only medium confidence and explicitly states hardware access is not proof of assembly. Historical C versus assembly provenance is not uniquely established by a matching reconstruction.",
+      "evidence": [
+        "checks/vdp_startup-rev02.txt",
+        "checks/vdp_startup-rev00.txt",
+        "packets/func_00035c.md"
+      ]
+    },
+    {
+      "id": "C006-FULL-BUILD",
+      "status": "PASS",
+      "what": "Two fresh private full-ROM build_image baselines run through the ordinary compiler/linker/data preparation, all 37 configured C units. Both equal their pinned originals, with zero differing bytes, raw instruction words or raw jump tables. Baseline C-unit records equal preparation exactly. REV 02 uses normal typed-asset preparation; REV 00 normally uses original data slices.",
+      "evidence": [
+        "run_full_builds.py",
+        "full-build-results.json",
+        "checks/full-builds.txt",
+        "full-builds/baseline/rev02/receipt.json",
+        "full-builds/baseline/rev00/receipt.json"
+      ]
+    },
+    {
+      "id": "C006-MUTATION",
+      "status": "PASS",
+      "what": "Two independent same-size private mutations, each tested by match.py and the full builder in both revisions. ResetVDP first immediate 0x8004 -> 0x8005: only ResetVDP DIFF, matcher exits 1; full FAIL receipts differ at exactly byte 0x00035f. Metatile mirror XOR 0x800 -> 0x801: only func_001612 DIFF, matcher exits 1; full FAIL receipts differ at exactly byte 0x00164b. All four mutation builds retain 37 C units and zero raw words/tables; no C fallback occurs. The driver exits 0 because it completed the expected PASS/FAIL experiments, not because the mutated builds passed.",
+      "evidence": [
+        "mutation-match-results.json",
+        "mutations/",
+        "full-build-results.json",
+        "full-builds/vdp_mutation/",
+        "full-builds/metatile_mutation/"
+      ]
+    },
+    {
+      "id": "C006-INDEPENDENCE",
+      "status": "PASS",
+      "what": "Fresh independent reviewer; no author work performed. The only other review read was the explicitly required C005Review/review.json. No other review was read before sealing. All reviewer-created artifacts stay under scratch/agents/C006Review; no tracked source, tool, configuration, git state, acceptance review or finalize operation was changed."
+    }
+  ],
+  "findings": [
+    {
+      "id": "C006-F1",
+      "severity": "low",
+      "file": "src/graphics/metatile_words.c:14; src/graphics/camera_row_transfer.c:11,47; src/graphics/camera_column_transfer.c:12",
+      "what": "The unsigned-short casts on literal zero and both register hints are unnecessary for matching. Independently simplified whole files still match all seven functions in both revisions. The author handoff overstates the need for these decorations. The remaining zero OR itself is observable in the ROM and cannot simply be replaced by direct assignment without changing bytes. This is optional readability cleanup, not a byte-match or interface defect.",
+      "suggested_fix": "Optionally remove the two zero casts and two register hints using the demonstrated *_simplified.c candidates; retain | 0 and briefly document the observed redundant blank-word OR, marking any historical-source explanation [INFERENCE]. Correct any retained author rationale claiming these decorations are required. If changing prepared canonical C, use a new checkpoint rather than finalizing against stale prepared hashes."
+    }
+  ],
+  "qualifications": [
+    {
+      "id": "C006-Q1",
+      "file": "src/core/main_loop.c:554-559,623",
+      "what": "The reconstructed source reads an uninitialized frame local. The ROM visibly reuses D2 after TIME_COUNTER << 16, and an explicit zero initializer changes the bytes. The required ORIGINAL BUG: marker and historical [INFERENCE] label are present. This is compiler-specific matching source, not a claim of portable defined C or proof that the original source had the same uninitialized declaration."
+    },
+    {
+      "id": "C006-Q2",
+      "file": "src/graphics/metatile_words.c:14; src/graphics/camera_row_transfer.c:47",
+      "what": "The redundant zero OR deliberately preserves observed blank-fill code generation. Direct assignment fails; | 0 matches without the current cast. [INFERENCE] A historical blank-tile constant or composition expression could explain the OR, but the original expression is not proven. This reconstruction choice is explicitly recorded here."
+    },
+    {
+      "id": "C006-Q3",
+      "file": "src/core/vdp_startup.c:8-30",
+      "what": "Ordinary C reproduces ResetVDP exactly, but binary equality alone does not uniquely establish whether the historical routine was written in C or assembly. The existing classification is medium confidence, not a high-confidence non-C denominator exclusion."
+    }
+  ],
+  "report": "report.md",
+  "independent_seal": "verdict-seal.json",
+  "disposition": "No blocking finding. Accept the demonstrated matching reconstruction with the explicit qualifications above. The optional source simplifications were not applied to canonical files."
+}

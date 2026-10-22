@@ -4116,45 +4116,12 @@
       "name": "AI_GenericEnemyThink",
       "class": "compiled_c",
       "confidence": "high",
-      "size": 1042,
-      "instruction_bytes": 1034,
+      "size": 1216,
+      "instruction_bytes": 1208,
       "evidence": [
         "[INFERENCE] C-origin candidate based on LINK A6 frame; 2 stack/frame-displacement data operand instructions; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
-      ]
-    },
-    {
-      "address": "0x019C86",
-      "name": "func_019C86",
-      "class": "unknown",
-      "confidence": "low",
-      "size": 8,
-      "instruction_bytes": 8,
-      "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
-      ]
-    },
-    {
-      "address": "0x019C8E",
-      "name": "func_019C8E",
-      "class": "unknown",
-      "confidence": "low",
-      "size": 8,
-      "instruction_bytes": 8,
-      "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
-      ]
-    },
-    {
-      "address": "0x019C96",
-      "name": "func_019C96",
-      "class": "compiled_c",
-      "confidence": "high",
-      "size": 158,
-      "instruction_bytes": 158,
-      "evidence": [
-        "[INFERENCE] C-origin candidate based on 1 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Catalogue revision r5: switch-case code formerly catalogued as separate functions (0x019C86, 0x019C96, 0x019C8E; tje-disasm seeds) belongs to this function."
       ]
     },
     {
@@ -4186,34 +4153,12 @@
       "name": "func_019F0E",
       "class": "compiled_c",
       "confidence": "high",
-      "size": 886,
-      "instruction_bytes": 878,
+      "size": 1174,
+      "instruction_bytes": 1166,
       "evidence": [
         "[INFERENCE] C-origin candidate based on LINK A6 frame; 2 stack/frame-displacement data operand instructions; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
-      ]
-    },
-    {
-      "address": "0x01A284",
-      "name": "func_01A284",
-      "class": "unknown",
-      "confidence": "low",
-      "size": 8,
-      "instruction_bytes": 8,
-      "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
-      ]
-    },
-    {
-      "address": "0x01A28C",
-      "name": "func_01A28C",
-      "class": "compiled_c",
-      "confidence": "high",
-      "size": 280,
-      "instruction_bytes": 280,
-      "evidence": [
-        "[INFERENCE] C-origin candidate based on 1 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 5 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Catalogue revision r5: switch-case code formerly catalogued as separate functions (0x01A284, 0x01A28C; tje-disasm seeds) belongs to this function."
       ]
     },
     {
@@ -5449,23 +5394,12 @@
       "name": "SantaLogic",
       "class": "compiled_c",
       "confidence": "high",
-      "size": 248,
-      "instruction_bytes": 240,
+      "size": 1032,
+      "instruction_bytes": 1024,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; 1 stack/frame-displacement data operand instructions; recognized compiler switch table and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
-      ]
-    },
-    {
-      "address": "0x022580",
-      "name": "func_022580",
-      "class": "unknown",
-      "confidence": "low",
-      "size": 784,
-      "instruction_bytes": 784,
-      "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 8 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Catalogue revision r5: switch-case code formerly catalogued as separate functions (0x022580; tje-disasm seeds) belongs to this function."
       ]
     },
     {
@@ -8013,9 +7947,9 @@
   ],
   "summary": {
     "compiled_c": {
-      "functions": 530,
-      "catalogue_extent_bytes": 168732,
-      "instruction_bytes": 168258
+      "functions": 528,
+      "catalogue_extent_bytes": 169540,
+      "instruction_bytes": 169066
     },
     "handwritten_asm": {
       "functions": 19,
@@ -8033,9 +7967,9 @@
       "instruction_bytes": 144
     },
     "unknown": {
-      "functions": 94,
-      "catalogue_extent_bytes": 7582,
-      "instruction_bytes": 7582
+      "functions": 90,
+      "catalogue_extent_bytes": 6774,
+      "instruction_bytes": 6774
     }
   },
   "fragments": [

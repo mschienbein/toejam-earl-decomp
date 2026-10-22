@@ -93,37 +93,12 @@
    "source": "tje-disasm"
   },
   {
-   "address": "0x019c86",
-   "kind": "seed",
-   "source": "tje-disasm"
-  },
-  {
-   "address": "0x019c8e",
-   "kind": "seed",
-   "source": "tje-disasm"
-  },
-  {
-   "address": "0x019c96",
-   "kind": "seed",
-   "source": "tje-disasm"
-  },
-  {
    "address": "0x019d3e",
    "kind": "seed",
    "source": "tje-disasm"
   },
   {
    "address": "0x019f0e",
-   "kind": "seed",
-   "source": "tje-disasm"
-  },
-  {
-   "address": "0x01a284",
-   "kind": "seed",
-   "source": "tje-disasm"
-  },
-  {
-   "address": "0x01a28c",
    "kind": "seed",
    "source": "tje-disasm"
   },
@@ -254,11 +229,6 @@
   },
   {
    "address": "0x022488",
-   "kind": "seed",
-   "source": "tje-disasm"
-  },
-  {
-   "address": "0x022580",
    "kind": "seed",
    "source": "tje-disasm"
   },

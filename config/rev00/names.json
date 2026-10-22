@@ -13392,7 +13392,7 @@
       "source_line": 38195,
       "address": "0x019832",
       "kind": "function",
-      "size": 1042,
+      "size": 1216,
       "mapping_from_rev02": {
         "method": "unique_containing_signature",
         "source_address": "0x019874",
@@ -14492,7 +14492,7 @@
       "source_line": 47206,
       "address": "0x022410",
       "kind": "function",
-      "size": 248,
+      "size": 1032,
       "mapping_from_rev02": {
         "method": "unique_containing_signature",
         "source_address": "0x022488",

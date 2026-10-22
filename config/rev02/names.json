@@ -13930,7 +13930,7 @@
       "source_line": 38195,
       "address": "0x019874",
       "kind": "function",
-      "size": 1042
+      "size": 1216
     },
     {
       "name": "Player_Youch",
@@ -14907,7 +14907,7 @@
       },
       "address": "0x022488",
       "kind": "function",
-      "size": 248
+      "size": 1032
     },
     {
       "name": "SantaScared",

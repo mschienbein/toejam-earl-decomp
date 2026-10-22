@@ -101,7 +101,7 @@ def load(version: str, root: Path = ROOT) -> dict[int, Name]:
         primary = parse(json.loads(path(pairs["primary"], root).read_text(encoding="utf-8")), pairs["primary"])
         catalogue = root / "config" / pairs["primary"] / "catalogue.json"
         fragments = {f["address"] for f in json.loads(catalogue.read_text(encoding="utf-8"))["functions"]
-                     if f["kind"] == "fragment"} if catalogue.is_file() else set()
+                     if f.get("kind") == "fragment"} if catalogue.is_file() else set()
         for theirs, ours, size in pairs["functions"]:
             if ours in by_address:
                 continue

@@ -28,9 +28,11 @@ acceptance rules: `docs/ACCEPTANCE.md`.
   when it has one, else with its REV 02 address: `func_XXXXXX` (code), `dat_`/`rom_XXXXXX` (ROM
   data), `ram_XXXXXX` (RAM). Address spellings always mean REV 02 addresses, also when building
   REV 00. The functions of one file must be one contiguous run in ROM order.
-- **Declarations** of other files' functions and globals are `extern` with the type the code
-  shows (return width matters: a `char` function's callers read `d0.b`). Shared declarations move
-  to `include/` when Main consolidates them; propose additions with your file.
+- **Declarations** come from `include/` (shared records, RAM globals, per-subsystem function
+  declarations with their proven return types): `#include "player.h"` etc. instead of local
+  copies. Add what is missing to the header in your proposal (one definition per record);
+  a local declaration is only for a caller that provably needs a different view, with a comment
+  (e.g. an `ORIGINAL BUG:` implicit-int call).
 - **Natural code.** Write what a 1991 programmer would have written. If only a contortion matches
   (a pointless temporary, an odd cast, a `goto`), say so in a comment and keep looking for the
   plain spelling; reviewers check.

@@ -13,7 +13,6 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -22,11 +21,9 @@ from elftools.elf.elffile import ELFFile
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import mcc  # noqa: E402
-import toolchain  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "config" / "sources.json"
-AS_FLAGS = ["-m68000", "--register-prefix-optional"]  # externals assemble as absolute long, as ASM68K emits them
 
 
 class CUnitError(RuntimeError):
@@ -71,15 +68,14 @@ def compile_unit(entry: dict, out: Path, root: Path = ROOT, address_of=None, spa
         raise CUnitError(f"{entry['source']} does not exist")
     name = unit_name(source)
     options = list(entry.get("options", []))
-    compiled = mcc.compile_to_gas(source, name, [root / "include"], options, address_of, spans)
-    (out / "asm" / f"{name}.SRC").write_text(compiled.listing, encoding="latin-1")
-    asm = out / "asm" / f"{name}.s"
-    asm.write_text(compiled.gas)
-    obj = out / "obj" / f"{name}.o"
-    result = subprocess.run([str(toolchain.tool("m68k-elf", "as")), *AS_FLAGS, "-o", str(obj), str(asm)],
-                            capture_output=True, text=True)
-    if result.returncode:
-        raise CUnitError(f"{entry['source']}: the assembler rejected the compiler output:\n{result.stderr}")
+    try:
+        compiled = mcc.compile_to_gas(source, name, [root / "include"], options, address_of, spans)
+        (out / "asm" / f"{name}.SRC").write_text(compiled.listing, encoding="latin-1")
+        (out / "asm" / f"{name}.s").write_text(compiled.gas)
+        obj = out / "obj" / f"{name}.o"
+        mcc.assemble(compiled.gas, source, obj, name)
+    except (mcc.CompileError, mcc.AdaptError) as error:
+        raise CUnitError(f"{entry['source']}: {error}") from None
     with obj.open("rb") as stream:
         elf = ELFFile(stream)
         section = elf.get_section_by_name(f".text.{name}")

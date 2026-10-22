@@ -39,6 +39,7 @@ from elftools.elf.relocation import RelocationSection
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import cunits  # noqa: E402
+import mcc  # noqa: E402
 import m68k  # noqa: E402
 import rom as romtool  # noqa: E402
 import names as namestool  # noqa: E402
@@ -438,7 +439,7 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
             "toolchain_banner": identity["as"]["banner"],
             "as_flags": AS_FLAGS,
             "compiler": {"mcc68k": toolchain.identity().get("mcc68k"), "emu2": (toolchain.identity().get("emu2") or {}).get("sha256"),
-                         "as_flags": cunits.AS_FLAGS} if c_units else None,
+                         "as_flags": mcc.AS_FLAGS} if c_units else None,
         },
         "units": {kind: sum(1 for u in units if u.kind == kind) for kind in ("header", "function", "fragment", "data", "c")},
         "c_units": [{"source": str(cu.source.relative_to(ROOT)) if cu.source.is_relative_to(ROOT) else str(cu.source),

@@ -36,22 +36,196 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import toolchain  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
-BRANCH = re.compile(r"^(B(?:RA|SR|HI|LS|CC|HS|CS|LO|NE|EQ|VC|VS|PL|MI|GE|LT|GT|LE))(\s+)(\S+)$", re.I)
-HEX = re.compile(r"\$([0-9A-Fa-f]+)")
-DOTTED = re.compile(r"(?<![\w.$])\.([A-Za-z_]\w*)")
-LABEL = re.compile(r"^([A-Za-z_]\w*):\s*(.*)$")
-FIELDS = re.compile(r"""^(\S+)(?:(\s+)((?:'[^']*'|"[^"]*"|[^\s'"])+))?(?:\s+.*)?$""")
+AS_FLAGS = ["-m68000"]   # registers are spelled %d0 by adapt(); bare words are always symbols
+CODE_SECTION = 9         # MCC68K's code section number
+PC16_REACH = 32767
+REGISTER = re.compile(r"^(?:[DA][0-7]|SP|PC|SR|CCR|USP)$", re.I)
+BRANCH = re.compile(r"^B(?:RA|SR|HI|LS|CC|HS|CS|LO|NE|EQ|VC|VS|PL|MI|GE|LT|GT|LE)$", re.I)
+DBCC = re.compile(r"^DB(?:RA|T|F|HI|LS|CC|HS|CS|LO|NE|EQ|VC|VS|PL|MI|GE|LT|GT|LE)$", re.I)
+CALL = re.compile(r"^(?:JSR|JMP)$", re.I)
+TOKEN = re.compile(r"'(?:[^']|'')*'|\$[0-9A-Fa-f]+|\.?[A-Za-z_][A-Za-z0-9_]*|\s+|.", re.S)
+LABEL = re.compile(r"^(\.?[A-Za-z_]\w*):(.*)$")
 
 
-def strip_comment(statement: str) -> str:
-    """Drop an end-of-line comment: Microtec ends the operand field at the first unquoted blank."""
-    fields = FIELDS.match(statement)
-    if not fields:
-        return statement
-    mnemonic, gap, operands = fields.groups()
-    if operands is None or operands.startswith("*"):
-        return mnemonic
-    return f"{mnemonic}{gap}{operands}"
+class AdaptError(ValueError):
+    pass
+
+
+@dataclass
+class Statement:
+    label: str | None     # label defined on this line (dot removed)
+    mnemonic: str         # as written, e.g. MOVE.W; "" for a label-only line
+    operands: str         # operand field as written (Microtec spelling), comment removed
+
+
+def split_fields(text: str) -> tuple[str, str]:
+    """(mnemonic, operand field) of a statement; Microtec ends the operand field at the first unquoted blank."""
+    text = text.strip()
+    if not text:
+        return "", ""
+    parts = text.split(None, 1)
+    mnemonic, rest = parts[0], parts[1] if len(parts) > 1 else ""
+    if not rest or rest.startswith("*") or rest.startswith(";"):
+        return mnemonic, ""
+    field, quoted = [], False
+    for ch in rest:
+        if ch == "'":
+            quoted = not quoted   # a doubled '' toggles twice: still inside the string
+        elif ch.isspace() and not quoted:
+            break
+        field.append(ch)
+    if quoted:
+        raise AdaptError(f"unterminated string in: {text}")
+    return mnemonic, "".join(field)
+
+
+def parse(listing: str) -> list[tuple[int, Statement]]:
+    """Statements with the section number they are in (comments and blank lines dropped)."""
+    statements, section = [], None
+    for raw in listing.splitlines():
+        if not raw.strip() or raw.lstrip().startswith("*"):
+            continue
+        label = None
+        body = raw
+        if not raw[:1].isspace():
+            match = LABEL.match(raw.strip())
+            if match:
+                label, body = match.group(1).lstrip("."), match.group(2)
+            else:   # a column-1 word without a colon: Microtec label syntax, or a directive line like "UNIT IDNT"
+                head, _, rest = raw.partition(" ") if " " in raw else raw.partition("\t")
+                if head.upper() in ("SECTION", "XDEF", "XREF", "OPT", "END"):
+                    body = raw
+                else:
+                    label, body = head.lstrip("."), rest
+        mnemonic, operands = split_fields(body)
+        if mnemonic.upper() == "SECTION":
+            number = re.match(r"(\d+)", operands)
+            if not number:
+                raise AdaptError(f"unrecognised SECTION: {raw}")
+            section = int(number.group(1))
+        elif mnemonic.upper() == "IDNT":
+            label = None   # "UNIT IDNT": a module name, not a label
+        statements.append((section, Statement(label, mnemonic, operands)))
+    return statements
+
+
+def gas_operands(operands: str) -> str:
+    """Microtec operand spelling -> GNU as: %registers, 0xhex, C symbols without their dot."""
+    out = []
+    for token in TOKEN.findall(operands):
+        if token.startswith("'"):
+            raise AdaptError(f"a string operand outside DC.B: {operands}")
+        if token.startswith("$"):
+            out.append("0x" + token[1:])
+        elif token.startswith("."):
+            previous = out[-1] if out else ""
+            if previous and (previous[-1:].isalnum() or previous[-1:] in "_)"):
+                out.append(token)            # a size suffix such as D1.L or (x).L
+            else:
+                out.append(token[1:])        # a C symbol
+        elif REGISTER.match(token):
+            out.append("%" + token.lower())
+        else:
+            out.append(token)
+    return "".join(out)
+
+
+def dc_bytes(operands: str) -> str:
+    """DC.B operands with Microtec strings -> a .byte list holding exactly the same bytes."""
+    values = []
+    for item in re.findall(r"'(?:[^']|'')*'|[^,]+", operands):
+        if item.startswith("'"):
+            values += [str(b) for b in item[1:-1].replace("''", "'").encode("latin-1")]
+        elif item.strip():
+            values.append(gas_operands(item.strip()))
+    return "\t.byte\t" + ",".join(values)
+
+
+def code_labels(listing: str) -> set[str]:
+    """Labels defined in the code section, with the Microtec dot removed."""
+    return {st.label for section, st in parse(listing) if st.label and section == CODE_SECTION}
+
+
+def call_target(statement: Statement) -> str | None:
+    """The bare symbol a JSR/JMP names (None for any other addressing mode)."""
+    if CALL.match(statement.mnemonic) and re.fullmatch(r"\.?[A-Za-z_]\w*", statement.operands) \
+            and not REGISTER.match(statement.operands):
+        return statement.operands.lstrip(".")
+    return None
+
+
+def external_calls(listing: str) -> list[str]:
+    """JSR/JMP targets that the code section does not define (other files, or the rest of this file's original unit)."""
+    local, seen = code_labels(listing), []
+    for _, statement in parse(listing):
+        target = call_target(statement)
+        if target and target not in local and target not in seen:
+            seen.append(target)
+    return seen
+
+
+def first_function(listing: str) -> str | None:
+    """The first non-local label of the code section (the unit's lowest address)."""
+    for section, statement in parse(listing):
+        if section == CODE_SECTION and statement.label and not statement.label.startswith("_L"):
+            return statement.label
+    return None
+
+
+def adapt(listing: str, unit: str, near: dict[str, str] | None = None) -> str:
+    """Microtec assembly -> GNU as assembly (directives, spellings and ASM68K sizing only).
+
+    `near` names external call targets that sit in the same original translation unit as this C
+    file ("backward" before it, "forward" after it, both within PC-relative reach): a C file holding
+    only part of an original unit calls the rest the way the original assembler did.
+    """
+    near = near or {}
+    lines: list[str] = []
+    defined: set[str] = set()      # code-section labels seen so far
+    local = code_labels(listing)
+    for section, statement in parse(listing):
+        word = statement.mnemonic.upper()
+        if statement.label and word != "IDNT":
+            if section == CODE_SECTION:
+                defined.add(statement.label)
+            lines.append(f"{statement.label}:")
+        if not word or word in ("OPT", "END", "XREF", "IDNT"):
+            continue
+        if word == "SECTION":
+            lines.append(f'\t.section .text.{unit},"ax"' if section == CODE_SECTION else "\t.data")
+            continue
+        if word == "XDEF":
+            lines.append("\t.globl " + ", ".join(n.strip().lstrip(".") for n in statement.operands.split(",")))
+            continue
+        if word == "DC.B" and "'" in statement.operands:
+            lines.append(dc_bytes(statement.operands))
+            continue
+        operands = statement.operands
+        if BRANCH.match(word):
+            target = operands.lstrip(".")
+            if section != CODE_SECTION or target not in local:
+                raise AdaptError(f"{statement.mnemonic} {operands}: branch outside this file's code")
+            if target in defined:   # backward: shortest form (gas jbra/jbsr/jb<cc> relax to byte when it fits)
+                lines.append(f"\tjb{word[1:].lower()}\t{target}")
+            else:                   # forward: the one-pass assembler reserved a word displacement
+                lines.append(f"\t{statement.mnemonic}.w\t{target}")
+            continue
+        if DBCC.match(word) and operands.split(",")[-1].lstrip(".") not in local:
+            raise AdaptError(f"{statement.mnemonic} {operands}: DBcc outside this file's code")
+        target = call_target(statement)
+        if target:
+            if target in local and target in defined:
+                lines.append(f"\t{statement.mnemonic}\t({target},%pc)")
+            elif target in local or near.get(target) == "forward":
+                lines.append(f"\t{statement.mnemonic}\t({target},%pc)")
+                lines.append("\tnop")   # forward: PC-relative inside the 6 bytes reserved for absolute long
+            elif near.get(target) == "backward":
+                lines.append(f"\t{statement.mnemonic}\t({target},%pc)")
+            else:
+                lines.append(f"\t{statement.mnemonic}\t({target}).l")
+            continue
+        lines.append(f"\t{statement.mnemonic}\t{gas_operands(operands)}" if operands else f"\t{statement.mnemonic}")
+    return "\n".join(lines) + "\n"
 
 
 class CompileError(RuntimeError):
@@ -103,108 +277,6 @@ def compile_c(source: Path, include_dirs: list[Path] = (), options: list[str] = 
         return outputs[0].read_text(encoding="latin-1")
 
 
-CALL = re.compile(r"^(JSR|JMP)(\s+)([A-Za-z_]\w*)$", re.I)
-
-
-def code_labels(listing: str) -> set[str]:
-    """Labels defined in the code section (SECTION 9), with the Microtec dot removed."""
-    labels, in_code = set(), False
-    for raw in listing.splitlines():
-        stripped = raw.strip()
-        if re.match(r"SECTION\s+(\d+)", stripped, re.I):
-            in_code = re.match(r"SECTION\s+(\d+)", stripped, re.I).group(1) == "9"
-            continue
-        label = LABEL.match(DOTTED.sub(r"\1", stripped))
-        if in_code and label:
-            labels.add(label.group(1))
-    return labels
-
-
-def external_calls(listing: str) -> list[str]:
-    """JSR/JMP targets that the listing does not define (other files, or the rest of this file's original unit)."""
-    local, seen = code_labels(listing), []
-    for raw in listing.splitlines():
-        call = CALL.match(DOTTED.sub(r"\1", raw.strip()))
-        if call and call.group(3) not in local and call.group(3) not in seen:
-            seen.append(call.group(3))
-    return seen
-
-
-def first_function(listing: str) -> str | None:
-    """The first label defined in the code section (the unit's lowest address)."""
-    in_code = False
-    for raw in listing.splitlines():
-        stripped = raw.strip()
-        section = re.match(r"SECTION\s+(\d+)", stripped, re.I)
-        if section:
-            in_code = section.group(1) == "9"
-            continue
-        label = LABEL.match(DOTTED.sub(r"\1", stripped))
-        if in_code and label and not label.group(1).startswith("_L"):
-            return label.group(1)
-    return None
-
-
-def adapt(listing: str, unit: str, near: dict[str, str] | None = None) -> str:
-    """Microtec assembly -> GNU as assembly (directives, spellings and ASM68K sizing only).
-
-    `near` names external call targets that sit in the same original translation unit as this C
-    file ("backward" before it, "forward" after it): a C file holding only part of an original unit
-    calls the rest the way the original assembler did, PC-relative (forward: plus NOP).
-    """
-    near = near or {}
-    lines: list[str] = []
-    defined: set[str] = set()
-    local = code_labels(listing)
-    for raw in listing.splitlines():
-        stripped = raw.strip()
-        if not stripped or stripped.startswith("*"):
-            continue
-        word = stripped.split()[0].upper()
-        if word in ("OPT", "END", "XREF") or re.match(r"^\S+\s+IDNT\b", stripped, re.I):
-            continue
-        if word == "SECTION":
-            number = int(re.match(r"SECTION\s+(\d+)", stripped, re.I).group(1))
-            lines.append(f'\t.section .text.{unit},"ax"' if number == 9 else "\t.data")
-            continue
-        if word == "XDEF":
-            names = [DOTTED.sub(r"\1", n.strip()) for n in stripped.split(None, 1)[1].split(",")]
-            lines.append("\t.globl " + ", ".join(names))
-            continue
-        stripped = HEX.sub(lambda m: "0x" + m.group(1), DOTTED.sub(r"\1", stripped))
-        label = LABEL.match(stripped)
-        if label:
-            defined.add(label.group(1))
-            lines.append(f"{label.group(1)}:")
-            stripped = label.group(2)
-            if not stripped:
-                continue
-        stripped = strip_comment(stripped)
-        branch = BRANCH.match(stripped)
-        if branch:
-            mnemonic, gap, target = branch.groups()
-            if target in defined:   # backward: shortest form (gas jbra/jbsr/jb<cc> relax to byte when it fits)
-                lines.append(f"\tjb{mnemonic[1:].lower()}{gap}{target}")
-            else:                   # forward: the one-pass assembler reserved a word displacement
-                lines.append(f"\t{mnemonic}.w{gap}{target}")
-            continue
-        call = CALL.match(stripped)
-        if call:
-            mnemonic, gap, target = call.groups()
-            if target in defined:
-                lines.append(f"\t{mnemonic}{gap}({target},PC)")
-            elif target in local or near.get(target) == "forward":
-                lines.append(f"\t{mnemonic}{gap}({target},PC)")
-                lines.append("\tNOP")   # forward: PC-relative inside the 6 bytes reserved for absolute long
-            elif near.get(target) == "backward":
-                lines.append(f"\t{mnemonic}{gap}({target},PC)")
-            else:
-                lines.append(f"\t{mnemonic}{gap}({target}).L")
-            continue
-        lines.append("\t" + stripped)
-    return "\n".join(lines) + "\n"
-
-
 def near_targets(listing: str, address_of, spans: list[tuple[int, int]]) -> dict[str, str]:
     """External call targets inside the original translation unit that contains this file's first function."""
     first = first_function(listing)
@@ -215,9 +287,25 @@ def near_targets(listing: str, address_of, spans: list[tuple[int, int]]) -> dict
     near = {}
     for target in external_calls(listing):
         address = address_of(target)
-        if span and address is not None and span[0] <= address < span[1]:
+        if span and address is not None and span[0] <= address < span[1] and span[1] - span[0] <= PC16_REACH:
             near[target] = "backward" if address < base else "forward"
     return near
+
+
+def assemble(gas: str, source: Path, obj: Path, unit: str) -> None:
+    """Assemble adapted text; refuses code too large for the PC-relative forms adapt() chose."""
+    asm = obj.with_suffix(".s")
+    asm.write_text(gas)
+    result = subprocess.run([str(toolchain.tool("m68k-elf", "as")), *AS_FLAGS, "-o", str(obj), str(asm)],
+                            capture_output=True, text=True)
+    if result.returncode:
+        raise CompileError(f"{source}: the assembler rejected the compiler output:\n{result.stderr}")
+    from elftools.elf.elffile import ELFFile
+    with obj.open("rb") as stream:
+        section = ELFFile(stream).get_section_by_name(f".text.{unit}")
+        if section is not None and section["sh_size"] > PC16_REACH:
+            raise CompileError(f"{source}: {section['sh_size']} bytes of code; files over 32 KB are not supported "
+                               "(PC-relative calls inside them would not reach)")
 
 
 def compile_to_gas(source: Path, unit: str, include_dirs: list[Path] = (), options: list[str] = (),

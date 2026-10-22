@@ -34,7 +34,6 @@ import revmap  # noqa: E402
 import tus  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
-AS_FLAGS = ["-m68000", "--register-prefix-optional"]  # externals: absolute long, as ASM68K emits them
 
 
 class MatchError(RuntimeError):
@@ -152,12 +151,8 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
         work = keep or Path(tmp)
         work.mkdir(parents=True, exist_ok=True)
         (work / f"{unit}.SRC").write_text(compiled.listing, encoding="latin-1")
-        (work / f"{unit}.s").write_text(compiled.gas)
         obj = work / f"{unit}.o"
-        result = subprocess.run([str(toolchain.tool("m68k-elf", "as")), *AS_FLAGS, "-o", str(obj), str(work / f"{unit}.s")],
-                                capture_output=True, text=True)
-        if result.returncode:
-            raise MatchError(f"assembler rejected the compiler output:\n{result.stderr}")
+        mcc.assemble(compiled.gas, source, obj, unit)
         functions = defined_functions(obj, unit)
         for name, _, _ in functions:
             if name not in table:
@@ -204,7 +199,7 @@ def main() -> int:
     defines = {d.split("=", 1)[0]: int(d.split("=", 1)[1], 0) for d in args.define}
     try:
         reports = match_file(args.source, args.version, args.option, args.keep, defines)
-    except (MatchError, mcc.CompileError, romtool.RomError, toolchain.ToolchainError) as error:
+    except (MatchError, mcc.CompileError, mcc.AdaptError, romtool.RomError, toolchain.ToolchainError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 2
     for r in reports:

@@ -49,31 +49,53 @@ class AdaptTest(unittest.TestCase):
         self.assertIn("\tjbne\t_L1", self.lines)
 
     def test_calls_in_the_same_file_are_pc_relative_and_forward_ones_keep_six_bytes(self):
-        self.assertIn("\tJSR\t(loop,PC)", self.lines)
-        later = self.lines.index("\tJSR\t(later,PC)")
-        self.assertEqual(self.lines[later + 1], "\tNOP")
-        self.assertIn("\tJSR\t(helper).L", self.lines)
+        self.assertIn("\tJSR\t(loop,%pc)", self.lines)
+        later = self.lines.index("\tJSR\t(later,%pc)")
+        self.assertEqual(self.lines[later + 1], "\tnop")
+        self.assertIn("\tJSR\t(helper).l", self.lines)
 
     def test_calls_into_the_rest_of_the_original_unit_are_pc_relative(self):
         near = mcc.adapt(LISTING, "unit", {"helper": "forward"}).splitlines()
-        call = near.index("\tJSR\t(helper,PC)")
-        self.assertEqual(near[call + 1], "\tNOP")
+        call = near.index("\tJSR\t(helper,%pc)")
+        self.assertEqual(near[call + 1], "\tnop")
         before = mcc.adapt(LISTING, "unit", {"helper": "backward"}).splitlines()
-        call = before.index("\tJSR\t(helper,PC)")
-        self.assertNotEqual(before[call + 1], "\tNOP")
+        call = before.index("\tJSR\t(helper,%pc)")
+        self.assertNotEqual(before[call + 1], "\tnop")
 
     def test_end_of_line_comments_are_dropped(self):
-        self.assertIn("\tMOVE.W\t6(SP),D0", self.lines)
-        self.assertEqual(mcc.strip_comment("RTS\t*x"), "RTS")
-        self.assertEqual(mcc.strip_comment("DC.B\t'a b',0\t*text"), "DC.B\t'a b',0")
+        self.assertIn("\tMOVE.W\t6(%sp),%d0", self.lines)
+        self.assertEqual(mcc.split_fields("RTS\t*x"), ("RTS", ""))
+        self.assertEqual(mcc.split_fields("DC.B\t'a b',0\t*text"), ("DC.B", "'a b',0"))
 
     def test_explicit_short_branch_is_kept(self):
         self.assertIn("\tBEQ.S\t_L3", self.lines)
 
+    def test_registers_and_c_symbols_stay_apart(self):
+        listing = "\tSECTION\t9,,C\n.f:\n\tMOVE.W\t.d0,D0\n\tMOVE.L\t.sp,A0\n\tMOVE.W\t(A0,D1.L),D2\n\tRTS\n"
+        lines = mcc.adapt(listing, "u").splitlines()
+        self.assertIn("\tMOVE.W\td0,%d0", lines)          # the C global d0, then the register
+        self.assertIn("\tMOVE.L\tsp,%a0", lines)
+        self.assertIn("\tMOVE.W\t(%a0,%d1.L),%d2", lines)
+
+    def test_strings_keep_their_bytes(self):
+        listing = "\tSECTION\t9,,C\n.f:\n\tRTS\n\tSECTION\t14,,D\n_S1:\n\tDC.B\t'it''s $1 .x',0\n"
+        lines = mcc.adapt(listing, "u").splitlines()
+        expected = ",".join(str(b) for b in b"it's $1 .x") + ",0"
+        self.assertIn("\t.byte\t" + expected, lines)
+
+    def test_calls_to_data_labels_stay_absolute(self):
+        listing = "\tSECTION\t14,,D\n.table:\n\tDC.W\t1\n\tSECTION\t9,,C\n.f:\n\tJSR\t.table\n\tRTS\n"
+        self.assertIn("\tJSR\t(table).l", mcc.adapt(listing, "u").splitlines())
+
+    def test_branches_and_dbcc_out_of_the_file_are_refused(self):
+        for statement in ("\tBRA\t.elsewhere", "\tDBRA\tD0,.elsewhere"):
+            with self.assertRaises(mcc.AdaptError):
+                mcc.adapt(f"\tSECTION\t9,,C\n.f:\n{statement}\n\tRTS\n", "u")
+
     def test_microtec_dot_prefix_and_hex_are_respelled(self):
         self.assertIn("loop:", self.lines)
         self.assertIn("\t.globl loop", self.lines)
-        self.assertIn("\tMOVE.L\t#0xFF800E,A0", self.lines)
+        self.assertIn("\tMOVE.L\t#0xFF800E,%a0", self.lines)
 
     def test_sections_map_and_microtec_directives_disappear(self):
         self.assertEqual(self.lines[0], '\t.section .text.unit,"ax"')

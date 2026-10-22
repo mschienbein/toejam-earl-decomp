@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c025-structs-layout-permuter-r2",
+ "prepare_sha256": "2b0a2b4dca6837278d2d437d7c594bc46c8d39d085d83ba417ecf63a78f594ec",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T15:11:29Z",
+ "review_file": "delta-review.json",
+ "review_sha256": "cc3d05cbc8f420de5d94988ed9a0f6f33ac91e2923b10faa8df9eef4c3f5628f",
+ "reviewer": "C024Review",
+ "verdict": "PASS_WITH_QUALIFICATIONS"
+}

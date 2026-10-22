@@ -1,0 +1,76 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C024Review",
+  "checkpoint": "c025-structs-layout-permuter-r2",
+  "sealed_before_other_reviews": true,
+  "implementation_commit": "17e5de2f20070334d23925924fe65ba9e780aaaf",
+  "prior_review": "scratch/agents/C024Review/review.json",
+  "evidence_root": "scratch/agents/C024Review/c025-evidence",
+  "summary": "C024R1 is resolved exactly by adopting the independently found natural high-channel expression and removing its obsolete qualification comment. The complete current palette source matches both revisions, both independent fresh full-ROM builds PASS, and the corrected prepare record is verified. All other c024 source/header/tool/configuration checks carry over by exact input identity. The three previously accepted and unchanged DropPresent/PlaySound/PlaySoundEffect qualifications remain; no palette qualification remains.",
+  "resolved_findings": ["C024R1"],
+  "checks": [
+    {
+      "name": "exact_palette_fix",
+      "status": "PASS",
+      "details": "The current src/ship/screen_setup.c is byte-for-byte equal to the c024 source after exactly two prescribed replacements: the high-channel expression becomes `((short)PaletteShipLine3[color_number] >> 9) & 7`, and the redundant-int matching-qualification/no-natural-spelling comment is removed while retaining the signed-word-view description. No other source content changes.",
+      "source_sha256": "e3c278fe54cbd0daa212cb8e66612d69875445268be3a4704d7eb05a339db90f",
+      "evidence": ["c025-evidence/source-delta.diff", "c025-evidence/metadata.json"]
+    },
+    {
+      "name": "palette_source_both_revision_matching",
+      "status": "PASS",
+      "details": "Independently ran official tools/match.py on the current complete src/ship/screen_setup.c, not an isolated function: exit zero and nine MATCH reports for REV 02, and exit zero and nine MATCH reports for REV 00. AnimateShipScreenPalette remains exactly 392 code bytes in each revision.",
+      "evidence": ["c025-evidence/matches.json", "c025-evidence/matches/rev02/stdout.txt", "c025-evidence/matches/rev00/stdout.txt"]
+    },
+    {
+      "name": "fresh_full_build_rev02",
+      "status": "PASS",
+      "details": "Exercised a fresh full build into a private output directory through the unchanged tools/build.py prepare_data, z80_sources and build_image entrypoints. Expected/actual 1048576-byte image identities agree, zero raw instruction words, all 140 supported source units equal the c025 prepare, and both Z80 programs are built.",
+      "image_sha256": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+      "evidence": ["c025-evidence/builds.json", "c025-evidence/builds/rev02/receipt.json"]
+    },
+    {
+      "name": "fresh_full_build_rev00",
+      "status": "PASS",
+      "details": "Exercised a fresh full build into a separate private output directory through the unchanged tools/build.py entrypoints. Expected/actual 1048576-byte image identities agree, zero raw instruction words, all 140 supported source units equal the c025 prepare, and both Z80 programs are built.",
+      "image_sha256": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+      "evidence": ["c025-evidence/builds.json", "c025-evidence/builds/rev00/receipt.json"]
+    },
+    {
+      "name": "corrected_prepare_record",
+      "status": "PASS",
+      "details": "The c025 prepare is PASS at commit 17e5de2f20070334d23925924fe65ba9e780aaaf with no recorded dirty paths and suite returncode zero/OK. All 263 prepared input hashes equal the reviewed worktree. Independently verified all four retained prepare receipts: canonical JSON hash matches the record, source-unit list matches, expected/actual image identities agree, prepared image hash agrees, and each retained binary hashes to its receipt. All four image hashes also agree with the prior revision's corresponding c024 image. The suite itself was not rerun by this reviewer.",
+      "evidence": ["c025-evidence/metadata.json", "accept/c025-structs-layout-permuter-r2/prepare.json"]
+    },
+    {
+      "name": "c024_semantics_and_header_hygiene_carryover",
+      "status": "PASS",
+      "details": "Comparing the c024 and c025 263-input preparation manifests identifies exactly one changed input: src/ship/screen_setup.c. All headers, the other source files, configuration, tools, CI, tests and toolchain lock are identical. The sole source change introduces no field or named-constant change. Therefore the prior direct review of all 24 field renames, unchanged record storage, 107 sampled constant uses across ten subsystems, all 246 constant definitions/values/owners and no introduced duplicates carries over. Prior sample line numbers remain evidence for c024; palette line numbers shifted only because the obsolete comment was removed.",
+      "evidence": ["c025-evidence/metadata.json", "semantic-review2.json", "semantic-inventory2.json", "report.md"]
+    },
+    {
+      "name": "c024_matching_and_reorganization_carryover",
+      "status": "PASS",
+      "details": "The previous 280 matcher checks covered all 125 C and 15 supported 68000 assembly units for both revisions, including all 111 changed/moved paths. Every unit other than the palette file and every include/configuration/compiler input remains identical; the palette file was independently re-matched in both revisions here. Both complete builds were independently rerun here. The immutable b7a7c5e reorganization still has the previously verified 52 R100 source moves with identical blobs/modes, plus only source-registry path translation/reordering.",
+      "evidence": ["c025-evidence/metadata.json", "c025-evidence/matches.json", "c025-evidence/builds.json", "matches.json", "metadata.json", "reorganization-raw.txt"]
+    },
+    {
+      "name": "remaining_disclosed_qualifications",
+      "status": "PASS",
+      "details": "The previously reviewed DropPresent shared signed-word scratch and PlaySound/PlaySoundEffect discarded sizeof-address observations remain accepted qualifications. Their source files and all relevant headers/tools/flags are hash-identical to c024. The prior eight unsuccessful natural alternatives per target in both revisions, the two PlaySoundEffect individual-removal controls and the precise disclosures therefore carry over; no new search is claimed here. The palette's avoidable qualification is removed and is not carried forward.",
+      "evidence": ["c025-evidence/metadata.json", "review.json", "natural-probes.json"]
+    },
+    {
+      "name": "current_public_worktree_audit",
+      "status": "PASS",
+      "details": "Because documentation/acceptance material changed outside the preparation input manifest, reran tools/audit_public.py against the current worktree with both private ROMs available rather than merely inheriting the old audit. Exit zero: 388 unique Git blobs, one tree, 388 tracked worktree files, two ROMs indexed, zero findings. No history audit was run.",
+      "evidence": ["c025-evidence/audit.json"]
+    },
+    {
+      "name": "review_independence_and_write_boundary",
+      "status": "PASS",
+      "details": "Delta verdict sealed without reading another review of c025. All reviewer writes, compiler output, fresh builds and evidence are under scratch/agents/C024Review. No tracked-file edits, Git-state changes, nested agents, pushes, or acceptance review/finalize commands were performed. The original c024 FAIL review remains unchanged."
+    }
+  ],
+  "findings": []
+}

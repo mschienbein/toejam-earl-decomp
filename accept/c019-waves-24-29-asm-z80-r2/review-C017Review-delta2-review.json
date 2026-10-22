@@ -1,0 +1,138 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C017Review",
+  "checkpoint": "c019-waves-24-29-asm-z80-r2",
+  "checks": [
+    {
+      "name": "delta-scope-and-prepared-inputs",
+      "status": "PASS",
+      "prepared_commit": "21b7046743555dfb0dbc3d226906c975ca77d9db",
+      "fix_commit": "e6c399550c4cfb3a192d920351d119d0161755f7",
+      "inputs_exact_at_start_and_finish": 252,
+      "changed_inputs_since_c018": [
+        "tests/test_sources.py",
+        "tools/build.py",
+        "tools/cunits.py"
+      ],
+      "source_and_include_files_unchanged": true,
+      "source_registry_and_C_ASM_unit_lists_unchanged": true,
+      "evidence": "delta19/scope.json"
+    },
+    {
+      "name": "C018-D1-exact-reproduction",
+      "status": "PASS",
+      "resolution": "The exact prior substituted assembler is now refused by verified_binutils before execution.",
+      "exception": "ToolchainError",
+      "subprocesses_executed": 0,
+      "additional_mismatched_executables_refused": [
+        "z80-elf-ld",
+        "z80-elf-objcopy"
+      ],
+      "all_three_rejected_before_execution": true,
+      "installed_binaries_or_installation_records_modified": false,
+      "evidence": "delta19/results.json: C018-D1-substituted-as/ld/objcopy"
+    },
+    {
+      "name": "C018-D1-receipt-binding",
+      "status": "PASS",
+      "normal_Z80_receipt_field": "z80_sources[].binutils_z80_elf",
+      "hash_keys": [
+        "as",
+        "ld",
+        "objcopy"
+      ],
+      "verified_against_actual_installed_tools": true,
+      "each_Z80_source_record_checked": true,
+      "four_prepare_receipts_verified": true,
+      "two_fresh_full_build_receipts_verified": true,
+      "evidence": [
+        "delta19/prepared-receipts.json",
+        "delta19/builds/rev02/receipt.json",
+        "delta19/builds/rev00/receipt.json"
+      ]
+    },
+    {
+      "name": "C018-D2-exact-reproduction",
+      "status": "PASS",
+      "resolution": "The same wrong-then-correct duplicate registration, loaded from the preserved c018 reproduction registry, now raises BuildError for duplicate unit identity.",
+      "subprocesses_executed": 0,
+      "separate_duplicate_source_with_distinct_unit_names": "BuildError before any subprocess",
+      "evidence": "delta19/results.json: C018-D2-exact-duplicate-reproduction and duplicate-Z80-source"
+    },
+    {
+      "name": "source-registry-validation",
+      "status": "PASS",
+      "independent_rejection_cases": 8,
+      "cases": [
+        "duplicate source across revisions",
+        "same non-Z80 object basename in different directories",
+        "sanitized non-Z80 object-name collision",
+        "case-folded non-Z80 object-name collision",
+        "unknown explicit kind",
+        "Z80 kind without unit",
+        "unit without Z80 kind",
+        "non-.c/.s suffix"
+      ],
+      "expected_exception": "CUnitError",
+      "positive_C_and_ASM_same_stem_distinct_objects": "Accepted",
+      "evidence": "delta19/results.json: registry-*"
+    },
+    {
+      "name": "new-regression-tests",
+      "status": "PASS",
+      "module": "tests/test_sources.py",
+      "tests_run": 5,
+      "skipped": 0,
+      "failures": 0,
+      "evidence": "delta19/results.json: test_sources-regressions"
+    },
+    {
+      "name": "prepared-build-record-verification",
+      "status": "PASS",
+      "receipt_hashes_verified": 4,
+      "actual_image_hashes_verified": 4,
+      "prepared_C_ASM_unit_lists_exact": true,
+      "Z80_sources_per_receipt": 2,
+      "all_Z80_binutils_hashes_exact": true,
+      "prepared_suite_record": {
+        "returncode": 0,
+        "summary": "OK",
+        "full_suite_independently_rerun": false
+      },
+      "evidence": "delta19/prepared-receipts.json"
+    },
+    {
+      "name": "fresh-full-builds",
+      "status": "PASS",
+      "method": "Unchanged ordinary pipeline functions with sandbox output directories only",
+      "rev02_sha256": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+      "rev00_sha256": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+      "prepared_C_ASM_unit_lists_equal": true,
+      "eligible_C_functions_per_revision": 573,
+      "assembly_or_Z80_sources_credited_as_C": 0,
+      "raw_instruction_words": 0,
+      "evidence": [
+        "delta19/builds/rev02/receipt.json",
+        "delta19/builds/rev00/receipt.json"
+      ]
+    },
+    {
+      "name": "inherited-source-qualifications",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "reason": "No C, 68000 assembly, Z80 source or include bytes changed from the c018 profile already reviewed. The accepted compiler-spelling and assembly qualifications carry forward; this is not an unqualified historical-source claim.",
+      "prior_c017_disclosure_findings": "Resolved in the c018 source profile; remain resolved.",
+      "new_tooling_qualifications": null,
+      "new_unresolved_findings": 0
+    },
+    {
+      "name": "independence-and-write-scope",
+      "status": "PASS",
+      "other_c019_reviews_read_before_sealing": false,
+      "nested_subagents_started": false,
+      "accept_review_or_finalize_invoked": false,
+      "tracked_files_installed_binaries_or_G_git_state_modified": false,
+      "artifacts": "scratch/agents/C017Review/delta19/ and delta2-review.json"
+    }
+  ],
+  "findings": []
+}

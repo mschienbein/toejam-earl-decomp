@@ -7,66 +7,71 @@
 A work-in-progress **matching decompilation** of *ToeJam & Earl* (Sega Genesis / Mega Drive, 1991,
 Johnson Voorsanger Productions, `GM MK-1020`): C source that compiles back to the exact original ROM.
 
-**Status:** harness milestone 1. Both retail revisions rebuild **byte-identically** from generated
-GNU assembly (every instruction readable assembly, no raw words); no function is C yet, so matched
-progress is 0. The next milestone is identifying the original C compiler ([docs/COMPILER.md](docs/COMPILER.md)).
+**Status:** both retail revisions rebuild **byte-identically** from this repository's sources plus
+assets extracted from your own dump at build time. Of the 603 functions written in C, **577 are
+matched C** in both revisions (93.3% of the C code bytes, checkpoints in `accept/`); 45 hand-written
+68000 routines and the Z80 sound driver are readable assembly source (ruling
+[R007](docs/rulings/R007-assembly-sources.md)); every data byte comes from a typed asset. The rest
+(26 C functions) is still generated assembly. Details: [docs/STATUS.md](docs/STATUS.md).
 
-| Revision | Role | Functions | Instructions | Code bytes | Rebuild |
-|---|---|---:|---:|---:|---|
-| REV 02 — *ToeJam & Earl (World) (Rev A)*, sha1 `85e8d0a4…` | primary target | 651 | 56,970 | 180,798 (17.2% of 1 MiB) | byte-identical |
-| REV 00 — *ToeJam & Earl (World)*, sha1 `7f82d8b5…` | diff reference | 651 | 56,943 | 180,686 | byte-identical |
+| Revision | Role | Functions | Rebuild |
+|---|---|---:|---|
+| REV 02 — *ToeJam & Earl (World) (Rev A)*, sha1 `85e8d0a4…` | primary target | 645 | byte-identical |
+| REV 00 — *ToeJam & Earl (World)*, sha1 `7f82d8b5…` | same source, `revision.h` | 645 | byte-identical |
 
 ## Quick start
 
-Needs Linux or macOS with a C compiler and make (for binutils), [uv](https://docs.astral.sh/uv/) and
-your own dump of the game.
+Needs Linux or macOS with a C compiler and make (for binutils and the emu2 DOS emulator),
+[uv](https://docs.astral.sh/uv/) and your own dump of the game.
 
 ```sh
 uv sync                                   # Python 3.12 + capstone, pyelftools (locked)
-uv run python tools/setup.py              # builds GNU binutils 2.47 (m68k-elf, z80-elf) into .cache/
+uv run python tools/setup.py              # binutils 2.47 (m68k-elf, z80-elf), emu2, Microtec MCC68K 3.3K
 uv run python tools/rom.py import --rom "ToeJam & Earl (World) (Rev A).zip"   # -> orig/rev02/
 uv run python tools/build.py              # -> build/rev02/toejam.bin + receipt.json (PASS)
+uv run python tools/build.py --version rev00
 uv run python -m unittest discover -s tests
 ```
 
 `tools/rom.py import` accepts `.md`/`.bin`/`.gen` or a `.zip` holding one dump and identifies the
-revision by SHA-256 (`config/title.json`). Use `--version rev00` with `analyze.py`/`build.py` for the
-first release.
+revision by SHA-256 (`config/title.json`). Writing C: [docs/AUTHORING.md](docs/AUTHORING.md).
 
 ## How the build works
 
 ```mermaid
 flowchart LR
-  rom[orig/rev02/baserom.bin] --> analyze[tools/analyze.py<br/>recursive descent + switch tables + seeds]
-  analyze --> cat[config/rev02/catalogue.json<br/>addresses and sizes only]
-  cat --> build[tools/build.py]
-  rom --> build
-  build --> asm[build/rev02/asm/*.s<br/>one unit per function / data gap]
-  asm --> as[m68k-elf-as] --> ld[m68k-elf-ld<br/>generated rom.ld, units at original addresses] --> bin[toejam.bin]
-  bin --> cmp{== original?}
-  cmp --> receipt[receipt.json PASS/FAIL]
+  rom[your dump] --> extract[tools/assets.py<br/>typed data units] --> data[assets: graphics, maps, music, text, tables]
+  c[src/**/*.c] --> mcc[MCC68K 3.3K in emu2<br/>tools/mcc.py] --> objs
+  s[src/asm/*.s] --> as[m68k-elf-as] --> objs
+  z80[src/z80/*.s] --> z80as[z80-elf-as] --> data
+  rest[unmatched functions<br/>generated assembly] --> as
+  objs[objects at original addresses] --> ld[m68k-elf-ld] --> bin[toejam.bin]
+  data --> ld
+  bin --> cmp{== original?} --> receipt[receipt.json]
 ```
 
-- `tools/analyze.py` follows control flow from the 68000 vectors and `config/<version>/seeds.json`,
-  recognises the compiler's `switch` idiom (`cmpi/bgt/add/move.w tbl(pc,dn)/jmp tbl(pc,dn)`) and
-  keeps its word-offset tables inside their function. Everything never reached as code stays data.
-- `tools/build.py` renders code with capstone → GNU `as` syntax with symbolic branch, PC-relative
-  and table targets, checks every instruction's size and bytes after assembling, and would fall
-  back to raw `.short` words for any spelling that does not reproduce (none currently do). Data is
-  `.incbin` from your private dump.
-- The 67 seeds are the entry points of code that is only reached through pointers, taken from
-  [bstreiff/tje-disasm](https://github.com/bstreiff/tje-disasm) (addresses only; see
-  `docs/STATUS.md`). With them the catalogue covers every instruction that disassembly identifies.
+- The original game was compiled with **Microtec MCC68K 3.3K** (default options plus `/STRINTEXT`)
+  and assembled with ASM68K; `docs/COMPILER.md` records how its output is reproduced.
+- `config/sources.json` lists the source units; each replaces exactly the catalogued functions it
+  defines. A C unit that does not compile to the original bytes fails the build.
+- `tools/accept.py` turns matching sources into credit only through checkpoints: two fresh builds
+  of both revisions, the test suite, an independent review, then `config/matches.json`.
+- Functions without source yet are rendered from the catalogue as GNU assembly at build time
+  (git-ignored, never committed).
 
 ## Layout
 
 | Path | Contents |
 |---|---|
-| `tools/` | `setup.py` (toolchain), `rom.py` (identity/import), `analyze.py` (catalogue), `m68k.py` (decode/render), `build.py` (build + receipt) |
-| `config/` | `title.json` (pinned dumps), `<version>/catalogue.json` and `seeds.json`, `matches.json` (accepted C, empty) |
+| `src/<subsystem>/` | matched C, one folder per subsystem; `src/asm/` hand-written 68000, `src/z80/` the Z80 driver |
+| `include/` | K&R headers per subsystem: records, constants, RAM, assets, calls |
+| `docs/subsystems/` | [how each subsystem works](docs/subsystems/README.md), with notes for a native port |
+| `tools/` | toolchain setup, ROM import, catalogue, build, compiler driver, matcher, acceptance, public audit |
+| `config/` | catalogues, names, classification, data units, sources, accepted matches per revision |
+| `accept/` | checkpoint records (prepare, reviews, finalize) |
 | `ci/progress_report.py` | objdiff-format report for [ByteMatch](https://bytematch.dev), no ROM needed |
-| `docs/` | [STATUS](docs/STATUS.md), [RESUME](docs/RESUME.md), [ACCEPTANCE](docs/ACCEPTANCE.md), [COMPILER](docs/COMPILER.md), [TOOLCHAIN](docs/TOOLCHAIN.md), [BYTEMATCH](docs/BYTEMATCH.md), `rulings/` |
-| `tests/` | synthetic ROM tests (CI) + end-to-end real-ROM builds (skipped without `orig/`) |
+| `docs/` | [STATUS](docs/STATUS.md), [RESUME](docs/RESUME.md), [AUTHORING](docs/AUTHORING.md), [ACCEPTANCE](docs/ACCEPTANCE.md), [COMPILER](docs/COMPILER.md), [DATA](docs/DATA.md), [TOOLCHAIN](docs/TOOLCHAIN.md), [BYTEMATCH](docs/BYTEMATCH.md), `rulings/` |
+| `tests/` | synthetic tests (CI) + real-ROM builds (skipped without `orig/`) |
 
 ## Credits and prior work
 
@@ -83,7 +88,8 @@ none of their source files are copied.
 
 ## Legal
 
-This repository contains no ROM data, extracted assets or original disassembly: only tools,
-addresses, sizes and hashes. Generated assembly (`build/`) embeds ROM bytes and is git-ignored. You
-need your own legally obtained copy of the game. ToeJam & Earl is a trademark of its owners; this
+This repository contains no ROM data, extracted assets or generated disassembly: only
+reconstructed source (C, and readable assembly for the hand-written routines per ruling R007),
+tools, addresses, sizes and hashes. Build outputs (`build/`) embed ROM bytes and are git-ignored;
+`tools/audit_public.py` checks every commit. You need your own legally obtained copy of the game. ToeJam & Earl is a trademark of its owners; this
 project is not affiliated with them or with Sega.

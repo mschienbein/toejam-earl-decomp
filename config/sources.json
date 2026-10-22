@@ -58,6 +58,13 @@
    ]
   },
   {
+   "source": "src/asm/sound_init.s",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
    "source": "src/asm/sound_pcm.s",
    "versions": [
     "rev02",

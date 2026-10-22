@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c002-first-matches",
+ "prepare_sha256": "5e59535e6078f140477dc286e8fa99b385cf778250f2843db072c6a1a74bcf67",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T01:12:17Z",
+ "review_file": "review-c002.json",
+ "review_sha256": "fc6483114ad39b7858b5d12cc35896ffcb4648a3974a9d5c5f7b87b2b31b57e6",
+ "reviewer": "C001Review",
+ "verdict": "PASS_WITH_QUALIFICATIONS"
+}

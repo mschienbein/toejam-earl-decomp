@@ -1,5 +1,240 @@
 {
  "schema_version": 2,
  "note": "Functions credited as matching C, one record per version and address; written only by tools/accept.py finalize (docs/ACCEPTANCE.md).",
- "functions": []
+ "functions": [
+  {
+   "version": "rev00",
+   "address": "0x00056c",
+   "name": "GetSkipVBlankFlag",
+   "size": 12,
+   "source": "src/core/status_flag.c",
+   "source_sha256": "f0aa5be7bd586b566e4fca5b042b057c486ee36df24e16eef06aacddf692e4ea",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0011ca",
+   "name": "DelayRoutine1",
+   "size": 14,
+   "source": "src/core/delay.c",
+   "source_sha256": "5cbe282860fd99c87b3112a2d40eb4cf6cc8a75870b4ba80229a22b0566078af",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x001262",
+   "name": "func_001262",
+   "size": 36,
+   "source": "src/core/selection_cycle.c",
+   "source_sha256": "66cfe64d04136e37f95bc26f61e2e12a0080cc97c2579edd6e908b28e40cfbe0",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x004e7e",
+   "name": "GetRandomNumber",
+   "size": 106,
+   "source": "src/math/random.c",
+   "source_sha256": "3161446ba977939e0d1c09c823d90f649021ab7af112e4b567b6ec64e352e081",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x006b22",
+   "name": "func_006b22",
+   "size": 82,
+   "source": "src/data/list_membership.c",
+   "source_sha256": "2b87d0c763899cee37a4f6b889d0279f4d4008c538f07780b6e16d28a9bd9d5b",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x009e0e",
+   "name": "func_009e2e",
+   "size": 348,
+   "source": "src/graphics/glyph_map.c",
+   "source_sha256": "4c86f111edc3f108fdd6c00252982c442bdf661645d075fe419e0833575ccd10",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00d566",
+   "name": "func_00d586",
+   "size": 58,
+   "source": "src/presents/query_byte.c",
+   "source_sha256": "054ba8b85ad586316baac8450f5bce129feb250983cd089d8b79201e4a387e81",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00d5da",
+   "name": "func_00d5fa",
+   "size": 24,
+   "source": "src/presents/item_flags.c",
+   "source_sha256": "d4fe43a7633d913d9a878b58b85f5cc6992b670a65304eca1db150bdd9f9a786",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00d5f2",
+   "name": "func_00d612",
+   "size": 30,
+   "source": "src/presents/item_flags.c",
+   "source_sha256": "d4fe43a7633d913d9a878b58b85f5cc6992b670a65304eca1db150bdd9f9a786",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00d8d2",
+   "name": "func_00d8f2",
+   "size": 18,
+   "source": "src/graphics/clear_words.c",
+   "source_sha256": "7403edcf24b7bc6761f7502d5ce4660e983fca838dc1ddc86f8e2a7dee83ef0e",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00e3c2",
+   "name": "StopPlayer",
+   "size": 30,
+   "source": "src/player/stop_player.c",
+   "source_sha256": "3779abdad6ae08a82e3a1fa67afc2c8b9b5befa56ffa41f75b54c771b410a76b",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x01c730",
+   "name": "SetTomatoRainTomatoes",
+   "size": 68,
+   "source": "src/engine/random_counter.c",
+   "source_sha256": "a50ddc7efbda20aaac2f7c443b0c32a8cd01aad6a87d2d195a05458509b561af",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev00",
+   "address": "0x0282fe",
+   "name": "func_02836c",
+   "size": 92,
+   "source": "src/engine/reset_sequence.c",
+   "source_sha256": "9394842f37d066cf7c2b0fe0d0068d0171c71d964cfebde77a38b855a73accbc",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00056c",
+   "name": "GetSkipVBlankFlag",
+   "size": 12,
+   "source": "src/core/status_flag.c",
+   "source_sha256": "f0aa5be7bd586b566e4fca5b042b057c486ee36df24e16eef06aacddf692e4ea",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x0011ca",
+   "name": "DelayRoutine1",
+   "size": 14,
+   "source": "src/core/delay.c",
+   "source_sha256": "5cbe282860fd99c87b3112a2d40eb4cf6cc8a75870b4ba80229a22b0566078af",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x001262",
+   "name": "func_001262",
+   "size": 36,
+   "source": "src/core/selection_cycle.c",
+   "source_sha256": "66cfe64d04136e37f95bc26f61e2e12a0080cc97c2579edd6e908b28e40cfbe0",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x004e7e",
+   "name": "GetRandomNumber",
+   "size": 106,
+   "source": "src/math/random.c",
+   "source_sha256": "3161446ba977939e0d1c09c823d90f649021ab7af112e4b567b6ec64e352e081",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x006b22",
+   "name": "func_006b22",
+   "size": 82,
+   "source": "src/data/list_membership.c",
+   "source_sha256": "2b87d0c763899cee37a4f6b889d0279f4d4008c538f07780b6e16d28a9bd9d5b",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x009e2e",
+   "name": "func_009e2e",
+   "size": 348,
+   "source": "src/graphics/glyph_map.c",
+   "source_sha256": "4c86f111edc3f108fdd6c00252982c442bdf661645d075fe419e0833575ccd10",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00d586",
+   "name": "func_00d586",
+   "size": 58,
+   "source": "src/presents/query_byte.c",
+   "source_sha256": "054ba8b85ad586316baac8450f5bce129feb250983cd089d8b79201e4a387e81",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00d5fa",
+   "name": "func_00d5fa",
+   "size": 24,
+   "source": "src/presents/item_flags.c",
+   "source_sha256": "d4fe43a7633d913d9a878b58b85f5cc6992b670a65304eca1db150bdd9f9a786",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00d612",
+   "name": "func_00d612",
+   "size": 30,
+   "source": "src/presents/item_flags.c",
+   "source_sha256": "d4fe43a7633d913d9a878b58b85f5cc6992b670a65304eca1db150bdd9f9a786",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00d8f2",
+   "name": "func_00d8f2",
+   "size": 18,
+   "source": "src/graphics/clear_words.c",
+   "source_sha256": "7403edcf24b7bc6761f7502d5ce4660e983fca838dc1ddc86f8e2a7dee83ef0e",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00e3e2",
+   "name": "StopPlayer",
+   "size": 30,
+   "source": "src/player/stop_player.c",
+   "source_sha256": "3779abdad6ae08a82e3a1fa67afc2c8b9b5befa56ffa41f75b54c771b410a76b",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x01c772",
+   "name": "SetTomatoRainTomatoes",
+   "size": 68,
+   "source": "src/engine/random_counter.c",
+   "source_sha256": "a50ddc7efbda20aaac2f7c443b0c32a8cd01aad6a87d2d195a05458509b561af",
+   "checkpoint": "c002-first-matches"
+  },
+  {
+   "version": "rev02",
+   "address": "0x02836c",
+   "name": "func_02836c",
+   "size": 92,
+   "source": "src/engine/reset_sequence.c",
+   "source_sha256": "9394842f37d066cf7c2b0fe0d0068d0171c71d964cfebde77a38b855a73accbc",
+   "checkpoint": "c002-first-matches"
+  }
+ ]
 }

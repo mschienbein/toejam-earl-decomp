@@ -1,0 +1,70 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C001Review",
+  "checkpoint": "c002-first-matches",
+  "reviewed_commit": "633be30ad63edc4acc65dd2bc2ee2080fb4a196b",
+  "prepare_sha256": "5e59535e6078f140477dc286e8fa99b385cf778250f2843db072c6a1a74bcf67",
+  "sealed_utc": "2026-10-22T01:12:02Z",
+  "sealed_before_consulting_other_reviews": true,
+  "inherited_review": "scratch/agents/C001Review/review.json",
+  "inherited_review_sha256": "557a705456d94bf6e373b3b754dda6c4ca9040bf0a8141c1c44e12330ba4f87a",
+  "checks": [
+    {
+      "id": "source-delta",
+      "status": "PASS",
+      "what": "Reviewed git diff 3fc3641..633be30 -- src config/sources.json. The source changes are comments and the StopPlayer file move; all 12 function-bearing units have identical C code after removing comments/whitespace. Manifest contains the moved player path and no obsolete graphics path. Prior independent matching, both-version fresh builds, natural-spelling experiments, and mutation evidence therefore remain applicable to the unchanged function bodies.",
+      "evidence": [
+        "c002-bindings.json",
+        "review.json",
+        "report.md"
+      ]
+    },
+    {
+      "id": "prepare-manifest",
+      "status": "PASS",
+      "what": "Preparation binds clean commit 633be30ad63edc4acc65dd2bc2ee2080fb4a196b. Independently verified all 54 input hashes and both complete source inventories against the current files. c002 replaces the stale c001 binding.",
+      "evidence": [
+        "c002-bindings.json"
+      ]
+    },
+    {
+      "id": "prepare-receipts-and-images",
+      "status": "PASS",
+      "what": "Independently verified all four canonical-JSON receipt hashes, image hashes, direct equality with private originals, C-unit records, source hashes, and recorded tool hashes. Both revisions have two PASS receipts, 13 functions / 918 C bytes, and zero raw code words. No checks were rerun merely to reconfirm Main's reported PASS.",
+      "evidence": [
+        "c002-bindings.json"
+      ]
+    },
+    {
+      "id": "suite-claim",
+      "status": "RECORDED_ONLY",
+      "what": "The fresh preparation records suite returncode 0 and summary OK. As in the original source review, the wider tooling suite was not independently rerun or audited."
+    },
+    {
+      "id": "previous-qualification-resolution",
+      "status": "QUALIFIED",
+      "what": "C001-02 placement is resolved by src/player/stop_player.c and C001-03 stale binding is resolved by fresh c002 preparation. C001-01 is not fully resolved: the rewritten query comment still presents original-source-file organization as fact. The new player comment labels motion interpretation as inference, but introduces an attribution inconsistent with names.json; both remaining issues are low-severity documentation qualifications."
+    },
+    {
+      "id": "independence-and-write-scope",
+      "status": "PASS",
+      "what": "No other review output consulted. No tracked-file edits, Git-state changes, builds outside scratch, or accept.py review/finalize calls. The prior sealed c001 review and report are unchanged."
+    }
+  ],
+  "findings": [
+    {
+      "id": "C002-01",
+      "severity": "low",
+      "file": "src/presents/query_byte.c:4-5",
+      "what": "The comment now states the observed PC-relative call, but still asserts \"so the two were in one original source file\" without an inference label. The encoded call is observed; historical source-file organization remains [INFERENCE]. This is the remaining C001-01 qualification, not a byte-correctness defect.",
+      "suggested_fix": "Say \"The ROM calls func_00d406 PC-relative; match.py reproduces that form using config/rev02/tus.json\", or explicitly mark the original-source-file conclusion [INFERENCE]."
+    },
+    {
+      "id": "C002-02",
+      "severity": "low",
+      "file": "src/player/stop_player.c:1",
+      "what": "The new \"name from tje-disasm\" attribution does not match the authoritative provenance: config/rev02/names.json records StopPlayer as ryanfae:Source/EntireSource.X68:StopPlayer, source line 21545, transferred from REV 00 0x00E3C2.",
+      "suggested_fix": "Use neutral \"imported name\" wording or attribute StopPlayer to RyanFae as the names document records."
+    }
+  ]
+}

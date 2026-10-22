@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c015-waves-17-20-headers",
+ "prepare_sha256": "1b5eebc4ba8a78fc2209b468498c3ba0039633e95e9f2f246b65090d4c8a635c",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T06:47:50Z",
+ "review_file": "review.json",
+ "review_sha256": "d833c9531deb5d806dcd0ef00ea571190630ba82bfe9adea774de532421b47c0",
+ "reviewer": "C015Review",
+ "verdict": "FAIL"
+}

@@ -1,0 +1,123 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "C015Review",
+  "checkpoint": "c015-waves-17-20-headers",
+  "sealed": true,
+  "source_commit": "55e2e07",
+  "prepared_head": "32350a7b6889e6b897c9e89423352336a5682dc1",
+  "prepare_sha256": "1b5eebc4ba8a78fc2209b468498c3ba0039633e95e9f2f246b65090d4c8a635c",
+  "independence": "Fresh independent reviewer, not an author. Verdict sealed without reading any other independent review except the explicitly authorized C014Review/review.json F1-F4. Author reports were treated as leads, not proof. Reviewer writes, private packets, target-layout probes, alternatives, compiler temporaries and build outputs are confined to scratch/agents/C015Review. No canonical source/header/configuration, git state or acceptance record was changed; accept.py review/finalize was not invoked.",
+  "binding_scope": "The initial full 156-input manifest equals prepare. Concurrent tooling/test integration later changed five non-source files and added two; these are retained in sealed-input-binding.json. Main explicitly directed judgment of c015's prepared src/include content, not those concurrent commits. Final source-header-binding.json proves all 88 sources and 22 headers still equal prepare. The baseline matches/builds were exercised with the prepared tooling; no later tooling rerun is claimed.",
+  "blocking_findings": ["F1"],
+  "checks": [
+    {
+      "id": "C1",
+      "check": "Verify prepare, its saved images/receipts and the reviewed input binding",
+      "result": "PASS",
+      "evidence": "prepare-audit.json: all 156 initial manifest entries and both source digests equal prepare; registry exactly covers 88 sources. Four saved canonical-JSON receipt digests, C-unit records and image digests agree; all saved images equal their original ROMs with 88 C units, 370 functions and zero raw words. Prepare PASS, recorded dirty_paths empty, suite returncode 0 / OK inspected, not rerun. source-header-binding.json finally confirms 88 sources plus 22 headers unchanged. Concurrent tooling/tests are outside c015 by Main's explicit scope direction, not a source finding."
+    },
+    {
+      "id": "C2",
+      "check": "Run ordinary match.py on every source for both revisions",
+      "result": "PASS",
+      "evidence": "baseline-match-results.json and matches/baseline/: 176 complete-file CLI invocations, all exit 0, 370 MATCH results per revision. No --define, --include or compiler-option override. Every registered source and every src C file is covered."
+    },
+    {
+      "id": "C3",
+      "check": "Independently rebuild both complete ROM images",
+      "result": "PASS",
+      "evidence": "baseline-build-results.json and builds/baseline/: normal build_image pipeline with private output, actual source registry and pinned toolchain; 88 C units / 370 functions / zero raw words each. C-unit records equal prepare. REV02 SHA256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV00 SHA256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228. One new reviewer build per revision, separate from the audited two prepare builds per revision."
+    },
+    {
+      "id": "C4",
+      "check": "Verify one definition per shared record and actual target sizes/offsets",
+      "result": "PASS",
+      "evidence": "interface-inventory.json and layout-results.json: 22 headers, 19 unique common record tags and no duplicate source copies. The real MCC68K compiler measured every common-record size and 156 member offsets; all agree. Object stride is 128, earthling state/definition 18/38, render-frame prefix 4, render piece 10. Only unrelated movement_destination remains source-local. The original 47-word clear remains 94 bytes."
+    },
+    {
+      "id": "C5",
+      "check": "Check shared RAM/ROM types, function returns, include coverage and honest member roles",
+      "result": "QUALIFIED",
+      "evidence": "interface-inventory.json and declaration-coverage.json: 453 unique shared return declarations, all 370 represented definitions have the same declared return type, and all 287 source-spelled external function references found in real objects have visible declarations. RAM/ROM extern counts are 259/145. Pool, bank, inventory, projectile and display bounds sampled against consumers. The 8192-byte buffer span and non-unique historical ROM-only return spellings remain explicitly qualified, not claimed independently proved. Descriptor resource-count naming is F4."
+    },
+    {
+      "id": "C6",
+      "check": "Require preserved ORIGINAL BUG return-declaration exceptions to be necessary",
+      "result": "FAIL",
+      "evidence": "alternative-results.json: canonical short allocator, byte terrain (two consumers), short six-selector and short decoy-hit alternatives all fail both revisions, supporting those samples. In contrast, canonical char func_020eaa matches every spawning/loading function in both revisions. shared-cutover-results.json further deletes the local declaration/comment and opt-out entirely; the existing romcalls.h declaration still MATCHes all eleven functions in both revisions. This disproves the necessity claimed for that incompatible local int exception (F1)."
+    },
+    {
+      "id": "C7",
+      "check": "Validate incomplete-array and variable-payload view qualifications",
+      "result": "QUALIFIED",
+      "evidence": "extra-alternative-results.json: completing RankCharsTable/TileAlternativePointers bounds and removing bounded renderer/transition payload views all fail both revisions. Completing gPlayerInfo to [40] instead MATCHes all three entity-visibility functions; shared-cutover-results.json also removes its opt-out/local declaration/comment completely and all three still MATCH both revisions. That remaining exception and its necessity comment are avoidable (F2). Compatible incomplete arrays are not duplicate record definitions."
+    },
+    {
+      "id": "C8",
+      "check": "Compare header migration with the previous source commit for substance changes",
+      "result": "PASS",
+      "evidence": "migration-index.json and eight complete saved before/after/diff samples: contact_hula_and_attack, projectile_effects, entity_slots_tu14, entity_sprite_order, level_generation, camera_follow, elevator_scene and rocket_motion. No gameplay-flow, call-order, constant, lifetime or arithmetic-substance change found. Text is not literally include-only: common tag/member names, scalar value views and frame-prefix/payload expressions necessarily change with the shared model. Those representation changes preserve the observed offsets and consumed types; all final functions reproduce both ROMs."
+    },
+    {
+      "id": "C9",
+      "check": "Verify explicitly designated C014 F1-F4 corrections",
+      "result": "PASS",
+      "evidence": "earthling-bound-evidence.json independently reads valid logical category 24 at 02638a, hot-tub contact pointer 023e0a and level-zero slot 18 selecting kind 24, with final-byte overlap at 0263af; shared EARTHLING_DATA is [25]. Named helper returns are now char, dispatch/movement receive short func_015da6, abs is long and former scalar menu tests use [0]. All records share the same 18/38-byte definitions. The corrected generic-enemy comment and a newly generated packet identify the four case entries and actual join 019ca4. All affected complete sources MATCH both revisions."
+    },
+    {
+      "id": "C10",
+      "check": "Deeply sample at least twelve new wave-19/20 functions and review comments/plausibility",
+      "result": "PASS",
+      "evidence": "All seven delivered source files read; deep-review.json records seventeen new functions independently compared with ROM packets, covering every delivered file. Observations include exact field widths/offsets, branches, timers, random-cache use, collision geometry, state transitions, callers and return normalization. The unset map-number bug is correctly disclosed. Ordinary state-machine/loop C, not assembly stand-ins or manufactured liveness. One stale remapping-interface claim is separately F3. Exact historical declarations/gameplay labels are not claimed unique; no gameplay execution was performed."
+    },
+    {
+      "id": "C11",
+      "check": "Judge count - -465 and compile alternative spellings",
+      "result": "QUALIFIED",
+      "evidence": "Independent packet observes SUBI.W #fe2f at 01dab0. Six complete-file variants, each checked both revisions: +465, +0x1d1, commuted addition and +465L all emit ADDI.W #01d1 and fail; subtracting 0xfe2f with or without a short cast matches. The existing double-minus spelling is explicitly disclosed and accepted only as a source-spelling qualification; matching does not establish the exact 1991 expression. Evidence: alternative-results.json and packets/rev02/func_01da9c.md."
+    },
+    {
+      "id": "C12",
+      "check": "Mutation sanity for a shared-header offset and a source immediate",
+      "result": "PASS",
+      "evidence": "mutation-results.json: private definition contact-distance offsets 1a/1b swapped without changing record size; ordinary match.py exits 1 on func_01bb62 for each revision, and full CLI builds both FAIL with first differences 0189e7/0189a5. Private effect-slot height 5->6 makes both matches exit 1 on func_01bde8 and both full builds FAIL at 01be43/01be01. All four builds produce unequal images with 88 C units and zero raw words; not setup failures or injected exceptions. Canonical inputs remain untouched."
+    },
+    {
+      "id": "C13",
+      "check": "Check prohibited source devices, K&R compatibility and canonical interfaces",
+      "result": "PASS",
+      "evidence": "Uncommented-source inventory has no forbidden signed/volatile/assembly/pragma token. Every source compiles under the pinned MCC68K profile for both revisions. No code blob, inline assembly, option override or manual function-address substitution found in the new sources; natural inline strings remain compiler-emitted. Strict canonical-name matching and full linking pass. Hardware-width casts and documented scalar/payload views are not hidden tool substitutions."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "medium",
+      "file": "src/earthlings/spawning_and_loading.c:2,22-25; include/romcalls.h:71-73",
+      "what": "Blocking explicit source-interface criterion: the local int func_020eaa declaration conflicts with the canonical shared char declaration and claims its original caller width is necessary. The complete canonical-char alternative MATCHes all eleven functions in both revisions. Deleting the opt-out and local declaration/comment entirely and using romcalls.h also MATCHes all eleven in both revisions. A char receiving local does not establish a historical implicit-int declaration; no emitted-byte necessity exists for this exception. The code reconstructs bytes, but this is not the justified ORIGINAL BUG exception the assignment requires.",
+      "suggested_fix": "Remove TJE_LOCAL_FUNC_020EAA and the local declaration/comment; use the existing shared char declaration, and remove its now-unused opt-out guard in romcalls.h. Reviewer-private complete matching candidate is alternatives/shared-map-result/spawning_and_loading.c; results are shared-cutover-results.json and alternative-matches/shared-map-result/. Reprepare after adoption."
+    },
+    {
+      "id": "F2",
+      "severity": "low",
+      "file": "src/sprites/entity_visibility.c:1,7-11; include/ram.h:125-127",
+      "what": "The incomplete-pool exception is avoidable in the delivered source, and its claimed complete-bound indexing difference is unsupported by the final candidate. A local gPlayerInfo[40] declaration MATCHes all three functions in both revisions; removing the opt-out and local declaration/comment entirely, using the actual shared header, also MATCHes all three. The incomplete array type is compatible, so this is unnecessary exception machinery and misleading necessity evidence, not an incorrect physical layout.",
+      "suggested_fix": "Use ram.h's ordinary gPlayerInfo[40] declaration; remove the local declaration/comment, source opt-out and now-unused header guard. Matching complete candidate: alternatives/shared-object-pool/entity_visibility.c; evidence: extra-alternative-results.json and shared-cutover-results.json."
+    },
+    {
+      "id": "F3",
+      "severity": "low",
+      "file": "src/presents/projectile_effects.c:295-297; src/sprites/entity_slots_tu14.c:184",
+      "what": "Two migration comments are stale. func_01cc62 still says accepted jump_motion/rocket_motion callers declare it int, but both now include present_calls.h's unsigned-char declaration and have no local override; the correct shared interface already reproduces their bytes. The allocator bug comment still names removed member allocation_flags rather than flags_4d. These statements misdescribe the delivered source even though the executable behavior matches.",
+      "suggested_fix": "Remove or accurately restate the obsolete remapping-interface ORIGINAL BUG claim without asserting an unproved historical declaration; update the allocator member spelling to flags_4d. Do not reintroduce an unnecessary int caller exception."
+    },
+    {
+      "id": "F4",
+      "severity": "low",
+      "file": "include/earthlings.h:33-34; include/sprites.h:52; src/earthlings/spawning_and_loading.c:356-357; src/graphics/funkatron_scene.c:27-28",
+      "what": "Known descriptor resource-count roles remain obscured as draw_offset/draw_attribute. Every current consumer copies these bytes directly to object_state.tile_count/sprite_count, and func_00d776 consumes those fields as tile/sprite allocation counts. No separate descriptor offset/attribute meaning is observed. Entity member names were corrected, but corresponding descriptor names still mislead.",
+      "suggested_fix": "Rename these earthling_definition and scene_descriptor members to tile_count and sprite_count and migrate both consumers, retaining demonstrated byte types and offsets. This is a source-honesty/maintainability correction, not a byte-layout failure."
+    }
+  ],
+  "conclusion": "Requested byte reconstruction, preparation audit, current prepared source/header identity, C014 regression checks, seventeen-function deep sample, arithmetic alternatives and both mutation classes are complete. All byte gates pass. Approval is blocked by F1's avoidable incompatible return-declaration exception under the assignment's explicit necessity criterion; F2-F4 are lower-severity source-model/comment corrections. No canonical fix was applied. Concurrent tooling/tests are deliberately not judged as part of c015 per Main's direction. No independent unit-suite rerun, gameplay validation, accept review/finalize, or unique historical-source recovery is claimed."
+}

@@ -19,7 +19,7 @@ sit 112 bytes earlier and are identical).
 | `metasprite` | 1,287 | 32,598 | JSON: prefix plus inline ten-byte sprite records |
 | `pcm` | 41 | 291,136 | WAV, 8-bit unsigned; the stored count and payload length are kept separately (five samples differ by design) |
 | `pointer_table` | 320 | 7,108 | JSON of symbolic big-endian pointers |
-| `values`, `records` | 63 + 31 | 46,372 + 15,705 | JSON typed arrays and named-field records (maps, metatiles, lookup tables, FM patches, channel templates) |
+| `values`, `records` | 63 + 31 | 46,361 + 15,705 | JSON typed arrays and named-field records (maps, metatiles, lookup tables, FM patches, channel templates) |
 | `music` | 3 | 25,383 | JSON sound-VM bytecode (waits, notes, instruments, loops, jumps, callbacks) |
 | `animation` | 81 | 2,377 | JSON frame programs (frame index, flip bit, restart, hold) |
 | `text` | 50 | 4,580 | JSON text with exact Latin-1 bytes and padding |

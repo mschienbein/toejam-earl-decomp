@@ -1,0 +1,93 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C010Review",
+  "checkpoint": "c010-wave-09",
+  "source_commit": "db9da95cbbfa4c89c44091ab443ed8eaf8908adb",
+  "independence": "Fresh independent reviewer, not an author. Only the expressly assigned C009Review/review.json was consulted before sealing. All writes, compiler temporary directories, matches, packets and builds were confined to scratch/agents/C010Review. No tracked source/config, git state, acceptance records, or progress ledger was changed; accept.py review/finalize was not invoked.",
+  "checks": [
+    {
+      "id": "C1",
+      "check": "Re-derive every changed C unit with normal match.py, both revisions",
+      "result": "PASS",
+      "evidence": "baseline-match-results.json: 16 ordinary CLI invocations, no --option or --define overrides, all exit 0. Per revision: HUD initialization 5, health update 2, status 8, inventory 37, main loop 21, map population 2, transition paths 3, region cleanup 7 = 85 functions / 170 MATCH results. The 15 new HUD functions account for 3816 code bytes and 28 separately checked literal bytes. Compiler artifacts retained under matches/baseline/."
+    },
+    {
+      "id": "C2",
+      "check": "Verify prepare record, latest source commit, inputs and saved repeated builds",
+      "result": "PASS",
+      "evidence": "prepare-audit.json: all 94 current prepared-input hashes agree, no additions/missing inputs; both source digests agree; all 48 unit options per revision are empty. Latest commit touching the assigned sources/config, observed with git log, equals prepare.git.head db9da95cbbfa4c89c44091ab443ed8eaf8908adb; prepare records no dirty paths. All four saved canonical-JSON receipt hashes agree with prepare; each saved image agrees with original, receipt and prepare, with 48 units / 174 unique functions / zero raw words. Prepared suite is returncode 0 / OK; not rerun."
+    },
+    {
+      "id": "C3",
+      "check": "Independent complete normal-source ROM construction",
+      "result": "PASS",
+      "evidence": "baseline-build-results.json and builds/baseline/: normal build.py build_image path with normal sources, names, TU spans, revision mapping and typed data preparation; only output location changed to remain private. Both receipts PASS, C-unit records exactly equal prepared records, 48 units / 174 functions / zero raw words. REV02 SHA256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV00 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228."
+    },
+    {
+      "id": "C4",
+      "check": "Independent semantic and caller/callee examination of all new HUD functions",
+      "result": "PASS",
+      "evidence": "observations.json records all 15 functions. Fresh repository packet.py packets cover all 15 in both revisions plus eight supporting routines per revision, with ProcessPlayers/PerformPromotion caller-consumer packets added. Code, widths, record offsets, coordinates, VDP operations, table use, strings, state transitions, threshold arithmetic and preserved rank-loop behavior were compared with source. Resource extents were checked against typed data units and original-ROM pointers. No gameplay execution is claimed."
+    },
+    {
+      "id": "C5",
+      "check": "K&R source, primary names, contiguous placement, and prohibited matching devices",
+      "result": "PASS",
+      "evidence": "All new definitions use ordinary K&R C. No inline asm, code/data replacement blobs, pragmas, compiler-option overrides, register hints, numeric ROM-base casts or biased data pointers appear in the HUD additions or assigned fixes. Matcher gates validate primary names and contiguous placement. MMIO casts address actual hardware ports, not replacement game code. Existing main-loop goto/zero-temporary/Z80-bootstrap hardware writes and inventory zero-temporary qualification were not introduced by this checkpoint and remain disclosed."
+    },
+    {
+      "id": "C6",
+      "check": "Typed extern compatibility across src",
+      "result": "QUALIFIED",
+      "evidence": "Cross-source grep confirms C009 F2-F5 reconciliation but finds new rank scalar-versus-array inconsistency F1. Existing signedness disagreement for VBLANK_FLAG_2 and scalar/array P1_MENU_OPEN disagreement also remain, as do separate entity/present/hardware-sprite views. The expressly deferred C009 F6 shared-layout/header pass is not claimed complete. recommended/inventory.c unifies the rank declaration/use and MATCHes all 37 functions in both revisions."
+    },
+    {
+      "id": "C7",
+      "check": "Verify C009 F1-F5, F7 and F8 fixes; preserve explicit F6 deferral",
+      "result": "PASS",
+      "evidence": "observations.json previous_findings and resource-audit.json: 28/27 inventory pointers in both revisions, truthful corrected REV00 names evidence, [32][40] background declaration with original 28-row consumption, same elevator_position[8] in all six map consumers, consistent int func_01e38e and unsigned-short score declarations. Scanner comments now describe the remembered-label/reset-to-one threshold quirk with intent labeled [INFERENCE]; input comment now says present-action bit 0x40. Genuine inventory idle-reset revision guard retained. F6 is deferred exactly as assigned."
+    },
+    {
+      "id": "C8",
+      "check": "Plausible natural source and tested simpler alternatives",
+      "result": "QUALIFIED",
+      "evidence": "Five private HUD-health alternatives checked in both revisions: direct member access DIFF 596 vs 600 bytes; pointer addition DIFF 604; cached record pointer DIFF 590; rank shift instead of multiplication DIFF 604; removing the short division-result cast MATCH 600. The unaffected positioning function remains MATCH in each experiment; only func_00b18c differs in the four failing alternatives. Current address-of/index spelling is compiler-sensitive and lacks a local qualification comment (F2). Exact historical source spelling remains [INFERENCE]."
+    },
+    {
+      "id": "C9",
+      "check": "Comments/names honest against packets and callers; ORIGINAL BUG markers",
+      "result": "QUALIFIED",
+      "evidence": "New rank-loop ORIGINAL BUG marker is supported: ranks 0-7 yield 40,100,180,280,400,540,700,880; rank >=8 yields zero, and every signed rank-byte threshold is <=880. Existing uninitialized-frame and -32768-negation markers remain. Scanner intent/reachability is correctly conditional [INFERENCE]. One new parameter name claims promotion-specific flags where caller dataflow supplies masked land classification (F3); recommended/hud_status.c renames it and all eight functions MATCH both revisions. Historical int-vs-short declarations are not claimed uniquely proved."
+    },
+    {
+      "id": "C10",
+      "check": "Semantic mutation detected by matcher and full build without fallback",
+      "result": "PASS",
+      "evidence": "mutation-scope.json proves the only source change is GetScoreForPromo initial score 40 -> 41 in a private hud_status.c. Both mutation-match-results invocations exit 1: seven functions MATCH, only the unchanged-size 54-byte threshold routine DIFF. Both complete mutation builds produce FAIL receipts binding the mutant source with all 48 units / 174 functions / zero raw words. Exactly one image byte differs: REV02 0x00b8a1, REV00 0x00b881. No original-byte fallback hides the mutation."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "low",
+      "file": "src/ui/inventory.c:43,828; src/ui/hud_initialization.c:16; src/ui/hud_health_update.c:19; src/ui/hud_status.c:23",
+      "what": "The new HUD units declare gPlayerRank as char[], while inventory still declares the same named object as a scalar char. These are incompatible extern types despite identical byte accesses. This is separate from the explicitly deferred entity/present record consolidation. No binary mismatch was observed. Legacy VBLANK_FLAG_2 signedness and P1_MENU_OPEN scalar/array inconsistencies also prevent a claim of complete cross-src interface consistency.",
+      "suggested_fix": "Use char gPlayerRank[] in inventory and gPlayerRank[0] at its first-player lookup, preserving the distinct canonical gPlayer2Rank name. Private recommended/inventory.c demonstrates all 37 functions MATCH both revisions. Carry the already-existing flag/menu inconsistencies explicitly into interface reconciliation rather than calling the current declarations globally consistent."
+    },
+    {
+      "id": "F2",
+      "severity": "low",
+      "file": "src/ui/hud_health_update.c:72-73,98",
+      "what": "The redundant (&gPlayerInfo[index])->member spelling materially steers MCC68K: ordinary direct member access emits indexed compares and is four bytes shorter; pointer-addition and cached-pointer alternatives also miss. The current source has no local disclosure of this compiler-sensitive choice. Conversely, the explicit short cast on displayed_health / 8 is unnecessary: removing it preserves both complete functions byte-for-byte in both revisions. Historical spelling/intent is [INFERENCE].",
+      "suggested_fix": "Record the address-of/index expression as a source qualification with the observed ADDA.W-versus-indexed-compare evidence, not as proved historical source. Remove the redundant division-result cast; alternatives/no_narrowing/hud_health_update.c MATCHes both functions in both revisions. No executable behavior repair is requested."
+    },
+    {
+      "id": "F3",
+      "severity": "low",
+      "file": "src/ui/hud_status.c:249-251,285",
+      "what": "HealthAndLivesChecks calls its second argument promotion_flags, but the sole original-ROM caller ProcessPlayers derives it from LAND_UNDER_TOEJAM / LAND_UNDER_EARL masked by 0xf0, then supplies it to many player-state routines. This function forwards that value unchanged to PerformPromotion; there is no evidence that it is a set of promotion-specific flags. The callee treats its third argument as an unsigned class/threshold value for other modes, and mode 11 skips that test.",
+      "suggested_fix": "Rename the argument to terrain_class (or a similarly neutral land-value name) and briefly state the observed caller origin; exact historical/gameplay terminology remains [INFERENCE]. Private recommended/hud_status.c performs only the rename and MATCHes all eight functions, including literal data, in both revisions."
+    }
+  ],
+  "qualification_summary": "No blocking byte mismatch, false revision-table extent, missing assigned C009 fix, or prohibited matching device was found. Both normal ROMs reproduce exactly and both negative controls fail correctly. Acceptance remains qualified by the new rank extern mismatch, an undisclosed compiler-sensitive address-of/index spelling with one removable cast, and an over-specific parameter name, plus expressly acknowledged pre-existing/shared-header debt. Suggested candidates were matched privately, not adopted or claimed as new full-build inputs."
+}

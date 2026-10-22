@@ -1,0 +1,108 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "C027Review",
+  "checkpoint": "c028-matches-disclosures",
+  "qualifications": [
+    {
+      "function": "HudInitializeHealthBar",
+      "decision": "ACCEPTED",
+      "disclosure": "The explicit int DMA index widens the existing unsigned-word buffer offset and retains the original zero-extended long indexed address. The source comment precisely describes this one remaining qualification; shared declarations are unchanged.",
+      "independent_controls": "Offered target MATCHes all 532 bytes in both revisions. Eight fresh alternatives DIFF: bare word indexing, ordinary/commuted pointer addition, addition from element zero, an explicit unsigned-word view, named int/long transfer-offset locals, and one real buffer pointer reused across clearing, painting and DMA. An int-equivalent explicit long index MATCHes and retains the same qualified wide-index boundary.",
+      "source_review": "The short capacity index is a real 0..63 health-unit value. Byte pixels are 13 or 208 and use an ordinary byte shift. No pixel identity, artificial owner, duplicate initializer, register hint, address observation, invented record, or new caller-view exception remains.",
+      "evidence": "evidence/controls.json"
+    },
+    {
+      "functions": ["ClearCameraTileRow", "BuildCameraTileRow", "ClearCameraTileColumn", "BuildCameraTileColumn"],
+      "decision": "ACCEPTED_DISCLOSURE",
+      "disclosure": "The four value-redundant zero OR expressions are now explicitly identified. The row zero cast is not claimed separately necessary.",
+      "independent_controls": "Removing each whole zero-OR expression separately fails in both revisions through changed compiled function size/contiguity. These are successful compilations followed by layout refusal, not linked byte-comparison results or compiler failures.",
+      "evidence": "evidence/controls.json"
+    },
+    {
+      "functions": ["GetPlayerCameraVelocity", "UpdateCameraFollowing", "PlayerApplyTerrainDestination", "ProcessMovement", "UpdateAttachedEntityPosition", "PlayerUpdateHealthAndLives"],
+      "decision": "ACCEPTED_DISCLOSURE",
+      "disclosure": "The comments accurately identify signed-long animation-mask value views and the distinct signed parent versus unsigned camera attachment offsets. Storage types and interfaces are unchanged. The HUD note is moved to its actual consumer.",
+      "independent_controls": "Five direct shared-scalar-view family controls fail in both revisions by strict DIFF or changed-layout refusal. These family-level controls do not establish every individual cast's necessity. Internal mask-lowering/ownership explanations remain [INFERENCE].",
+      "evidence": "evidence/controls.json"
+    },
+    {
+      "function": "SantaLogic",
+      "decision": "ACCEPTED_DISCLOSURE",
+      "disclosure": "The existing qualification now also discloses addition of the negative long constant in the random velocity range.",
+      "independent_controls": "Replacing that addition by ordinary subtraction of 64L yields a strict DIFF in both revisions. Existing scoped flags/mask machinery and all executable tokens are unchanged.",
+      "evidence": "evidence/controls.json"
+    },
+    {
+      "functions": ["SpriteChecks", "QueueSpeechTextTiles", "StartDialogue"],
+      "decision": "CARRIED_FORWARD",
+      "disclosure": "These sources, headers and relevant matching tools are unchanged from the independently reviewed c027 prepared input. Their accepted qualifications and finite natural controls remain as sealed in the c027 review; no new source claim is made.",
+      "evidence": "evidence/metadata.json"
+    }
+  ],
+  "checks": [
+    {
+      "name": "prepared_input_integrity",
+      "result": "PASS",
+      "details": "Reviewed prepared code commit ec7f98e6b918f645970d2142ab9645e91e5c5880. Prepare SHA-256 9c1eae29d91d081e1036dc5541e3375b539a28962a4e993f5c5a5193434bf1b4. All 247 prepared input hashes and both source registries agree at the review input snapshot. All four retained prepare receipt hashes, actual image hashes, C-unit lists and zero raw-word counts agree.",
+      "evidence": "evidence/metadata.json"
+    },
+    {
+      "name": "c027_ship_rejection_resolved",
+      "result": "PASS",
+      "details": "ShowShipPieces executable tokens exactly equal the independently checked c027 natural cutover. The width promotion/temporary, height mask and asymmetric queue conversion are removed. The inaccurate qualification and reviewer-alternative comment are removed. The retained palette word expression and shared payload view are unchanged from that checked reduction. Fresh complete-file checks give 14/14 MATCH in both revisions.",
+      "evidence": "evidence/matches.json"
+    },
+    {
+      "name": "hud_merge_and_verbatim_neighbors",
+      "result": "PASS",
+      "details": "The new TU has eighteen functions, 4962 code bytes and 28 literal/alignment bytes per revision. All three old complete HUD texts are verbatim in the definitive author offer. In canonical hud.c, initialization and health-update texts remain verbatim; status differs only by the authorized QualLedger comment relocation/addition, after which its complete text also matches exactly. Each predecessor's executable/literal tokens occur exactly once contiguously; the seventeen inherited functions are unchanged. Old paths and registry entries are removed. The canonical TU and author offer have identical C tokens.",
+      "evidence": "evidence/metadata.json"
+    },
+    {
+      "name": "seven_comment_only_disclosures",
+      "result": "PASS",
+      "details": "Token identity, including literal tokens and operators, is preserved across all seven disclosure edits, accounting for the HUD and sprite TU cutovers. Comments accurately describe the observed existing expressions and unchanged storage types. Twenty fresh direct-view/removal controls across both revisions all fail: six linked DIFFs and fourteen explicit changed-function-contiguity refusals, with no compiler/setup errors.",
+      "evidence": ["evidence/metadata.json", "evidence/controls.json"]
+    },
+    {
+      "name": "fresh_matches_all_changed_files",
+      "result": "PASS",
+      "details": "Sixteen official match.py CLI invocations check all eight changed/new C files in both revisions: 142/142 individual MATCH results. Per revision: camera_follow 2, camera_tiles_and_scroll 17, mole_santa 4, entity_motion_terrain 4, process_movement 1, ship_screen_and_collection 14, entity_sprite_rendering 11, hud 18.",
+      "evidence": "evidence/matches.json"
+    },
+    {
+      "name": "independent_full_builds_and_suite",
+      "result": "PASS",
+      "details": "The unmodified suite runs in a byte-identical private input snapshot, with no tool/test monkeypatch and existing ROM/toolchain inputs used read-only: 191 tests, OK, no skips or failures. Its independent real-ROM full builds both PASS with zero raw words and exactly prepared C-unit records. Actual image hashes equal pinned retail hashes in both revisions.",
+      "evidence": "evidence/suite.json"
+    },
+    {
+      "name": "new_c027_review_exact_blob_exception",
+      "result": "PASS",
+      "details": "Verified against the prepared auditor snapshot. The actual c027 review blob is 6835a9a57dfd33550a0a2f6e4e83211190c03eb9. Its two unfiltered reasons are Base64 false positives from private evidence paths; only the exact configured blob/path/reason suppresses them. A changed blob, changed path, or different reason remains reported. The public document equals the sealed c027 review. No broad file-type/content exemption is introduced.",
+      "evidence": "evidence/exception.json"
+    },
+    {
+      "name": "canonical_history_public_audit",
+      "result": "FAIL",
+      "details": "tools/audit_public.py --history exits 1: src/ui/hud.c has an opaque Z85 run of 73 characters, entropy 4.593, three classes, in the prepared index/tree/worktree. Summary: 1470 unique Git blobs, 136 trees, 387 tracked worktree files, two ROMs indexed, one finding. The run is the ordinary public DMA call/index expression at prepared line 252, not an encoded ROM/asset payload. The failed unchanged audit was not rerun to reconfirm it.",
+      "evidence": ["evidence/audit.json", "evidence/audit-note.json"]
+    },
+    {
+      "name": "independence_and_scope",
+      "result": "PASS",
+      "details": "Sealed before reading any other c028 review. Only reviewer scratch artifacts were written. No nested agents, canonical tracked edits, repository Git-state changes, acceptance writes, ROM/toolchain changes, or accept.py review/finalize calls were made. The c027 sealed verdict is unchanged. Subsequent unprepared corrections are outside this c028 prepared-input verdict."
+    }
+  ],
+  "findings": [
+    {
+      "id": "D1",
+      "severity": "BLOCKING",
+      "location": "src/ui/hud.c:252",
+      "summary": "The required history-aware public audit does not pass for the newly committed HUD source.",
+      "observed": "The prepared HUD Git blob 5d824791a59b51101a9247b7133a2a6e5553ad43 contains a readable C DMA call/index token classified as an opaque 73-character Z85 run. The canonical full-history audit reports it in index/tree/worktree and exits 1. All byte, build, suite and disclosure checks otherwise pass.",
+      "required_action": "Split the current long call expression and add a narrowly reviewed exact-blob/path/Z85-reason exception for the already committed historical HUD blob; changing current whitespace alone cannot remove that history finding. Do not weaken detector thresholds or exempt arbitrary HUD content. Prepare a new immutable checkpoint for changed source/tool inputs.",
+      "evidence": ["evidence/audit.json", "evidence/audit-note.json"]
+    }
+  ]
+}

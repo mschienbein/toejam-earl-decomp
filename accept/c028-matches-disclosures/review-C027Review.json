@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c028-matches-disclosures",
+ "prepare_sha256": "9c1eae29d91d081e1036dc5541e3375b539a28962a4e993f5c5a5193434bf1b4",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-22T18:12:00Z",
+ "review_file": "delta-review.json",
+ "review_sha256": "f3f6020261dcec9e252acbe52215f16729a5fe547f65625b16d36b8e2be5789d",
+ "reviewer": "C027Review",
+ "verdict": "FAIL"
+}

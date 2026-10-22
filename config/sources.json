@@ -1,0 +1,89 @@
+{
+ "schema_version": 1,
+ "units": [
+  {
+   "source": "src/core/delay.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/core/selection_cycle.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/core/status_flag.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/data/list_membership.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/random_counter.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/engine/reset_sequence.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/graphics/clear_words.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/graphics/glyph_map.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/graphics/reset_vectors.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/math/random.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/item_flags.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  },
+  {
+   "source": "src/presents/query_byte.c",
+   "versions": [
+    "rev02",
+    "rev00"
+   ]
+  }
+ ]
+}

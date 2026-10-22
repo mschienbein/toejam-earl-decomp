@@ -25,9 +25,44 @@ the evidence; each claim is observed in the ROM or cited, else marked [INFERENCE
   byte for byte: `abs` (`0x02714A`), `lmodt` (`0x027154`), `ldivt` (`0x0271B2`), `ulmult`/`lmult`
   (`0x027214`), and `ulmodt`/`uldivt` (`0x027240`/`0x027248`, one body). Found by the Archaeologist
   lane; the disks were manufactured 1990-03-05, the release notes are dated 1989-07-28.
-- **Still open:** the options used for the whole game (3.3K with defaults reproduces both probes) and
-  the assembler's branch sizing (the ROM has 235 forward word branches that would fit a byte
-  displacement, as a one-pass assembler sizes forward references; ASM68K 6.6A is on the same disks).
+- **Compiler profile.** Default options reproduce all 13 functions of the first checkpoint
+  (switches with two tables, helper calls, function pointers, framed functions with locals, the
+  Park-Miller random generator). Observed by the CompilerHunter: `/optimize=time` or `=all` inlines
+  the multiply partial products and reshapes loops; disabling register allocation, peephole or
+  combined stack pops, or forcing debug frames, breaks the matches. These constrain the profile; the
+  exact original command line and patch release are not uniquely proved (nearby releases may emit
+  identical code).
+- **Library memory model.** The helper modules are identical in the absolute, A5-relative and
+  PC-relative 3.3K libraries, so they do not tell which one was linked.
+- **Rejected alternatives.** Locally built GCC 1.37.1 and 1.40 and Sozobon hcc/TOP fail the switch
+  and arithmetic-call conventions; released GCC 1.41+/2.x postdate the ROMs (CompilerHunter).
+
+## Assembler: ASM68K 6.6A, reproduced with GNU as
+
+Measured by running ASM68K 6.6A under emu2 (CompilerHunter receipts) and confirmed on the ROM;
+`tools/mcc.py` applies these rules when adapting the compiler's assembly, never changing an
+instruction:
+
+- An unsized `Bcc`/`BRA`/`BSR` to a label not yet defined (forward) reserves a word displacement
+  even when a byte would fit; to a label already defined (backward) it takes a byte when it fits
+  (−128 included), else a word. Explicit `.S`/`.W` are kept.
+- A bare `JSR`/`JMP` to a label in the same section of the same file becomes PC-relative: 4 bytes
+  backward; forward, the 6 bytes reserved for an absolute call stay used as PC-relative + `NOP`.
+  Targets in other files, RAM or the runtime stay absolute long. All 521 PC-relative `JSR`s in REV 02
+  follow this: the 94 forward ones are each followed by a `NOP`, no backward one is. ASM68K's
+  `-f OPNOP` option removes the padding, so the game was assembled without it.
+- Translation units: because only same-file calls become PC-relative, the PC-relative references
+  between functions recover the original C files' extents (`tools/tus.py`, `config/<v>/tus.json`:
+  50 spans, 500 functions). A C file holding part of such a span calls the rest of it PC-relative,
+  exactly as the original assembler did.
+
+## One source, two revisions
+
+REV 02 is primary. Every function keeps its REV 02 identity in REV 00 (`tools/revmap.py`: the 653
+functions pair one-to-one, 435 identical after masking addresses); an unnamed function is
+`func_<REV 02 address>` in both. Address-spelled names in C (`dat_`, `rom_`, `loc_`) always mean
+REV 02 addresses; the REV 00 build moves them to the same offset inside the corresponding function
+or data range. The first 13 matched functions compile to both revisions byte for byte.
 
 ## Writing C for MCC68K 3.3K
 
@@ -65,26 +100,16 @@ the evidence; each claim is observed in the ROM or cited, else marked [INFERENCE
   `0x027214`, unsigned mod `0x027240`. Their exact code is the strongest fingerprint of the
   compiler's runtime library.
 
-## Candidates (1990–91, 68000 targets)
+## Candidates considered (1990–91, 68000 targets)
 
-| Compiler | Host | Notes | Status |
-|---|---|---|---|
-| Sierra Systems 68000 C | DOS | Licensed to Sega for its official SDK ([Sega Retro](https://segaretro.org/Sierra_68000_C_Compiler)). bstreiff compared v3.1b (1996 Sega Channel disc): its `div32` differs. Earlier versions (1.x/2.x) not located | open: find a 1990–91 version |
-| GCC 1.3x–1.40 | Unix | m68k back end mature; libgcc `__divsi3` etc.; sources archived | open: build 1.37/1.40 cross, compare helpers and prologues |
-| Lattice / SAS C 5.x | Amiga | 1990 v5.10 documented | open |
-| Aztec C (Manx) 5.x | Amiga/Mac/DOS-cross | | open |
-| Microtec MCC68K | DOS/Unix | common embedded 68k cross-compiler | open |
-| Think C / MPW C | Mac | [INFERENCE] plausible if developed on Macs | open |
-| Alcyon, Pure/Turbo C, Megamax/Laser C | Atari ST | | open |
-| Green Hills, Whitesmiths, Mark Williams | various | | open |
+Closed 2026-10-21 by the Microtec identification; kept as the record of what was tried.
 
-## Method
+| Compiler | Host | Outcome |
+|---|---|---|
+| **Microtec MCC68K 3.3K** | DOS | **identified**: functions and runtime reproduced byte for byte |
+| Sierra Systems 68000 C | DOS | not needed; bstreiff's v3.1b (1996) comparison: its `div32` differs |
+| GCC 1.37.1, 1.40 | Unix | built locally; switch lowering and arithmetic-call convention differ; 1.41+/2.x postdate the ROMs |
+| Sozobon hcc 2.0 / TOP 2.00 | Atari ST/Unix | built locally; differs |
+| Lattice/SAS, Aztec, Think/MPW, Alcyon, Pure, Megamax, Green Hills, Whitesmiths, Mark Williams | various | not pursued after the identification |
 
-1. For each obtainable compiler: build or run it (DOS ones under an emulator), compile reference
-   C for the helpers and a few small leaf functions, and compare prologue/epilogue, register
-   allocation order, `switch` lowering and the runtime helper bytes with the ROM.
-2. A candidate that reproduces a helper byte for byte is then tried on real game functions.
-3. Record every candidate tried with its version, flags and result here; failures are evidence.
-
-Until a compiler is identified, structural work continues without it: names, types, RAM map, data
-formats and splitting the assembly into readable modules.
+Full matrix, receipts and commands: the CompilerHunter lane's report (private scratch).

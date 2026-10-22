@@ -57,6 +57,10 @@ short index, x, y;
 
     if (index >= 8)
         return;
+    /* MATCHING QUALIFICATION: the ROM loads this table entry and never uses it;
+     * the assigned-but-unused local reproduces that read (dropping it, or
+     * discarding it through a void cast, changes the code in both revisions).
+     * The historical spelling is unknown; no gameplay effect. */
     frame = Spr_TitleBigPlayers[index];
     object_number = ram_ffe3ae[index];
     entity = &gPlayerInfo[object_number];
@@ -178,6 +182,8 @@ short index, x, y;
 
     if (index >= 3)
         return;
+    /* MATCHING QUALIFICATION: the ROM loads this table entry and never uses it;
+     * the assigned-but-unused local reproduces that read (see func_0281e4). */
     frame = Spr_IntroEarlDriving[index];
     object_number = ram_ffe3c6[index];
     entity = &gPlayerInfo[object_number];

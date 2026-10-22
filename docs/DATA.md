@@ -27,7 +27,7 @@ SleepZAnimation differ in content, and the final fill is 112 bytes longer in REV
 | `text` | 50 | 4,580 | JSON text with exact Latin-1 bytes and padding |
 | `palette` | 49 | 1,568 | JSON 3-bit channels, unused CRAM bits preserved |
 | `vectors`, `cartridge_header` | 1 + 1 | 256 + 256 | JSON symbolic vector table; fixed-width header fields (checksum not recomputed) |
-| `z80_binary` | 2 | 1,332 | the Z80 sound-driver upload image and its boot stub, binary assets |
+| `z80_binary` | 2 | 1,332 | the Z80 sound-driver upload image and its boot stub; built from Z80 source (`src/z80/`, ruling R007), the extracted image is only the reference |
 | `sprite_header`, `padding` | 10 + 9 | 100 + 437 | JSON |
 | `raw` | 7 | 15 | named binary assets, each with a recorded reason |
 
@@ -47,7 +47,6 @@ recovered; this rule is inferred from the streams.
 - 15 raw bytes: two-byte tails at REV 02 `0x0F093A` and `0x0FFE56` (animation program or padding),
   and five auxiliary units without an established reader.
 - PCM playback rate: 8000 Hz is only an audition default; the sample header has no rate.
-- The Z80 driver stays a binary asset; turning it into Z80 assembly source is a separate decision.
 
 Credits: DataSmith lanes (design, formats, codecs; REV 00 derivation), DataReview (independent
 reviews of both revisions).

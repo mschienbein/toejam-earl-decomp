@@ -19,6 +19,12 @@ acceptance rules: `docs/ACCEPTANCE.md`.
 5. **Hand over** the file; Main places it under `src/<subsystem>/`, lists it in
    `config/sources.json` and takes it through a checkpoint (`tools/accept.py`).
 
+Routines classified hand-written assembly with high confidence (`classification.json`) are written
+as readable GNU `as` source instead (ruling R007): `src/asm/*.s`, `.text`, each routine a `.globl`
+with its canonical name in ROM order, `|` comments, hardware equates from `include/hardware.inc` and
+`include/sound.inc`. `tools/match.py file.s` checks them the same way. Write what ASM68K emitted:
+where it padded a forward PC-relative reference with a NOP, write the NOP with a comment.
+
 ## Rules
 
 - **K&R C only.** No prototypes (`extern short f();`), no `signed`, no `volatile`; old-style

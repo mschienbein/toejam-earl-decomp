@@ -47,12 +47,16 @@ append-only.
   Addresses come only from `config/<version>/names.json` (REV 02 identities in other revisions) and
   address spellings (REV 02 addresses); `--define` may add an unknown name for an experiment but
   never move a known one, and a named place must be written with its name.
-- `config/sources.json` — the C units in the build: `{"source", "versions", "options"}`. Each unit's
-  functions carry their canonical names and replace one contiguous run of catalogued units exactly
-  (`tools/cunits.py`); receipts list every C unit and function with its sha256, address and size and
-  the hashes of the compiler, emulator and binutils actually run (checked against
-  `toolchain.lock.json` and the installation record before use). A C unit never falls back to raw
-  words: a mismatch fails the build.
+- `config/sources.json` — the source units in the build: `{"source", "versions", "options"}`. A `.c`
+  unit is compiled with MCC68K; a `.s` unit under `src/asm/` is hand-written 68000 assembly (ruling
+  R007, GNU `as -m68000 --pcrel`). Each unit's routines carry their canonical names and replace one
+  contiguous run of catalogued units exactly (`tools/cunits.py`); receipts list every unit, its kind
+  and every routine with its sha256, address and size and the hashes of the compiler, emulator and
+  binutils actually run (checked against `toolchain.lock.json` and the installation record before
+  use). A unit never falls back to raw words: a mismatch fails the build. Only C units earn credit.
+  An entry `{"source": "src/z80/x.s", "kind": "z80", "unit": NAME}` assembles Z80 source with the
+  pinned `z80-elf` binutils at origin 0 in place of the extracted data unit NAME (same size; the
+  full-image check proves the bytes).
 - `tools/accept.py prepare --checkpoint cNNN-name` — claims the name, records a manifest of every
   input (`src`, `include`, `config`, `tools`, `ci`, `tests`, the lock file), builds REV 02 and REV 00
   twice from scratch (both PASS, identical images) and runs the suite; the record is written even

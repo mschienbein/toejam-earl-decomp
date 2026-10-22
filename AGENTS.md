@@ -28,7 +28,9 @@ runs never overlap.
   (`docs/ACCEPTANCE.md`).
 - **Never credited as C:** the generated assembly baseline, hand-written assembly (Sega's start-up
   code, VDP/Z80 drivers, decompressors), compiler runtime helpers, the Z80 sound driver, data.
-  These may later be *classified* with evidence, never counted as decompiled.
+  These may later be *classified* with evidence, never counted as decompiled. Ruling R007: the
+  hand-written routines and the Z80 driver are committed as readable assembly source (`src/asm/`,
+  `src/z80/`).
 - A byte-identical rebuild from generated assembly proves the harness, not any source.
 
 ## Source rules

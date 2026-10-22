@@ -215,6 +215,11 @@ unsigned short land;
             player->height = -3;
         }
         player->draw_flags |= 64;
+        /* MATCHING QUALIFICATION: the counter goes through the otherwise unused
+         * int `timer` because only that assignment reproduces the ROM's copy-
+         * then-mask instruction order; masking TIME_COUNTER directly (as int or
+         * unsigned long) schedules differently in both revisions. The historical
+         * spelling is unknown. */
         if (!((timer = TIME_COUNTER) & (unsigned long)60)) {
             if ((player_number == 0 && player->height > -16) ||
                 (player_number == 1 && player->height > -20))

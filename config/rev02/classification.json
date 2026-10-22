@@ -98,25 +98,27 @@
     {
       "address": "0x00035C",
       "name": "ResetVDP",
-      "class": "handwritten_asm",
-      "confidence": "medium",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 162,
       "instruction_bytes": 162,
       "evidence": [
         "[INFERENCE] Fixed VDP initialization sequence, no observed stack data/address operand or compiler frame, immediate port writes followed by RTS. tje-disasm:src/main.S:187-208 renders it using VDP register macros.",
         "Observed 20 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c006-waves-02-03 (was handwritten_asm/medium)."
       ]
     },
     {
       "address": "0x0003FE",
       "name": "VDPInitialisation",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 12,
       "instruction_bytes": 12,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c006-waves-02-03 (was unknown/low)."
       ]
     },
     {
@@ -146,47 +148,51 @@
     {
       "address": "0x0004DC",
       "name": "DrawLevelGraphics",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 112,
       "instruction_bytes": 112,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 310); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 310); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c010-wave-09 (was unknown/low)."
       ]
     },
     {
       "address": "0x00054C",
       "name": "ClearSkipVHBlankFlags",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 14,
       "instruction_bytes": 14,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c010-wave-09 (was unknown/low)."
       ]
     },
     {
       "address": "0x00055A",
       "name": "SetSkipVHBlankFlags",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 18,
       "instruction_bytes": 18,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c010-wave-09 (was unknown/low)."
       ]
     },
     {
       "address": "0x00056C",
       "name": "GetSkipVBlankFlag",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 12,
       "instruction_bytes": 12,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c010-wave-09 (was unknown/low)."
       ]
     },
     {
@@ -215,76 +221,82 @@
       "address": "0x0005EC",
       "name": "HandleVBlank",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 620,
       "instruction_bytes": 620,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 9 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 13 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 444, 450, 452, 455, 458, 459, 461, 468, 480); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 444, 450, 452, 455, 458, 459, 461, 468, 480); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c010-wave-09 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x000858",
       "name": "HandleHBlank",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 224,
       "instruction_bytes": 224,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 11 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 610, 613, 614, 620, 625, 640, 655); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 610, 613, 614, 620, 625, 640, 655); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c010-wave-09 (was unknown/low)."
       ]
     },
     {
       "address": "0x000938",
       "name": "GetPlayerInput",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 236,
       "instruction_bytes": 236,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c010-wave-09 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x000A24",
       "name": "CheckStartButton",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 74,
       "instruction_bytes": 74,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c010-wave-09 (was unknown/low)."
       ]
     },
     {
       "address": "0x000A6E",
       "name": "ProcessInput",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 372,
       "instruction_bytes": 372,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c010-wave-09 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x000BE2",
       "name": "func_000BE2",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 76,
       "instruction_bytes": 76,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c010-wave-09 (was unknown/low)."
       ]
     },
     {
@@ -330,12 +342,13 @@
     {
       "address": "0x000FB6",
       "name": "func_000FB6",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 164,
       "instruction_bytes": 164,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c010-wave-09 (was unknown/low)."
       ]
     },
     {
@@ -365,13 +378,14 @@
       "address": "0x0011D8",
       "name": "InitialiseTheZ80",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 138,
       "instruction_bytes": 138,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 6 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
-        "Observed 6 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 6 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
+        "Matched as C in checkpoint c010-wave-09 (was compiled_c/medium)."
       ]
     },
     {
@@ -389,14 +403,15 @@
       "address": "0x001286",
       "name": "FurtherInitialisation",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 776,
       "instruction_bytes": 776,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 11 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 9 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 1522, 1530, 1543, 1551, 1559, 1567, 1572); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 1522, 1530, 1543, 1551, 1559, 1567, 1572); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c010-wave-09 (was compiled_c/medium)."
       ]
     },
     {
@@ -459,13 +474,14 @@
       "address": "0x0019CE",
       "name": "UpdateCameraY",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 378,
       "instruction_bytes": 378,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
-        "Observed 2 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 2 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
+        "Matched as C in checkpoint c007-wave-04 (was compiled_c/medium)."
       ]
     },
     {
@@ -495,14 +511,15 @@
       "address": "0x001EAC",
       "name": "UpdateCameraX",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 350,
       "instruction_bytes": 350,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 4 direct hardware-port reference instructions and 1 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 2512, 2638); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 2512, 2638); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c007-wave-04 (was compiled_c/medium)."
       ]
     },
     {
@@ -533,12 +550,13 @@
       "address": "0x00219C",
       "name": "func_00219C",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 206,
       "instruction_bytes": 206,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 4 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c006-waves-02-03 (was compiled_c/medium)."
       ]
     },
     {
@@ -652,14 +670,15 @@
       "address": "0x002E6A",
       "name": "func_002E6A",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 416,
       "instruction_bytes": 416,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 5 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 9 direct hardware-port reference instructions and 11 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 4140); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 4140); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c003-wave-1a (was compiled_c/medium)."
       ]
     },
     {
@@ -689,22 +708,24 @@
       "address": "0x003604",
       "name": "func_003604",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 996,
       "instruction_bytes": 996,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c007-wave-04 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x0039E8",
       "name": "func_0039E8",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 718,
       "instruction_bytes": 718,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c007-wave-04 (was compiled_c/medium)."
       ]
     },
     {
@@ -734,11 +755,12 @@
       "address": "0x00433E",
       "name": "func_00433E",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 208,
       "instruction_bytes": 208,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c007-wave-04 (was compiled_c/medium)."
       ]
     },
     {
@@ -767,11 +789,12 @@
       "address": "0x004658",
       "name": "GenerateLevelSeeds",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 110,
       "instruction_bytes": 110,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c008-wave-05 (was compiled_c/medium)."
       ]
     },
     {
@@ -837,11 +860,12 @@
       "address": "0x004E7E",
       "name": "GetRandomNumber",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 106,
       "instruction_bytes": 106,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c009-waves-06-08 (was compiled_c/medium)."
       ]
     },
     {
@@ -859,11 +883,12 @@
       "address": "0x004F16",
       "name": "PreGenerateRandoms",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 58,
       "instruction_bytes": 58,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c009-waves-06-08 (was compiled_c/medium)."
       ]
     },
     {
@@ -949,34 +974,37 @@
       "address": "0x0060AE",
       "name": "func_0060AE",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 540,
       "instruction_bytes": 540,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c010-wave-09 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x0062CA",
       "name": "func_0062CA",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 544,
       "instruction_bytes": 544,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c010-wave-09 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x0064EA",
       "name": "func_0064EA",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 112,
       "instruction_bytes": 112,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c010-wave-09 (was compiled_c/medium)."
       ]
     },
     {
@@ -1030,12 +1058,13 @@
       "address": "0x0071E8",
       "name": "func_0071E8",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 264,
       "instruction_bytes": 264,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c010-wave-09 (was compiled_c/medium)."
       ]
     },
     {
@@ -1053,37 +1082,40 @@
     {
       "address": "0x0077AE",
       "name": "func_0077AE",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 42,
       "instruction_bytes": 42,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c010-wave-09 (was unknown/low)."
       ]
     },
     {
       "address": "0x0077D8",
       "name": "func_0077D8",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 44,
       "instruction_bytes": 44,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c009-waves-06-08 (was unknown/low)."
       ]
     },
     {
       "address": "0x007804",
       "name": "func_007804",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 164,
       "instruction_bytes": 164,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 18 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 11362, 11364, 11366, 11368, 11370, 11372, 11374, 11376, 11378); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 11362, 11364, 11366, 11368, 11370, 11372, 11374, 11376, 11378); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c009-waves-06-08 (was unknown/low)."
       ]
     },
     {
@@ -1140,11 +1172,12 @@
       "address": "0x0080D6",
       "name": "LoadLevel1Tiles",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 134,
       "instruction_bytes": 134,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c009-waves-06-08 (was compiled_c/medium)."
       ]
     },
     {
@@ -1263,34 +1296,37 @@
     {
       "address": "0x008B98",
       "name": "func_008B98",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 42,
       "instruction_bytes": 42,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
       "address": "0x008BC2",
       "name": "SetVHBlankFlag2",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 10,
       "instruction_bytes": 10,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
       "address": "0x008BCC",
       "name": "ClearVHBlankFlag2",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 24,
       "instruction_bytes": 24,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
@@ -1308,13 +1344,14 @@
     {
       "address": "0x008C5C",
       "name": "func_008C5C",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 28,
       "instruction_bytes": 28,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
@@ -1333,13 +1370,14 @@
       "address": "0x008CF8",
       "name": "func_008CF8",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 348,
       "instruction_bytes": 348,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
-        "Observed 2 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 2 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly.",
+        "Matched as C in checkpoint c011-waves-10-11 (was compiled_c/medium)."
       ]
     },
     {
@@ -1427,11 +1465,12 @@
       "address": "0x009346",
       "name": "RandomizeInventory",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 100,
       "instruction_bytes": 100,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c011-waves-10-11 (was compiled_c/medium)."
       ]
     },
     {
@@ -1462,12 +1501,13 @@
       "address": "0x009888",
       "name": "CheckBButton",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 110,
       "instruction_bytes": 110,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c011-waves-10-11 (was compiled_c/medium)."
       ]
     },
     {
@@ -1813,28 +1853,30 @@
       "address": "0x00B64A",
       "name": "func_00B64A",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 232,
       "instruction_bytes": 232,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 6 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 8 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 17351, 17359, 17369, 17377, 17382, 17387, 17395, 17400); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 17351, 17359, 17369, 17377, 17382, 17387, 17395, 17400); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c011-waves-10-11 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x00B74E",
       "name": "DrawHUD",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 330,
       "instruction_bytes": 330,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 5 direct hardware-port reference instructions and 3 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 17484, 17492); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 17484, 17492); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c011-waves-10-11 (was compiled_c/medium)."
       ]
     },
     {
@@ -1888,13 +1930,14 @@
     {
       "address": "0x00BB98",
       "name": "SetupTheMainGame",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 176,
       "instruction_bytes": 176,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
@@ -1936,12 +1979,13 @@
       "address": "0x00BFC6",
       "name": "func_00BFC6",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 54,
       "instruction_bytes": 54,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c003-wave-1a (was compiled_c/medium)."
       ]
     },
     {
@@ -1960,12 +2004,13 @@
       "address": "0x00C130",
       "name": "Process2FEntityFlag",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 64,
       "instruction_bytes": 64,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c003-wave-1a (was compiled_c/medium)."
       ]
     },
     {
@@ -2006,11 +2051,12 @@
       "address": "0x00C6B0",
       "name": "func_00C6B0",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 248,
       "instruction_bytes": 248,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c011-waves-10-11 (was compiled_c/medium)."
       ]
     },
     {
@@ -2133,65 +2179,70 @@
     {
       "address": "0x00CFFA",
       "name": "func_00CFFA",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 20,
       "instruction_bytes": 20,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 19751); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 19751); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
       "address": "0x00D00E",
       "name": "func_00D00E",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 20,
       "instruction_bytes": 20,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 19756); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 19756); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
       "address": "0x00D022",
       "name": "func_00D022",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 44,
       "instruction_bytes": 44,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 4 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 19761, 19763); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 19761, 19763); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
       "address": "0x00D04E",
       "name": "func_00D04E",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 44,
       "instruction_bytes": 44,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 4 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 19770, 19772); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 19770, 19772); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
       "address": "0x00D07A",
       "name": "func_00D07A",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 216,
       "instruction_bytes": 216,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c003-wave-1a (was compiled_c/medium)."
       ]
     },
     {
@@ -2209,23 +2260,25 @@
     {
       "address": "0x00D1C4",
       "name": "SetRAMIndexes",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 50,
       "instruction_bytes": 50,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
       "address": "0x00D1F6",
       "name": "SetupPlayer",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 528,
       "instruction_bytes": 528,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c003-wave-1a (was compiled_c/medium)."
       ]
     },
     {
@@ -2356,13 +2409,14 @@
     {
       "address": "0x00D904",
       "name": "func_00D904",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 108,
       "instruction_bytes": 108,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c011-waves-10-11 (was unknown/low)."
       ]
     },
     {
@@ -2780,12 +2834,13 @@
       "address": "0x0111E8",
       "name": "ProcessPlayers",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 438,
       "instruction_bytes": 438,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 3 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c012-waves-12-14 (was compiled_c/medium)."
       ]
     },
     {
@@ -2887,12 +2942,13 @@
       "address": "0x012116",
       "name": "func_012116",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 494,
       "instruction_bytes": 494,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 10 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 10 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c011-waves-10-11 (was compiled_c/medium)."
       ]
     },
     {
@@ -2944,12 +3000,13 @@
     {
       "address": "0x01279C",
       "name": "LOAD_ELEVATOR_1",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 32,
       "instruction_bytes": 32,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c013-waves-15-16 (was unknown/low)."
       ]
     },
     {
@@ -2967,13 +3024,14 @@
     {
       "address": "0x012938",
       "name": "SetupInitialElevator",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 60,
       "instruction_bytes": 60,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c013-waves-15-16 (was unknown/low)."
       ]
     },
     {
@@ -2992,12 +3050,13 @@
       "address": "0x012A56",
       "name": "func_012A56",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 298,
       "instruction_bytes": 298,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
@@ -3040,63 +3099,68 @@
       "address": "0x012E28",
       "name": "LoadFinalLevelMap",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 268,
       "instruction_bytes": 268,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 6 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 10 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 28346, 28355, 28360, 28365, 28370, 28387, 28390, 28392); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 28346, 28355, 28360, 28365, 28370, 28387, 28390, 28392); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x012F34",
       "name": "func_012F34",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 258,
       "instruction_bytes": 258,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 6 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 6 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x013036",
       "name": "func_013036",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 298,
       "instruction_bytes": 298,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
         "Observed 7 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
-        "Observed 2 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly."
+        "Observed 2 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x013160",
       "name": "func_013160",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 174,
       "instruction_bytes": 174,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x01320E",
       "name": "func_01320E",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 96,
       "instruction_bytes": 96,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c013-waves-15-16 (was unknown/low)."
       ]
     },
     {
@@ -3115,24 +3179,26 @@
       "address": "0x013450",
       "name": "func_013450",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 190,
       "instruction_bytes": 190,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x01350E",
       "name": "ElevatorRideVBlank",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 98,
       "instruction_bytes": 98,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 direct hardware-port reference instructions and 0 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 28921); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 28921); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c013-waves-15-16 (was unknown/low)."
       ]
     },
     {
@@ -3152,15 +3218,16 @@
     {
       "address": "0x01370E",
       "name": "func_01370E",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 120,
       "instruction_bytes": 120,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
         "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
         "Observed 2 direct hardware-port reference instructions and 2 backward control-flow edges; hardware access alone is not proof of assembly.",
-        "tje-disasm uses VDP convenience macros in this unit (source lines 29063); these are modern disassembler notation, not evidence of the original source language."
+        "tje-disasm uses VDP convenience macros in this unit (source lines 29063); these are modern disassembler notation, not evidence of the original source language.",
+        "Matched as C in checkpoint c013-waves-15-16 (was unknown/low)."
       ]
     },
     {
@@ -3215,35 +3282,38 @@
       "address": "0x013B6A",
       "name": "ProcessElevatorStep1",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 972,
       "instruction_bytes": 972,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 8 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 8 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c012-waves-12-14 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x013F36",
       "name": "ProcessElevatorStep2",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 614,
       "instruction_bytes": 614,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 7 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 7 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c012-waves-12-14 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x01419C",
       "name": "ProcessElevators",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 10,
       "instruction_bytes": 10,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c012-waves-12-14 (was unknown/low)."
       ]
     },
     {
@@ -3263,23 +3333,25 @@
       "address": "0x014278",
       "name": "SetupPresentIdentities",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 150,
       "instruction_bytes": 150,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x01430E",
       "name": "SetupInitialInventory",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 216,
       "instruction_bytes": 216,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c013-waves-15-16 (was unknown/low)."
       ]
     },
     {
@@ -3345,11 +3417,12 @@
       "address": "0x014B0A",
       "name": "SelectRandomPresent",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 134,
       "instruction_bytes": 134,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
@@ -3404,12 +3477,13 @@
       "address": "0x01528A",
       "name": "func_01528A",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 56,
       "instruction_bytes": 56,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
@@ -3488,35 +3562,38 @@
       "address": "0x015854",
       "name": "ReducePresentTimer",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 340,
       "instruction_bytes": 340,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
       "address": "0x0159A8",
       "name": "func_0159A8",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 144,
       "instruction_bytes": 144,
       "evidence": [
-        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible."
+        "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
+        "Matched as C in checkpoint c013-waves-15-16 (was unknown/low)."
       ]
     },
     {
       "address": "0x015A38",
       "name": "func_015A38",
       "class": "compiled_c",
-      "confidence": "medium",
+      "confidence": "high",
       "size": 302,
       "instruction_bytes": 302,
       "evidence": [
         "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot.",
-        "Observed 5 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 5 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c013-waves-15-16 (was compiled_c/medium)."
       ]
     },
     {
@@ -3713,13 +3790,14 @@
     {
       "address": "0x016E80",
       "name": "ProcessPresents",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 116,
       "instruction_bytes": 116,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 1 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c013-waves-15-16 (was unknown/low)."
       ]
     },
     {
@@ -6695,13 +6773,14 @@
     {
       "address": "0x02836C",
       "name": "func_02836C",
-      "class": "unknown",
-      "confidence": "low",
+      "class": "compiled_c",
+      "confidence": "high",
       "size": 92,
       "instruction_bytes": 92,
       "evidence": [
         "Insufficient origin evidence: no LINK frame, qualifying MOVEM-save pattern or non-administrative stack/frame-displacement data/address operand. Outbound call setup/cleanup alone does not justify C origin; a plain C leaf and hand-written code remain possible.",
-        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis."
+        "Observed 2 SP-adjustment instruction(s). LEA-to-SP and ADD/SUB-to-SP are administrative stack-pointer changes, excluded from the stack data/address evidence and confidence basis.",
+        "Matched as C in checkpoint c002-first-matches (was unknown/low)."
       ]
     },
     {
@@ -8105,14 +8184,14 @@
   ],
   "summary": {
     "compiled_c": {
-      "functions": 520,
-      "catalogue_extent_bytes": 169014,
-      "instruction_bytes": 168540
+      "functions": 554,
+      "catalogue_extent_bytes": 171682,
+      "instruction_bytes": 171208
     },
     "handwritten_asm": {
-      "functions": 34,
-      "catalogue_extent_bytes": 5052,
-      "instruction_bytes": 5052
+      "functions": 33,
+      "catalogue_extent_bytes": 4890,
+      "instruction_bytes": 4890
     },
     "runtime_helper": {
       "functions": 6,
@@ -8125,9 +8204,9 @@
       "instruction_bytes": 2
     },
     "unknown": {
-      "functions": 84,
-      "catalogue_extent_bytes": 6324,
-      "instruction_bytes": 6324
+      "functions": 51,
+      "catalogue_extent_bytes": 3818,
+      "instruction_bytes": 3818
     }
   },
   "fragments": [

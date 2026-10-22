@@ -19,9 +19,20 @@
 - **Knowledge:** reviewed names (1,462 symbols per revision; Microtec runtime names primary) and
   classification (530 compiled_c, 19 hand-written assembly, 6 runtime, 2 Sega library, 94 unknown)
   integrated; generated assembly reads with names; denominator r2: 640 C functions, 180,304 bytes.
-- **Lanes:** CompilerHunter packaging the matched functions for the first checkpoint; reviews in
-  flight: Toolsmith r2 (audit/packet/diff), matching infrastructure, data closure (DataSmith: 4,164
-  typed units round-trip, zero anonymous bytes).
+- **Reviews and fixes.** MatchInfraReview (12 findings) led to: a tokenizing adapter (registers
+  `%d0`, C symbols separate; strings byte-exact; no PC-relative calls to data; branches out of a
+  file refused), authoritative addresses in `match.py`, toolchain hashes checked before every use,
+  and reworked checkpoints (input manifest, FAIL records, fresh-rebuild finalize, per-function
+  credit, `config/matches.json` schema 2). Toolsmith's `packet.py`/`diff.py` integrated; its audit
+  r3 is under review. DataSmith's data closure (4,164 typed units round-trip) needs an r2 (plan
+  size, raw-byte accounting, codec edge semantics).
+- **One source, two revisions.** `tools/revmap.py` pairs REV 02 and REV 00 functions one-to-one;
+  REV 00 takes REV 02 identities and translates REV 02 address spellings; the 13 matched functions
+  build both revisions.
+- **Catalogue r3.** The analyzer follows MCC68K's switch exit jump; NewGameMainMenu owns its case
+  bodies (denominator 640 C functions, 180,364 bytes).
+- **Lanes:** C001Review (first checkpoint), MatchWave1A (first author wave, 18 functions),
+  AuditReview3, DataSmith r2.
 
 ## 2026-10-21 (evening) — goal run started: ByteMatch live, four lanes, names and denominator plumbing
 

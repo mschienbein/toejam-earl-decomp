@@ -41,23 +41,12 @@ class MatchError(RuntimeError):
 
 
 def symbol_table(version: str) -> dict[str, int]:
-    """Every name with a known original address: build ELF symbols, catalogue functions, imported names.
+    """The authoritative names: config/<version>/names.json, with REV 02 identities in other revisions.
 
-    Address spellings always mean primary-revision addresses (`resolve` translates them), so another
-    revision's own address-spelled labels are left out.
+    Nothing else (no build output, no command-line definition) can give a known name an address;
+    unnamed places are spelled by their REV 02 address and translated (`resolve`).
     """
-    primary = version == revmap.PRIMARY
     table: dict[str, int] = {}
-    elf_path = ROOT / "build" / version / "toejam.elf"
-    if elf_path.is_file():
-        with elf_path.open("rb") as stream:
-            for sym in ELFFile(stream).get_section_by_name(".symtab").iter_symbols():
-                if sym.name and not sym.name.startswith(".L") and sym["st_info"]["type"] != "STT_SECTION" \
-                        and (primary or not ADDRESSED.match(sym.name)):
-                    table[sym.name] = sym["st_value"]
-    catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text())
-    for f in catalogue["functions"] if primary else []:
-        table.setdefault(f"func_{f['address']:06x}", f["address"])
     for name in namestool.load(version).values():
         for spelling in (name.name, *name.aliases):
             table[spelling] = name.address
@@ -85,7 +74,7 @@ def undefined_symbols(obj: Path) -> list[str]:
                        if s.name and s["st_shndx"] == "SHN_UNDEF"})
 
 
-ADDRESSED = re.compile(r"^(func|loc|dat|rom|ram)_([0-9a-f]{6})$")
+ADDRESSED = re.compile(r"^(func|frag|loc|dat|data|jtbl|header|rom|ram)_([0-9a-f]{6})$")
 
 
 def resolve(name: str, table: dict[str, int], translate=lambda address: address) -> int:
@@ -104,6 +93,9 @@ def resolve(name: str, table: dict[str, int], translate=lambda address: address)
         moved = translate(address)
         if moved is None:
             raise MatchError(f"{name}: no corresponding place in this revision")
+        named = next((n for n, a in table.items() if a == moved and not ADDRESSED.match(n)), None)
+        if named:
+            raise MatchError(f"{name} has a name: write {named}")
         return moved
     raise MatchError(f"{name} is referenced but has no known address (add it to names.json, or spell it ram_XXXXXX/dat_XXXXXX)")
 
@@ -137,8 +129,12 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
     rom = romtool.load(version)
     catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text())
     extents = {f["address"]: f["size"] for f in catalogue["functions"]}
-    table = {**symbol_table(version), **(defines or {})}
+    table = symbol_table(version)
     translate = revmap.translator(version)
+    for name, address in (defines or {}).items():   # experiments may add unknown names, never move known ones
+        if name in table or ADDRESSED.match(name):
+            raise MatchError(f"--define {name}: the name already has an authoritative address")
+        table[name] = address
     unit = mcc.dos_name(source.stem).lower()
     def address_of(name: str) -> int | None:
         try:
@@ -154,14 +150,19 @@ def match_file(source: Path, version: str, options: list[str], keep: Path | None
         obj = work / f"{unit}.o"
         mcc.assemble(compiled.gas, source, obj, unit)
         functions = defined_functions(obj, unit)
+        homes = {}
         for name, _, _ in functions:
-            if name not in table:
-                raise MatchError(f"{name} has no original address (use func_XXXXXX or an imported name)")
-        base = table[functions[0][0]]
+            if name in (defines or {}):
+                raise MatchError(f"{name}: a defined function takes its address from names.json or its spelling, not --define")
+            home = resolve(name, table, translate)
+            if home not in extents:
+                raise MatchError(f"{name} (0x{home:06x}) is not a catalogued function start")
+            homes[name] = home
+        base = homes[functions[0][0]]
         for name, offset, _ in functions:
-            if table[name] != base + offset:
+            if homes[name] != base + offset:
                 raise MatchError(f"{name}: in the file it would be at 0x{base + offset:06x}, but the original is at "
-                                 f"0x{table[name]:06x} (functions must be a contiguous run in ROM order)")
+                                 f"0x{homes[name]:06x} (functions must be a contiguous run in ROM order)")
         script = ["SECTIONS {", f"  .text 0x{base:x} : {{ *(.text.{unit}) }}", "  .data : { *(.data) }", "}"]
         script += [f"{n} = 0x{resolve(n, table, translate):x};" for n in undefined_symbols(obj)]
         (work / "match.ld").write_text("\n".join(script) + "\n")

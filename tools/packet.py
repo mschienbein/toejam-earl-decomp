@@ -188,12 +188,16 @@ class Program:
         return None
 
     def select(self, name: str) -> dict:
+        """A catalogued unit by its spelling (func_XXXXXX, frag_XXXXXX) or its imported name."""
         match = re.fullmatch(r"(func|frag)_([0-9a-fA-F]{6})", name)
-        if not match:
-            raise PacketError("unit must be func_XXXXXX or frag_XXXXXX")
-        address = int(match[2], 16)
+        if match:
+            address = int(match[2], 16)
+        else:
+            address = self.symbols.by_name.get(name)
+            if address is None:
+                raise PacketError(f"{name}: not func_XXXXXX, frag_XXXXXX or an imported name")
         unit = self.owner(address)
-        if unit is None or unit["address"] != address or unit_name(unit) != name.lower():
+        if unit is None or unit["address"] != address or (match and unit_name(unit) != name.lower()):
             raise PacketError(f"{name}: not a catalogued unit start")
         return unit
 

@@ -1,6 +1,6 @@
-extern char ram_ff8012;
+extern char SKIP_VBLANK_FLAG;
 
 int GetSkipVBlankFlag()
 {
-    return ram_ff8012;
+    return SKIP_VBLANK_FLAG;
 }

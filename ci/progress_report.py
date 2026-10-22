@@ -22,14 +22,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_VERSION = 2
 BLOCK = 0x10000
-AUTO = re.compile(r"^func_([0-9a-f]{6})$")
 
 
 def measures(fns: list[dict], matched: set[int], data_total: int = 0) -> dict:
@@ -74,18 +72,18 @@ def load(version: str) -> tuple[list[dict], set[int], int]:
     functions = sorted((f for f in catalogue["functions"] if f["kind"] == "function" and f["address"] not in not_c),
                        key=lambda f: f["address"])
     known = {f["address"] for f in functions}
-    by_name = {name: address for address, name in display_names(version).items()}
     matched: set[int] = set()
     ledger = json.loads((ROOT / "config/matches.json").read_text(encoding="utf-8"))
-    for unit in ledger["units"]:
-        if unit.get("version", "rev02") != version:
+    if ledger.get("schema_version") != 2:
+        raise SystemExit("config/matches.json must be schema_version 2")
+    for entry in ledger["functions"]:
+        if entry["version"] != version:
             continue
-        for name in unit["functions"]:
-            m = AUTO.match(name)
-            address = int(m.group(1), 16) if m else by_name.get(name)
-            if address not in known:
-                raise SystemExit(f"matches.json credits {name}, which is not a catalogued {version} function")
-            matched.add(address)
+        address = int(entry["address"], 16)
+        if address not in known:
+            raise SystemExit(f"matches.json credits {entry['name']} at {entry['address']}, which is not a catalogued "
+                             f"{version} C function")
+        matched.add(address)
     data_total = sum(d["size"] for d in catalogue["data"])
     return functions, matched, data_total
 

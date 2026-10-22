@@ -101,8 +101,9 @@ class PacketTest(unittest.TestCase):
         self.assertEqual(data["unresolved_control_flow"][0]["kind"], "computed_call")
         self.assertEqual(data["callees"], [])
 
-    def test_invalid_unit_and_conflicting_names_fail(self):
-        for name in ("func_000301", "func_000999", "ChooseCase"):
+    def test_units_are_selected_by_spelling_or_imported_name(self):
+        self.assertEqual(self.program.select("ChooseCase")["address"], 0x300)
+        for name in ("func_000301", "func_000999", "NoSuchName"):
             with self.subTest(name=name), self.assertRaises(packet.PacketError):
                 self.program.select(name)
         with self.assertRaises(packet.PacketError):

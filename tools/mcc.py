@@ -247,11 +247,9 @@ def dos_name(stem: str) -> str:
 
 def compile_c(source: Path, include_dirs: list[Path] = (), options: list[str] = (), timeout: int = 120) -> str:
     """Run MCC68K on `source`; returns the compiler's assembly text (it writes <NAME>.SRC)."""
+    toolchain.verified_compiler()   # the exact programs about to run
     emu2 = toolchain.emu2_path()
     compiler = toolchain.mcc68k_dir() / "MCC68K" / "MCC68K.EXE"
-    for path in (emu2, compiler):
-        if not path.is_file():
-            raise toolchain.ToolchainError(f"{path} is missing; run tools/setup.py")
     with tempfile.TemporaryDirectory(prefix="mcc68k-") as tmp:
         drive = Path(tmp)
         (drive / "MCC68K").mkdir()

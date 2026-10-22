@@ -276,17 +276,11 @@ def build(version: str, jobs: int) -> dict:
     return receipt
 
 
-def place_c_units(c_units: list, units: list[Unit], symbols: Symbols, names: dict | None,
-                  translate=lambda address: address) -> tuple[list[Unit], dict[str, int]]:
-    """Put each C unit in place of the catalogued units it reproduces; the definitions it needs.
-
-    Address-spelled names in C (`loc_`/`dat_`/`rom_`/`ram_XXXXXX`) are primary-revision (REV 02)
-    addresses; `translate` (tools/revmap.py) moves them to the revision being built.
-    """
+def place_c_units(c_units: list, units: list[Unit], symbols: Symbols) -> list[Unit]:
+    """Put each C unit in place of the catalogued units it reproduces."""
     label_address = {label: address for address, label in symbols.labels.items()}
     replaced: set[str] = set()
     placed: list[Unit] = []
-    c_defined: set[str] = set()
     for cu in c_units:
         first = cu.functions[0][0]
         if first not in label_address:
@@ -303,12 +297,24 @@ def place_c_units(c_units: list, units: list[Unit], symbols: Symbols, names: dic
             raise BuildError(f"{cu.source.name}: overlaps the header or another C unit")
         cu.address = base
         replaced.update(u.name for u in covered)
-        c_defined |= cu.defined
         placed.append(Unit(cu.name, base, cu.size, "c"))
-    remaining = sorted([u for u in units if u.name not in replaced] + placed, key=lambda u: u.address)
+    return sorted([u for u in units if u.name not in replaced] + placed, key=lambda u: u.address)
+
+
+def c_unit_definitions(c_units: list, symbols: Symbols, names: dict | None,
+                       translate=lambda address: address) -> dict[str, int]:
+    """Linker definitions the C units need, computed once every reference has been named.
+
+    Labels inside C code that other units still reference keep their original addresses. Names the
+    C code references resolve from the imported names; address-spelled names in C (`loc_`/`dat_`/
+    `rom_`/`ram_XXXXXX`) are primary-revision (REV 02) addresses that `translate`
+    (tools/revmap.py) moves to the revision being built.
+    """
+    label_address = {label: address for address, label in symbols.labels.items()}
+    c_defined = set().union(*(cu.defined for cu in c_units)) if c_units else set()
     covered_ranges = [(cu.address, cu.address + cu.size) for cu in c_units]
     extra: dict[str, int] = {}
-    for address, label in symbols.labels.items():   # labels inside C code that other units still reference
+    for address, label in symbols.labels.items():
         if label not in c_defined and any(lo <= address < hi for lo, hi in covered_ranges):
             extra[label] = address
     provided = set(symbols.labels.values()) | set(symbols.absolute.values()) | c_defined | set(extra)
@@ -316,6 +322,7 @@ def place_c_units(c_units: list, units: list[Unit], symbols: Symbols, names: dic
     for name in (names or {}).values():
         for spelling in (name.name, *name.aliases):
             known[spelling] = name.address
+    named = {n.address: n.name for n in (names or {}).values() if not re.fullmatch(r"(func|loc|dat|rom|ram)_[0-9a-f]{6}", n.name)}
     for cu in c_units:
         for name in sorted(cu.undefined):
             m = re.fullmatch(r"(func|loc|dat|rom|ram)_([0-9a-f]{6})", name)
@@ -323,6 +330,8 @@ def place_c_units(c_units: list, units: list[Unit], symbols: Symbols, names: dic
                 address = translate(int(m.group(2), 16))
                 if address is None:
                     raise BuildError(f"{cu.source.name}: {name} has no corresponding place in this revision")
+                if address in named:
+                    raise BuildError(f"{cu.source.name}: {name} has a name: write {named[address]}")
                 if name in label_address and label_address[name] != address:
                     raise BuildError(f"{cu.source.name}: {name} means primary-revision 0x{m.group(2)}, but this "
                                      f"revision has its own label {name}; name the place in names.json")
@@ -334,7 +343,7 @@ def place_c_units(c_units: list, units: list[Unit], symbols: Symbols, names: dic
                 extra[name] = known[name]
             else:
                 raise BuildError(f"{cu.source.name}: references {name}, which has no known address")
-    return remaining, extra
+    return extra
 
 
 def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int, names: dict | None = None,
@@ -355,7 +364,7 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
     spans = tus_spans or []
     c_units = list(pool.map(lambda entry: cunits.compile_unit(entry, out, address_of=by_label.get, spans=spans),
                             sources or []))
-    units, extra = place_c_units(c_units, units, symbols, names, translate)
+    units = place_c_units(c_units, units, symbols)
     code_units = [u for u in units if u.insns]
     raw: set[int] = set()
     for u in code_units:  # first pass names every reference, so labels are fixed before any file is written
@@ -365,6 +374,7 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
                     symbols(target, True)
             else:
                 m68k.render(item, symbols)
+    extra = c_unit_definitions(c_units, symbols, names, translate)   # includes labels just named inside C ranges
     starts = sorted(i.address for u in code_units for i in u.insns)
     insn_by_address = {i.address: i for u in code_units for i in u.insns}
     unit_of = {i.address: u for u in code_units for i in u.insns}
@@ -429,22 +439,24 @@ def build_image(rom: bytes, baserom: Path, catalogue: dict, out: Path, jobs: int
     rendered = len(starts) - tables - (len(raw) - raw_tables)
     by_mnemonic = Counter(insn_by_address[a].mnemonic for a in raw)
     identity = toolchain.identity()["binutils"]["targets"][TARGET]
+    executed = toolchain.verified_binutils(TARGET)   # hashes of the programs actually used, checked
     receipt = {
         "result": "PASS" if image == rom else "FAIL",
         "expected": {"size": len(rom), "sha256": sha256(rom)},
         "actual": {"size": len(image), "sha256": sha256(image)},
         "inputs": {
             "tools": tool_hashes(),
-            "toolchain": {name: identity[name]["sha256"] for name in ("as", "ld", "objcopy")},
+            "toolchain": executed,
             "toolchain_banner": identity["as"]["banner"],
             "as_flags": AS_FLAGS,
-            "compiler": {"mcc68k": toolchain.identity().get("mcc68k"), "emu2": (toolchain.identity().get("emu2") or {}).get("sha256"),
-                         "as_flags": mcc.AS_FLAGS} if c_units else None,
+            "compiler": {**toolchain.verified_compiler(), "version": toolchain.LOCK["mcc68k"]["version"],
+                         "emu2_commit": toolchain.LOCK["emu2"]["commit"], "as_flags": mcc.AS_FLAGS} if c_units else None,
         },
         "units": {kind: sum(1 for u in units if u.kind == kind) for kind in ("header", "function", "fragment", "data", "c")},
         "c_units": [{"source": str(cu.source.relative_to(ROOT)) if cu.source.is_relative_to(ROOT) else str(cu.source),
                      "sha256": cu.source_sha256, "options": cu.options, "address": f"0x{cu.address:06x}", "size": cu.size,
-                     "functions": [name for name, _, _ in cu.functions]} for cu in c_units],
+                     "functions": [{"name": name, "address": f"0x{cu.address + offset:06x}", "size": size}
+                                   for name, offset, size in cu.functions]} for cu in c_units],
         "instructions": {
             "total": len(starts) - tables,
             "rendered": rendered,

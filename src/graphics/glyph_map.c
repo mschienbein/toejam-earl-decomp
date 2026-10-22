@@ -1,5 +1,5 @@
 extern unsigned short ram_ff91e0;
-extern unsigned short ram_ff916a[59];
+extern unsigned short PREGEN_RANDOMS[59];
 #define VDP_DATA (*(unsigned short *)0xc00000L)
 
 /* Map ASCII and embedded control characters to font glyphs. Some controls
@@ -18,7 +18,7 @@ char character;
         character += 36 - '0';
     else switch (character) {
     case '?':
-        character = (ram_ff916a[ram_ff91e0 == 58 ?
+        character = (PREGEN_RANDOMS[ram_ff91e0 == 58 ?
                      (ram_ff91e0 = 0) : ++ram_ff91e0] & 3) + 27;
         break;
     case '.': character = 31; break;

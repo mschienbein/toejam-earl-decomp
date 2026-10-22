@@ -73,91 +73,164 @@ def sources_digest(version: str) -> list[dict]:
              "options": entry.get("options", [])} for entry in cunits.load_sources(version)]
 
 
-def prepare(checkpoint: str, jobs: int) -> dict:
-    if not NAME.match(checkpoint):
-        raise AcceptError("checkpoint names look like c001-short-name")
-    record_path = ACCEPT / checkpoint / "prepare.json"
-    if record_path.exists():
-        raise AcceptError(f"{record_path.relative_to(ROOT)} exists; use a new checkpoint name")
-    builds, ok = {}, True
+INPUT_ROOTS = ("src", "include", "config", "tools", "ci", "tests")
+INPUT_FILES = ("toolchain.lock.json",)
+LEDGER_FILES = ("config/matches.json",)   # written by finalize itself
+
+
+def inputs_manifest() -> dict[str, str]:
+    """sha256 of every file that can change a build or the suite (the checkpoint ledger excluded)."""
+    files = [ROOT / name for name in INPUT_FILES]
+    for folder in INPUT_ROOTS:
+        files += [p for p in (ROOT / folder).rglob("*") if p.is_file() and "__pycache__" not in p.parts]
+    manifest = {}
+    for path in sorted(files):
+        relative = path.relative_to(ROOT).as_posix()
+        if relative not in LEDGER_FILES:
+            manifest[relative] = sha256(path.read_bytes())
+    return manifest
+
+
+def build_both(checkpoint: str, run: str, jobs: int) -> dict:
+    receipts = {}
     for version in VERSIONS:
         rom = romtool.load(version)
         catalogue = json.loads((ROOT / "config" / version / "catalogue.json").read_text())
         baserom = ROOT / romtool.title()["versions"][version]["orig"]
-        receipts = []
-        for run in ("a", "b"):
-            out = ROOT / "build" / "accept" / checkpoint / run / version
-            shutil.rmtree(out, ignore_errors=True)
-            out.mkdir(parents=True)
-            receipt = build.build_image(rom, baserom, catalogue, out, jobs, namestool.load(version),
-                                        cunits.load_sources(version), build.tus.load(version),
-                                        build.revmap.translator(version))
-            (out / "receipt.json").write_text(json.dumps(receipt, indent=1) + "\n")
-            receipts.append(receipt)
-        same = receipts[0]["actual"]["sha256"] == receipts[1]["actual"]["sha256"]
-        passed = all(r["result"] == "PASS" for r in receipts) and same
-        ok &= passed
-        builds[version] = {"result": "PASS" if passed else "FAIL", "image_sha256": [r["actual"]["sha256"] for r in receipts],
-                           "c_units": receipts[0]["c_units"], "raw_words": receipts[0]["instructions"]["raw_words"],
-                           "receipt_sha256": [sha256(json.dumps(r, sort_keys=True).encode()) for r in receipts]}
-    suite = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", "tests"], cwd=ROOT, capture_output=True, text=True)
-    summary = (suite.stderr.strip().splitlines() or ["(no output)"])[-1]
-    ok &= suite.returncode == 0
-    document = {"checkpoint": checkpoint, "prepared_utc": now(), "result": "PASS" if ok else "FAIL",
-                "git": git_head(), "sources": {v: sources_digest(v) for v in VERSIONS},
-                "builds": builds, "suite": {"returncode": suite.returncode, "summary": summary}}
-    write_once(record_path, document)
+        out = ROOT / "build" / "accept" / checkpoint / run / version
+        shutil.rmtree(out, ignore_errors=True)
+        out.mkdir(parents=True)
+        receipt = build.build_image(rom, baserom, catalogue, out, jobs, namestool.load(version),
+                                    cunits.load_sources(version), build.tus.load(version),
+                                    build.revmap.translator(version))
+        (out / "receipt.json").write_text(json.dumps(receipt, indent=1) + "\n")
+        receipts[version] = receipt
+    return receipts
+
+
+def prepare(checkpoint: str, jobs: int) -> dict:
+    """Two fresh builds of every version + the suite; the record is written whatever happens."""
+    if not NAME.match(checkpoint):
+        raise AcceptError("checkpoint names look like c001-short-name")
+    folder = ACCEPT / checkpoint
+    folder.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        folder.mkdir()   # claims the name: a checkpoint name is used once, even when prepare fails
+    except FileExistsError:
+        raise AcceptError(f"{folder.relative_to(ROOT)} exists; use a new checkpoint name") from None
+    document = {"checkpoint": checkpoint, "prepared_utc": now(), "result": "FAIL", "git": git_head()}
+    try:
+        document["inputs"] = inputs_manifest()
+        document["sources"] = {v: sources_digest(v) for v in VERSIONS}
+        runs = [build_both(checkpoint, run, jobs) for run in ("a", "b")]
+        builds, ok = {}, True
+        for version in VERSIONS:
+            receipts = [r[version] for r in runs]
+            same = receipts[0]["actual"]["sha256"] == receipts[1]["actual"]["sha256"]
+            passed = all(r["result"] == "PASS" for r in receipts) and same
+            ok &= passed
+            builds[version] = {"result": "PASS" if passed else "FAIL",
+                               "image_sha256": [r["actual"]["sha256"] for r in receipts],
+                               "c_units": receipts[0]["c_units"], "raw_words": receipts[0]["instructions"]["raw_words"],
+                               "receipt_sha256": [sha256(json.dumps(r, sort_keys=True).encode()) for r in receipts]}
+        document["builds"] = builds
+        suite = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", "tests"], cwd=ROOT,
+                               capture_output=True, text=True)
+        document["suite"] = {"returncode": suite.returncode,
+                             "summary": (suite.stderr.strip().splitlines() or ["(no output)"])[-1]}
+        ok &= suite.returncode == 0
+        if document["inputs"] != inputs_manifest():
+            document["error"] = "inputs changed while the checkpoint was being prepared"
+            ok = False
+        document["result"] = "PASS" if ok else "FAIL"
+    except Exception as error:   # compiler, assembler, link or tool failure: recorded, never lost
+        document["error"] = f"{type(error).__name__}: {error}"
+    write_once(folder / "prepare.json", document)
     return document
 
 
 def review(checkpoint: str, reviewer: str, verdict: str, file: Path) -> dict:
     if verdict not in ("PASS", "PASS_WITH_QUALIFICATIONS", "FAIL"):
         raise AcceptError("verdict is PASS, PASS_WITH_QUALIFICATIONS or FAIL")
+    if (ACCEPT / checkpoint / "finalize.json").exists():
+        raise AcceptError(f"{checkpoint} is already finalized")
     prepared = json.loads((ACCEPT / checkpoint / "prepare.json").read_text())
     body = file.read_bytes()
+    safe = re.sub(r"[^A-Za-z0-9_-]", "_", reviewer)
     document = {"checkpoint": checkpoint, "reviewer": reviewer, "verdict": verdict, "recorded_utc": now(),
                 "prepare_sha256": sha256((ACCEPT / checkpoint / "prepare.json").read_bytes()),
                 "review_file": file.name, "review_sha256": sha256(body), "prepared_result": prepared["result"]}
-    write_once(ACCEPT / checkpoint / f"review-{re.sub(r'[^A-Za-z0-9_-]', '_', reviewer)}.json", document)
-    shutil.copyfile(file, ACCEPT / checkpoint / f"review-{re.sub(r'[^A-Za-z0-9_-]', '_', reviewer)}-{file.name}")
+    write_once(ACCEPT / checkpoint / f"review-{safe}.json", document)
+    shutil.copyfile(file, ACCEPT / checkpoint / f"review-{safe}-{file.name}")
     return document
 
 
-def finalize(checkpoint: str, note: str) -> dict:
+def credited_functions(c_units: list[dict], version: str, checkpoint: str) -> list[dict]:
+    return [{"version": version, "address": f["address"], "name": f["name"], "size": f["size"],
+             "source": unit["source"], "source_sha256": unit["sha256"], "checkpoint": checkpoint}
+            for unit in c_units for f in unit["functions"]]
+
+
+def finalize(checkpoint: str, note: str, jobs: int = os.cpu_count() or 4) -> dict:
+    """Credit a prepared, reviewed checkpoint after re-verifying it against the current tree.
+
+    Nothing is written unless every check passes: a PASS prepare, a PASS review and no FAIL review,
+    C sources and headers byte-identical to the prepared ones, and a fresh build of every version
+    that is byte-identical with exactly the prepared C units. Credit is per function (version and
+    address): a function moved to another file replaces its old record and never counts twice.
+    """
     folder = ACCEPT / checkpoint
+    if (folder / "finalize.json").exists():
+        raise AcceptError(f"{checkpoint} is already finalized")
     prepared = json.loads((folder / "prepare.json").read_text())
     if prepared["result"] != "PASS":
         raise AcceptError("prepare did not pass")
-    reviews = [json.loads(p.read_text()) for p in sorted(folder.glob("review-*.json")) if "verdict" in p.read_text()]
-    reviews = [r for r in reviews if r.get("checkpoint") == checkpoint]
+    reviews = [json.loads(p.read_text()) for p in sorted(folder.glob("review-*.json"))]
+    reviews = [r for r in reviews if isinstance(r, dict) and r.get("checkpoint") == checkpoint and "verdict" in r]
     if not any(r["verdict"].startswith("PASS") for r in reviews) or any(r["verdict"] == "FAIL" for r in reviews):
         raise AcceptError("finalize needs at least one PASS review and no FAIL review")
+    current = inputs_manifest()
+    reviewed = {k: v for k, v in prepared["inputs"].items() if k.startswith(("src/", "include/"))}
+    now_c = {k: v for k, v in current.items() if k.startswith(("src/", "include/"))}
+    if reviewed != now_c:
+        changed = sorted(set(reviewed.items()) ^ set(now_c.items()))
+        raise AcceptError(f"C sources or headers changed since prepare: {sorted({k for k, _ in changed})}")
     for version in VERSIONS:
         if sources_digest(version) != prepared["sources"][version]:
-            raise AcceptError(f"{version}: C sources changed since prepare")
-    matches = json.loads(MATCHES.read_text())
-    credited = {(u["version"], u["source"]) for u in matches["units"]}
-    added = []
+            raise AcceptError(f"{version}: the C unit list changed since prepare")
+    final = build_both(checkpoint, "final", jobs)
     for version in VERSIONS:
-        for unit in prepared["builds"][version]["c_units"]:
-            key = (version, unit["source"])
-            if key in credited:
+        if final[version]["result"] != "PASS":
+            raise AcceptError(f"{version}: the current tree no longer builds byte-identically")
+        if final[version]["c_units"] != prepared["builds"][version]["c_units"]:
+            raise AcceptError(f"{version}: the C units built now differ from the prepared ones")
+    matches = json.loads(MATCHES.read_text())
+    if matches.get("schema_version") != 2:
+        raise AcceptError("config/matches.json must be schema_version 2")
+    ledger = {(f["version"], f["address"]): f for f in matches["functions"]}
+    added, moved = [], []
+    for version in VERSIONS:
+        for entry in credited_functions(final[version]["c_units"], version, checkpoint):
+            key = (version, entry["address"])
+            previous = ledger.get(key)
+            if previous is None:
+                added.append(entry)
+            elif (previous["source"], previous["source_sha256"]) != (entry["source"], entry["source_sha256"]):
+                moved.append({"from": previous, "to": entry})
+            else:
                 continue
-            entry = {"version": version, "source": unit["source"], "sha256": unit["sha256"], "address": unit["address"],
-                     "size": unit["size"], "functions": unit["functions"], "checkpoint": checkpoint}
-            matches["units"].append(entry)
-            added.append(entry)
-    matches["units"].sort(key=lambda u: (u["version"], int(u["address"], 16)))
+            ledger[key] = entry
+    matches["functions"] = sorted(ledger.values(), key=lambda f: (f["version"], int(f["address"], 16)))
+    rev02 = [f for f in matches["functions"] if f["version"] == "rev02"]
+    point = {"checkpoint": checkpoint, "utc": now(), "functions": len(rev02), "bytes": sum(f["size"] for f in rev02)}
+    document = {"checkpoint": checkpoint, "finalized_utc": now(), "note": note, "added": added, "moved": moved,
+                "prepare_sha256": sha256((folder / "prepare.json").read_bytes()),
+                "final_images": {v: final[v]["actual"]["sha256"] for v in VERSIONS},
+                "reviews": [{"reviewer": r["reviewer"], "verdict": r["verdict"]} for r in reviews], "progress": point}
+    write_once(folder / "finalize.json", document)   # claims the finalization before shared state changes
     MATCHES.write_text(json.dumps(matches, indent=1) + "\n")
-    rev02 = [u for u in matches["units"] if u["version"] == "rev02"]
-    point = {"checkpoint": checkpoint, "utc": now(), "functions": sum(len(u["functions"]) for u in rev02),
-             "bytes": sum(u["size"] for u in rev02), "units": len(rev02)}
     with HISTORY.open("a", encoding="utf-8", newline="\n") as stream:
         stream.write(json.dumps(point, sort_keys=True) + "\n")
-    document = {"checkpoint": checkpoint, "finalized_utc": now(), "note": note, "added": added,
-                "prepare_sha256": sha256((folder / "prepare.json").read_bytes()),
-                "reviews": [{"reviewer": r["reviewer"], "verdict": r["verdict"]} for r in reviews], "progress": point}
-    write_once(folder / "finalize.json", document)
     return document
 
 
@@ -187,7 +260,7 @@ def main() -> int:
             print(f"{args.checkpoint}: review by {document['reviewer']} recorded ({document['verdict']})")
             return 0
         document = finalize(args.checkpoint, args.note)
-        print(f"{args.checkpoint}: finalized; +{sum(len(a['functions']) for a in document['added'])} functions; "
+        print(f"{args.checkpoint}: finalized; +{len(document['added'])} function records, {len(document['moved'])} moved; "
               f"rev02 total {document['progress']['functions']} functions / {document['progress']['bytes']} bytes")
         return 0
     except (AcceptError, build.BuildError, cunits.CUnitError, romtool.RomError, FileExistsError, FileNotFoundError) as error:

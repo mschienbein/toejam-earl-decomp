@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
-  "note": "Functions credited as matching C. Changes only when the integrator accepts a byte-identical C build (docs/ACCEPTANCE.md). Each unit: {\"version\": \"rev02\", \"source\": \"src/...c\", \"functions\": [\"func_XXXXXX\", ...], \"receipt_sha256\": \"...\"}.",
-  "units": []
+ "schema_version": 2,
+ "note": "Functions credited as matching C, one record per version and address; written only by tools/accept.py finalize (docs/ACCEPTANCE.md).",
+ "functions": []
 }

@@ -166,6 +166,14 @@ def main() -> int:
     current = record()
     INSTALL.mkdir(parents=True, exist_ok=True)
     if args.check:
+        for rel, digest in LOCK["mcc68k"]["sha256"].items():   # immutable pins, whatever the record says
+            if current["mcc68k"]["files"].get(rel) != digest:
+                print(f"mcc68k: {rel} does not match its pinned sha256 in toolchain.lock.json; run tools/setup.py",
+                      file=sys.stderr)
+                return 1
+        if current["emu2"]["commit"] != LOCK["emu2"]["commit"]:
+            print("emu2: not built from the pinned commit; run tools/setup.py", file=sys.stderr)
+            return 1
         if not INSTALLED.is_file() or json.loads(INSTALLED.read_text()) != current:
             print("installed toolchain differs from .cache/toolchain/installed.json; run tools/setup.py", file=sys.stderr)
             return 1

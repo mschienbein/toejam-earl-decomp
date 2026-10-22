@@ -29149,9 +29149,9 @@
     {
       "name": "Spr_ElevatorArrowBounce",
       "source": "tje-disasm:resources.cfg:Spr_ElevatorArrowBounce",
-      "evidence": "Named METASPRITE_LIST resource extent in resources.cfg.",
+      "evidence": "REV 00 table start 0x0D2D96 (was 0x0D2D9A): all seven pointer entries and the descriptor pointer resolve at the REV 02 address minus 112 (DataSmith00, verified by DataReview); the earlier byte-matched transfer landed 4 bytes into the table.",
       "size": 28,
-      "address": "0x0D2D9A",
+      "address": "0x0D2D96",
       "kind": "rom_data",
       "mapping_from_rev02": {
         "method": "unique_containing_signature",

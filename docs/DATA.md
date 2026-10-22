@@ -7,9 +7,11 @@ the ROM) and links the packed units; the image must still be byte-identical. Ass
 units live under `build/` and are never committed. The config holds only names, kinds, addresses,
 sizes, layout parameters and provenance.
 
-Status (REV 02, 2026-10-22): **4,163 units, 867,776 bytes; 867,761 typed, 15 raw, none anonymous.**
-REV 00 still links slices of its original until its own units are validated (most later resources
-sit 112 bytes earlier and are identical).
+Status (2026-10-22): **REV 02: 4,163 units, 867,776 bytes; 867,761 typed, 15 raw. REV 00: the same
+4,163 units by name, 867,888 bytes; 867,873 typed, 15 raw.** Neither revision has anonymous bytes;
+both build every data byte from assets. Between the revisions, 2,519 units are identical, 1,641
+differ only by relocated pointers (6,019 pointer fields, all translated), the cartridge header and
+SleepZAnimation differ in content, and the final fill is 112 bytes longer in REV 00.
 
 ## Formats
 
@@ -46,6 +48,6 @@ recovered; this rule is inferred from the streams.
   and five auxiliary units without an established reader.
 - PCM playback rate: 8000 Hz is only an audition default; the sample header has no rate.
 - The Z80 driver stays a binary asset; turning it into Z80 assembly source is a separate decision.
-- REV 00 units.
 
-Credits: DataSmith lane (design, formats, codecs), DataReview (independent review, two rounds).
+Credits: DataSmith lanes (design, formats, codecs; REV 00 derivation), DataReview (independent
+reviews of both revisions).

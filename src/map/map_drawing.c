@@ -1,3 +1,4 @@
+#include "earthling_types.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "sprites.h"
@@ -198,7 +199,7 @@ short level;
                     ++revealed;
                 } else {
                     for (cover_row = 0; cover_row < 4; ++cover_row) {
-                        VDP_COMMAND = 0x50000003 + ((row * 4 + cover_row) << 23) + ((column * 5) << 17);
+                        VDP_COMMAND = VDP_WRITE_WINDOW + ((row * 4 + cover_row) << 23) + ((column * 5) << 17);
                         for (cover_column = 0; cover_column < 5; ++cover_column)
                             VDP_DATA = MapCoverLayout[cover_row][cover_column] + 0xc112;
                     }
@@ -225,11 +226,11 @@ struct hardware_sprite *sprites;
         map = gMapDataB[0];
         level = gLevel912E;
     }
-    VDP_COMMAND = 0x50000003;
+    VDP_COMMAND = VDP_WRITE_WINDOW;
     for (column = 0; column < 40; ++column)
         VDP_DATA = 0x8000;
     for (row = 0; row < 26; ++row) {
-        VDP_COMMAND = 0x50000003 + ((row + 1) << 23);
+        VDP_COMMAND = VDP_WRITE_WINDOW + ((row + 1) << 23);
         VDP_DATA = 0x8000;
         for (column = 0; column < 19; ++column) {
             overlay = (map[row * 19 + column] & 0x1f00) >> 8;
@@ -387,7 +388,7 @@ struct hardware_sprite *sprites;
             continue;
         world_x = EARTHLINGS_IN_LEVEL[bank][piece].x;
         world_y = EARTHLINGS_IN_LEVEL[bank][piece].y;
-        tile = sprites[0].tile & 0x7ff;
+        tile = sprites[0].tile & VDP_TILE_INDEX_MASK;
         VDP_COMMAND = 0x40000000 + (((tile << 5) & 0x3fff) << 16) + (((tile << 5) & 0xc000) >> 14);
         MoveDataToVRAM(ShipPieceMapIcon, 64);
         world_x = (world_x - 128) / 8 + 128 - 2;

@@ -1,3 +1,7 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "present_types.h"
+#include "terrain.h"
 #include "entities.h"
 #include "core_calls.h"
 #include "player.h"
@@ -11,10 +15,10 @@
  * is unknown [INFERENCE]. */
 /* Local 12-byte proposed-position result, not an entity storage view. */
 struct movement_destination {
-    short x, y;
-    char reserved04[2];
-    short tile_x, tile_y;
-    unsigned char fraction_x, fraction_y;
+    short x, y;                            /* 00/02: proposed world pixels; terrain-motion producer writes. */
+    char unused[2];                        /* 04: no producer/consumer access in packet 00dd82. */
+    short tile_x, tile_y;                   /* 06/08: indices in the 5x5 terrain cache, usually 0..4; producer writes. */
+    unsigned char fraction_x, fraction_y;  /* 0a/0b: fractional world pixels, 0..255; producer writes. */
 };
 
 /* Apply the nearby terrain grid to a proposed 24.8 position. Properties at
@@ -43,40 +47,40 @@ struct movement_destination *destination;
         if (PlayersRequireSeparateViews()) {
             entity->x = saved_x;
             entity->y = saved_y;
-            entity->draw_flags |= 48;
+            entity->draw_flags |= (ENTITY_BLOCKED_X | ENTITY_BLOCKED_Y_OR_HEIGHT);
             return;
         }
         entity->x = saved_x;
         entity->y = saved_y;
     }
-    property = terrain[destination->tile_y * 5 + destination->tile_x] & 0xf0;
-    if ((long)entity->flags_52 & 0x40800L) {
+    property = terrain[destination->tile_y * 5 + destination->tile_x] & TERRAIN_CLASS_MASK;
+    if ((long)entity->animation_group_mask & (long)(PLAYER_GROUP_SWIM | PLAYER_GROUP_INNERTUBE_MOVE)) {
         if (entity->level == 1 || entity->level == 26) {
             if (destination->x <= 28 || destination->x >= 2652) {
                 destination->x = entity->x;
-                entity->draw_flags |= 16;
+                entity->draw_flags |= ENTITY_BLOCKED_X;
             }
             if (destination->y <= 48 || destination->y >= 1736) {
                 destination->y = entity->y;
-                entity->draw_flags |= 32;
+                entity->draw_flags |= ENTITY_BLOCKED_Y_OR_HEIGHT;
             }
         }
-        if (property != 0x80) {
-            sprite = (entity->sprite_state & 3) + 48;
+        if (property != TERRAIN_WATER) {
+            sprite = (entity->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_CLIMB_UP;
             SetSprite(entity, sprite);
             entity->velocity_x = 0;
             entity->velocity_y = 0;
-            entity->mode_15 = 0;
+            entity->animation_motion_axes = ANIMATION_MOTION_NONE;
         }
         property = 0x50;
     }
-    if (property <= 0x50 || entity->height > 0) {
+    if (property <= TERRAIN_WALKABLE_MAX || entity->height > 0) {
         entity->x = destination->x;
         entity->fraction_x = destination->fraction_x;
         entity->y = destination->y;
         entity->fraction_y = destination->fraction_y;
-    } else if (property >= 0x80) {
-        if (property == 0x80)
+    } else if (property >= TERRAIN_WATER) {
+        if (property == TERRAIN_WATER)
             alternate = 1;
         if (destination->tile_x == 0) {
             destination->x += 8;
@@ -92,25 +96,25 @@ struct movement_destination *destination;
             destination->y -= 8;
             --destination->tile_y;
         }
-        property = terrain[destination->tile_y * 5 + destination->tile_x] & 0xf0;
-        if (property <= 0x50) {
+        property = terrain[destination->tile_y * 5 + destination->tile_x] & TERRAIN_CLASS_MASK;
+        if (property <= TERRAIN_WALKABLE_MAX) {
             entity->x = destination->x;
             entity->fraction_x = 0;
             entity->y = destination->y;
             entity->fraction_y = 0;
         }
         if (entity->velocity_x > 0)
-            sprite = 19;
+            sprite = PLAYER_ANIM_LEAN_RIGHT;
         if (entity->velocity_x < 0)
-            sprite = 18;
-        if (entity->velocity_y > 0 && (terrain[17] >= 0x80 || terrain[22] >= 0x80))
-            sprite = 17;
-        if (entity->velocity_y < 0 && (terrain[2] >= 0x80 || terrain[7] >= 0x80))
-            sprite = 16;
+            sprite = PLAYER_ANIM_LEAN_LEFT;
+        if (entity->velocity_y > 0 && (terrain[17] >= TERRAIN_WATER || terrain[22] >= TERRAIN_WATER))
+            sprite = PLAYER_ANIM_LEAN_DOWN;
+        if (entity->velocity_y < 0 && (terrain[2] >= TERRAIN_WATER || terrain[7] >= TERRAIN_WATER))
+            sprite = PLAYER_ANIM_LEAN_UP;
         if (sprite != -1) {
-            if (alternate || gPlayer1Powerup[player] == 1) {
+            if (alternate || gPlayer1Powerup[player] == PRESENT_SPRING_SHOES) {
                 sprite += 12;
-                if (gPlayer1Powerup[player] != 1) {
+                if (gPlayer1Powerup[player] != PRESENT_SPRING_SHOES) {
                     if (sprite & 2)
                         entity->velocity_y = 0;
                     else
@@ -118,7 +122,7 @@ struct movement_destination *destination;
                 }
             }
             SetSprite(entity, sprite);
-            entity->draw_flags |= 48;
+            entity->draw_flags |= (ENTITY_BLOCKED_X | ENTITY_BLOCKED_Y_OR_HEIGHT);
             TOEJAM_JUMP_COUNTER[player] = 0;
         }
     }

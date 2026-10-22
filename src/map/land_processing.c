@@ -1,3 +1,9 @@
+#include "psg_effects.h"
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "earthling_types.h"
+#include "terrain.h"
+#include "hardware.h"
 #define TJE_LOCAL_TILEALTERNATIVEPOINTERS
 
 #include "entities.h"
@@ -319,8 +325,8 @@ short camera, x, y;
             else
                 object->y += (short)(GetRandomNumber() % 33) + 16;
             if (!SPLIT_SCREEN || !P1_MENU_OPEN[camera])
-                object->flags_4d &= ~64;
-            PlaySound(16, 50);
+                object->behavior_flags &= ~ENTITY_HIDDEN;
+            PlaySound(PSG_SHORT_NOISE_FADE_RATE2, 50);
             break;
         }
     }
@@ -417,19 +423,19 @@ short camera, row, column;
         object->height_pixels = 32;
         object->sprite_count = 1;
         object->tile_count = 16;
-        object->tile |= 0x8000;
+        object->tile |= VDP_TILE_PRIORITY;
         animation_data = &TransientEffectAnimation;
         object->sequence = animation_data->sequence;
         object->frames = animation_data->frames;
         object->frame_phase = 2;
         for (;;) {
             AllocateEntityViewportSprites(object, camera);
-            if (object->draw_flags & 6)
+            if (object->draw_flags & ENTITY_EITHER_VIEW)
                 break;
             EntityReleaseOneByPriority();
         }
-        object->draw_flags |= 128;
-        object->flags_4d |= 64;
+        object->draw_flags |= ENTITY_DRAW_LATE;
+        object->behavior_flags |= ENTITY_HIDDEN;
     }
 }
 
@@ -522,42 +528,42 @@ void ProcessLand()
     short row, column;
     struct object_state *player;
 
-    if (gPlayerLives[0] >= 0 && gPlayerInfo[0].height <= 4 &&
-        gPlayerInfo[0].level > 1 && !ELEVATOR_FLAG[0]) {
-        row = (gPlayerInfo[0].y >> 6) - 1;
-        column = (gPlayerInfo[0].x >> 7) - 1;
+    if (gPlayerLives[PLAYER_TOEJAM] >= 0 && gPlayerInfo[PLAYER_TOEJAM].height <= 4 &&
+        gPlayerInfo[PLAYER_TOEJAM].level > 1 && !ELEVATOR_FLAG[PLAYER_TOEJAM]) {
+        row = (gPlayerInfo[PLAYER_TOEJAM].y >> 6) - 1;
+        column = (gPlayerInfo[PLAYER_TOEJAM].x >> 7) - 1;
         if (row >= 0 && column >= 0 && row < 26 && column < 19 &&
             (gMapDataA[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(0)) {
             MapAnimateMarkedLandPaths(0, row, column);
             EarthlingDamageOnHazardTerrain(0, gLevel912C);
-            player = &gPlayerInfo[0];
+            player = &gPlayerInfo[PLAYER_TOEJAM];
             UpdateLandAroundPlayer(0);
-            if (LAND_UNDER_TOEJAM == 0x90 && !gPlayerInfo[0].height &&
+            if (LAND_UNDER_TOEJAM == TERRAIN_VOID && !gPlayerInfo[PLAYER_TOEJAM].height &&
 #if REVISION >= 2
-                player->sprite_state != 78 && player->sprite_state != 79 &&
+                player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
 #endif
-                !(player->flags_52 & 0x8020)) {
+                !(player->animation_group_mask & (PLAYER_GROUP_FALL | PLAYER_GROUP_ICARUS_FLY))) {
                 StopPlayer(player);
                 PlayerStartFalling(player, 0);
             }
         }
     }
-    if (gPlayerLives[1] >= 0 && gPlayerInfo[1].height <= 4 &&
-        gPlayerInfo[1].level > 1 && !ELEVATOR_FLAG[1]) {
-        row = (gPlayerInfo[1].y >> 6) - 1;
-        column = (gPlayerInfo[1].x >> 7) - 1;
+    if (gPlayerLives[PLAYER_EARL] >= 0 && gPlayerInfo[PLAYER_EARL].height <= 4 &&
+        gPlayerInfo[PLAYER_EARL].level > 1 && !ELEVATOR_FLAG[PLAYER_EARL]) {
+        row = (gPlayerInfo[PLAYER_EARL].y >> 6) - 1;
+        column = (gPlayerInfo[PLAYER_EARL].x >> 7) - 1;
         if (row >= 0 && column >= 0 && row < 26 && column < 19) {
             if (SPLIT_SCREEN) {
                 if ((gMapDataB[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(1)) {
                     MapAnimateMarkedLandPaths(1, row, column);
                     EarthlingDamageOnHazardTerrain(1, gLevel912E);
-                    player = &gPlayerInfo[1];
+                    player = &gPlayerInfo[PLAYER_EARL];
                     UpdateLandAroundPlayer(1);
-                    if (LAND_UNDER_EARL == 0x90 && !gPlayerInfo[1].height &&
+                    if (LAND_UNDER_EARL == TERRAIN_VOID && !gPlayerInfo[PLAYER_EARL].height &&
 #if REVISION >= 2
-                        player->sprite_state != 78 && player->sprite_state != 79 &&
+                        player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
 #endif
-                        !(gPlayerInfo[1].flags_52 & 0x8020)) {
+                        !(gPlayerInfo[PLAYER_EARL].animation_group_mask & (PLAYER_GROUP_FALL | PLAYER_GROUP_ICARUS_FLY))) {
                         StopPlayer(player);
                         PlayerStartFalling(player, 1);
                     }
@@ -566,13 +572,13 @@ void ProcessLand()
                 if ((gMapDataA[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(1)) {
                     MapAnimateMarkedLandPaths(0, row, column);
                     EarthlingDamageOnHazardTerrain(0, gLevel912C);
-                    player = &gPlayerInfo[1];
+                    player = &gPlayerInfo[PLAYER_EARL];
                     UpdateLandAroundPlayer(1);
-                    if (LAND_UNDER_EARL == 0x90 && !gPlayerInfo[1].height &&
+                    if (LAND_UNDER_EARL == TERRAIN_VOID && !gPlayerInfo[PLAYER_EARL].height &&
 #if REVISION >= 2
-                        player->sprite_state != 78 && player->sprite_state != 79 &&
+                        player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
 #endif
-                        !(player->flags_52 & 0x8020)) {
+                        !(player->animation_group_mask & (PLAYER_GROUP_FALL | PLAYER_GROUP_ICARUS_FLY))) {
                         StopPlayer(player);
                         PlayerStartFalling(player, 1);
                     }

@@ -1,3 +1,6 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "terrain.h"
 #include "entities.h"
 #include "player.h"
 #include "present_calls.h"
@@ -18,7 +21,7 @@ unsigned short terrain;
     char sprite = -1;
     short velocity_x = state->velocity_x;
     short velocity_y = state->velocity_y;
-    char direction = state->sprite_state & 3;
+    char direction = state->sprite_state & DIRECTION_MASK;
     char jump;
 
     if (velocity_x > 0 && direction != 3)
@@ -30,27 +33,27 @@ unsigned short terrain;
     else if (velocity_y < 0 && direction != 0)
         direction = 0;
     jump = P1_PROCESSED_INPUT[player] & 0x40;
-    if (jump && terrain <= 0x50 && (state->flags_52 & 0x800000))
-        sprite = direction + 96;
-    else if (!jump && (state->flags_52 & 0x1000000)) {
+    if (jump && terrain <= TERRAIN_WALKABLE_MAX && (state->animation_group_mask & PLAYER_GROUP_SKATES))
+        sprite = direction + PLAYER_ANIM_SKATES_CROUCH_UP;
+    else if (!jump && (state->animation_group_mask & PLAYER_GROUP_SKATES_CROUCH)) {
         state->velocity_height = 0x400;
         state->acceleration_height = -64;
-        sprite = direction + 104;
-    } else if (((terrain == 0x80 || terrain == 0x90) &&
-                !(state->flags_52 & 0x6000000)) ||
-               (terrain != 0x80 && (state->flags_52 & 0x2000000))) {
+        sprite = direction + PLAYER_ANIM_SKATES_AIR_UP;
+    } else if (((terrain == TERRAIN_WATER || terrain == TERRAIN_VOID) &&
+                !(state->animation_group_mask & (PLAYER_GROUP_SKATES_WATER | PLAYER_GROUP_SKATES_AIR))) ||
+               (terrain != TERRAIN_WATER && (state->animation_group_mask & PLAYER_GROUP_SKATES_WATER))) {
         state->velocity_height = 0x200;
         state->acceleration_height = -64;
-        sprite = direction + 104;
-    } else if ((state->flags_52 & 0x4000000) && state->height <= 0) {
-        if (terrain <= 0x50)
-            sprite = direction + 92;
-        else if (terrain == 0x80)
-            sprite = direction + 100;
+        sprite = direction + PLAYER_ANIM_SKATES_AIR_UP;
+    } else if ((state->animation_group_mask & PLAYER_GROUP_SKATES_AIR) && state->height <= 0) {
+        if (terrain <= TERRAIN_WALKABLE_MAX)
+            sprite = direction + PLAYER_ANIM_SKATES_UP;
+        else if (terrain == TERRAIN_WATER)
+            sprite = direction + PLAYER_ANIM_SKATES_WATER_UP;
         else {
             StopPlayer(state);
             state->acceleration_height = -32;
-            sprite = (state->sprite_state & 3) + 20;
+            sprite = (state->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_FALL_UP;
             gPlayerLandingCounterSeed[player] = 2;
         }
     } else if (direction != (state->sprite_state & (unsigned long)3))
@@ -75,12 +78,12 @@ unsigned char input;
 
     velocity_x = state->velocity_x;
     velocity_y = state->velocity_y;
-    if (!(state->flags_52 & 0x4000000) || (state->draw_flags & 0x30)) {
+    if (!(state->animation_group_mask & PLAYER_GROUP_SKATES_AIR) || (state->draw_flags & (ENTITY_BLOCKED_X | ENTITY_BLOCKED_Y_OR_HEIGHT))) {
         up = input & 1;
         down = input & 2;
         left = input & 4;
         right = input & 8;
-        direction = state->sprite_state & 3;
+        direction = state->sprite_state & DIRECTION_MASK;
         if ((up && right) || (up && left) ||
             (down && right) || (down && left)) {
             if (!changed_direction)
@@ -177,8 +180,8 @@ unsigned short terrain;
     short player;
     unsigned char input;
 
-    player = state->entity_number;
-    if (TOEJAM_FALL_STATE[player] || !(state->flags_52 & 0x7800000) ||
+    player = state->entity_index;
+    if (TOEJAM_FALL_STATE[player] || !(state->animation_group_mask & PLAYER_GROUP_ALL_SKATES) ||
         ELEVATOR_FLAG[player])
         return;
     if ((state->velocity_height < 0 && state->height <= 0) ||
@@ -186,7 +189,7 @@ unsigned short terrain;
         state->height = 0;
         state->velocity_height = 0;
         state->acceleration_height = 0;
-        state->draw_flags |= 0x40;
+        state->draw_flags |= ENTITY_SHADOW;
     }
     if ((P1_PROCESSED_INPUT[player] & 15) != (P1_PREV_PROCESSED_INPUT[player] & 15)) {
         changed_direction = 1;
@@ -197,7 +200,7 @@ unsigned short terrain;
         input = PlayerRemapDirectionalInput(player);
     else
         input = P1_PROCESSED_INPUT[player];
-    if (state->velocity_y && (state->draw_flags & 32)) {
+    if (state->velocity_y && (state->draw_flags & ENTITY_BLOCKED_Y_OR_HEIGHT)) {
         input &= 0xfc;
         changed_direction = 1;
         if (!(input & 12)) {
@@ -207,7 +210,7 @@ unsigned short terrain;
                 input |= 2;
         }
     }
-    if (state->velocity_x && (state->draw_flags & 16)) {
+    if (state->velocity_x && (state->draw_flags & ENTITY_BLOCKED_X)) {
         input &= 0xf3;
         changed_direction = 1;
         if (!(input & 3)) {

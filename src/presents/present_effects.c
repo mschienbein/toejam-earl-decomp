@@ -1,3 +1,10 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "present_types.h"
+#include "terrain.h"
+#include "psg_effects.h"
+#include "fm_effects.h"
+#include "music_ids.h"
 #include "entities.h"
 #include "sprites.h"
 #include "hardware.h"
@@ -50,14 +57,14 @@ char level;
         effect->height_pixels = 32;
         effect->sprite_count = 1;
         effect->tile_count = 16;
-        effect->tile |= 0x8000;
+        effect->tile |= VDP_TILE_PRIORITY;
         animation = &TransientEffectAnimation;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = animation->period;
         effect->frame_duration = 1;
         effect->frame = -1;
-        PlaySound(16, 50);
+        PlaySound(PSG_SHORT_NOISE_FADE_RATE2, 50);
         return 0;
     }
     return 1;
@@ -84,16 +91,16 @@ short player_number;
         decoy->height_pixels = 32;
         decoy->sprite_count = 2;
         decoy->tile_count = 24;
-        decoy->tile |= 0x8000;
+        decoy->tile |= VDP_TILE_PRIORITY;
         animation = &PlayerDecoyAnimations[player_number];
         decoy->sequence = animation->sequence;
         decoy->frames = animation->frames;
         decoy->frame_phase = animation->period;
         decoy->frame_duration = 1;
-        decoy->flags_4d |= 1;
+        decoy->behavior_flags |= ENTITY_COLLIDABLE;
         gPlayerDecoyHitCounts[player_number] = 0;
         if (!PresentStartTransientEffect(player_number, decoy->x, decoy->y + 1, 5, decoy->level))
-            decoy->flags_4d |= 64;
+            decoy->behavior_flags |= ENTITY_HIDDEN;
     }
 }
 
@@ -121,7 +128,7 @@ short object_number;
 {
     short player_number;
 
-    for (player_number = 0; player_number <= 1; ++player_number) {
+    for (player_number = PLAYER_TOEJAM; player_number <= PLAYER_EARL; ++player_number) {
         if (gPlayerDecoyEntities[player_number] == object_number) {
             ++gPlayerDecoyHitCounts[player_number];
             return 1;
@@ -141,7 +148,7 @@ short player_number;
         if (!PresentUpdateTransientEffect(player_number))
             return;
         decoy = &gPlayerInfo[object_number];
-        decoy->flags_4d &= ~64;
+        decoy->behavior_flags &= ~ENTITY_HIDDEN;
         if (gPlayerInfo[player_number].level != decoy->level) {
             FreeEntity(object_number);
             gPlayerDecoyEntities[player_number] = 0;
@@ -181,7 +188,7 @@ short player_number;
         doorway->height_pixels = 48;
         doorway->sprite_count = 2;
         doorway->tile_count = 28;
-        doorway->tile |= 0x8000;
+        doorway->tile |= VDP_TILE_PRIORITY;
         animation = &DoorwayAnimations[0];
         doorway->sequence = animation->sequence;
         doorway->frames = animation->frames;
@@ -189,9 +196,9 @@ short player_number;
         doorway->frame_duration = 1;
         doorway->frame = -1;
         doorway->sprite_state = 0;
-        doorway->flags_4d |= 1;
+        doorway->behavior_flags |= ENTITY_COLLIDABLE;
         if (!PresentStartTransientEffect(player_number, doorway->x, doorway->y + 1, 5, doorway->level))
-            doorway->flags_4d |= 64;
+            doorway->behavior_flags |= ENTITY_HIDDEN;
     }
 }
 
@@ -204,7 +211,7 @@ short row, column;
     char object_number;
     struct object_state *doorway;
 
-    for (player_number = 0; player_number <= 1; ++player_number) {
+    for (player_number = PLAYER_TOEJAM; player_number <= PLAYER_EARL; ++player_number) {
         if (object_number = gPlayerDoorwayEntities[player_number]) {
             doorway = &gPlayerInfo[object_number];
             if (player->level == doorway->level &&
@@ -229,7 +236,7 @@ struct object_state *player;
 
     camera_x = TOEJAM_CAMERA_NEWX;
     camera_y = TOEJAM_CAMERA_NEWY;
-    if (gPlayerLives[0] >= 0 && player_number == 1 && SPLIT_SCREEN) {
+    if (gPlayerLives[PLAYER_TOEJAM] >= 0 && player_number == PLAYER_EARL && SPLIT_SCREEN) {
         camera_x = EARL_CAMERA_NEWX;
         camera_y = EARL_CAMERA_NEWY;
     }
@@ -243,10 +250,10 @@ struct object_state *player;
     WaitForVBlankWithGraphicsPaused();
     ClearSkipVHBlankFlags();
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     UpdateScreenSplitMode(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     SetSkipVHBlankFlags();
 }
 
@@ -262,9 +269,9 @@ short doorway_owner;
         if (!PresentUpdateTransientEffect(doorway_owner))
             return;
         object = &gPlayerInfo[object_number];
-        if (object->flags_4d & 64)
-            object->flags_4d &= ~64;
-        if (!(object->draw_flags & 6) && !P1_MENU_OPEN[0] && !HBLANK_FLAG_1) {
+        if (object->behavior_flags & ENTITY_HIDDEN)
+            object->behavior_flags &= ~ENTITY_HIDDEN;
+        if (!(object->draw_flags & ENTITY_EITHER_VIEW) && !P1_MENU_OPEN[PLAYER_TOEJAM] && !HBLANK_FLAG_1) {
             FreeEntity(object_number);
             gPlayerDoorwayEntities[doorway_owner] = 0;
         } else {
@@ -299,9 +306,9 @@ short doorway_owner;
                 object->frame = -1;
                 object->sprite_state = active;
                 if (active)
-                    object->flags_4d &= ~1;
+                    object->behavior_flags &= ~ENTITY_COLLIDABLE;
                 else {
-                    object->flags_4d |= 1;
+                    object->behavior_flags |= ENTITY_COLLIDABLE;
                     if (gDoorwayPlayerContactFlags[doorway_owner]) {
                         object_number = (gDoorwayPlayerContactFlags[doorway_owner] & 3) - 1;
                         player = &gPlayerInfo[object_number];
@@ -327,26 +334,26 @@ unsigned short terrain;
         (gPlayerPromotionDisplayEntities[player_number] = (int)AllocateEntityWithEviction(0))) {
         display = &gPlayerInfo[gPlayerPromotionDisplayEntities[player_number]];
         player = &gPlayerInfo[player_number];
-        display->flags_4d |= 8;
-        display->parent = player_number;
+        display->behavior_flags |= ENTITY_ATTACHED;
+        display->owner = player_number;
         display->level = player->level;
-        display->tile |= 0x8000;
+        display->tile |= VDP_TILE_PRIORITY;
         display->width = 32;
         display->height_pixels = 32;
-        if (promotion == 11) {
+        if (promotion == PRESENT_PROMOTION) {
             animation = RankPromotionDisplayAnimation;
-            display->flag_58 = 8;
+            display->attachment_y_or_latch = 8;
             display->sprite_count = 2;
             display->tile_count = 32;
         } else {
             display->sprite_count = 1;
             display->tile_count = 16;
-            if (promotion == 16)
+            if (promotion == PRESENT_TOTAL_BUMMER)
                 animation = HealthDrainDisplayAnimation;
             else
                 animation = ExtraLifeDisplayAnimation;
-            display->flag_58 = 6;
-            display->offset_height = 1;
+            display->attachment_y_or_latch = 6;
+            display->attachment_height = 1;
         }
         display->sequence = animation->sequence;
         display->frames = animation->frames;
@@ -354,26 +361,26 @@ unsigned short terrain;
         display->frame = -1;
         display->frame_duration = 1;
         display->sprite_state = promotion;
-        if (promotion != 11 && terrain < 128 && player->height <= 0 &&
-            player->sprite_state != 5 && player->sprite_state != 6 && player->sprite_state != 79 &&
-            player->sprite_state != 78 && player->sprite_state != 77 &&
-            !(player->flags_52 & 0x7785bf60L)) {
-            SetSprite(player, (char)(promotion == 17 ? 71 : 70));
-            player->mode_15 = 3;
+        if (promotion != PRESENT_PROMOTION && terrain < TERRAIN_WATER && player->height <= 0 &&
+            player->sprite_state != PLAYER_ANIM_GHOST && player->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
+            player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_INNERTUBE_WATER_IDLE &&
+            !(player->animation_group_mask & 0x7785bf60L)) {
+            SetSprite(player, (char)(promotion == PRESENT_EXTRA_LIFE ? PLAYER_ANIM_EXTRA_LIFE : PLAYER_ANIM_ITEM_REACTION));
+            player->animation_motion_axes = ANIMATION_MOTION_XY;
             StopPlayer(player);
         }
     } else {
-        if (promotion == 17 ||
-            (promotion == 11 && (gPlayerRank[player_number] - 2) % 3 == 0)) {
+        if (promotion == PRESENT_EXTRA_LIFE ||
+            (promotion == PRESENT_PROMOTION && (gPlayerRank[player_number] - 2) % 3 == 0)) {
             if (gPlayerLives[player_number] < 8) {
                 ++gPlayerLives[player_number];
                 VBLANK_FLAG_5 = 1;
             }
-        } else if (promotion == 16) {
-            PlaySound(18, 40);
+        } else if (promotion == PRESENT_TOTAL_BUMMER) {
+            PlaySound(PSG_TONE_NOISE_BURSTS, 40);
             TOEJAMS_HEALTH[player_number] = 0;
         }
-        if (promotion == 11) {
+        if (promotion == PRESENT_PROMOTION) {
             /* ORIGINAL BUG: this path passes the object pointer where other
              * speech calls pass the player number. */
             GenerateSpeech(&gPlayerInfo[player_number],
@@ -381,7 +388,7 @@ unsigned short terrain;
             PlaySoundEffect((long)Sfx_YeahAllRight, 90, 0);
         }
     }
-    if (promotion == 17)
+    if (promotion == PRESENT_EXTRA_LIFE)
         PlaySoundEffect((long)Sfx_ExtraLifeGlitz, 87, 0);
 }
 
@@ -393,19 +400,19 @@ unsigned short terrain;
     short player_number, phase, promotion_complete = 0;
     struct object_state *display;
 
-    player_number = player->entity_number;
+    player_number = player->entity_index;
     if (!gPlayerPromotionDisplayEntities[player_number])
         return;
     display = &gPlayerInfo[gPlayerPromotionDisplayEntities[player_number]];
     display->level = player->level;
     if (display->frame_duration) {
-        if (display->sprite_state == 16) {
+        if (display->sprite_state == PRESENT_TOTAL_BUMMER) {
             if (TOEJAMS_HEALTH[player_number] > 1)
                 --TOEJAMS_HEALTH[player_number];
-            PlaySound(18, 40);
-        } else if (display->sprite_state == 17 && gPcmEffectCooldownTicks < 4)
+            PlaySound(PSG_TONE_NOISE_BURSTS, 40);
+        } else if (display->sprite_state == PRESENT_EXTRA_LIFE && gPcmEffectCooldownTicks < 4)
             PlaySoundEffect((long)Sfx_ExtraLifeGlitz, 87, 0);
-        else if (display->sprite_state == 11 &&
+        else if (display->sprite_state == PRESENT_PROMOTION &&
                  (PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
                   (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 2)) {
             phase = display->frame % 14;
@@ -413,22 +420,22 @@ unsigned short terrain;
                 PlaySoundEffect((long)Sfx_JamSnareDrum, 90, 0);
         }
     } else {
-        if (display->sprite_state == 17) {
+        if (display->sprite_state == PRESENT_EXTRA_LIFE) {
             if (gPlayerLives[player_number] < 8) {
                 ++gPlayerLives[player_number];
                 VBLANK_FLAG_5 = 1;
             }
-        } else if (display->sprite_state == 16) {
-            if (player->sprite_state != 5 && player->sprite_state != 6) {
+        } else if (display->sprite_state == PRESENT_TOTAL_BUMMER) {
+            if (player->sprite_state != PLAYER_ANIM_GHOST && player->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST) {
                 TOEJAMS_HEALTH[player_number] = 0;
                 GenerateSpeech(player_number, "Bogus", 0);
             }
-        } else if (display->sprite_state == 11) {
+        } else if (display->sprite_state == PRESENT_PROMOTION) {
             GenerateSpeech(player_number, RankNameStrTable[gPlayerRank[player_number]], 1);
             promotion_complete = 1;
             PlaySoundEffect((long)Sfx_YeahAllRight, 90, 0);
         }
-        if (player->sprite_state == 71 || player->sprite_state == 70)
+        if (player->sprite_state == PLAYER_ANIM_EXTRA_LIFE || player->sprite_state == PLAYER_ANIM_ITEM_REACTION)
             SetSprite(player, GetActivePresentSprite(player));
         FreeEntity(gPlayerPromotionDisplayEntities[player_number]);
         gPlayerPromotionDisplayEntities[player_number] = 0;
@@ -444,10 +451,10 @@ short player_number;
     if (gPlayer1BurpsLeft[player_number]) {
         if (gPlayer1BurpTimer[player_number] == -1) {
             StartDialogue(24, player_number);
-            AudioRequestChannelTemplateEffect(14);
+            AudioRequestChannelTemplateEffect(FM_EFFECT_BURP);
             gPlayer1BurpTimer[player_number] = 50;
         } else if (--gPlayer1BurpTimer[player_number] < 0) {
-            EarthlingResetStateTwoByDrawMask(gPlayerInfo[player_number].draw_flags & 6);
+            EarthlingResetStateTwoByDrawMask(gPlayerInfo[player_number].draw_flags & ENTITY_EITHER_VIEW);
             GenerateSpeech(player_number, "Burp", 1);
             --gPlayer1BurpsLeft[player_number];
             gPlayer1BurpTimer[player_number] = 20 + GetRandomNumber() % 81;
@@ -469,11 +476,11 @@ short player_number;
             cloud = &gPlayerInfo[gPlayer1RainCloudState[player_number]];
             player = &gPlayerInfo[player_number];
             cloud->level = player->level;
-            cloud->flags_4d |= 8;
-            cloud->parent = player_number;
-            cloud->flag_58 = 10;
-            cloud->offset_height = 10;
-            cloud->tile |= 0x8000;
+            cloud->behavior_flags |= ENTITY_ATTACHED;
+            cloud->owner = player_number;
+            cloud->attachment_y_or_latch = 10;
+            cloud->attachment_height = 10;
+            cloud->tile |= VDP_TILE_PRIORITY;
             cloud->width = 32;
             cloud->height_pixels = 32;
             cloud->sprite_count = 1;
@@ -511,7 +518,7 @@ short player_number;
         }
     } else if (--gPlayer1RainCloudTimer[player_number] <= 0 ||
                gPlayerLives[player_number] < 0 ||
-               player->sprite_state == 5 || player->sprite_state == 6) {
+               player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST) {
         FreeEntity(cloud_number);
         gPlayer1RainCloudState[player_number] = 0;
     } else if (cloud->sprite_state) {
@@ -519,16 +526,16 @@ short player_number;
             animation = &animations[0];
             cloud->sprite_state = 0;
             if (!TOEJAM_FALL_STATE[player_number] &&
-                (player->sprite_state == 0 || player->sprite_state == 4 ||
-                 (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
-                 (player->flags_52 & 0x0834d06c))) {
+                (player->sprite_state == PLAYER_ANIM_IDLE || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+                 (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+                 (player->animation_group_mask & 0x0834d06c))) {
                 gPlayerPendingHurtDamage[player_number] = 2;
-                SetSprite(player, 68);
-                player->mode_15 = 3;
+                SetSprite(player, PLAYER_ANIM_ZAPPED);
+                player->animation_motion_axes = ANIMATION_MOTION_XY;
                 player->velocity_height = 0;
                 player->acceleration_height = 0;
-                PlaySound(18, 40);
-            } else if (player->flags_52 & 0x380)
+                PlaySound(PSG_TONE_NOISE_BURSTS, 40);
+            } else if (player->animation_group_mask & (PLAYER_GROUP_JUMP_WINDUP | PLAYER_GROUP_JUMP_TAKEOFF | PLAYER_GROUP_JUMP_DESCEND))
                 TOEJAMS_HEALTH[player_number] -= 2;
         }
     } else if ((GetRandomNumber() & 63) == 1) {
@@ -563,16 +570,16 @@ short player_number;
         box->height_pixels = 24;
         box->sprite_count = 1;
         box->tile_count = 16;
-        box->tile |= 0x8000;
+        box->tile |= VDP_TILE_PRIORITY;
         animation = AnimationDescriptors_0AF0D0;
         box->sequence = animation->sequence;
         box->frames = animation->frames;
         box->frame_phase = 2;
         box->frame_duration = 1;
-        box->flags_4d |= 1;
+        box->behavior_flags |= ENTITY_COLLIDABLE;
         PresentStartTransientEffect(player_number, box->x, box->y + 1, 1, box->level);
         gPlayerBoomBoxTimers[player_number] = 300;
-        VBLANK_FLAG_7 = 14;
+        VBLANK_FLAG_7 = MUSIC_BOOMBOX;
         gBoomBoxMusicTemplateHold = 1;
     }
 }
@@ -607,7 +614,7 @@ void ProcessPresents()
 {
     short player_number;
 
-    for (player_number = 0; player_number <= 1; ++player_number) {
+    for (player_number = PLAYER_TOEJAM; player_number <= PLAYER_EARL; ++player_number) {
         PresentUpdateDecoy(player_number);
         PresentUpdateBoomBox(player_number);
         PresentUpdateDoorway(player_number);
@@ -628,69 +635,69 @@ short player_number, present_number;
     unsigned short terrain;
 
     player = &gPlayerInfo[player_number];
-    if (ELEVATOR_FLAG[player_number] || player->sprite_state == 5 || player->sprite_state == 6)
+    if (ELEVATOR_FLAG[player_number] || player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST)
         return 1;
-    terrain = player_number == 0 ? LAND_UNDER_TOEJAM : LAND_UNDER_EARL;
-    if (present_number == 27)
-        present_number = 7;
-    else if (present_number == 15) {
-        if (terrain >= 128)
+    terrain = player_number == PLAYER_TOEJAM ? LAND_UNDER_TOEJAM : LAND_UNDER_EARL;
+    if (present_number == PRESENT_BONUS_HITOPS)
+        present_number = PRESENT_SUPER_HITOPS;
+    else if (present_number == PRESENT_DECOY) {
+        if (terrain >= TERRAIN_WATER)
             return 1;
         OpenDecoy(player_number);
-    } else if (present_number == 8)
+    } else if (present_number == PRESENT_DOORWAY)
         PresentIsDoorway(player_number);
-    else if (present_number == 17 || present_number == 16)
+    else if (present_number == PRESENT_EXTRA_LIFE || present_number == PRESENT_TOTAL_BUMMER)
         PerformPromotion(player_number, present_number, terrain);
-    else if (present_number == 11)
+    else if (present_number == PRESENT_PROMOTION)
         gPlayerPoints[player_number] = GetScoreForPromo(gPlayerRank[player_number]) - 2;
-    else if (present_number == 9) {
+    else if (present_number == PRESENT_FOOD) {
         if (GetRandomNumber() % 100 < 70)
             EatYummyFood(player_number);
         else
             EatYuckyFood(player_number);
-    } else if (present_number == 10) {
+    } else if (present_number == PRESENT_ROOTBEER) {
         gPlayer1BurpTimer[player_number] = -1;
         gPlayer1BurpsLeft[player_number] += GetRandomNumber() % 7 + 12;
         TOEJAMS_HEALTH[player_number] += 4;
-    } else if (present_number == 22) {
+    } else if (present_number == PRESENT_TOMATO_RAIN) {
         SetTomatoRainTomatoes(player_number);
         GenerateSpeech(player_number, "Uh oh?!?", 1);
-        if (player->sprite_state == 0 || player->sprite_state == 4 ||
-            (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
-            (player->flags_52 & 0x0830400c)) {
-            SetSprite(player, 1);
+        if (player->sprite_state == PLAYER_ANIM_IDLE || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+            (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+            (player->animation_group_mask & 0x0830400c)) {
+            SetSprite(player, PLAYER_ANIM_TOMATO_RAIN);
             StopPlayer(player);
-            player->mode_15 = 0;
+            player->animation_motion_axes = ANIMATION_MOTION_NONE;
         }
-    } else if (present_number == 12) {
+    } else if (present_number == PRESENT_TOGETHERNESS) {
         if (gPendingUnfallPlayer)
             return 1;
         gPendingUnfallPlayer = player_number + 1;
-    } else if (present_number == 13)
+    } else if (present_number == PRESENT_RAIN_CLOUD)
         PresentIsRainCloud(player_number);
-    else if (present_number == 14)
+    else if (present_number == PRESENT_FUDGE_SUNDAE)
         EatFudgeSundae(player_number);
-    else if (present_number == 19) {
-        if (terrain >= 128)
+    else if (present_number == PRESENT_TELEPHONE) {
+        if (terrain >= TERRAIN_WATER)
             return 1;
         OpenTelephone(player_number);
-    } else if (present_number == 20) {
+    } else if (present_number == PRESENT_EXTRA_BUCK) {
         ++gPlayerBucks[player_number];
         StartDialogue(29, player_number);
-    } else if (present_number == 21) {
+    } else if (present_number == PRESENT_JACKPOT) {
         gPlayerBucks[player_number] += 5;
         StartDialogue(30, player_number);
-    } else if (present_number == 23)
+    } else if (present_number == PRESENT_EARTHLING)
         OpenEarthlingPresent(player, terrain);
-    else if (present_number == 24) {
-        if (terrain >= 128 || player->height > 0)
+    else if (present_number == PRESENT_SCHOOL_BOOK) {
+        if (terrain >= TERRAIN_WATER || player->height > 0)
             return 1;
         OpenSchoolBook(player);
-    } else if (present_number == 25) {
-        if (terrain >= 128)
+    } else if (present_number == PRESENT_BOOMBOX) {
+        if (terrain >= TERRAIN_WATER)
             return 1;
         OpenBoomBox(player_number);
-    } else if (present_number == 1 && !player->level)
+    } else if (present_number == PRESENT_SPRING_SHOES && !player->level)
         return 1;
     SetupSelectedPresent(player, player_number, present_number, terrain);
     return 0;
@@ -704,13 +711,13 @@ unsigned short terrain;
 {
     char sprite;
 
-    if (present_number < 8 && present_number != 5 && player->height > 0) {
-        if (!gPlayer1Powerup[player_number] && (player->flags_52 & 0x8000) &&
-            present_number != 0)
+    if (present_number < 8 && present_number != PRESENT_ROCKET_SKATES && player->height > 0) {
+        if (!gPlayer1Powerup[player_number] && (player->animation_group_mask & PLAYER_GROUP_ICARUS_FLY) &&
+            present_number != PRESENT_ICARUS_WINGS)
             PresentTryEndActivePowerup(player_number);
-        else if (gPlayer1Powerup[player_number] == 1 &&
+        else if (gPlayer1Powerup[player_number] == PRESENT_SPRING_SHOES &&
                  !TOEJAM_FALL_STATE[player_number] &&
-                 (player->flags_52 & 32) && present_number != 1) {
+                 (player->animation_group_mask & PLAYER_GROUP_FALL) && present_number != PRESENT_SPRING_SHOES) {
             StopPlayer(player);
             player->acceleration_height = -32;
             gPlayerLandingCounterSeed[player_number] = 2;
@@ -724,45 +731,45 @@ unsigned short terrain;
     gPlayer1PowerupTimer[player_number] = 1000;
     sprite = -1;
     switch (present_number) {
-    case 5:
+    case PRESENT_ROCKET_SKATES:
         gPlayer1PowerupTimer[player_number] >>= 2;
 #if REVISION >= 2
         if (!TOEJAM_FALL_STATE[player_number]) {
 #endif
-            PlaySound(5, 94);
+            PlaySound(PSG_START_BACKGROUND_NOISE, 94);
             OpenRocketSkates(player, player_number, terrain);
 #if REVISION >= 2
         }
 #endif
         break;
-    case 0:
+    case PRESENT_ICARUS_WINGS:
         gPlayer1PowerupTimer[player_number] >>= 1;
         PlayerInitializePhasedJumpMotion(player_number);
         break;
-    case 3:
+    case PRESENT_TOMATOES:
         StartDialogue(26, player_number);
         break;
-    case 4:
+    case PRESENT_SLING_SHOT:
         StartDialogue(27, player_number);
         break;
-    case 6:
+    case PRESENT_ROSE_BUSHES:
         GenerateSpeech(player_number, "rosebushes!", 1);
         break;
-    case 7:
+    case PRESENT_SUPER_HITOPS:
         gPlayer1PowerupTimer[player_number] = 750;
         StartDialogue(28, player_number);
         break;
     }
-    if (present_number != 5)
+    if (present_number != PRESENT_ROCKET_SKATES)
         sprite = GetActivePresentSprite(player);
-    if (sprite != -1 && !(player->flags_52 & 0x20000000) &&
-        (player->sprite_state == 0 || player->sprite_state == 4 ||
-         (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
-         player->sprite_state == 3 || player->sprite_state == 7 ||
+    if (sprite != -1 && !(player->animation_group_mask & PLAYER_GROUP_STATIONARY) &&
+        (player->sprite_state == PLAYER_ANIM_IDLE || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+         (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+         player->sprite_state == PLAYER_ANIM_SWIM_IDLE || player->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE ||
 #if REVISION >= 2
-         (player->flags_52 & 0x0804c81c))) {
+         (player->animation_group_mask & 0x0804c81c))) {
 #else
-         (player->flags_52 & 0x0004c81c))) {
+         (player->animation_group_mask & 0x0004c81c))) {
 #endif
         SetSprite(player, sprite);
         player->velocity_x = 0;

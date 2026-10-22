@@ -1,3 +1,4 @@
+#include "psg_effects.h"
 #include "hardware.h"
 #include "revision.h"
 #include "entities.h"
@@ -25,9 +26,9 @@ void SegaLogoClearVideoPlanes()
     ClearColourRAM();
     VDP_COMMAND = 0x7fe00001L;
     MoveDataToVRAM(VRAMClearingData, 16);
-    VDP_COMMAND = 0x60000002L;
+    VDP_COMMAND = VDP_WRITE_PLANE_A;
     FillVdpDataWords(0xe3ff, 2048);
-    VDP_COMMAND = 0x60000003L;
+    VDP_COMMAND = VDP_WRITE_PLANE_B;
     FillVdpDataWords(0x63ff, 2048);
 }
 
@@ -43,7 +44,7 @@ void SEGAVideo()
     SegaLogoClearVideoPlanes();
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank0, 0);
     DrawStarfieldPlane();
-    VDP_COMMAND = 0x40000000L;
+    VDP_COMMAND = VDP_WRITE_VRAM_BASE;
     MoveDataToVRAM(SplashSegaLogo, 784);
     UploadVramWordRectangle(0xa51c, SEGALogoTileMap, 12, 4, 64);
     SEGA_PAL_TO_LOAD = SegaLogo_Pal;
@@ -53,7 +54,7 @@ void SEGAVideo()
     while (frame == TIME_COUNTER)
         ;
     gMode2RegSoftcopy |= 64;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
 #if REVISION >= 2
     TIME_COUNTER = 0;
 #endif
@@ -97,7 +98,7 @@ void SEGAVideo()
             else if (character_x > 178 && character_x < 191) {
                 character_y -= 2;
                 if (character_x == 190)
-                    PlaySound(21, 99);
+                    PlaySound(PSG_TONE_RISE, 99);
             }
             CutscenePositionRocketshipPair(--character_x, character_y);
             if (TIME_COUNTER >= palette_time + 3) {
@@ -127,7 +128,7 @@ void SegaLogoCreateTrademarkEntity()
 
     if (gSegaTrademarkEntity = (int)AllocateEntity()) {
         trademark = &gPlayerInfo[gSegaTrademarkEntity];
-        trademark->tile = 0x8000;
+        trademark->tile = VDP_TILE_PRIORITY;
         trademark->current_frame = Spr_Trademark[0];
         trademark->frames = Spr_Trademark;
         trademark->tile_count = 108;

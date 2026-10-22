@@ -1,0 +1,34 @@
+#ifndef TJE_PSG_EFFECTS_H
+#define TJE_PSG_EFFECTS_H
+
+/* PlaySound IDs in the Z80 PSGEffectTable. Names describe observed routines, not guessed gameplay
+ * sound titles. */
+#define PSG_SILENCE 0
+#define PSG_DOUBLE_TONE_PULSE 1
+#define PSG_DOUBLE_TONE_SWEEP 2
+#define PSG_NOISE_SWEEP 3
+#define PSG_NOISE_FALL 4
+#define PSG_START_BACKGROUND_NOISE 5
+#define PSG_STOP_BACKGROUND_NOISE 6
+#define PSG_TONE_PULSE 7
+#define PSG_NOISE_RISE 8
+#define PSG_TONE_SWEEP 9
+#define PSG_NOISE_FADE_RATE0 10
+#define PSG_NOISE_FADE_RATE2 11
+#define PSG_LONG_NOISE_RISE 12
+#define PSG_SLOW_NOISE_FADE 13
+#define PSG_TWO_NOTES 14
+#define PSG_DUAL_TONE_FADE 15
+#define PSG_SHORT_NOISE_FADE_RATE2 16
+#define PSG_GATED_TONE_SWEEP 17
+#define PSG_TONE_NOISE_BURSTS 18
+#define PSG_NOISE_CRESCENDO 19
+#define PSG_TONE_PHRASE 20
+#define PSG_TONE_RISE 21
+#define PSG_LONG_TONE_RISE 22
+#define PSG_SHORT_NOISE_CRESCENDO 23
+#define PSG_NOISE_ACCENT 24
+#define PSG_PERIODIC_NOISE 25
+#define PSG_PERIODIC_TONE2_NOISE 26
+
+#endif

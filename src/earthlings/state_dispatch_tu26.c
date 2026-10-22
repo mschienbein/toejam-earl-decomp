@@ -1,3 +1,5 @@
+#include "earthling_types.h"
+#include "terrain.h"
 #define TJE_LOCAL_FUNC_00D9DC
 
 #include "entities.h"
@@ -44,12 +46,12 @@ struct object_state *object;
     if (EarthlingIsUpdateBlocked(object->earthling) || earthling->state == 99)
         return;
     if (object->level == gLevel912C)
-        player_number = 0;
+        player_number = PLAYER_TOEJAM;
     else if (object->level == gLevel912E)
         player_number = 1;
     else
         return;
-    if (object->mode_15 & 1) {
+    if (object->animation_motion_axes & ANIMATION_MOTION_X) {
         distance = object->velocity_x * step->motion_x;
         fixed_position = object->fraction_x +
             (object->x << 8) + distance;
@@ -59,7 +61,7 @@ struct object_state *object;
         next_x = object->x;
         fraction_x = object->fraction_x;
     }
-    if (object->mode_15 & 2) {
+    if (object->animation_motion_axes & ANIMATION_MOTION_Y) {
         distance = object->velocity_y * step->motion_y;
         fixed_position = object->fraction_y +
             (object->y << 8) + distance;
@@ -71,14 +73,14 @@ struct object_state *object;
     }
     if (next_x == object->x && next_y == object->y)
         return;
-    if (earthling->kind == 5 || earthling->kind == 10 ||
-        earthling->kind == 11 || earthling->kind == 17) {
+    if (earthling->kind == EARTHLING_HULA_DANCER || earthling->kind == EARTHLING_WIZARD ||
+        earthling->kind == EARTHLING_WISEMAN || earthling->kind == EARTHLING_OPERA_SINGER) {
         if (!EntityFindNarrowCollisionAtPosition(object, object->x, object->y, 0) &&
             EntityFindNarrowCollisionAtPosition(object, next_x, next_y, 0)) {
             object->sprite_state = 0;
             return;
         }
-    } else if (earthling->kind != 18) {
+    } else if (earthling->kind != EARTHLING_MOLE) {
         if (!EntityFindMenuAwareCollisionAtPosition(object, object->x, object->y) &&
             (terrain = EntityFindMenuAwareCollisionAtPosition(object, next_x, next_y))) {
             object->sprite_state = 0;
@@ -86,13 +88,13 @@ struct object_state *object;
             return;
         }
     }
-    if (earthling->kind == 14 || earthling->kind == 18)
+    if (earthling->kind == EARTHLING_SHARK || earthling->kind == EARTHLING_MOLE)
         terrain = EarthlingProbeDirectionalTerrain(player_number, next_x, next_y, earthling->state);
     else
         terrain = GetMapTerrainAtWorldPosition(player_number, next_x, next_y);
-    if ((earthling->kind == 13 && terrain == 16) ||
-        (earthling->kind == 14 && terrain == 128) ||
-        (earthling->kind != 13 && earthling->kind != 14 &&
+    if ((earthling->kind == EARTHLING_LAWNMOWER && terrain == TERRAIN_GROUND) ||
+        (earthling->kind == EARTHLING_SHARK && terrain == TERRAIN_WATER) ||
+        (earthling->kind != EARTHLING_LAWNMOWER && earthling->kind != EARTHLING_SHARK &&
          (unsigned short)terrain < 80)) {
         object->x = next_x;
         object->fraction_x = fraction_x;
@@ -107,8 +109,8 @@ int EarthlingIsUpdateBlocked(earthling)
 struct earthling_state *earthling;
 {
     if (earthling) {
-        if (((earthling->reserved_10[1] & 2) && !P1_MENU_OPEN[0]) ||
-            ((earthling->reserved_10[1] & 4) && !HBLANK_FLAG_1))
+        if (((earthling->health_visibility[1] & 2) && !P1_MENU_OPEN[PLAYER_TOEJAM]) ||
+            ((earthling->health_visibility[1] & 4) && !HBLANK_FLAG_1))
             return 0;
         else
             return 1;
@@ -123,15 +125,15 @@ struct object_state *object;
     short player_number;
 
     if (object->level == gLevel912C)
-        player_number = 0;
+        player_number = PLAYER_TOEJAM;
     else if (object->level == gLevel912E)
         player_number = 1;
     else
         return;
     if (GetMapTerrainAtWorldPosition(player_number, object->x, object->y) == 144)
-        object->draw_flags &= ~64;
+        object->draw_flags &= ~ENTITY_SHADOW;
     else
-        object->draw_flags |= 64;
+        object->draw_flags |= ENTITY_SHADOW;
 }
 
 /* Move eligible earthlings within map bounds and update their terrain flags. */
@@ -147,16 +149,16 @@ struct object_state *object;
 
     earthling = object->earthling;
     if (EarthlingIsUpdateBlocked(earthling) || earthling->state == 99 ||
-        (object->flags_4d & 64) ||
-        (earthling->kind == 7 && earthling->state == 3))
+        (object->behavior_flags & ENTITY_HIDDEN) ||
+        (earthling->kind == EARTHLING_CUPID && earthling->state == 3))
         return;
     if (object->level == gLevel912C)
-        player_number = 0;
+        player_number = PLAYER_TOEJAM;
     else if (object->level == gLevel912E)
         player_number = 1;
     else
         return;
-    if (object->mode_15 & 1) {
+    if (object->animation_motion_axes & ANIMATION_MOTION_X) {
         distance = object->velocity_x * step->motion_x;
         fixed_position = object->fraction_x +
             (object->x << 8) + distance;
@@ -166,7 +168,7 @@ struct object_state *object;
         next_x = object->x;
         fraction_x = object->fraction_x;
     }
-    if (object->mode_15 & 2) {
+    if (object->animation_motion_axes & ANIMATION_MOTION_Y) {
         distance = object->velocity_y * step->motion_y;
         fixed_position = object->fraction_y +
             (object->y << 8) + distance;
@@ -187,20 +189,20 @@ struct object_state *object;
         return;
     }
     terrain = GetMapTerrainAtWorldPosition(player_number, next_x, next_y);
-    if (earthling->kind == 19) {
+    if (earthling->kind == EARTHLING_ICE_CREAM_TRUCK) {
         if ((gTerrainQueryMetatileWord & 127) == 34)
             return;
-        earthling->value_0a = terrain;
-    } else if (terrain == 144) {
-        if (earthling->kind == 6 || earthling->kind == 22)
-            object->flags_4d |= 32;
+        earthling->saved_x_or_status = terrain;
+    } else if (terrain == TERRAIN_VOID) {
+        if (earthling->kind == EARTHLING_BEES || earthling->kind == EARTHLING_BEES_VARIANT)
+            object->behavior_flags |= ENTITY_MASK_PIXELS;
         else
-            object->draw_flags &= ~64;
+            object->draw_flags &= ~ENTITY_SHADOW;
     } else {
-        if (earthling->kind == 6 || earthling->kind == 22)
-            object->flags_4d &= ~32;
+        if (earthling->kind == EARTHLING_BEES || earthling->kind == EARTHLING_BEES_VARIANT)
+            object->behavior_flags &= ~ENTITY_MASK_PIXELS;
         else
-            object->draw_flags |= 64;
+            object->draw_flags |= ENTITY_SHADOW;
     }
     object->x = next_x;
     object->fraction_x = fraction_x;

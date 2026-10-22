@@ -1,3 +1,4 @@
+#include "entities.h"
 #include "graphics_calls.h"
 #include "player.h"
 #include "ram_camera.h"
@@ -8,7 +9,7 @@ void SetCameraPosition(player, position_x, position_y)
 int player;
 long position_x, position_y;
 {
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         player = 0;
     SetCameraViewOrigin(player, position_x, position_y);
     if (player == 0) {

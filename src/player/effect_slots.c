@@ -1,3 +1,5 @@
+#include "psg_effects.h"
+#include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
 #include "assets_sprites.h"
@@ -44,14 +46,14 @@ short x, y, level;
         effect->height_pixels = 32;
         effect->sprite_count = 1;
         effect->tile_count = 16;
-        effect->tile |= 0x8000;
+        effect->tile |= VDP_TILE_PRIORITY;
         animation = &TimedEntityEffectAnimation;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = animation->period;
         effect->frame_duration = 1;
         effect->frame = -1;
-        PlaySound(14, 50);
+        PlaySound(PSG_TWO_NOTES, 50);
         return 0;
     }
     return 1;

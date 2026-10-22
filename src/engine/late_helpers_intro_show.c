@@ -12,6 +12,6 @@ void IntroRevealFrameEntities()
     for (index = 0; index < 10; ++index) {
         object_number = gIntroComponentEntities[index];
         object = &gPlayerInfo[object_number];
-        object->flags_4d &= ~64;
+        object->behavior_flags &= ~ENTITY_HIDDEN;
     }
 }

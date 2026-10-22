@@ -1,3 +1,4 @@
+#include "entities.h"
 #include "hardware.h"
 #include "core_calls.h"
 #include "graphics_calls.h"
@@ -19,7 +20,7 @@ void UpdateCameraX()
             start_row = gCameraColumnUploadStartRow[camera];
             count = gCameraColumnUploadWordCount[camera];
             if (camera == 0)
-                VDP_COMMAND = 0x60000002L + (start_row << 23) +
+                VDP_COMMAND = VDP_WRITE_PLANE_A + (start_row << 23) +
                     (gCameraColumnUploadVramColumn[camera] << 17);
             else
                 VDP_COMMAND = 0x40000003L + (start_row << 23) +
@@ -30,7 +31,7 @@ void UpdateCameraX()
                 first_count = 32 - start_row;
                 MoveDataToVRAM(gCameraColumnUploadWords[camera], first_count);
                 if (camera == 0)
-                    VDP_COMMAND = 0x60000002L + (gCameraColumnUploadVramColumn[camera] << 17);
+                    VDP_COMMAND = VDP_WRITE_PLANE_A + (gCameraColumnUploadVramColumn[camera] << 17);
                 else
                     VDP_COMMAND = 0x40000003L + (gCameraColumnUploadVramColumn[camera] << 17);
                 MoveDataToVRAM(
@@ -39,7 +40,7 @@ void UpdateCameraX()
             gCameraColumnUploadPending[camera] = 0;
         }
     }
-    VDP_CONTROL_WORD = 0x8f02;
+    VDP_CONTROL_WORD = VDP_AUTOINCREMENT_WORD;
 }
 
 /* Draw every buffered row for one camera, then restore its row cursor. */
@@ -75,7 +76,7 @@ short camera;
 void SetCameraViewOrigin(camera, position_x, position_y)
 short camera, position_x, position_y;
 {
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         camera = 0;
     if (position_x < 8)
         position_x = 8;
@@ -110,7 +111,7 @@ short camera, position_x, position_y;
         selected_camera = camera;
         RedrawCameraTileRows(selected_camera);
     }
-    if (gPlayerLives[0] < 0) {
+    if (gPlayerLives[PLAYER_TOEJAM] < 0) {
         EARL_CAMERA_NEWX = TOEJAM_CAMERA_NEWX;
         EARL_CAMERA_NEWY = TOEJAM_CAMERA_NEWY;
     }
@@ -189,7 +190,7 @@ short camera;
 {
     short new_row;
 
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         camera = 0;
     if (camera == 0) {
         if (TOEJAM_CAMERA_NEWY > 8) {
@@ -216,7 +217,7 @@ short camera;
         } else
             return 1;
     }
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         EARL_CAMERA_NEWY = TOEJAM_CAMERA_NEWY;
     return 0;
 }
@@ -227,7 +228,7 @@ short camera;
 {
     short new_row;
 
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         camera = 0;
     if (camera == 0) {
         if ((SPLIT_SCREEN && TOEJAM_CAMERA_NEWY < 1672) || TOEJAM_CAMERA_NEWY < 1560) {
@@ -254,7 +255,7 @@ short camera;
         } else
             return 1;
     }
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         EARL_CAMERA_NEWY = TOEJAM_CAMERA_NEWY;
     return 0;
 }
@@ -265,7 +266,7 @@ short camera;
 {
     short new_column;
 
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         camera = 0;
     if (camera == 0) {
         if (TOEJAM_CAMERA_NEWX > 8) {
@@ -292,7 +293,7 @@ short camera;
         } else
             return 1;
     }
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         EARL_CAMERA_NEWX = TOEJAM_CAMERA_NEWX;
     return 0;
 }
@@ -303,7 +304,7 @@ short camera;
 {
     short new_column;
 
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         camera = 0;
     if (camera == 0) {
         if (TOEJAM_CAMERA_NEWX < 2360) {
@@ -330,7 +331,7 @@ short camera;
         } else
             return 1;
     }
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         EARL_CAMERA_NEWX = TOEJAM_CAMERA_NEWX;
     return 0;
 }

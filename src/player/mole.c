@@ -1,3 +1,5 @@
+#include "player_animation.h"
+#include "hardware.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "presents.h"
@@ -58,13 +60,13 @@ short player_number;
         present->height_pixels = 16;
         present->sprite_count = 1;
         present->tile_count = 6;
-        present->tile = 0x8000;
-        present_sprite = gPresentInfo[present_number].sprite;
+        present->tile = VDP_TILE_PRIORITY;
+        present_sprite = gPresentInfo[present_number].appearance;
         present->frames = &PresentSpriteTable[present_sprite];
         present->sequence = SingleFrameHoldAnimation;
         present->frame = -1;
         present->frame_duration = 1;
-        present->draw_flags |= 64;
+        present->draw_flags |= ENTITY_SHADOW;
     }
     ++gPlayerMoleTheftCounts[player_number];
 }
@@ -79,10 +81,10 @@ struct earthling_state *earthling;
 
     victim = &gPlayerInfo[player_number];
     if (earthling->state == 3) {
-        if (victim->sprite_state == 70) {
+        if (victim->sprite_state == PLAYER_ANIM_ITEM_REACTION) {
             if (earthling->timer < 15) {
                 SetSprite(victim, GetActivePresentSprite(victim));
-                victim->flags_4d &= ~32;
+                victim->behavior_flags &= ~ENTITY_MASK_PIXELS;
             } else if (!gPlayerStolenPresentEntities[player_number]) {
                 if (!gPlayerMoleTheftCounts[player_number] ||
                     (gPlayerMoleTheftCounts[player_number] < 3 &&
@@ -95,8 +97,8 @@ struct earthling_state *earthling;
     }
     mole = &gPlayerInfo[earthling->object];
     if (gPlayerInventory[player_number][0] == -1 ||
-        (player_number == 0 && mole->flag_57) ||
-        (player_number == 1 && mole->flag_58) ||
+        (player_number == PLAYER_TOEJAM && mole->attachment_x_or_latch) ||
+        (player_number == PLAYER_EARL && mole->attachment_y_or_latch) ||
         !PlayerCanReceiveEarthlingEffect(victim, player_number))
         return;
     if (!ElevatorContainsPosition(mole->x, mole->y, victim->level)) {
@@ -109,14 +111,14 @@ struct earthling_state *earthling;
     SetEarthlingState(earthling, 3);
     earthling->timer = 30;
     mole->frame = -1;
-    mole->flags_4d |= 1;
-    mole->draw_flags |= 128;
-    if (player_number == 0)
-        ++mole->flag_57;
+    mole->behavior_flags |= ENTITY_COLLIDABLE;
+    mole->draw_flags |= ENTITY_DRAW_LATE;
+    if (player_number == PLAYER_TOEJAM)
+        ++mole->attachment_x_or_latch;
     else
-        ++mole->flag_58;
-    SetSprite(victim, 70);
-    victim->mode_15 = 3;
-    victim->flags_4d |= 32;
+        ++mole->attachment_y_or_latch;
+    SetSprite(victim, PLAYER_ANIM_ITEM_REACTION);
+    victim->animation_motion_axes = ANIMATION_MOTION_XY;
+    victim->behavior_flags |= ENTITY_MASK_PIXELS;
     gPlayerMoleTheftCounts[player_number] = 0;
 }

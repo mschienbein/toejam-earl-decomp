@@ -34,11 +34,11 @@ short placement_number, descriptor_number;
         object->x = FunkatronScenePlacements[placement_number].x;
         object->y = FunkatronScenePlacements[placement_number].y;
         object->level = 26;
-        object->draw_flags |= 8;
+        object->draw_flags |= ENTITY_SKIP_PHYSICS;
         if (descriptor_number == 6)
-            object->draw_flags |= 128;
+            object->draw_flags |= ENTITY_DRAW_LATE;
         else if (descriptor_number != 13)
-            object->flags_4d |= 1;
+            object->behavior_flags |= ENTITY_COLLIDABLE;
     }
 }
 
@@ -84,27 +84,27 @@ void FunkatronUpdateSceneEntities()
             }
             if (descriptor_number >= 15 && object_number) {
                 object = &gPlayerInfo[object_number];
-                if (EntityIsWithinRange(object, &gPlayerInfo[0], 80, 50) ||
-                    EntityIsWithinRange(object, &gPlayerInfo[1], 80, 50)) {
+                if (EntityIsWithinRange(object, &gPlayerInfo[PLAYER_TOEJAM], 80, 50) ||
+                    EntityIsWithinRange(object, &gPlayerInfo[PLAYER_EARL], 80, 50)) {
                     if (!object->sprite_state) {
                         object->sequence = descriptor->interaction_sequence;
                         object->frame = -1;
                         object->sprite_state = 1;
                     }
-                    player_number = 0;
-                    if (!object->flag_57 &&
+                    player_number = PLAYER_TOEJAM;
+                    if (!object->attachment_x_or_latch &&
                         (interaction = FunkatronScenePlacements[placement_number].interaction)) {
-                        if (EntityIsWithinRange(object, &gPlayerInfo[0], 30, 20) ||
-                            (EntityIsWithinRange(object, &gPlayerInfo[1], 30, 20) &&
+                        if (EntityIsWithinRange(object, &gPlayerInfo[PLAYER_TOEJAM], 30, 20) ||
+                            (EntityIsWithinRange(object, &gPlayerInfo[PLAYER_EARL], 30, 20) &&
                              (player_number = 1))) {
-                            if (!((interaction == 31 && player_number == 0) ||
-                                  (interaction == 53 && player_number == 0) ||
-                                  (interaction == 54 && player_number == 1))) {
-                                if (StartDialogue(interaction, object->entity_number) >= 0)
-                                    object->flag_57 = 1;
+                            if (!((interaction == 31 && player_number == PLAYER_TOEJAM) ||
+                                  (interaction == 53 && player_number == PLAYER_TOEJAM) ||
+                                  (interaction == 54 && player_number == PLAYER_EARL))) {
+                                if (StartDialogue(interaction, object->entity_index) >= 0)
+                                    object->attachment_x_or_latch = 1;
                             }
-                            if ((interaction == 31 && player_number == 1) ||
-                                (interaction == 54 && player_number == 0))
+                            if ((interaction == 31 && player_number == PLAYER_EARL) ||
+                                (interaction == 54 && player_number == PLAYER_TOEJAM))
                                 DrawPresentDisplayPanel();
                         }
                     }

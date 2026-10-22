@@ -39,7 +39,7 @@ short player;
         WaitForNextVBlank(1);
     ClearSkipVHBlankFlags();
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     VDP_COMMAND = 0x40200000L;
     MoveDataToVRAM(MapScreenTiles, MapScreenTileCount << 4);
     MapInitializeScreenSprites(sprites);
@@ -62,7 +62,7 @@ short player;
     MapUploadCoverAnimationFrame(sprites, 0, 0);
     VDPWritesRoutine1(sprites, 0xf800, 320);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     if (gMapRevealMode)
         for (map_number = 1; map_number < 12; ++map_number) {
             WaitForNextVBlank(4);
@@ -77,11 +77,11 @@ short player;
     while (MovePadInputIntoD0(player) & buttons)
         WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     DrawStarfieldPlane();
     VDPWritesRoutine1(gHardwareSpriteTable, 0xf800, 320);
     if (gMapRevealMode || (buttons & 0x20)) {
-        VDP_COMMAND = 0x40000000L;
+        VDP_COMMAND = VDP_WRITE_VRAM_BASE;
         MoveDataToVRAM(LevelTiles, (MapScreenTileCount + 41) << 4);
         VDP_CONTROL_WORD = 0x9100;
         VDP_CONTROL_WORD = 0x9200;
@@ -94,6 +94,6 @@ short player;
     } else
         ShowShipPieces(-1, player);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     SetSkipVHBlankFlags();
 }

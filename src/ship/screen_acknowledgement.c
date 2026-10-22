@@ -1,3 +1,4 @@
+#include "entities.h"
 #include "core_calls.h"
 #include "ram_system.h"
 #include "ship.h"
@@ -10,7 +11,7 @@ short player_number;
 
     TIME_COUNTER = 0;
     while (TIME_COUNTER < 240) {
-        if (player_number == 0 || player_number == 2) {
+        if (player_number == PLAYER_TOEJAM || player_number == 2) {
             pressed_buttons = MovePadInputIntoD0(0);
             pressed_buttons &= 0x70;
             if (pressed_buttons) {
@@ -19,7 +20,7 @@ short player_number;
                 break;
             }
         }
-        if (player_number == 1 || player_number == 2) {
+        if (player_number == PLAYER_EARL || player_number == 2) {
             pressed_buttons = MovePadInputIntoD0(1);
             pressed_buttons &= 0x70;
             if (pressed_buttons) {

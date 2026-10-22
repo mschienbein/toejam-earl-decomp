@@ -1,3 +1,7 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "present_types.h"
+#include "terrain.h"
 #include "entities.h"
 #include "player.h"
 #include "ram_effects.h"
@@ -13,41 +17,41 @@ struct object_state *player;
     short player_number;
     char sprite;
 
-    player_number = player->entity_number;
-    land = player_number == 0 ? LAND_UNDER_TOEJAM : LAND_UNDER_EARL;
-    land &= 0xf0;
-    if (gPlayer1Powerup[player_number] == 2) {
-        if (land == 0x80)
-            sprite = 77;
+    player_number = player->entity_index;
+    land = player_number == PLAYER_TOEJAM ? LAND_UNDER_TOEJAM : LAND_UNDER_EARL;
+    land &= TERRAIN_CLASS_MASK;
+    if (gPlayer1Powerup[player_number] == PRESENT_INNERTUBE) {
+        if (land == TERRAIN_WATER)
+            sprite = PLAYER_ANIM_INNERTUBE_WATER_IDLE;
         else if (!ELEVATOR_FLAG[player_number])
-            sprite = 76;
+            sprite = PLAYER_ANIM_INNERTUBE_IDLE;
         else {
-            sprite = 0;
+            sprite = PLAYER_ANIM_IDLE;
             player->frame = -1;
         }
-    } else if (gPlayer1Powerup[player_number] == 5) {
+    } else if (gPlayer1Powerup[player_number] == PRESENT_ROCKET_SKATES) {
         OpenRocketSkates(player, player_number, land);
         sprite = -1;
         return sprite;
-    } else if (land == 0x80 && !player->height)
-        sprite = 3;
-    else if (gPlayer1Powerup[player_number] == 1 && !ELEVATOR_FLAG[player_number])
-        sprite = 57;
+    } else if (land == TERRAIN_WATER && !player->height)
+        sprite = PLAYER_ANIM_SWIM_IDLE;
+    else if (gPlayer1Powerup[player_number] == PRESENT_SPRING_SHOES && !ELEVATOR_FLAG[player_number])
+        sprite = PLAYER_ANIM_SPRING_SHOES_DOWN;
     else if (!gPlayer1Powerup[player_number] && !ELEVATOR_FLAG[player_number]) {
-        if ((player->flags_52 & 0x8000) && player->height > 0) {
+        if ((player->animation_group_mask & PLAYER_GROUP_ICARUS_FLY) && player->height > 0) {
             sprite = -1;
             return sprite;
         } else {
-            player->draw_flags |= 0x40;
-            sprite = 4;
+            player->draw_flags |= ENTITY_SHADOW;
+            sprite = PLAYER_ANIM_ICARUS_IDLE;
         }
     } else {
-        sprite = 0;
+        sprite = PLAYER_ANIM_IDLE;
         player->frame = -1;
     }
     player->velocity_x = 0;
     player->velocity_y = 0;
     if (sprite != 4)
-        player->draw_flags &= ~0x40;
+        player->draw_flags &= ~ENTITY_SHADOW;
     return sprite;
 }

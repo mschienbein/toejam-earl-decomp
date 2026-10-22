@@ -1,3 +1,7 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "psg_effects.h"
+#include "hardware.h"
 #define TJE_LOCAL_FUNC_00BDD8
 
 #include "entities.h"
@@ -49,14 +53,14 @@ struct object_state *mole;
         effect->height_pixels = 8;
         effect->sprite_count = 1;
         effect->tile_count = 8;
-        effect->tile = 0x8000;
+        effect->tile = VDP_TILE_PRIORITY;
         animation = &AnimationDescriptors_0AF094[0];
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = 6;
         effect->frame = -1;
         effect->frame_duration = 1;
-        effect->draw_flags |= 128;
+        effect->draw_flags |= ENTITY_DRAW_LATE;
     }
 }
 
@@ -91,14 +95,14 @@ struct earthling_state *earthling;
     if (!earthling->object)
         return;
     santa = &gPlayerInfo[earthling->object];
-    toejam = &gPlayerInfo[0];
-    earl = &gPlayerInfo[1];
+    toejam = &gPlayerInfo[PLAYER_TOEJAM];
+    earl = &gPlayerInfo[PLAYER_EARL];
     if (earthling->state == 3 || earthling->state == 2) {
         if (!santa->frame_duration) {
             santa->acceleration_height = 16;
             next_state = 5;
-            santa->draw_flags |= 64;
-            PlaySound(5, 94);
+            santa->draw_flags |= ENTITY_SHADOW;
+            PlaySound(PSG_START_BACKGROUND_NOISE, 94);
         }
     } else if ((earthling->state & 252) == 4) {
         if (santa->height > 20 && !santa->velocity_x && !santa->velocity_y) {
@@ -147,19 +151,19 @@ struct earthling_state *earthling;
                     santa->x = earthling->x;
                     santa->y = earthling->y;
                 } while (IsEntityVisibleInViewport(santa, 0) || IsEntityVisibleInViewport(santa, 1));
-                if (!(gPlayerInfo[0].flags_52 & 0x07800000) &&
-                    !(gPlayerInfo[1].flags_52 & 0x07800000))
-                    PlaySound(6, 99);
+                if (!(gPlayerInfo[PLAYER_TOEJAM].animation_group_mask & PLAYER_GROUP_ALL_SKATES) &&
+                    !(gPlayerInfo[PLAYER_EARL].animation_group_mask & PLAYER_GROUP_ALL_SKATES))
+                    PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
             }
         }
     } else if (earthling->state == 1) {
         if (santa->frame > 2 && santa->frame < 5) {
             if ((EntityIsWithinRange(santa, toejam, 125, 75) &&
-                 toejam->sprite_state && toejam->sprite_state != 4 &&
-                 !(toejam->flags_52 & 0x20400000) && toejam->sprite_state != 76) ||
+                 toejam->sprite_state && toejam->sprite_state != PLAYER_ANIM_ICARUS_IDLE &&
+                 !(toejam->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) && toejam->sprite_state != PLAYER_ANIM_INNERTUBE_IDLE) ||
                 (EntityIsWithinRange(santa, earl, 150, 75) &&
-                 earl->sprite_state && earl->sprite_state != 4 &&
-                 !(earl->flags_52 & 0x20400000) && earl->sprite_state != 76))
+                 earl->sprite_state && earl->sprite_state != PLAYER_ANIM_ICARUS_IDLE &&
+                 !(earl->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) && earl->sprite_state != PLAYER_ANIM_INNERTUBE_IDLE))
                 next_state = 2;
         } else if (!santa->frame_duration)
             next_state = 0;
@@ -167,23 +171,23 @@ struct earthling_state *earthling;
         if (EntityIsWithinRange(santa, toejam, 125, 75)) {
             if (gPlayer1BurpsLeft[0])
                 next_state = 2;
-            else if (toejam->flags_52 & 8) {
+            else if (toejam->animation_group_mask & PLAYER_GROUP_SNEAK) {
                 if (GetRandomNumber() % 100 < 10)
                     next_state = 1;
-            } else if (toejam->sprite_state && toejam->sprite_state != 4 &&
-                       !(toejam->flags_52 & 0x20400000) &&
-                       toejam->sprite_state != 76)
+            } else if (toejam->sprite_state && toejam->sprite_state != PLAYER_ANIM_ICARUS_IDLE &&
+                       !(toejam->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) &&
+                       toejam->sprite_state != PLAYER_ANIM_INNERTUBE_IDLE)
                 next_state = 2;
         }
         if (next_state != 2 && EntityIsWithinRange(santa, earl, 125, 75)) {
             if (gPlayer2BurpsLeft)
                 next_state = 2;
-            else if (earl->flags_52 & 8) {
+            else if (earl->animation_group_mask & PLAYER_GROUP_SNEAK) {
                 if (GetRandomNumber() % 100 < 10)
                     next_state = 1;
-            } else if (earl->sprite_state && earl->sprite_state != 4 &&
-                       !(earl->flags_52 & 0x20400000) &&
-                       earl->sprite_state != 76)
+            } else if (earl->sprite_state && earl->sprite_state != PLAYER_ANIM_ICARUS_IDLE &&
+                       !(earl->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) &&
+                       earl->sprite_state != PLAYER_ANIM_INNERTUBE_IDLE)
                 next_state = 2;
         }
     }

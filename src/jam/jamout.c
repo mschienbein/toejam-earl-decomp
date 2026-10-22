@@ -1,3 +1,4 @@
+#include "fm_effects.h"
 #include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
@@ -32,7 +33,7 @@ short song;
     while (GetCtrl1Input() | GetCtrl2Input())
         WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     PlaySoundEffect((long)Sfx_Jammin, 90, 0);
     gJamSelectedSong = song;
     gVBlankFunc = JamOutVBlank;
@@ -67,7 +68,7 @@ short song;
     }
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     CutsceneTextLoad("press and hold start to exit", 160, 30);
     while (start_hold < 51) {
         CutsceneStepFrameAndMusicCadence(3, 0);
@@ -126,7 +127,7 @@ short song;
     }
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gVBlankFunc = 0;
     gMusicAlternateTemplateBankEnabled = 0;
     CutsceneReleaseTextEntities();
@@ -153,16 +154,16 @@ void JamOutVBlank()
         MassiveRoutine();
     ++TIME_COUNTER;
     if (INPUT_READING_FLAG_LO & 1) {
-        P1_PROCESSED_INPUT[0] = gControllerPortsSwapped ? GetCtrl2Input() : GetCtrl1Input();
-        if (P1_PROCESSED_INPUT[0] != gJamPlayer1PreviousInput) {
-            gJamAudioRoute1PendingInput = gJamPlayer1PendingAnimationInput = P1_PROCESSED_INPUT[0];
-            gJamPlayer1PreviousInput = P1_PROCESSED_INPUT[0];
+        P1_PROCESSED_INPUT[PLAYER_TOEJAM] = gControllerPortsSwapped ? GetCtrl2Input() : GetCtrl1Input();
+        if (P1_PROCESSED_INPUT[PLAYER_TOEJAM] != gJamPlayer1PreviousInput) {
+            gJamAudioRoute1PendingInput = gJamPlayer1PendingAnimationInput = P1_PROCESSED_INPUT[PLAYER_TOEJAM];
+            gJamPlayer1PreviousInput = P1_PROCESSED_INPUT[PLAYER_TOEJAM];
         }
     } else {
-        P1_PROCESSED_INPUT[1] = gControllerPortsSwapped ? GetCtrl1Input() : GetCtrl2Input();
-        if (P1_PROCESSED_INPUT[1] != gJamPlayer2PreviousInput) {
-            gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = P1_PROCESSED_INPUT[1];
-            gJamPlayer2PreviousInput = P1_PROCESSED_INPUT[1];
+        P1_PROCESSED_INPUT[PLAYER_EARL] = gControllerPortsSwapped ? GetCtrl1Input() : GetCtrl2Input();
+        if (P1_PROCESSED_INPUT[PLAYER_EARL] != gJamPlayer2PreviousInput) {
+            gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = P1_PROCESSED_INPUT[PLAYER_EARL];
+            gJamPlayer2PreviousInput = P1_PROCESSED_INPUT[PLAYER_EARL];
         }
     }
     if (PLAYER_INDICATOR == 1) {
@@ -199,16 +200,16 @@ void JamOutVBlank()
     } else {
         if (gJamAudioRoute2PendingInput) {
             if (gJamAudioRoute2PendingInput & 64) {
-                AudioRequestChannelTemplateEffect(22);
+                AudioRequestChannelTemplateEffect(FM_EFFECT_JAM_BUTTON_A);
                 if (!gJamSelectedSong)
                     gMusicUnknownE488 = 1;
             }
             if (gJamAudioRoute2PendingInput & 16)
-                AudioRequestChannelTemplateEffect(20);
+                AudioRequestChannelTemplateEffect(FM_EFFECT_JAM_BUTTON_B);
             if (gJamAudioRoute2PendingInput & 32)
-                AudioRequestChannelTemplateEffect(19);
+                AudioRequestChannelTemplateEffect(FM_EFFECT_JAM_BUTTON_C);
             if ((gJamAudioRoute2PendingInput & 15) || (gJamAudioRoute2PendingInput & 128))
-                AudioRequestChannelTemplateEffect(21);
+                AudioRequestChannelTemplateEffect(FM_EFFECT_JAM_DIRECTION);
             gJamAudioRoute2PendingInput = 0;
         }
     }
@@ -226,15 +227,15 @@ void JamOutRandomSampleVBlank()
     } else
         MassiveRoutine();
     ++TIME_COUNTER;
-    P1_PROCESSED_INPUT[0] = gControllerPortsSwapped ? GetCtrl2Input() : GetCtrl1Input();
-    if (P1_PROCESSED_INPUT[0] != gJamPlayer1PreviousInput) {
-        gJamAudioRoute1PendingInput = gJamPlayer1PendingAnimationInput = P1_PROCESSED_INPUT[0];
-        gJamPlayer1PreviousInput = P1_PROCESSED_INPUT[0];
+    P1_PROCESSED_INPUT[PLAYER_TOEJAM] = gControllerPortsSwapped ? GetCtrl2Input() : GetCtrl1Input();
+    if (P1_PROCESSED_INPUT[PLAYER_TOEJAM] != gJamPlayer1PreviousInput) {
+        gJamAudioRoute1PendingInput = gJamPlayer1PendingAnimationInput = P1_PROCESSED_INPUT[PLAYER_TOEJAM];
+        gJamPlayer1PreviousInput = P1_PROCESSED_INPUT[PLAYER_TOEJAM];
     }
-    P1_PROCESSED_INPUT[1] = gControllerPortsSwapped ? GetCtrl1Input() : GetCtrl2Input();
-    if (P1_PROCESSED_INPUT[1] != gJamPlayer2PreviousInput) {
-        gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = P1_PROCESSED_INPUT[1];
-        gJamPlayer2PreviousInput = P1_PROCESSED_INPUT[1];
+    P1_PROCESSED_INPUT[PLAYER_EARL] = gControllerPortsSwapped ? GetCtrl1Input() : GetCtrl2Input();
+    if (P1_PROCESSED_INPUT[PLAYER_EARL] != gJamPlayer2PreviousInput) {
+        gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = P1_PROCESSED_INPUT[PLAYER_EARL];
+        gJamPlayer2PreviousInput = P1_PROCESSED_INPUT[PLAYER_EARL];
     }
     if (PLAYER_INDICATOR == 1) {
         saved_input = gJamAudioRoute1PendingInput;
@@ -357,7 +358,7 @@ short reset;
         gJamScrollStep = 0;
         VDP_COMMAND = 0x7c000003L;
         VDP_DATA = gJamHorizontalScroll;
-        VDP_COMMAND = 0x40000010L;
+        VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
         VDP_DATA = gJamVerticalScroll;
         JamOutShowLeadPairLayout();
     } else {
@@ -370,7 +371,7 @@ short reset;
         }
         VDP_COMMAND = 0x7c000003L;
         VDP_DATA = gJamHorizontalScroll;
-        VDP_COMMAND = 0x40000010L;
+        VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
         VDP_DATA = gJamVerticalScroll;
         if (!--gJamLayoutCountdown) {
             gJamLayoutCountdown = 170;
@@ -419,8 +420,8 @@ void JamOutSynchronizeEntityCopies()
     struct hardware_sprite *parent_sprite, *sprite;
     for (object_number = 0, object = gPlayerInfo; object_number < 40;
          ++object_number, ++object) {
-        if ((object->draw_flags & 1) && (object->flags_4d & 4)) {
-            parent = &gPlayerInfo[object->parent];
+        if ((object->draw_flags & ENTITY_ACTIVE) && (object->behavior_flags & ENTITY_SHARED_TILES)) {
+            parent = &gPlayerInfo[object->owner];
             object->frame = parent->frame;
             object->sprite_ready = parent->sprite_ready;
             object->current_frame = parent->current_frame;
@@ -447,7 +448,7 @@ void JamOutCreateCharacterCopies()
     for (slot = 0; slot < 9; ++slot) {
         if (gJamToejamEntities[slot] = (int)AllocateEntity()) {
             object = &gPlayerInfo[gJamToejamEntities[slot]];
-            object->tile = 0x8000;
+            object->tile = VDP_TILE_PRIORITY;
             object->tile_count = tile_count;
             object->sprite_count = sprite_count;
             object->frames = Spr_JamoutToejam;
@@ -458,7 +459,7 @@ void JamOutCreateCharacterCopies()
             object->frame_duration = 1;
             object->frame = -1;
             if (slot)
-                object->flags_4d |= 4;
+                object->behavior_flags |= ENTITY_SHARED_TILES;
             object->sprite_ready = 0;
             AllocateEntityViewportSprites(object, 0);
             if (!slot) {
@@ -466,7 +467,7 @@ void JamOutCreateCharacterCopies()
                 parent_number = gJamToejamEntities[slot];
             } else {
                 object->tile = lead_tile;
-                object->parent = parent_number;
+                object->owner = parent_number;
             }
         }
     }
@@ -475,7 +476,7 @@ void JamOutCreateCharacterCopies()
     for (slot = 0; slot < 9; ++slot) {
         if (gJamEarlEntities[slot] = (int)AllocateEntity()) {
             object = &gPlayerInfo[gJamEarlEntities[slot]];
-            object->tile = 0x8000;
+            object->tile = VDP_TILE_PRIORITY;
             object->tile_count = tile_count;
             object->sprite_count = sprite_count;
             object->frames = Spr_JamoutEarl;
@@ -486,7 +487,7 @@ void JamOutCreateCharacterCopies()
             object->frame_duration = 1;
             object->frame = -1;
             if (slot)
-                object->flags_4d |= 4;
+                object->behavior_flags |= ENTITY_SHARED_TILES;
             object->sprite_ready = 0;
             AllocateEntityViewportSprites(object, 0);
             if (!slot) {
@@ -494,7 +495,7 @@ void JamOutCreateCharacterCopies()
                 parent_number = gJamEarlEntities[slot];
             } else {
                 object->tile = lead_tile;
-                object->parent = parent_number;
+                object->owner = parent_number;
             }
         }
     }
@@ -633,7 +634,7 @@ short x, y;
 {
     short row, column, tile;
     for (row = 0; row < 14; ++row) {
-        VDP_COMMAND = (((y + row) << 23) + 0x60000003L) + (x << 17);
+        VDP_COMMAND = (((y + row) << 23) + VDP_WRITE_PLANE_B) + (x << 17);
         for (column = 0; column < 20; ++column) {
             tile = CrashPackedTilemapB[row][column];
             if (tile & 64)

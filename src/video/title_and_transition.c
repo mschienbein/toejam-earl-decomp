@@ -71,7 +71,7 @@ void InitializeTitleTransitionTilemap()
     unsigned short tile;
     for (band = 0; band < 4; ++band)
         for (row = 0; row < 8; ++row) {
-            VDP_COMMAND = 0x60000002L + ((band * 8 + row) << 23);
+            VDP_COMMAND = VDP_WRITE_PLANE_A + ((band * 8 + row) << 23);
             for (repeat_number = 0; repeat_number < 8; ++repeat_number)
                 for (column = 0; column < 8; ++column) {
                     tile = ShipRelatedData[row][column];
@@ -82,25 +82,25 @@ void InitializeTitleTransitionTilemap()
     AnimateTitleTransitionBackground(1);
 }
 
-/* Fill the 64-by-32 plane at command base 0x60000003 with tile 0x8000. */
+/* Fill the 64-by-32 plane at command base VDP_WRITE_PLANE_B with tile 0x8000. */
 void ClearUpperVramTilemap()
 {
     short column, row;
     WaitForNextVBlank(1);
     for (row = 0; row < 32; ++row) {
-        VDP_COMMAND = 0x60000003L + (row << 23);
+        VDP_COMMAND = VDP_WRITE_PLANE_B + (row << 23);
         for (column = 0; column < 64; ++column)
             VDP_DATA = 0x8000;
     }
 }
 
-/* Fill the 64-by-32 plane at command base 0x60000002 with tile 0x8000. */
+/* Fill the 64-by-32 plane at command base VDP_WRITE_PLANE_A with tile 0x8000. */
 void ClearLowerVramTilemap()
 {
     short column, row;
     WaitForNextVBlank(1);
     for (row = 0; row < 32; ++row) {
-        VDP_COMMAND = 0x60000002L + (row << 23);
+        VDP_COMMAND = VDP_WRITE_PLANE_A + (row << 23);
         for (column = 0; column < 64; ++column)
             VDP_DATA = 0x8000;
     }
@@ -117,7 +117,7 @@ void TitleDrawSelectedLogo()
         MoveDataToVRAM(LogoScreen, LogoScreenSize << 4);
         for (row = 0; row < 28; ++row)
             if (row >= 1 && row < 26) {
-                VDP_COMMAND = 0x60000003L + (row << 23);
+                VDP_COMMAND = VDP_WRITE_PLANE_B + (row << 23);
                 for (column = 0; column < 40; ++column) {
                     tile = TextMapping[row - 1][column];
                     VDP_DATA = tile + 0x8244;
@@ -128,7 +128,7 @@ void TitleDrawSelectedLogo()
         MoveDataToVRAM(TAndELogoScreen, TAndELogoScreenSize << 4);
         for (row = 0; row < 28; ++row)
             if (row >= 4 && row < 21) {
-                VDP_COMMAND = 0x60000003L + (row << 23);
+                VDP_COMMAND = VDP_WRITE_PLANE_B + (row << 23);
                 for (column = 0; column < 40; ++column) {
                     tile = TitleLogoTilemap[row - 4][column];
                     VDP_DATA = tile + 0x8244;
@@ -146,7 +146,7 @@ short clear_interior;
     WaitForNextVBlank(1);
     if (clear_interior) {
         for (row = 0; row < 28; ++row) {
-            VDP_COMMAND = 0x60000002L + (row << 23);
+            VDP_COMMAND = VDP_WRITE_PLANE_A + (row << 23);
             for (column = 0; column < 40; ++column)
                 if (row == 0 || row == 27 || column == 0 || column == 39) {
                     tile = (GetRandomNumber() & 3) + 41;
@@ -163,7 +163,7 @@ short clear_interior;
             for (column = 0; column < 40; ++column)
                 if (row == 0 || row == 27 || column == 0 || column == 39) {
                     tile = (GetRandomNumber() & 3) + 41;
-                    VDP_COMMAND = 0x60000002L + (row << 23) + (column << 17);
+                    VDP_COMMAND = VDP_WRITE_PLANE_A + (row << 23) + (column << 17);
                     if ((int)GetRandomNumber() & 1) {
                         tile |= 0x800;
                         tile |= 0x1000;
@@ -181,7 +181,7 @@ short left, top, right, bottom;
     short column, row;
     WaitForNextVBlank(1);
     for (row = top; row <= bottom; ++row) {
-        VDP_COMMAND = 0x60000002L + (row << 23) + (left << 17);
+        VDP_COMMAND = VDP_WRITE_PLANE_A + (row << 23) + (left << 17);
         for (column = left; column <= right; ++column)
             if (row == top || row == bottom || column == left || column == right) {
                 tile = (GetRandomNumber() & 3) + 41;
@@ -201,7 +201,7 @@ short metatile, left, top;
 {
     short column, row;
     for (row = 0; row < 8; ++row) {
-        VDP_COMMAND = 0x60000002L + ((top + row) << 23) + (left << 17);
+        VDP_COMMAND = VDP_WRITE_PLANE_A + ((top + row) << 23) + (left << 17);
         for (column = 0; column < 16; ++column)
             VDP_DATA = 0x8000 + GetLevelMetatileTile(metatile, row, column);
     }
@@ -236,7 +236,7 @@ void CutsceneReleaseFlaggedEntityRange()
     unsigned short object_number = 6;
     struct object_state *object = gPlayerInfo;
     for (; object_number < 40; ++object_number, ++object)
-        if (object->draw_flags & 1)
+        if (object->draw_flags & ENTITY_ACTIVE)
             FreeEntity(object_number);
 }
 
@@ -288,7 +288,7 @@ unsigned short TitleScreenVideo()
     short random_word;
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank0, 0);
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank1, 1);
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank2, 2);
@@ -301,7 +301,7 @@ unsigned short TitleScreenVideo()
     gSceneBackgroundAdvanceCounter = 0;
     start_pressed = 0;
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
 #if REVISION >= 2
     TIME_COUNTER = 0;
     gSceneLastMusicEventTime = 0;
@@ -326,7 +326,7 @@ unsigned short TitleScreenVideo()
         }
     }
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     return start_pressed;
 }
 

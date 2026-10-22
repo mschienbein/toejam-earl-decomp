@@ -1,3 +1,4 @@
+#include "entities.h"
 #define TJE_LOCAL_FUNC_00D9DC
 
 #include "presents.h"
@@ -26,17 +27,17 @@ void SetupPresentIdentities()
     short present_number, identity;
 
     for (present_number = 0; present_number < 27; ++present_number) {
-        gPresentInfo[present_number].sprite = -1;
+        gPresentInfo[present_number].appearance = -1;
         gPresentInfo[present_number].identified = 0;
     }
-    gPresentInfo[26].sprite = 26;
-    gPresentInfo[27].sprite = 27;
+    gPresentInfo[26].appearance = 26;
+    gPresentInfo[27].appearance = 27;
     gPresentInfo[27].identified = 1;
     for (present_number = 0; present_number < 26; ++present_number) {
         identity = GetRandomNumber() % 27;
-        while (gPresentInfo[identity].sprite != -1)
+        while (gPresentInfo[identity].appearance != -1)
             identity = (identity + 1) % 27;
-        gPresentInfo[identity].sprite = present_number;
+        gPresentInfo[identity].appearance = present_number;
     }
 }
 
@@ -47,8 +48,8 @@ void SetupInitialInventory()
     short slot;
 
     for (slot = 0; slot < 16; ++slot) {
-        gPlayerInventory[0][slot] = -1;
-        gPlayerInventory[1][slot] = -1;
+        gPlayerInventory[PLAYER_TOEJAM][slot] = -1;
+        gPlayerInventory[PLAYER_EARL][slot] = -1;
     }
     for (slot = 0; slot < 32; ++slot) {
         gDroppedPresentTable[slot].kind = -1;
@@ -58,22 +59,22 @@ void SetupInitialInventory()
     LEVEL_LOADED_1[0] = -1;
     LEVEL_LOADED_2 = -1;
     SetupPresentIdentities();
-    if (gPlayerLives[0] >= 0) {
+    if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
         PlaceStuffInLevel(1);
-        gPlayerInventory[0][0] = 27;
-        gPlayerInventory[0][1] = 27;
+        gPlayerInventory[PLAYER_TOEJAM][0] = 27;
+        gPlayerInventory[PLAYER_TOEJAM][1] = 27;
         if (gPlayer2Lives < 0) {
-            gPlayerInventory[0][2] = 27;
-            gPlayerInventory[0][3] = 27;
+            gPlayerInventory[PLAYER_TOEJAM][2] = 27;
+            gPlayerInventory[PLAYER_TOEJAM][3] = 27;
         }
     }
     if (gPlayer2Lives >= 0) {
         PlaceStuffInLevel(1);
-        gPlayerInventory[1][0] = 27;
-        gPlayerInventory[1][1] = 27;
-        if (gPlayerLives[0] < 0) {
-            gPlayerInventory[1][2] = 27;
-            gPlayerInventory[1][3] = 27;
+        gPlayerInventory[PLAYER_EARL][0] = 27;
+        gPlayerInventory[PLAYER_EARL][1] = 27;
+        if (gPlayerLives[PLAYER_TOEJAM] < 0) {
+            gPlayerInventory[PLAYER_EARL][2] = 27;
+            gPlayerInventory[PLAYER_EARL][3] = 27;
         }
     }
 }
@@ -334,7 +335,7 @@ short level;
     if (LEVEL_PLAYERS_FLAG_1[0])
         bank = 1;
     saved_seed = StackBasedRandom(gLevelSeeds[level]);
-    if (gPlayerLives[0] < 0 || gPlayer2Lives < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0 || gPlayer2Lives < 0)
         count = 12;
     else
         count = 16;

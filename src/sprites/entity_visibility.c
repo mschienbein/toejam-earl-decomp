@@ -18,7 +18,7 @@ short viewport;
     viewport_height = 112;
     viewport_width = 320;
     if (viewport == 0) {
-        if (P1_MENU_OPEN[0] || entity->level != gLevel912C)
+        if (P1_MENU_OPEN[PLAYER_TOEJAM] || entity->level != gLevel912C)
             return 0;
         relative_x = entity->x - TOEJAM_CAMERA_NEWX;
         relative_y = entity->y - TOEJAM_CAMERA_NEWY;
@@ -49,29 +49,29 @@ int entity_number;
     struct object_state *entity;
 
     entity = &gPlayerInfo[entity_number];
-    if (entity->draw_flags & 1) {
+    if (entity->draw_flags & ENTITY_ACTIVE) {
         if (IsEntityVisibleInViewport(entity, 0)) {
-            if (!IsSpeechBubbleEntity(entity_number) && !(entity->draw_flags & 2))
+            if (!IsSpeechBubbleEntity(entity_number) && !(entity->draw_flags & ENTITY_PRIMARY_VIEW))
                 add_primary = 1;
-        } else if (entity->draw_flags & 2)
+        } else if (entity->draw_flags & ENTITY_PRIMARY_VIEW)
             ReleaseEntityViewportSprites(entity, 0);
         if (IsEntityVisibleInViewport(entity, 1)) {
-            if (!IsSpeechBubbleEntity(entity_number) && !(entity->draw_flags & 4))
+            if (!IsSpeechBubbleEntity(entity_number) && !(entity->draw_flags & ENTITY_SECONDARY_VIEW))
                 add_secondary = 1;
-        } else if (entity->draw_flags & 4)
+        } else if (entity->draw_flags & ENTITY_SECONDARY_VIEW)
             ReleaseEntityViewportSprites(entity, 1);
         if (add_primary) {
-            if (entity_number == 0 && (entity->draw_flags & 4))
+            if (entity_number == 0 && (entity->draw_flags & ENTITY_SECONDARY_VIEW))
                 ReleaseEntityViewportSprites(entity, 1);
-            if (entity_number != 1 || !(entity->draw_flags & 4)) {
+            if (entity_number != 1 || !(entity->draw_flags & ENTITY_SECONDARY_VIEW)) {
                 entity->sprite_ready = 0;
                 AllocateEntityViewportSprites(entity, 0);
             }
         }
         if (add_secondary) {
-            if (entity_number == 1 && (entity->draw_flags & 2))
+            if (entity_number == 1 && (entity->draw_flags & ENTITY_PRIMARY_VIEW))
                 ReleaseEntityViewportSprites(entity, 0);
-            if (entity_number != 0 || !(entity->draw_flags & 2)) {
+            if (entity_number != 0 || !(entity->draw_flags & ENTITY_PRIMARY_VIEW)) {
                 entity->sprite_ready = 0;
                 AllocateEntityViewportSprites(entity, 1);
             }

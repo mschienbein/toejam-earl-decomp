@@ -110,7 +110,7 @@ short filled;
     unsigned short tile;
 
     for (row = 0; row < 28; ++row) {
-        VDP_COMMAND = 0x50000003L + ((long)row << 23);
+        VDP_COMMAND = VDP_WRITE_WINDOW + ((long)row << 23);
         for (column = 0; column < 40; ++column) {
             if (row == 0 || row == 27 || column == 0 || column == 39) {
                 tile = GetRandomNumber() & 3;
@@ -142,7 +142,7 @@ void DrawNestedWindowFrame()
     MoveDataToVRAM(InventoryAuxiliaryTilesLarge,
                    (InventoryAuxiliaryTileCounts[1] + InventoryAuxiliaryTileCounts[0]) << 4);
     for (row = 0; row < 28; ++row) {
-        VDP_COMMAND = 0x60000003L + ((long)row << 23);
+        VDP_COMMAND = VDP_WRITE_PLANE_B + ((long)row << 23);
         for (column = 0; column < 40; ++column) {
             if (row == 0 || row == 27 || column == 0 || column == 39)
                 tile = 0xe1d1;

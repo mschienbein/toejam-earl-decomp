@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "entities.h"
 #include "ram_map.h"
 #include "ram_player.h"
@@ -167,7 +168,7 @@ short viewport;
     char *slots;
 
     tile_count = entity->tile_count;
-    if (!(entity->draw_flags & 6) && !(entity->flags_4d & 4)) {
+    if (!(entity->draw_flags & ENTITY_EITHER_VIEW) && !(entity->behavior_flags & ENTITY_SHARED_TILES)) {
         tile = AllocateSpriteTileRun(tile_count);
         if (!tile)
             return;
@@ -183,8 +184,8 @@ short viewport;
     }
     if (!AllocateSpriteSlots(entity->sprite_count, viewport, 1, slots))
         entity->draw_flags |= viewport_bit;
-    else if (!(entity->draw_flags & 6))
-        /* ORIGINAL BUG: With flags_4d bit 2 set and no viewport
+    else if (!(entity->draw_flags & ENTITY_EITHER_VIEW))
+        /* ORIGINAL BUG: With behavior_flags bit 2 set and no viewport
          * active, a selector failure reads tile without assigning it. */
         FreeSpriteTileRun(tile, tile_count);
 }
@@ -196,17 +197,17 @@ short viewport;
 {
     char *slots;
 
-    if (!(entity->draw_flags & 1))
+    if (!(entity->draw_flags & ENTITY_ACTIVE))
         return;
     if (!viewport) {
-        entity->draw_flags &= 0xfd;
+        entity->draw_flags &= ~ENTITY_PRIMARY_VIEW;
         slots = entity->primary_sprites;
         if (entity->primary_shadow && !IsSpriteSlotLocked(entity->primary_shadow)) {
             FreeSpriteSlot(entity->primary_shadow);
             entity->primary_shadow = 0;
         }
     } else {
-        entity->draw_flags &= 0xfb;
+        entity->draw_flags &= ~ENTITY_SECONDARY_VIEW;
         slots = entity->secondary_sprites;
         if (entity->secondary_shadow && !IsSpriteSlotLocked(entity->secondary_shadow)) {
             FreeSpriteSlot(entity->secondary_shadow);
@@ -214,11 +215,11 @@ short viewport;
         }
     }
     FreeSpriteSlots(entity->sprite_count, slots);
-    if (!(entity->draw_flags & 6) && !(entity->flags_4d & 4)) {
+    if (!(entity->draw_flags & ENTITY_EITHER_VIEW) && !(entity->behavior_flags & ENTITY_SHARED_TILES)) {
         short tile_count, tile;
 
         tile_count = entity->tile_count;
-        tile = entity->tile & 0x7ff;
+        tile = entity->tile & VDP_TILE_INDEX_MASK;
         FreeSpriteTileRun(tile, tile_count);
     }
 }
@@ -247,7 +248,7 @@ short AllocateEntity()
             gDynamicEntitySlotAllocated[index] = 1;
             count = index + 6;
             ResetEntityRuntimeState(&gPlayerInfo[count]);
-            gPlayerInfo[count].draw_flags = 1;
+            gPlayerInfo[count].draw_flags = ENTITY_ACTIVE;
             return count;
         }
     }
@@ -263,10 +264,10 @@ short entity_number;
     if (entity_number <= 1)
         return;
     entity = &gPlayerInfo[entity_number];
-    if (entity->draw_flags & 1) {
-        if (entity->draw_flags & 2)
+    if (entity->draw_flags & ENTITY_ACTIVE) {
+        if (entity->draw_flags & ENTITY_PRIMARY_VIEW)
             ReleaseEntityViewportSprites(entity, 0);
-        if (entity->draw_flags & 4)
+        if (entity->draw_flags & ENTITY_SECONDARY_VIEW)
             ReleaseEntityViewportSprites(entity, 1);
         entity->draw_flags = 0;
         if (entity_number >= 6)

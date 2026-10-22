@@ -1,3 +1,4 @@
+#include "earthling_types.h"
 #include "earthlings.h"
 #include "earthling_calls.h"
 #include "ram_earthlings.h"
@@ -18,7 +19,7 @@ short level;
                 for (record_number = 0; record_number < 20; ++record_number) {
                     object_number = EARTHLINGS_IN_LEVEL[bank][record_number].object;
                     /* Byte zero is set to the released-record marker. */
-                    EARTHLINGS_IN_LEVEL[bank][record_number].kind = -1;
+                    EARTHLINGS_IN_LEVEL[bank][record_number].kind = EARTHLING_UNUSED;
                     if (object_number) {
                         FreeEntity(object_number);
                         EARTHLINGS_IN_LEVEL[bank][record_number].object = 0;

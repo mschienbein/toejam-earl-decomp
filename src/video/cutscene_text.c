@@ -1,3 +1,4 @@
+#include "hardware.h"
 #define TJE_LOCAL_RAM_FFB8DA
 
 #include "entities.h"
@@ -148,10 +149,10 @@ short x, y;
         entity->height_pixels = 8;
         entity->sprite_count = 8;
         entity->tile_count = 32;
-        entity->tile = 0x8000;
+        entity->tile = VDP_TILE_PRIORITY;
         entity->current_frame = &RuntimeTextMetasprite_0AFB08;
         AllocateEntityViewportSprites(entity, 0);
-        CutsceneQueueCenteredRemappedTextLine(text, length, entity->tile & 0x7ff);
+        CutsceneQueueCenteredRemappedTextLine(text, length, entity->tile & VDP_TILE_INDEX_MASK);
         PrepareEntitySpriteFrame(entity, &RuntimeTextMetasprite_0AFB08, 1, 0);
         entity->sprite_ready = 1;
     }
@@ -178,10 +179,10 @@ short x, y;
         entity->height_pixels = 8;
         entity->sprite_count = 8;
         entity->tile_count = 32;
-        entity->tile = 0x8000;
+        entity->tile = VDP_TILE_PRIORITY;
         entity->current_frame = &RuntimeTextMetasprite_0AFB08;
         AllocateEntityViewportSprites(entity, 0);
-        CutsceneQueueCenteredRemappedTextLine(text, length, entity->tile & 0x7ff);
+        CutsceneQueueCenteredRemappedTextLine(text, length, entity->tile & VDP_TILE_INDEX_MASK);
         PrepareEntitySpriteFrame(entity, &RuntimeTextMetasprite_0AFB08, 1, 0);
         entity->sprite_ready = 1;
     }
@@ -209,10 +210,10 @@ short x, y;
         entity->height_pixels = 8;
         entity->sprite_count = 8;
         entity->tile_count = 32;
-        entity->tile = 0x8000;
+        entity->tile = VDP_TILE_PRIORITY;
         entity->current_frame = &RuntimeTextMetasprite_0AFB5C;
         AllocateEntityViewportSprites(entity, 0);
-        CutsceneQueueCenteredOriginalPaletteTextLine(text, length, entity->tile & 0x7ff);
+        CutsceneQueueCenteredOriginalPaletteTextLine(text, length, entity->tile & VDP_TILE_INDEX_MASK);
         PrepareEntitySpriteFrame(entity, &RuntimeTextMetasprite_0AFB5C, 1, 0);
         entity->sprite_ready = 1;
     }

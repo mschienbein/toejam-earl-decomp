@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
 #include "assets_intro.h"
@@ -31,8 +32,8 @@ void IntroCreateHiddenFrameEntities()
             object->current_frame = frame;
             object->x = 170;
             object->y = 160;
-            object->tile |= 0x8000;
-            object->flags_4d |= 64;
+            object->tile |= VDP_TILE_PRIORITY;
+            object->behavior_flags |= ENTITY_HIDDEN;
             AllocateEntityViewportSprites(object, 0);
             object->sprite_ready = 0;
             object->sequence = (char *)&IntroHeldFrameStreams[index];

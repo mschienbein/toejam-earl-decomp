@@ -12,7 +12,7 @@ char sprite_state;
 
     if (sprite_state < 0)
         return;
-    if (!entity->entity_number)
+    if (!entity->entity_index)
         definitions = PlayerAnimationDescriptors;
     else
         definitions = Player2AnimationDescriptors;
@@ -23,5 +23,5 @@ char sprite_state;
     entity->frame_duration = 1;
     entity->frame = -1;
     entity->sprite_state = sprite_state;
-    entity->flags_52 = 1 << (entity->sprite_state >> 2);
+    entity->animation_group_mask = 1 << (entity->sprite_state >> 2);
 }

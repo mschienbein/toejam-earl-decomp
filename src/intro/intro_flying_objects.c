@@ -80,7 +80,7 @@ short scene;
             object = &gPlayerInfo[slot];
             if (object->x < 50 || object->x > 270 ||
                 object->height > -18 || object->height < -198) {
-                if (object->draw_flags & 2)
+                if (object->draw_flags & ENTITY_PRIMARY_VIEW)
                     ReleaseEntityViewportSprites(object, 0);
                 object->x = spawn_x;
                 object->y = 0;

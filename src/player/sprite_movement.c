@@ -1,3 +1,7 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "present_types.h"
+#include "terrain.h"
 #include "entities.h"
 #include "assets_audio.h"
 #include "audio_calls.h"
@@ -19,12 +23,12 @@ unsigned short land;
     sprite = -1;
     speed_x = 320;
     speed_y = 240;
-    if (land == 48) {
+    if (land == TERRAIN_FAST_GROUND) {
         speed_x = 400;
         speed_y = 300;
         if (gPlayerTerrainSinking[player_number]) {
             player->height = 0;
-            player->draw_flags &= ~64;
+            player->draw_flags &= ~ENTITY_SHADOW;
         }
     }
     velocity_x = player->height;
@@ -40,24 +44,24 @@ unsigned short land;
         else
             gPlayerElevatorApproachInputGate[player_number] = 0;
     }
-    if (!(player->flags_52 & 0x8000L)) {
+    if (!(player->animation_group_mask & (long)PLAYER_GROUP_ICARUS_FLY)) {
         velocity_x = player->velocity_x;
         velocity_y = player->velocity_y;
     } else {
         velocity_x = player->acceleration_x;
         velocity_y = player->acceleration_y;
     }
-    if (player->flags_52 & 0x8000000L) {
+    if (player->animation_group_mask & (long)PLAYER_GROUP_HITOPS) {
         speed_x *= 3;
         speed_y *= 3;
     }
     current_sprite = player->sprite_state;
-    animation_mode = player->mode_15;
-    if (player->flags_52 & 0x80L) {
-        if ((current_sprite == 28 && (input & 1)) ||
-            (current_sprite == 29 && (input & 2)) ||
-            (current_sprite == 30 && (input & 4)) ||
-            (current_sprite == 31 && (input & 8)))
+    animation_mode = player->animation_motion_axes;
+    if (player->animation_group_mask & (long)PLAYER_GROUP_JUMP_WINDUP) {
+        if ((current_sprite == PLAYER_ANIM_JUMP_WINDUP_UP && (input & 1)) ||
+            (current_sprite == PLAYER_ANIM_JUMP_WINDUP_DOWN && (input & 2)) ||
+            (current_sprite == PLAYER_ANIM_JUMP_WINDUP_LEFT && (input & 4)) ||
+            (current_sprite == PLAYER_ANIM_JUMP_WINDUP_RIGHT && (input & 8)))
             return;
         sprite = 0;
     } else if (!(input & 15) && (velocity_x || velocity_y)) {
@@ -69,9 +73,9 @@ unsigned short land;
         if (((input & 4) && velocity_x >= 0) ||
             ((input & 8) && velocity_x <= 0)) {
             if (input & 4)
-                sprite = 10;
+                sprite = PLAYER_ANIM_WALK_LEFT;
             else
-                sprite = 11;
+                sprite = PLAYER_ANIM_WALK_RIGHT;
             velocity_y = 0;
             animation_mode = 3;
         }
@@ -95,9 +99,9 @@ unsigned short land;
         if (velocity_x || ((input & 1) && velocity_y >= 0) ||
             ((input & 2) && velocity_y <= 0)) {
             if (input & 1)
-                sprite = 8;
+                sprite = PLAYER_ANIM_WALK_UP;
             else
-                sprite = 9;
+                sprite = PLAYER_ANIM_WALK_DOWN;
             animation_mode = 2;
             velocity_x = 0;
         }
@@ -118,18 +122,18 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
     short sequence_index;
 
     frame = player->frame;
-    if (player->flags_52 & 0x8000L) {
+    if (player->animation_group_mask & (long)PLAYER_GROUP_ICARUS_FLY) {
         player->acceleration_x = velocity_x >> 4;
         player->acceleration_y = velocity_y >> 4;
         --frame;
-    } else if (player->flags_52 & 0x8000000L) {
+    } else if (player->animation_group_mask & (long)PLAYER_GROUP_HITOPS) {
         player->velocity_x = velocity_x;
         player->velocity_y = velocity_y >> 1;
-        player->mode_15 = 0;
+        player->animation_motion_axes = ANIMATION_MOTION_NONE;
     } else {
         player->velocity_x = velocity_x;
         player->velocity_y = velocity_y;
-        player->mode_15 = mode;
+        player->animation_motion_axes = mode;
     }
     if (sprite != -1) {
         if (!sprite) {
@@ -137,41 +141,41 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
             frame = -1;
         } else {
             sprite &= 3;
-            if ((player->flags_52 & 0x40000L) || player->sprite_state == 77)
-                sprite += 72;
-            else if ((player->flags_52 & 0x800L) || player->sprite_state == 3 || player->sprite_state == 7)
-                sprite += 44;
-            else if (player->flags_52 & 0x4000L)
-                sprite += 56;
-            else if (player->flags_52 & 0x8000L)
-                sprite += 60;
+            if ((player->animation_group_mask & (long)PLAYER_GROUP_INNERTUBE_MOVE) || player->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE)
+                sprite += PLAYER_ANIM_INNERTUBE_MOVE_UP;
+            else if ((player->animation_group_mask & (long)PLAYER_GROUP_SWIM) || player->sprite_state == PLAYER_ANIM_SWIM_IDLE || player->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE)
+                sprite += PLAYER_ANIM_SWIM_UP;
+            else if (player->animation_group_mask & (long)PLAYER_GROUP_SPRING_SHOES)
+                sprite += PLAYER_ANIM_SPRING_SHOES_UP;
+            else if (player->animation_group_mask & (long)PLAYER_GROUP_ICARUS_FLY)
+                sprite += PLAYER_ANIM_ICARUS_FLY_UP;
             else if ((input & 64) && !ELEVATOR_FLAG[player_number] &&
-                     gPlayer1Powerup[player_number] == 7) {
-                sprite += 108;
-                if (!(player->flags_52 & 0x8000000L))
+                     gPlayer1Powerup[player_number] == PRESENT_SUPER_HITOPS) {
+                sprite += PLAYER_ANIM_HITOPS_UP;
+                if (!(player->animation_group_mask & (long)PLAYER_GROUP_HITOPS))
                     PlaySoundEffect((long)Sfx_Running, 50, 0);
-            } else if ((input & 64) && gPlayer1Powerup[player_number] == -1)
-                sprite += 12;
+            } else if ((input & 64) && gPlayer1Powerup[player_number] == PRESENT_NONE)
+                sprite += PLAYER_ANIM_SNEAK_UP;
             else {
-                sprite += 8;
-                if (player->flags_52 & 0x8000000L)
-                    player->mode_15 = 3;
+                sprite += PLAYER_ANIM_WALK_UP;
+                if (player->animation_group_mask & (long)PLAYER_GROUP_HITOPS)
+                    player->animation_motion_axes = ANIMATION_MOTION_XY;
             }
         }
     } else if (sprite == -1) {
         if (input & 64) {
-            if (player->flags_52 & 4) {
-                if (gPlayer1Powerup[player_number] == -1)
+            if (player->animation_group_mask & PLAYER_GROUP_WALK) {
+                if (gPlayer1Powerup[player_number] == PRESENT_NONE)
                     sprite = player->sprite_state + 4;
-                else if (gPlayer1Powerup[player_number] == 7 && !ELEVATOR_FLAG[player_number]) {
-                    sprite = (player->sprite_state & 3) + 108;
+                else if (gPlayer1Powerup[player_number] == PRESENT_SUPER_HITOPS && !ELEVATOR_FLAG[player_number]) {
+                    sprite = (player->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_HITOPS_UP;
                     PlaySoundEffect((long)Sfx_Running, 50, 0);
                 }
             }
-        } else if ((player->flags_52 & 0x8000008L) && player->frame_duration <= 1) {
-            sprite = (player->sprite_state & 3) + 8;
-            player->mode_15 = 3;
-            if (player->flags_52 & 0x8000000L) {
+        } else if ((player->animation_group_mask & (long)(PLAYER_GROUP_SNEAK | PLAYER_GROUP_HITOPS)) && player->frame_duration <= 1) {
+            sprite = (player->sprite_state & DIRECTION_MASK) + 8;
+            player->animation_motion_axes = ANIMATION_MOTION_XY;
+            if (player->animation_group_mask & (long)PLAYER_GROUP_HITOPS) {
                 player->velocity_x = velocity_x / 3;
                 player->velocity_y = velocity_y / 3;
             }
@@ -183,8 +187,8 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
             if (!frame_duration)
                 frame_duration = 1;
         } else {
-            if (!player->sprite_state || player->sprite_state == 4 ||
-                (player->flags_52 & 0x20400000L) || player->sprite_state == 76)
+            if (!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+                (player->animation_group_mask & (long)(PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE)
                 frame = -1;
             frame_duration = 1;
         }

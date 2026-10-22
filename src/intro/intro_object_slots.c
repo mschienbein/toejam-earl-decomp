@@ -1,3 +1,4 @@
+#include "hardware.h"
 #define TJE_LOCAL_FUNC_00D904
 
 #include "entities.h"
@@ -43,7 +44,7 @@ void EndingCreatePoseComposite()
         object->x = 104;
         object->y = -50;
         object->sprite_ready = 0;
-        object->tile |= 0x8000;
+        object->tile |= VDP_TILE_PRIORITY;
         object->sequence = (char *)&IntroHeldFrameStreams[0];
         object->frame_duration = 1;
         object->frame = -1;
@@ -63,8 +64,8 @@ short frame, x, y;
         object = &gPlayerInfo[gEndingPoseCompositeEntity];
         object->x = x - 5;
         object->y = y - 5;
-        object->tile |= 0x8000;
-        object->draw_flags |= 0x80;
+        object->tile |= VDP_TILE_PRIORITY;
+        object->draw_flags |= ENTITY_DRAW_LATE;
         object->sequence = (char *)&IntroHeldFrameStreams[frame];
         object->frame_duration = 1;
         object->frame = -1;
@@ -94,7 +95,7 @@ void EndingCreateSixPieceComposite()
         object->x = 104;
         object->y = -50;
         object->sprite_ready = 0;
-        object->tile |= 0x8000;
+        object->tile |= VDP_TILE_PRIORITY;
         object->sequence = (char *)&IntroHeldFrameStreams[0];
         object->frame_duration = 1;
         object->frame = -1;
@@ -140,7 +141,7 @@ void EndingCreateRightOffsetComposite()
         object->x = 104;
         object->y = -50;
         object->sprite_ready = 0;
-        object->tile |= 0x8000;
+        object->tile |= VDP_TILE_PRIORITY;
         object->sequence = &EndingFrameIndexStreams[242];
         object->frame_duration = 1;
         object->frame = -1;
@@ -225,7 +226,7 @@ unsigned short x, y;
         object->tile = 0;
         object->current_frame = CompositeFrames_0396EA[0];
         object->frames = CompositeFrames_0396EA;
-        object->tile = 0x8000;
+        object->tile = VDP_TILE_PRIORITY;
         object->tile_count = 30;
         object->sprite_count = 3;
         object->x = x;

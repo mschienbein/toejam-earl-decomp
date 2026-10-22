@@ -1,3 +1,4 @@
+#include "terrain.h"
 #include "entities.h"
 #include "assets_map.h"
 #include "elevator_calls.h"
@@ -21,11 +22,11 @@ unsigned char flags;
     unsigned char property;
     char valid;
 
-    if ((metatile & 0x1f00) && !(flags & 4))
+    if ((metatile & METATILE_OVERLAY_MASK) && !(flags & 4))
         return 0;
-    if (metatile & 0x80)
+    if (metatile & METATILE_MIRROR_X)
         mirrored = 1;
-    metatile &= 0x7f;
+    metatile &= METATILE_BASE_MASK;
     if (metatile == 34 || metatile == 82 || metatile == 84)
         return 0;
     if (width >= 16 && height >= 8) {
@@ -49,9 +50,9 @@ unsigned char flags;
                 for (column = origin_x; column < origin_x + width; ++column) {
                     tile_word = LevelMetatileMaps[metatile][row][column];
                     property = PlayerTilePropertyLookup[tile_word & 0x7ff];
-                    if (!(((flags & 1) && property == 16) ||
-                          ((flags & 2) && property == 32) ||
-                          ((flags & 8) && property == 128))) {
+                    if (!(((flags & 1) && property == TERRAIN_GROUND) ||
+                          ((flags & 2) && property == TERRAIN_SINKING) ||
+                          ((flags & 8) && property == TERRAIN_WATER))) {
                         valid = 0;
                         break;
                     }
@@ -86,13 +87,13 @@ register int player;
     register unsigned short random;
     char level;
 
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         player = 1;
     else if (gPlayer2Lives < 0)
         player = 0;
     if (player == 2) {
         width = 12;
-        level = gPlayerInfo[0].level;
+        level = gPlayerInfo[PLAYER_TOEJAM].level;
     } else {
         width = 4;
         level = gPlayerInfo[player].level;
@@ -101,7 +102,7 @@ register int player;
         width = 16;
         height = 8;
     }
-    if (player == 1 && gPlayerLives[0] >= 0)
+    if (player == 1 && gPlayerLives[PLAYER_TOEJAM] >= 0)
         map = gMapDataB[0];
     else
         map = gMapDataA[0];
@@ -156,13 +157,13 @@ set_position:
      * output coordinates are still used. The random loop also does not count
      * marked metatiles, so an entirely marked map never reaches the scan. */
     if (player == 0 || player == 2) {
-        gPlayerInfo[0].y = position_y;
-        gPlayerInfo[0].x = position_x;
+        gPlayerInfo[PLAYER_TOEJAM].y = position_y;
+        gPlayerInfo[PLAYER_TOEJAM].x = position_x;
     }
     if (player == 1 || player == 2) {
-        gPlayerInfo[1].y = position_y;
-        gPlayerInfo[1].x = position_x;
+        gPlayerInfo[PLAYER_EARL].y = position_y;
+        gPlayerInfo[PLAYER_EARL].x = position_x;
         if (player == 2)
-            gPlayerInfo[1].x += 64;
+            gPlayerInfo[PLAYER_EARL].x += 64;
     }
 }

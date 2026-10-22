@@ -1,3 +1,7 @@
+#include "present_types.h"
+#include "psg_effects.h"
+#include "fm_effects.h"
+#include "music_ids.h"
 #define TJE_LOCAL_RAM_FFB8DA
 
 #include "entities.h"
@@ -103,7 +107,7 @@ void RestoreGameplayGraphics()
 {
     VDP_CONTROL_WORD = 0x9100;
     VDP_CONTROL_WORD = 0x9200;
-    VDP_COMMAND = 0x40000000L;
+    VDP_COMMAND = VDP_WRITE_VRAM_BASE;
     MoveDataToVRAM(LevelTiles, LevelTilesSize << 4);
     VDP_COMMAND = 0x40000001L;
     MoveDataToVRAM(ImgStarfieldLarge, StarryBackgroundSize << 4);
@@ -173,11 +177,11 @@ short player_number;
 
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank1, 1);
     for (page = 0; page < 4; ++page) {
         for (row = 0; row < 8; ++row) {
-            VDP_COMMAND = 0x50000003L + ((page * 8 + row) << 23);
+            VDP_COMMAND = VDP_WRITE_WINDOW + ((page * 8 + row) << 23);
             for (repeat = 0; repeat < 6; ++repeat) {
                 for (column = 0; column < 8; ++column) {
                     tile = ShipRelatedData[row][column] + 1;
@@ -195,7 +199,7 @@ short player_number;
                     tile |= 0x800;
                     tile |= 0x1000;
                 }
-                VDP_COMMAND = (0x50000003L + (row << 23)) + (column << 17);
+                VDP_COMMAND = (VDP_WRITE_WINDOW + (row << 23)) + (column << 17);
                 VDP_DATA = tile + 0x8580L;
             }
         }
@@ -205,12 +209,12 @@ short player_number;
     gShipScreenState[0] = 1;
     AnimateTransitionBackground(20);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
-    PlaySound(6, 99);
-    AudioRequestChannelTemplateEffect(0);
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
+    PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
+    AudioRequestChannelTemplateEffect(FM_EFFECT_CLEAR);
     WaitForNextVBlank(1);
-    VBLANK_FLAG_8 = 6;
-    VBLANK_FLAG_7 = 6;
+    VBLANK_FLAG_8 = MUSIC_TRANSITION;
+    VBLANK_FLAG_7 = MUSIC_TRANSITION;
     AudioRequestFmChannelRelease();
     MusicRequestTrackPointerReset();
     PlaySoundEffect((long)Sfx_JamClap, 90, 0);
@@ -231,7 +235,7 @@ short player_number;
             VBLANK_FLAG_7 = 0;
     }
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+    VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     RestoreGameplayGraphics();
     if (P1_MENU_OPEN[player_number ^ 1]) {
         InventoryDeactivateDisplayEntities(player_number ^ 1);
@@ -240,8 +244,8 @@ short player_number;
     SelectSpriteChainStart(0);
     SPLIT_SCREEN = 0;
     HudHidePlayerSprites(2);
-    gPlayer1Powerup[0] = -1;
-    gPlayer2Powerup = -1;
+    gPlayer1Powerup[PLAYER_TOEJAM] = PRESENT_NONE;
+    gPlayer2Powerup = PRESENT_NONE;
     VDP_CONTROL_WORD = 0x9100;
     VDP_CONTROL_WORD = 0x9200;
     MapClearActiveLevelObjects();
@@ -262,7 +266,7 @@ void InitializeShipScreenTilemapAndPalettes()
         if (page == 4 && row == 3)
             break;
         for (row = 0; row < 8; ++row) {
-            VDP_COMMAND = 0x50000003L + ((page * 8 + row) << 23);
+            VDP_COMMAND = VDP_WRITE_WINDOW + ((page * 8 + row) << 23);
             for (repeat = 0; repeat < 5; ++repeat) {
                 first_tile = ((page ^ repeat) & 1) << 6;
                 ++first_tile;
@@ -282,7 +286,7 @@ void InitializeShipScreenTilemapAndPalettes()
                     tile |= 0x800;
                     tile |= 0x1000;
                 }
-                VDP_COMMAND = (0x50000003L + (row << 23)) + (column << 17);
+                VDP_COMMAND = (VDP_WRITE_WINDOW + (row << 23)) + (column << 17);
                 VDP_DATA = tile + 0x8580L;
             }
         }
@@ -345,7 +349,7 @@ int player_number;
         if (gPlayerInfo[player_number ^ 1].level == player->level) {
             VDP_COMMAND = 0x518a0003L;
             TextWriteStringTiles("Rocketship piece on this level");
-        } else if (player_number == 0) {
+        } else if (player_number == PLAYER_TOEJAM) {
             VDP_COMMAND = 0x51860003L;
             TextWriteStringTiles("Rocketship piece on toejam's level");
         } else {
@@ -356,7 +360,7 @@ int player_number;
         if (gPlayerInfo[player_number ^ 1].level == player->level) {
             VDP_COMMAND = 0x51900003L;
             TextWriteStringTiles("no pieces on this level");
-        } else if (player_number == 0) {
+        } else if (player_number == PLAYER_TOEJAM) {
             VDP_COMMAND = 0x518c0003L;
             TextWriteStringTiles("no pieces on toejam's level");
         } else {

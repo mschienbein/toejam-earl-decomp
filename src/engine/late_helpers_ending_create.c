@@ -1,3 +1,4 @@
+#include "hardware.h"
 #define TJE_LOCAL_FUNC_00D904
 
 #include "entities.h"
@@ -22,14 +23,14 @@ unsigned short x, y;
     struct render_frame **frames;
 
     second_active = !(gPlayer2Lives < 0);
-    first_active = !(gPlayerLives[0] < 0);
+    first_active = !(gPlayerLives[PLAYER_TOEJAM] < 0);
     if (first_active) {
         if (gEndingPlayer1Entity = AllocateEntity()) {
             object = &gPlayerInfo[gEndingPlayer1Entity];
             frames = CompositeFrames_03A3AA;
             object->sprite_count = 3;
             object->tile_count = 48;
-            object->tile = 0x8000;
+            object->tile = VDP_TILE_PRIORITY;
             object->frames = frames;
             if (second_active)
                 object->sequence = EndingPlayer1PairedAnimation;
@@ -51,7 +52,7 @@ unsigned short x, y;
             frames = CompositeFrames_03A33A;
             object->sprite_count = 3;
             object->tile_count = 48;
-            object->tile = 0x8000;
+            object->tile = VDP_TILE_PRIORITY;
             object->frames = frames;
             if (first_active)
                 object->sequence = EndingPlayer2PairedAnimation;

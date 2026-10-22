@@ -1,3 +1,4 @@
+#include "music_ids.h"
 #define TJE_LOCAL_FUNC_0289DA
 
 #include "hardware.h"
@@ -29,12 +30,12 @@ void PlayEndingSequence()
     VBLANK_FLAG_7 = 0;
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 60;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     ClearSkipVHBlankFlags();
     TOEJAM_CAMERA_NEWX = 0;
     TOEJAM_CAMERA_NEWY = 0;
     VDP_CONTROL_WORD = 0x8228;
-    VDP_COMMAND = 0x40000010L;
+    VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
     VDP_DATA = TOEJAM_CAMERA_NEWY;
     VDP_COMMAND = 0x7c000003L;
     VDP_DATA = TOEJAM_CAMERA_NEWX;
@@ -46,7 +47,7 @@ void PlayEndingSequence()
     gCameraTileAttributes = 0x8000;
     VDP_COMMAND = 0x70000002L;
     MoveDataToVRAM(ImageTextBase, FontDataSize << 4);
-    VDP_COMMAND = 0x40000000L;
+    VDP_COMMAND = VDP_WRITE_VRAM_BASE;
     MoveDataToVRAM(LevelTiles, LevelTilesSize << 4);
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank0, 0);
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank1, 1);
@@ -76,7 +77,7 @@ short EndingPlayDialogueAndDeparture()
     CopyPaletteToCRAMSlot(PaletteGameLine4, 3);
     ClearLowerVramTilemap();
     EndingDrawNineMetatileBackground();
-    VDP_COMMAND = 0x40000010L;
+    VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
     VDP_DATA = -30;
     character_y = 127;
     character_x = 92;
@@ -87,7 +88,7 @@ short EndingPlayDialogueAndDeparture()
     EndingCreateActivePlayerEntities(character_x, 127);
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 64;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     mouth_timer = 0;
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 34;
@@ -168,7 +169,7 @@ short EndingPlayDialogueAndDeparture()
             CutsceneReleaseTextEntities();
             EndingCreateSixPieceComposite();
             EndingPositionSixPieceComposite(character_x, -50);
-            VBLANK_FLAG_7 = 6;
+            VBLANK_FLAG_7 = MUSIC_TRANSITION;
             gCutsceneScriptCountdown = 221;
             ++gCutsceneScriptState;
             break;
@@ -199,7 +200,7 @@ short EndingPlayDialogueAndDeparture()
         }
     }
     gMode2RegSoftcopy &= 60;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     EndingReleaseElevatedThreePieceComposite();
     EndingReleaseActivePlayerEntities();
     CutsceneReleaseRocketshipPair();
@@ -209,7 +210,7 @@ short EndingPlayDialogueAndDeparture()
     CutsceneStepFrameAndMusicCadence(0, 0);
     ClearLowerVramTilemap();
     speed = 0;
-    VDP_COMMAND = 0x40000010L;
+    VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
     VDP_DATA = speed;
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank0, 0);
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank1, 1);
@@ -234,7 +235,7 @@ short EndingPlayUpwardRocketshipDeparture()
     CopyPaletteToCRAMSlot(PaletteSpaceScreen_bank3, 3);
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 64;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 17;
     while (gCutsceneScriptState != -1) {
@@ -274,7 +275,7 @@ short EndingPlayUpwardRocketshipDeparture()
         }
     }
     gMode2RegSoftcopy &= 60;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     CutsceneReleaseTextEntities();
     CutsceneReleasePlanetEntity();
     CutsceneReleaseRocketshipPair();
@@ -296,7 +297,7 @@ short EndingPlayScrollingCredits()
     CutsceneSetRocketshipPairPose(0, 280, 160);
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 64;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptCountdown = 85;
     gCutsceneScriptState = 0;
     scroll = 0;
@@ -392,7 +393,7 @@ short EndingPlayScrollingCredits()
         }
     }
     gMode2RegSoftcopy &= 60;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     CutsceneReleaseTextEntities();
     CutsceneReleaseDriftingEntities();
     CutsceneReleaseRocketshipPair();
@@ -417,7 +418,7 @@ short EndingPlayDescendingRocketshipScene()
     EndingCreateStationaryComposite(170, 180);
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 64;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptState = 0;
     while (gCutsceneScriptState != -1) {
         CutsceneStepFrameAndMusicCadence(0, 0);
@@ -454,7 +455,7 @@ short EndingPlayDescendingRocketshipScene()
         }
     }
     gMode2RegSoftcopy &= 60;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     EndingReleaseStationaryComposite();
     CutsceneReleaseRocketshipPair();
     CutsceneStepFrameAndMusicCadence(0, 0);
@@ -486,7 +487,7 @@ short EndingPlayBouncingRocketshipScene()
     EndingSetPoseComposite(1, character_x, 127);
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 64;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 17;
     while (gCutsceneScriptState != -1) {
@@ -527,7 +528,7 @@ short EndingPlayBouncingRocketshipScene()
             gCutsceneScriptState = -1;
     }
     gMode2RegSoftcopy &= 60;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     CutsceneReleaseRocketshipPair();
     EndingReleasePoseComposite();
     EndingReleaseRightOffsetComposite();

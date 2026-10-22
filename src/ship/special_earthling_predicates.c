@@ -1,3 +1,4 @@
+#include "earthling_types.h"
 #include "earthlings.h"
 #include "ram_earthlings.h"
 #include "random.h"
@@ -7,7 +8,7 @@
 int EarthlingIsMailOrderMailbox(earthling)
 struct earthling_state *earthling;
 {
-    if (earthling->kind == 9 &&
+    if (earthling->kind == EARTHLING_MAILBOX &&
         ((gMailboxLevelStates[0].level == earthling->level &&
           gMailboxLevelStates[0].mode != 1) ||
          (gMailboxLevelStates[1].level == earthling->level &&

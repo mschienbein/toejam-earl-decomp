@@ -26,7 +26,7 @@ extern char TEXT_SPRITE_DATA_START[][1888];
 
 /* Existing inventory-object aliases within gPlayerInfo[40]: selector
  * records 26 and 33, and six visible-item records 27..32 and 34..39.
- * The scalar flag bytes alias the selectors' flags_4d fields; these are
+ * The scalar flag bytes alias the selectors' behavior_flags fields; these are
  * overlapping views, not additional object or byte allocations. */
 extern struct object_state gPlayer1InventorySelectorEntity;
 extern char gPlayer1InventorySelectorFlags;

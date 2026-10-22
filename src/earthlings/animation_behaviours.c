@@ -1,3 +1,4 @@
+#include "earthling_types.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "assets_earthlings.h"
@@ -42,7 +43,7 @@ struct earthling_state *earthling;
                 next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance, 0,
                                         earthling->kind);
                 if (next_state != -1) {
-                    if (earthling->state != 2 && (object->draw_flags & 6) &&
+                    if (earthling->state != 2 && (object->draw_flags & ENTITY_EITHER_VIEW) &&
                         ((earthling->state ^ next_state) & 1)) {
                         next_state = -1;
                         object->velocity_x = previous_velocity_x;
@@ -139,7 +140,7 @@ struct earthling_state *earthling;
     object = &gPlayerInfo[earthling->object];
     if (!object->sprite_state && earthling->state >= 2)
         next_state = EarthlingSelectTurnState(earthling);
-    else if (earthling->state <= 1 && P1_MENU_OPEN[0] != 3 && HBLANK_FLAG_1 != 3) {
+    else if (earthling->state <= 1 && P1_MENU_OPEN[PLAYER_TOEJAM] != 3 && HBLANK_FLAG_1 != 3) {
         if (object->velocity_x > 0) {
             next_state = 2;
             object->velocity_x = -320;
@@ -183,21 +184,21 @@ struct earthling_state *earthling;
             earthling->timer = NEXT_RANDOM % (maximum_time - minimum_time + 1) + minimum_time;
         }
         if (earthling->state == 3) {
-            if (object->flags_4d & 0x40) {
+            if (object->behavior_flags & ENTITY_HIDDEN) {
                 if (next_state != -1) {
                     object->frame = -1;
                     object->frame_duration = 1;
                     object->sprite_ready = 0;
-                    object->flags_4d &= 0xbf;
+                    object->behavior_flags &= ~ENTITY_HIDDEN;
                 }
                 earthling->timer = 3;
             } else if (!object->frame_duration) {
                 SetEarthlingState(earthling, 4);
                 earthling->timer = 0;
-                earthling->reserved_10[0] = 7;
+                earthling->health_visibility[0] = 7;
             } else
                 earthling->timer = 1;
-        } else if (--earthling->reserved_10[0] < 0 || next_state == -1) {
+        } else if (--earthling->health_visibility[0] < 0 || next_state == -1) {
             SetEarthlingState(earthling, 2);
             object->frame = -1;
         }

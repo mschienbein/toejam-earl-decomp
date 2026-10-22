@@ -22,7 +22,7 @@ void UpdateSpeechAndDialogue()
     for (slot = 0; slot < 4; ++slot) {
         if (entity_number = gSpeechBubbleEntities[slot]) {
             bubble = &gPlayerInfo[entity_number];
-            if (--gSpeechBubbleLifetimes[slot] < 0 || !(bubble->draw_flags & 6)) {
+            if (--gSpeechBubbleLifetimes[slot] < 0 || !(bubble->draw_flags & ENTITY_EITHER_VIEW)) {
                 FreeEntity(entity_number);
                 gSpeechBubbleEntities[slot] = 0;
             }
@@ -34,7 +34,7 @@ void UpdateSpeechAndDialogue()
     }
     if ((GetRandomNumber() & 0x1fff) == 1) {
         player_number = GetRandomNumber() & 1;
-        if (EarthlingResetStateTwoByDrawMask(gPlayerInfo[player_number].draw_flags & 6)) {
+        if (EarthlingResetStateTwoByDrawMask(gPlayerInfo[player_number].draw_flags & ENTITY_EITHER_VIEW)) {
             slot = StartDialogue(0, player_number);
             if (slot != -1) {
                 PlaySoundEffect((long)Sfx_Achoo, 50, 0);
@@ -43,9 +43,9 @@ void UpdateSpeechAndDialogue()
             }
         }
     }
-    if (gPlayerInfo[0].level == gPlayerInfo[1].level) {
-        distance_x = abs(gPlayerInfo[0].x - gPlayerInfo[1].x);
-        distance_y = abs(gPlayerInfo[0].y - gPlayerInfo[1].y);
+    if (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level) {
+        distance_x = abs(gPlayerInfo[PLAYER_TOEJAM].x - gPlayerInfo[PLAYER_EARL].x);
+        distance_y = abs(gPlayerInfo[PLAYER_TOEJAM].y - gPlayerInfo[PLAYER_EARL].y);
         if (gReunionDialoguePending && !SPLIT_SCREEN && distance_x < 260 && distance_y < 174) {
             /* ORIGINAL BUG: These dialogue calls omit their speaker argument. */
             if (PlayerHasOddElevatorState(0) && !(GetRandomNumber() & 3))

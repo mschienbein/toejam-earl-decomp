@@ -1,3 +1,9 @@
+#include "player_animation.h"
+#include "present_types.h"
+#include "terrain.h"
+#include "psg_effects.h"
+#include "fm_effects.h"
+#include "hardware.h"
 #define TJE_LOCAL_FUNC_00D9DC
 #define TJE_LOCAL_FUNC_015DA6
 
@@ -117,12 +123,12 @@ struct earthling_state *earthling;
         projectile->height_pixels = 7;
         projectile->sprite_count = 1;
         projectile->tile_count = 16;
-        projectile->tile = 0x8000;
+        projectile->tile = VDP_TILE_PRIORITY;
         animation = AnimationDescriptors_0AEFF6;
         projectile->sequence = animation->sequence;
         projectile->frames = animation->frames;
         projectile->frame_phase = 0;
-        projectile->draw_flags |= 64;
+        projectile->draw_flags |= ENTITY_SHADOW;
         projectile->sprite_state = -1;
         if (!gPcmEffectCooldownTicks)
             PlaySoundEffect((long)Sfx_ChickenCannonFire, 40, 0);
@@ -140,15 +146,15 @@ void ProcessTomatoRain()
     for (slot = 0; slot < 12; ++slot) {
         if (object_number = gSharedProjectileEntities[slot]) {
             projectile = &gPlayerInfo[object_number];
-            if (projectile->height < 10 && !(projectile->draw_flags & 6)) {
+            if (projectile->height < 10 && !(projectile->draw_flags & ENTITY_EITHER_VIEW)) {
                 FreeEntity(object_number);
                 gSharedProjectileEntities[slot] = 0;
             } else if (projectile->sprite_state == -1) {
                 if (projectile->height <= 0) {
-                    if (projectile->tile & 0x8000) {
-                        projectile->draw_flags &= ~64;
+                    if (projectile->tile & VDP_TILE_PRIORITY) {
+                        projectile->draw_flags &= ~ENTITY_SHADOW;
                         object_number = 0;
-                        if (projectile->draw_flags & 4)
+                        if (projectile->draw_flags & ENTITY_SECONDARY_VIEW)
                             object_number = 1;
                         object_number = GetMapTerrainAtWorldPosition(object_number, projectile->x, projectile->y);
                         if (object_number == 144) {
@@ -172,7 +178,7 @@ void ProcessTomatoRain()
                             projectile->frame = -1;
                             projectile->frame_duration = 1;
                             if (!gMusicUnknownE472)
-                                AudioRequestChannelTemplateEffect(15);
+                                AudioRequestChannelTemplateEffect(FM_EFFECT_TOMATO_LAND);
                         }
                     }
                 } else if (projectile->height <= 25) {
@@ -190,7 +196,7 @@ void ProcessTomatoRain()
                         projectile->velocity_y = 0;
                         projectile->velocity_height = 0;
                         projectile->acceleration_height = 0;
-                        projectile->draw_flags &= ~64;
+                        projectile->draw_flags &= ~ENTITY_SHADOW;
                         animation = &TomatoTargetImpactAnimation;
                         projectile->sequence = animation->sequence;
                         projectile->frames = animation->frames;
@@ -198,7 +204,7 @@ void ProcessTomatoRain()
                         projectile->frame = -1;
                         projectile->frame_duration = 1;
                         projectile->sprite_state = 0;
-                        AudioRequestChannelTemplateEffect(2);
+                        AudioRequestChannelTemplateEffect(FM_EFFECT_TOMATO_HIT);
                     }
                 }
             } else if (!projectile->frame_duration && projectile->sprite_state != 21) {
@@ -252,12 +258,12 @@ int player_number;
         projectile->height_pixels = 7;
         projectile->sprite_count = 1;
         projectile->tile_count = 16;
-        projectile->tile = 0x8000;
+        projectile->tile = VDP_TILE_PRIORITY;
         animation = AnimationDescriptors_0AEFF6;
         projectile->sequence = animation->sequence;
         projectile->frames = animation->frames;
         projectile->frame_phase = 0;
-        projectile->draw_flags |= 64;
+        projectile->draw_flags |= ENTITY_SHADOW;
         projectile->sprite_state = -1;
         --gPlayer1TomatoRainTimer[player_number];
     }
@@ -315,15 +321,15 @@ struct object_state *source;
         projectile->height_pixels = 8;
         projectile->sprite_count = 1;
         projectile->tile_count = 2;
-        projectile->tile = 0x8000;
+        projectile->tile = VDP_TILE_PRIORITY;
         projectile->sequence = animation->sequence;
         projectile->frames = animation->frames;
         projectile->frame_phase = 9;
         projectile->frame = -1;
         projectile->frame_duration = 1;
-        projectile->draw_flags |= 64;
+        projectile->draw_flags |= ENTITY_SHADOW;
         projectile->sprite_state = -1;
-        AudioRequestChannelTemplateEffect(4);
+        AudioRequestChannelTemplateEffect(FM_EFFECT_CONTROL_REMAP_SHOT);
     }
 }
 
@@ -342,7 +348,7 @@ struct object_state *projectile;
                     continue;
                 target = &gPlayerInfo[gPlayerDecoyEntities[index]];
             }
-            if (!(target->draw_flags & 1) || !(target->flags_4d & 1) ||
+            if (!(target->draw_flags & ENTITY_ACTIVE) || !(target->behavior_flags & ENTITY_COLLIDABLE) ||
                 projectile->level != target->level)
                 continue;
             reach = projectile->width / 2 + target->width / 2 - 5;
@@ -370,10 +376,10 @@ short player_number;
         if (gPlayerControlRemapEntities[player_number] = (int)AllocateEntityWithEviction(0)) {
             effect = &gPlayerInfo[gPlayerControlRemapEntities[player_number]];
             player = &gPlayerInfo[player_number];
-            effect->flags_4d |= 8;
-            effect->parent = player_number;
+            effect->behavior_flags |= ENTITY_ATTACHED;
+            effect->owner = player_number;
             effect->level = player->level;
-            effect->tile |= 0x8000;
+            effect->tile |= VDP_TILE_PRIORITY;
             effect->width = 32;
             effect->height_pixels = 32;
             effect->sprite_count = 1;
@@ -413,18 +419,18 @@ struct object_state *player;
     short player_number;
     struct object_state *effect;
 
-    player_number = player->entity_number;
+    player_number = player->entity_index;
     if (!gPlayerControlRemapEntities[player_number])
         return;
     effect = &gPlayerInfo[gPlayerControlRemapEntities[player_number]];
     effect->level = player->level;
     if (--gPlayerControlRemapTimers[player_number] <= 0 || gPlayerLives[player_number] < 0 ||
-        player->sprite_state == 5 || player->sprite_state == 6) {
+        player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST) {
         FreeEntity(gPlayerControlRemapEntities[player_number]);
         gPlayerControlRemapEntities[player_number] = 0;
     } else if (!ELEVATOR_FLAG[player_number] && (effect->frame_duration & 2) &&
                ((short)GetRandomNumber() & 1)) {
-        PlaySound(2, 20);
+        PlaySound(PSG_DOUBLE_TONE_SWEEP, 20);
     }
 }
 
@@ -437,17 +443,17 @@ void EarthlingUpdateControlRemapProjectiles()
     for (slot = 0; slot < 4; ++slot) {
         if (object_number = gControlRemapProjectileEntities[slot]) {
             projectile = &gPlayerInfo[object_number];
-            if (!(projectile->draw_flags & 6)) {
+            if (!(projectile->draw_flags & ENTITY_EITHER_VIEW)) {
                 if (projectile->height < 5) {
                     FreeEntity(object_number);
                     gControlRemapProjectileEntities[slot] = 0;
                 }
             } else if (projectile->sprite_state == -1) {
                 if (projectile->height <= 0) {
-                    if (projectile->tile & 0x8000) {
-                        projectile->draw_flags &= ~64;
+                    if (projectile->tile & VDP_TILE_PRIORITY) {
+                        projectile->draw_flags &= ~ENTITY_SHADOW;
                         hit = 0;
-                        if (projectile->draw_flags & 4)
+                        if (projectile->draw_flags & ENTITY_SECONDARY_VIEW)
                             hit = 1;
                         hit = GetMapTerrainAtWorldPosition(hit, projectile->x, projectile->y);
                         if (hit == 0x90) {
@@ -488,7 +494,7 @@ short player_number;
         effect->x = player->x;
         effect->y = player->y - 1;
         effect->level = player->level;
-        effect->tile |= 0x8000;
+        effect->tile |= VDP_TILE_PRIORITY;
         effect->width = 24;
         effect->height_pixels = 20;
         effect->sprite_count = 1;
@@ -499,8 +505,8 @@ short player_number;
         effect->frame_phase = animation->period;
         effect->frame = -1;
         effect->frame_duration = 1;
-        effect->flags_4d |= 1;
-        AudioRequestChannelTemplateEffect(13);
+        effect->behavior_flags |= ENTITY_COLLIDABLE;
+        AudioRequestChannelTemplateEffect(FM_EFFECT_TERRAIN_GROW);
     }
 }
 
@@ -541,7 +547,7 @@ short player_number;
         effect->x = player->x;
         effect->y = player->y;
         effect->level = player->level;
-        effect->tile |= 0x8000;
+        effect->tile |= VDP_TILE_PRIORITY;
         effect->width = 24;
         effect->height_pixels = 20;
         effect->sprite_count = 1;
@@ -552,8 +558,8 @@ short player_number;
         effect->frame_phase = animation->period;
         effect->frame = -1;
         effect->frame_duration = 1;
-        effect->flags_4d |= 1;
-        AudioRequestChannelTemplateEffect(13);
+        effect->behavior_flags |= ENTITY_COLLIDABLE;
+        AudioRequestChannelTemplateEffect(FM_EFFECT_TERRAIN_GROW);
     }
 }
 
@@ -567,23 +573,23 @@ unsigned short terrain;
     struct object_state *effect;
     struct earthling_state source;
 
-    player_number = player->entity_number;
-    if (gPlayer1Powerup[player_number] != 6 || ELEVATOR_FLAG[player_number] ||
-        player->sprite_state == 5 || player->sprite_state == 6) {
+    player_number = player->entity_index;
+    if (gPlayer1Powerup[player_number] != PRESENT_ROSE_BUSHES || ELEVATOR_FLAG[player_number] ||
+        player->sprite_state == PLAYER_ANIM_GHOST || player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST) {
         if (gPlayerActiveTerrainEffectEntities[player_number])
             PresentRetireTerrainEffect(player_number);
     } else if (!(P1_PREV_PROCESSED_INPUT[player_number] & 64) &&
                (P1_PROCESSED_INPUT[player_number] & 64)) {
-        if (terrain == 0x10 || terrain == 0x50) {
+        if (terrain == TERRAIN_GROUND || terrain == TERRAIN_WALKABLE_MAX) {
             if (gPlayerActiveTerrainEffectEntities[player_number])
                 PresentRetireTerrainEffect(player_number);
             PresentCreateActiveTerrainEffect(player, player_number);
-        } else if (terrain < 0x80 && !gPlayerOneShotTerrainEffectEntities[player_number]) {
+        } else if (terrain < TERRAIN_WATER && !gPlayerOneShotTerrainEffectEntities[player_number]) {
             PresentCreateTemporaryTerrainEffect(player, player_number);
         }
     } else if (object_number = gPlayerActiveTerrainEffectEntities[player_number]) {
         effect = &gPlayerInfo[object_number];
-        if (!effect->frame_duration && (effect->draw_flags & 6)) {
+        if (!effect->frame_duration && (effect->draw_flags & ENTITY_EITHER_VIEW)) {
             source.kind = 1;
             source.x = effect->x;
             source.y = effect->y;
@@ -637,7 +643,7 @@ struct object_state *object;
         player_number = GetRandomNumber() & 1;
         for (attempt = 0; attempt < 2; player_number ^= 1, ++attempt) {
             decoy = gPlayerDecoyEntities[player_number];
-            target = decoy && (gPlayerInfo[decoy].draw_flags & 6) ?
+            target = decoy && (gPlayerInfo[decoy].draw_flags & ENTITY_EITHER_VIEW) ?
                      &gPlayerInfo[decoy] : &gPlayerInfo[player_number];
             if (gPlayerLives[player_number] < 0)
                 continue;

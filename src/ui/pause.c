@@ -1,3 +1,7 @@
+#include "psg_effects.h"
+#include "fm_effects.h"
+#include "music_ids.h"
+#include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
 #include "assets_sprites.h"
@@ -22,10 +26,10 @@ short player_number;
     short reset_selected = 0;
 
     DrawPauseChoicePanel(0);
-    PlaySound(6, 99);
+    PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
     WaitForNextVBlank(1);
-    PlaySound(20, 99);
-    AudioRequestChannelTemplateEffect(0);
+    PlaySound(PSG_TONE_PHRASE, 99);
+    AudioRequestChannelTemplateEffect(FM_EFFECT_CLEAR);
     AudioRequestFmChannelRelease();
     MusicRequestTrackPointerReset();
     while (MovePadInputIntoD0(player_number) & 128)
@@ -47,7 +51,7 @@ short player_number;
     DrawPauseChoicePanel(-1);
     if (reset_selected)
         RestartFromResetEntry();
-    VBLANK_FLAG_8 = -1;
+    VBLANK_FLAG_8 = MUSIC_SELECTION_INVALID;
     while (MovePadInputIntoD0(player_number) & 192)
         ;
 }
@@ -79,7 +83,7 @@ short player_number;
         viewport = 0;
         viewport_mask = 2;
         if (SPLIT_SCREEN) {
-            if (player_number == 0)
+            if (player_number == PLAYER_TOEJAM)
                 object->height = 168;
             else {
                 object->height = 168;
@@ -93,7 +97,7 @@ short player_number;
             object->height = 112;
         object->sprite_count = 4;
         object->tile_count = 48;
-        object->tile |= 0x8000;
+        object->tile |= VDP_TILE_PRIORITY;
         animation = &PauseDisplayAnimation;
         object->sequence = animation->sequence;
         object->frames = animation->frames;
@@ -107,10 +111,10 @@ short player_number;
         do {
             UpdateAndQueueEntitySprites();
         } while (!object->sprite_ready);
-        PlaySound(6, 99);
+        PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
         WaitForNextVBlank(1);
-        PlaySound(20, 99);
-        AudioRequestChannelTemplateEffect(0);
+        PlaySound(PSG_TONE_PHRASE, 99);
+        AudioRequestChannelTemplateEffect(FM_EFFECT_CLEAR);
         AudioRequestFmChannelRelease();
         MusicRequestTrackPointerReset();
         while ((MovePadInputIntoD0(0) | MovePadInputIntoD0(1)) & 128)
@@ -154,13 +158,13 @@ short player_number;
                     } while (entry_number < 10);
                     if (gShipPieceLevelAssignments[minimum_entry] != gLevel912C)
                         gShipPieceLevelAssignments[minimum_entry] = gLevel912C + 1;
-                    PlaySound(20, 99);
+                    PlaySound(PSG_TONE_PHRASE, 99);
                     ++input_stage;
                 }
                 continue;
             }
         }
-        VBLANK_FLAG_8 = -1;
+        VBLANK_FLAG_8 = MUSIC_SELECTION_INVALID;
         FreeEntity(object_number);
         while ((MovePadInputIntoD0(0) | MovePadInputIntoD0(1)) & 128)
             ;

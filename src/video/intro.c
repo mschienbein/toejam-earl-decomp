@@ -1,3 +1,5 @@
+#include "psg_effects.h"
+#include "music_ids.h"
 #include "hardware.h"
 #include "assets_audio.h"
 #include "assets_intro.h"
@@ -27,11 +29,11 @@ int IntroVideo()
     VBLANK_FLAG_7 = 0;
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gMusicUnknownE489 = 0;
     TOEJAM_CAMERA_NEWX = 0;
     TOEJAM_CAMERA_NEWY = 0;
-    VDP_COMMAND = 0x40000010;
+    VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
     VDP_DATA = TOEJAM_CAMERA_NEWY;
     VDP_COMMAND = 0x7c000003;
     VDP_DATA = TOEJAM_CAMERA_NEWX;
@@ -51,7 +53,7 @@ int IntroVideo()
     CutsceneDrawRandomizedScreenBorder(0);
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     if (IntroPart1() || IntroPart2() || IntroPart3() ||
         IntroPart4() || IntroPart5() || IntroPart6() || IntroPart7() ||
         IntroPart8() || IntroPart9() || IntroPart10() || IntroPart11())
@@ -60,14 +62,14 @@ int IntroVideo()
         interrupted = 0;
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     CutsceneReleaseTextEntities();
     ClearUpperVramTilemap();
     ClearLowerVramTilemap();
     CutsceneReleaseFlaggedEntityRange();
     TOEJAM_CAMERA_NEWX = 0;
     TOEJAM_CAMERA_NEWY = 0;
-    VDP_COMMAND = 0x40000010;
+    VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
     VDP_DATA = TOEJAM_CAMERA_NEWY;
     VDP_COMMAND = 0x7c000003;
     VDP_DATA = TOEJAM_CAMERA_NEWX;
@@ -87,7 +89,7 @@ short background;
     IntroPositionLargePlayerParts();
     AnimateTitleTransitionBackground(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
 }
 
 /* Text and animation advance on the shared countdown or a released face button. */
@@ -360,7 +362,7 @@ short IntroPart2()
             break;
         case 9:
             CutsceneReleaseTextEntities();
-            VBLANK_FLAG_7 = 6;
+            VBLANK_FLAG_7 = MUSIC_TRANSITION;
             advance_period = 1;
             gCutsceneScriptCountdown = 306;
             break;
@@ -440,7 +442,7 @@ short IntroPart3()
         }
     }
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     CutsceneReleaseTextEntities();
     IntroReleaseLargePlayerSpritesAndRefresh();
     IntroReleaseLargePlayerParts();
@@ -462,7 +464,7 @@ short IntroPart4()
     CutsceneSetRocketshipPairPose(0, 280, 160);
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptCountdown = 85;
     gCutsceneScriptState = 0;
     scroll_position = 0;
@@ -509,7 +511,7 @@ short IntroPart4()
         }
     }
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     CutsceneReleaseTextEntities();
     CutsceneReleaseDriftingEntities();
     CutsceneReleaseRocketshipPair();
@@ -541,7 +543,7 @@ short IntroPart5()
     VDP_DATA = scroll_position;
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     while (gCutsceneScriptState != -1 &&
         !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
@@ -656,7 +658,7 @@ short IntroPart6()
             break;
         case 2:
             CutsceneSetRocketshipPairPose(2, 104, 151);
-            PlaySound(21, 5);
+            PlaySound(PSG_TONE_RISE, 5);
             break;
         case 3:
             CutsceneSetRocketshipPairPose(3, 104, 151);
@@ -671,7 +673,7 @@ short IntroPart6()
             CutsceneSetRocketshipPairPose(1, 104, 151);
             pose_changed = 1;
             driving_pose = 2;
-            PlaySound(22, 5);
+            PlaySound(PSG_LONG_TONE_RISE, 5);
             break;
         case 6:
             CutsceneSetRocketshipPairPose(0, 104, 151);
@@ -684,7 +686,7 @@ short IntroPart6()
             CutsceneSetRocketshipPairPose(2, 104, 151);
             pose_changed = 1;
             driving_pose = 1;
-            PlaySound(21, 5);
+            PlaySound(PSG_TONE_RISE, 5);
             break;
         case 9:
             CutsceneSetRocketshipPairPose(3, 104, 151);
@@ -742,7 +744,7 @@ short IntroPart7()
         UpdateAndQueueEntitySprites();
         WaitForNextVBlank(1);
         if (shake_phase) {
-            VDP_COMMAND = 0x40000010;
+            VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
             VDP_DATA = TOEJAM_CAMERA_NEWY;
             VDP_COMMAND = 0x7c000003;
             VDP_DATA = -TOEJAM_CAMERA_NEWX;
@@ -787,7 +789,7 @@ short IntroPart7()
         case 6:
             shake_phase = 1;
             IntroCreateAsteroidEntity();
-            PlaySound(10, 5);
+            PlaySound(PSG_NOISE_FADE_RATE0, 5);
             break;
         case 7:
             gCutsceneScriptState = -1;
@@ -796,13 +798,13 @@ short IntroPart7()
         }
     }
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     IntroReleaseAsteroidEntity();
     IntroReleaseFlyingEntitySlots();
     IntroReleaseDrivingParts();
     TOEJAM_CAMERA_NEWX = 0;
     TOEJAM_CAMERA_NEWY = 0;
-    VDP_COMMAND = 0x40000010;
+    VDP_COMMAND = VDP_WRITE_VSRAM_BASE;
     VDP_DATA = TOEJAM_CAMERA_NEWY;
     VDP_COMMAND = 0x7c000003;
     VDP_DATA = TOEJAM_CAMERA_NEWX;
@@ -831,7 +833,7 @@ short IntroPart8()
     JamOutDrawPackedBackgroundBlock(20, 14);
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     while (gCutsceneScriptState != -1 &&
         !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
@@ -851,7 +853,7 @@ short IntroPart8()
         }
     }
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     CutsceneStepFrameAndMusicCadence(0, 0);
     gSharedTileSpriteCopiesEnabled = 0;
     DrawStarfieldPlane();
@@ -876,7 +878,7 @@ short IntroPart9()
     IntroPositionFallingRocketship(170, 141);
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     while (gCutsceneScriptState != -1 &&
         !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
@@ -896,7 +898,7 @@ short IntroPart9()
         }
     }
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     IntroReleaseFallingRocketship();
     scroll_position = 0;
     VDP_COMMAND = 0x40020010;
@@ -918,7 +920,7 @@ short IntroPart10()
     CopyPaletteToCRAMSlot(PaletteSpaceScreen_bank3, 3);
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptState = 1;
     while (gCutsceneScriptState != -1 &&
         !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
@@ -934,7 +936,7 @@ short IntroPart10()
             break;
         case 2:
             IntroCreateRocketshipImpact(160, 180);
-            PlaySound(8, 50);
+            PlaySound(PSG_NOISE_RISE, 50);
             gCutsceneScriptCountdown = 85;
             ++gCutsceneScriptState;
             break;
@@ -958,7 +960,7 @@ short IntroPart10()
         }
     }
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     CutsceneReleaseTextEntities();
     CutsceneReleasePlanetEntity();
     IntroReleaseFallingRocketship();

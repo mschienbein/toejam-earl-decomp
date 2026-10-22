@@ -1,3 +1,4 @@
+#include "psg_effects.h"
 #include "ui.h"
 #include "hardware.h"
 #include "entities.h"
@@ -34,22 +35,22 @@ select_players:
     gControllerPortsSwapped = 0;
     switch (selection) {
     case 0:
-        gPlayerLives[0] = 0;
-        gPlayerRank[0] = 0;
-        gPlayerInfo[0].level = 0;
-        gPlayerLives[1] = 0;
-        gPlayerRank[1] = 0;
-        gPlayerInfo[1].level = 0;
+        gPlayerLives[PLAYER_TOEJAM] = 0;
+        gPlayerRank[PLAYER_TOEJAM] = 0;
+        gPlayerInfo[PLAYER_TOEJAM].level = 0;
+        gPlayerLives[PLAYER_EARL] = 0;
+        gPlayerRank[PLAYER_EARL] = 0;
+        gPlayerInfo[PLAYER_EARL].level = 0;
         PLAYER_INDICATOR = 2;
         gControllerPortsSwapped = 0;
         break;
     case 1:
-        gPlayerLives[0] = 0;
-        gPlayerRank[0] = 0;
-        gPlayerInfo[0].level = 0;
-        gPlayerLives[1] = -1;
-        gPlayerRank[1] = 9;
-        gPlayerInfo[1].level = 99;
+        gPlayerLives[PLAYER_TOEJAM] = 0;
+        gPlayerRank[PLAYER_TOEJAM] = 0;
+        gPlayerInfo[PLAYER_TOEJAM].level = 0;
+        gPlayerLives[PLAYER_EARL] = -1;
+        gPlayerRank[PLAYER_EARL] = 9;
+        gPlayerInfo[PLAYER_EARL].level = 99;
         PLAYER_INDICATOR = 0;
         if (GetCtrl2Input()) {
             gControllerPortsSwapped = 1;
@@ -59,12 +60,12 @@ select_players:
             break;
         }
     case 2:
-        gPlayerLives[0] = -1;
-        gPlayerRank[0] = 9;
-        gPlayerInfo[0].level = 99;
-        gPlayerLives[1] = 0;
-        gPlayerRank[1] = 0;
-        gPlayerInfo[1].level = 0;
+        gPlayerLives[PLAYER_TOEJAM] = -1;
+        gPlayerRank[PLAYER_TOEJAM] = 9;
+        gPlayerInfo[PLAYER_TOEJAM].level = 99;
+        gPlayerLives[PLAYER_EARL] = 0;
+        gPlayerRank[PLAYER_EARL] = 0;
+        gPlayerInfo[PLAYER_EARL].level = 0;
         PLAYER_INDICATOR = 1;
         if (GetCtrl1Input()) {
             gControllerPortsSwapped = 1;
@@ -103,7 +104,7 @@ void ShowGameOverAndReset()
     TextWriteStringTiles("bogus ... game over");
     ForceTextBackgroundColorToBlack(1);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     SetVHBlankFlag2();
     TIME_COUNTER = 0;
     for (;;) {
@@ -112,12 +113,12 @@ void ShowGameOverAndReset()
             TextAnimateFontBanks(8);
         } while (TIME_COUNTER <= 600 &&
             !((MovePadInputIntoD0(0) | MovePadInputIntoD0(1)) & 0xf0));
-        PlaySound(6, 99);
-        PlaySound(0, 98);
+        PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
+        PlaySound(PSG_SILENCE, 98);
         AudioRequestFmChannelRelease();
         MusicRequestTrackPointerReset();
         gMode2RegSoftcopy &= 0x3c;
-        VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+        VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
         ClearColourRAM();
         ClearSRAM();
         ClearVideoRAM();
@@ -211,7 +212,7 @@ register struct menu_item *items;
 
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     DrawStarfieldPlane();
     DrawMenuWindowFrame(0);
     CopyPaletteToCRAMSlot(PaletteGameLine1, 0);
@@ -222,7 +223,7 @@ register struct menu_item *items;
     WaitForNextVBlank(1);
     SpriteLoadingStuff(0, 0);
     gMode2RegSoftcopy |= 0x40;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     SetVHBlankFlag2();
     while ((GetCtrl1Input() | GetCtrl2Input()) & 0xf0) {
         WaitForNextVBlank(1);
@@ -244,16 +245,16 @@ register struct menu_item *items;
             if (input & 0xf0) {
                 if (items != MenuWhoItems || selected->selection || AreBothControllersConnected())
                     break;
-                PlaySound(26, 50);
+                PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
                 VDP_COMMAND = 0x5c040003L;
                 TextWriteStringTiles("need two controllers for two players");
             } else if (input & 1) {
                 --selected_item;
-                PlaySound(7, 50);
+                PlaySound(PSG_TONE_PULSE, 50);
                 if (selected_item < 0 || items[selected_item].selection < 0)
                     ++selected_item;
             } else if (input & 2) {
-                PlaySound(7, 50);
+                PlaySound(PSG_TONE_PULSE, 50);
                 ++selected_item;
                 if (selected_item >= item_count || items[selected_item].selection < 0)
                     --selected_item;
@@ -265,7 +266,7 @@ register struct menu_item *items;
     }
     ClearVHBlankFlag2();
     gMode2RegSoftcopy &= 0x3c;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     ReleaseMenuCursorEntity();
     ForceTextBackgroundColorToBlack(0);
     VDP_CONTROL_WORD = 0x9100;
@@ -280,7 +281,7 @@ short item_count;
 {
     short item_number;
     for (item_number = 0; item_number < item_count; ++item, ++item_number) {
-        VDP_COMMAND = 0x50000003L + (item->y << 23) + (item->x << 17);
+        VDP_COMMAND = VDP_WRITE_WINDOW + (item->y << 23) + (item->x << 17);
         TextWriteStringTiles(item->text);
     }
 }

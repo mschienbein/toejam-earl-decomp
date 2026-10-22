@@ -1,3 +1,8 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "present_types.h"
+#include "earthling_types.h"
+#include "terrain.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "assets_audio.h"
@@ -29,11 +34,11 @@ struct earthling_state *earthling;
     struct object_state *player;
 
     player = &gPlayerInfo[player_number];
-    if ((earthling->kind != 19 || (earthling->state & 0xfc) == 4) &&
+    if ((earthling->kind != EARTHLING_ICE_CREAM_TRUCK || (earthling->state & 0xfc) == 4) &&
         PlayerCanReceiveEarthlingEffect(player, player_number)) {
-        player->mode_15 = 3;
-        SetSprite(player, 2);
-        player->draw_flags |= 128;
+        player->animation_motion_axes = ANIMATION_MOTION_XY;
+        SetSprite(player, PLAYER_ANIM_FLATTENED);
+        player->draw_flags |= ENTITY_DRAW_LATE;
         if (gPlayerTerrainSinking[player_number])
             player->height = -3;
         else
@@ -59,7 +64,7 @@ struct earthling_state *earthling;
     if (!player->level)
         return;
     if (PlayerCanReceiveEarthlingEffect(player, player_number) &&
-        !(player->flags_52 & 0x20000010) &&
+        !(player->animation_group_mask & (PLAYER_GROUP_LEAN | PLAYER_GROUP_STATIONARY)) &&
         (dancer = &gPlayerInfo[earthling->object],
          distance_x = abs(dancer->x - player->x),
          distance_y = abs(dancer->y - player->y),
@@ -72,7 +77,7 @@ struct earthling_state *earthling;
                 distance = distance_y;
             if ((PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
                 (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 3) == 3) {
-                sprite = 89;
+                sprite = PLAYER_ANIM_HULA;
                 HULA_DANCE[player_number] = 28;
                 if (distance_x < 20 && distance_y < 15) {
                     if (!gHulaSpeechCooldown) {
@@ -85,12 +90,12 @@ struct earthling_state *earthling;
             }
             HULA_DANCE_TIMER[player_number] = (distance >> 5) + 4;
         }
-    } else if (player->sprite_state == 89) {
+    } else if (player->sprite_state == PLAYER_ANIM_HULA) {
         sprite = GetActivePresentSprite(player);
         HULA_DANCE_TIMER[player_number] = 0;
     }
     if (sprite != -1 && sprite != player->sprite_state) {
-        player->mode_15 = 3;
+        player->animation_motion_axes = ANIMATION_MOTION_XY;
         SetSprite(player, sprite);
     }
 }
@@ -130,9 +135,9 @@ struct earthling_state *earthling;
         player = &gPlayerInfo[player_number];
     else
         return;
-    if (!(player->sprite_state == 0 || player->sprite_state == 4 ||
-          (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
-          player->sprite_state == 77 || (player->flags_52 & 0x1834c03c)))
+    if (!(player->sprite_state == PLAYER_ANIM_IDLE || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+          (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+          player->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE || (player->animation_group_mask & 0x1834c03c)))
         return;
     if ((earthling->state & 0xfc) != 8 && player->height < 40 &&
         abs(player->y - earthling->y) <= 8)
@@ -145,7 +150,7 @@ struct earthling_state *earthling;
             player->frame = -1;
             player->acceleration_height = -32;
             player->velocity_height = -512;
-            player->flags_4d &= ~1;
+            player->behavior_flags &= ~ENTITY_COLLIDABLE;
         }
     }
 }
@@ -194,10 +199,10 @@ struct earthling_state *earthling;
         return;
     player = &gPlayerInfo[player_number];
     if (!PlayerCanReceiveEarthlingEffect(player, player_number) &&
-        !(player->flags_52 & 0x40000) && player->sprite_state != 77)
+        !(player->animation_group_mask & PLAYER_GROUP_INNERTUBE_MOVE) && player->sprite_state != PLAYER_ANIM_INNERTUBE_WATER_IDLE)
         return;
-    SetSprite(player, 79);
-    player->mode_15 = 3;
+    SetSprite(player, PLAYER_ANIM_WHIRLWIND);
+    player->animation_motion_axes = ANIMATION_MOTION_XY;
     player->x = earthling->x;
     player->y = earthling->y;
     player->height = 0;
@@ -207,11 +212,11 @@ struct earthling_state *earthling;
     player->acceleration_x = 0;
     player->acceleration_y = 0;
     player->acceleration_height = 0;
-    player->draw_flags |= 64;
+    player->draw_flags |= ENTITY_SHADOW;
     gPlayerWhirlwindTimers[player_number] = 225;
     FreeEntity(earthling->object);
     earthling->object = 0;
-    earthling->kind = -1;
+    earthling->kind = EARTHLING_UNUSED;
 }
 
 /* Sprite 78 counts down to restoring the active present or a terrain pose.
@@ -224,23 +229,23 @@ unsigned short terrain;
     short player_number;
     int quarter_velocity;
 
-    player_number = player->entity_number;
-    if (player->sprite_state == 78) {
+    player_number = player->entity_index;
+    if (player->sprite_state == PLAYER_ANIM_WHIRLWIND_RECOVERY) {
         if (--gPlayerWhirlwindRecoveryTimers[player_number] <= 0) {
-            if (gPlayer1Powerup[player_number] == 5)
+            if (gPlayer1Powerup[player_number] == PRESENT_ROCKET_SKATES)
                 sprite_or_direction = GetActivePresentSprite(player);
             else if (!gPlayer1Powerup[player_number]) {
                 sprite_or_direction = 61;
                 player->velocity_height = -1;
-                player->mode_15 = 0;
-            } else if (terrain >= 128) {
-                if (terrain == 144)
+                player->animation_motion_axes = ANIMATION_MOTION_NONE;
+            } else if (terrain >= TERRAIN_WATER) {
+                if (terrain == TERRAIN_VOID)
                     PlayerStartFalling(player, player_number);
                 else
                     sprite_or_direction = 65;
             } else {
                 sprite_or_direction = GetActivePresentSprite(player);
-                player->mode_15 = 3;
+                player->animation_motion_axes = ANIMATION_MOTION_XY;
                 if ((NEXT_RANDOM & 3) == 1)
                     GenerateSpeech(player_number, "I feel sick", 1);
             }
@@ -248,13 +253,13 @@ unsigned short terrain;
                 SetSprite(player, sprite_or_direction);
         } else if (!(gPlayerWhirlwindRecoveryTimers[player_number] & 15))
             ++player->frame_phase;
-    } else if (player->sprite_state == 79) {
+    } else if (player->sprite_state == PLAYER_ANIM_WHIRLWIND) {
         if (--gPlayerWhirlwindTimers[player_number] <= 0) {
             player->velocity_x = 0;
             player->velocity_y = 0;
-            SetSprite(player, 78);
+            SetSprite(player, PLAYER_ANIM_WHIRLWIND_RECOVERY);
             gPlayerWhirlwindRecoveryTimers[player_number] = 48;
-            player->draw_flags &= ~64;
+            player->draw_flags &= ~ENTITY_SHADOW;
         } else {
             if (--gPlayerWhirlwindDirectionTimers[player_number] <= 0) {
                 sprite_or_direction = NEXT_RANDOM & 7;
@@ -291,7 +296,7 @@ struct earthling_definition *definition;
     if ((earthling->state & 252) == 8)
         return;
     object = &gPlayerInfo[earthling->object];
-    for (player_number = 0; player_number <= 1; ++player_number) {
+    for (player_number = PLAYER_TOEJAM; player_number <= PLAYER_EARL; ++player_number) {
         if (gPlayerDecoyEntities[player_number]) {
             decoy = &gPlayerInfo[gPlayerDecoyEntities[player_number]];
             if (EntityIsWithinRange(object, decoy, definition->contact_distance_x,

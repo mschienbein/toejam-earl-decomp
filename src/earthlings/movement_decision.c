@@ -1,3 +1,4 @@
+#include "earthling_types.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "collision_calls.h"
@@ -14,7 +15,7 @@ struct earthling_state *earthling;
     struct object_state *object;
     short collision;
 
-    if (earthling->kind == 18 && earthling->object &&
+    if (earthling->kind == EARTHLING_MOLE && earthling->object &&
         (object = &gPlayerInfo[earthling->object],
          collision = EntityFindHorizontalCollisionAtX(object, object->x, object->y, 0))) {
         PresentRegisterDecoyHit(collision - 1);

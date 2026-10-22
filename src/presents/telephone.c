@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "entities.h"
 #include "presents.h"
 #include "sprites.h"
@@ -42,8 +43,8 @@ struct telephone_state *telephone;
         object->height_pixels = 16;
         object->sprite_count = 1;
         object->tile_count = 6;
-        object->tile = 0x8000;
-        object->draw_flags |= 8;
+        object->tile = VDP_TILE_PRIORITY;
+        object->draw_flags |= ENTITY_SKIP_PHYSICS;
     }
 }
 
@@ -95,8 +96,8 @@ short telephone_number;
         telephone->object = 0;
     }
     if (!gTelephoneActivated[telephone_number]) {
-        player = &gPlayerInfo[0];
-        player_number = 0;
+        player = &gPlayerInfo[PLAYER_TOEJAM];
+        player_number = PLAYER_TOEJAM;
         do {
             if (gPlayerLives[player_number] >= 0 &&
                 player->level == telephone->level && !gPcmEffectCooldownTicks &&
@@ -109,14 +110,14 @@ short telephone_number;
             }
             ++player;
             ++player_number;
-        } while (player_number <= 1);
+        } while (player_number <= PLAYER_EARL);
         if (!gTelephoneActivated[telephone_number])
             return;
     }
     if (--gTelephoneTimeToRing[telephone_number] <= 0) {
         if (--gTelephoneRingsLeft[telephone_number] > 0 &&
-            (gPlayerInfo[0].level == telephone->level ||
-             gPlayerInfo[1].level == telephone->level)) {
+            (gPlayerInfo[PLAYER_TOEJAM].level == telephone->level ||
+             gPlayerInfo[PLAYER_EARL].level == telephone->level)) {
             if (!gPcmEffectCooldownTicks)
                 TelephoneStartRing(telephone_number, telephone);
             else {
@@ -134,8 +135,8 @@ short telephone_number;
         }
     }
     if (telephone->object) {
-        player = &gPlayerInfo[0];
-        player_number = 0;
+        player = &gPlayerInfo[PLAYER_TOEJAM];
+        player_number = PLAYER_TOEJAM;
         do {
             if (gPlayerLives[player_number] >= 0 &&
                 player->level == telephone->level &&
@@ -151,6 +152,6 @@ short telephone_number;
             }
             ++player;
             ++player_number;
-        } while (player_number <= 1);
+        } while (player_number <= PLAYER_EARL);
     }
 }

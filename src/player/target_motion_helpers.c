@@ -1,3 +1,5 @@
+#include "player_animation_groups.h"
+#include "fm_effects.h"
 #include "entities.h"
 #include "audio_calls.h"
 #include "player.h"
@@ -27,8 +29,8 @@ short delta_x, delta_y;
 void EntityTriggerTargetStatusEventOnce(state, target)
 struct object_state *state, *target;
 {
-    if (!state->flag_57 && (target->flags_52 & 0x40800L)) {
-        AudioRequestChannelTemplateEffect(9);
-        state->flag_57 = 1;
+    if (!state->attachment_x_or_latch && (target->animation_group_mask & (long)(PLAYER_GROUP_SWIM | PLAYER_GROUP_INNERTUBE_MOVE))) {
+        AudioRequestChannelTemplateEffect(FM_EFFECT_TARGET_WATER);
+        state->attachment_x_or_latch = 1;
     }
 }

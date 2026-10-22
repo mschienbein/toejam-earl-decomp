@@ -1,3 +1,4 @@
+#include "earthling_types.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "revision.h"
@@ -19,43 +20,43 @@ int EarthlingProcessSpecialThinkStates(earthling, object)
 struct earthling_state *earthling;
 struct object_state *object;
 {
-    if (earthling->kind == 9 && (earthling->state & 252) != 4)
+    if (earthling->kind == EARTHLING_MAILBOX && (earthling->state & 252) != 4)
         return 1;
-    if (earthling->kind == 17 && earthling->state_delay) {
+    if (earthling->kind == EARTHLING_OPERA_SINGER && earthling->state_delay) {
         earthling->state_delay = 0;
         return 1;
     }
     if (!earthling->object)
         return 1;
-    if (earthling->kind == 18) {
+    if (earthling->kind == EARTHLING_MOLE) {
         if (earthling->state <= 1) {
-            object->flags_4d |= 1;
-            object->draw_flags &= 127;
+            object->behavior_flags |= ENTITY_COLLIDABLE;
+            object->draw_flags &= ~ENTITY_DRAW_LATE;
             if (object->frame_duration)
                 return 1;
             earthling->timer = 0;
         } else if (earthling->state == 3) {
-            object->flags_4d |= 1;
+            object->behavior_flags |= ENTITY_COLLIDABLE;
             if (--earthling->timer > 0)
                 return 1;
         }
     }
     if ((earthling->state & 252) == 8) {
-        if (earthling->kind == 4 || earthling->kind == 21) {
+        if (earthling->kind == EARTHLING_DENTIST || earthling->kind == EARTHLING_DENTIST_VARIANT) {
             if (!gPcmEffectCooldownTicks && object->frame_duration > 3 &&
-                earthling->value_0a) {
+                earthling->saved_x_or_status) {
                 PlaySoundEffect((long)Sfx_DentistLaugh, 50, 0);
-                earthling->value_0a = 0;
+                earthling->saved_x_or_status = 0;
             }
             if (object->frame_duration)
                 return 1;
             earthling->timer = 0;
         }
-        if (earthling->kind == 15) {
+        if (earthling->kind == EARTHLING_CHICKENS) {
             EarthlingUpdateAimedProjectileAttack(earthling, object);
             return 1;
         }
-        if (earthling->kind == 16) {
+        if (earthling->kind == EARTHLING_BOOGIEMAN) {
             if (object->frame_duration)
                 return 1;
             earthling->timer = 0;
@@ -88,7 +89,7 @@ struct earthling_state *earthling;
         object->velocity_y = 0;
         if (!earthling->state_delay) {
             if (NEXT_RANDOM % 100 < definition->target_chance) {
-                if (earthling->kind == 15)
+                if (earthling->kind == EARTHLING_CHICKENS)
                     search_bias = 100;
                 next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance,
                                          search_bias, earthling->kind);
@@ -98,7 +99,7 @@ struct earthling_state *earthling;
                     earthling->timer = NEXT_RANDOM %
                         (maximum_time - minimum_time + 1) + minimum_time;
                 }
-                if (earthling->kind == 15 && earthling->state != next_state &&
+                if (earthling->kind == EARTHLING_CHICKENS && earthling->state != next_state &&
                     (earthling->state & 4) && (next_state & 4)) {
                     next_state = 0;
                     earthling->timer = 2;
@@ -109,7 +110,7 @@ struct earthling_state *earthling;
         if (next_state == -1 && earthling->state != 2) {
             if (NEXT_RANDOM % 100 < definition->turn_chance) {
                 next_state = EarthlingSelectTurnState(earthling);
-                if (earthling->kind == 3 && next_state == 0 &&
+                if (earthling->kind == EARTHLING_SHOPPER && next_state == 0 &&
                     (NEXT_RANDOM & 1))
                     GenerateSpeech(earthling->object, "shut up!!", 1);
                 if (earthling->state != next_state)
@@ -128,7 +129,7 @@ struct earthling_state *earthling;
                     (maximum_time - minimum_time + 1) + minimum_time;
             }
         }
-        if ((definition->flags_18 & 2) && next_state >= 4 &&
+        if ((definition->behavior_flags & 2) && next_state >= 4 &&
             earthling->state != next_state &&
             (next_state & 2) == (earthling->state & 2)) {
             next_state = (next_state ^ 2) & 254;
@@ -146,20 +147,20 @@ struct earthling_state *earthling;
         }
         if (next_state != -1 && earthling->state != next_state) {
             SetEarthlingState(earthling, next_state);
-            if (earthling->kind == 4 || earthling->kind == 21)
+            if (earthling->kind == EARTHLING_DENTIST || earthling->kind == EARTHLING_DENTIST_VARIANT)
                 object->frame = -1;
-            if (earthling->kind == 18) {
+            if (earthling->kind == EARTHLING_MOLE) {
                 if (earthling->state > 1)
-                    object->draw_flags |= 128;
+                    object->draw_flags |= ENTITY_DRAW_LATE;
                 else
-                    object->draw_flags &= 127;
+                    object->draw_flags &= ~ENTITY_DRAW_LATE;
             }
         }
         if (earthling->timer <= 0)
             earthling->timer = 1;
     }
-    if (earthling->kind == 18 && (earthling->state & 252) == 4) {
+    if (earthling->kind == EARTHLING_MOLE && (earthling->state & 252) == 4) {
         EarthlingSpawnMoleEffect(earthling, object);
-        object->flags_4d &= 254;
+        object->behavior_flags &= ~ENTITY_COLLIDABLE;
     }
 }

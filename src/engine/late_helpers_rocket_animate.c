@@ -13,7 +13,7 @@ short animation, x, y;
     struct object_state *object;
 
     object = &gPlayerInfo[gCutsceneRocketshipEntity];
-    if (object->draw_flags & 2)
+    if (object->draw_flags & ENTITY_PRIMARY_VIEW)
         ReleaseEntityViewportSprites(object, 0);
     object->x = x;
     object->y = y;
@@ -23,7 +23,7 @@ short animation, x, y;
     object->frame = -1;
     AllocateEntityViewportSprites(object, 0);
     object = &gPlayerInfo[gCutsceneRocketshipExhaustEntity];
-    if (object->draw_flags & 2)
+    if (object->draw_flags & ENTITY_PRIMARY_VIEW)
         ReleaseEntityViewportSprites(object, 0);
     object->x = x;
     object->y = y;

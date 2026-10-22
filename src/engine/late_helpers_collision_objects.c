@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "entities.h"
 #include "ram_player.h"
 #include "ram_intro.h"
@@ -13,7 +14,7 @@ void IntroCreateCollisionSceneEntities()
 
     if (gIntroCollisionParentEntity = (int)AllocateEntity()) {
         parent = &gPlayerInfo[gIntroCollisionParentEntity];
-        parent->tile |= 0x8000;
+        parent->tile |= VDP_TILE_PRIORITY;
         parent->current_frame = Spr_IntroCollision[0];
         parent->frames = Spr_IntroCollision;
         parent->tile_count = 160;
@@ -31,7 +32,7 @@ void IntroCreateCollisionSceneEntities()
     for (index = 0; index < 3; ++index) {
         if (gIntroCollisionAttachedEntities[index] = (int)AllocateEntity()) {
             object = &gPlayerInfo[gIntroCollisionAttachedEntities[index]];
-            object->tile |= 0x8000;
+            object->tile |= VDP_TILE_PRIORITY;
             object->current_frame = Spr_IntroCollision[0];
             object->frames = Spr_IntroCollision;
             object->tile_count = 160;
@@ -52,11 +53,11 @@ void IntroCreateCollisionSceneEntities()
             object->frame_duration = 1;
             object->frame = -1;
             object->frame_phase = 6;
-            object->flags_4d |= 4;
+            object->behavior_flags |= ENTITY_SHARED_TILES;
             /* ORIGINAL BUG: parent is uninitialized if its allocation failed
              * but an attached object's allocation succeeds. */
             object->tile = parent->tile;
-            object->parent = gIntroCollisionParentEntity;
+            object->owner = gIntroCollisionParentEntity;
             object->sprite_ready = 0;
             AllocateEntityViewportSprites(object, 0);
         }

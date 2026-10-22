@@ -1,3 +1,7 @@
+#include "psg_effects.h"
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "earthling_types.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "sprites.h"
@@ -39,11 +43,11 @@ short player_number;
     if (gPlayerInteractionChoiceEntities[player_number] = (int)AllocateEntityWithEviction(0)) {
         display = &gPlayerInfo[gPlayerInteractionChoiceEntities[player_number]];
         display->level = (&gPlayerInfo[player_number])->level;
-        display->flags_4d |= 8;
-        display->parent = player_number;
-        display->flag_58 = 10;
-        display->offset_height = 10;
-        display->tile |= 0x8000;
+        display->behavior_flags |= ENTITY_ATTACHED;
+        display->owner = player_number;
+        display->attachment_y_or_latch = 10;
+        display->attachment_height = 10;
+        display->tile |= VDP_TILE_PRIORITY;
         display->width = 32;
         display->height_pixels = 32;
         display->sprite_count = 1;
@@ -64,12 +68,12 @@ void CheckAButton()
     struct object_state *display;
     char choice, cancel;
 
-    for (player_number = 0; player_number <= 1; ++player_number) {
+    for (player_number = PLAYER_TOEJAM; player_number <= PLAYER_EARL; ++player_number) {
         if (gPlayerInteractionChoiceActive[player_number]) {
             display = &gPlayerInfo[gPlayerInteractionChoiceEntities[player_number]];
             choice = display->sprite_state;
-            cancel = (&gPlayerInfo[player_number])->sprite_state == 5 ||
-                     (&gPlayerInfo[player_number])->sprite_state == 6;
+            cancel = (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_GHOST ||
+                     (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST;
             if (cancel || ((P1_PROCESSED_INPUT[player_number] & 64) &&
                            !(P1_PREV_PROCESSED_INPUT[player_number] & 64))) {
                 if (cancel)
@@ -117,9 +121,9 @@ struct earthling_state *earthling;
     player = &gPlayerInfo[player_number];
     object = &gPlayerInfo[earthling->object];
     if (mailbox->mode != 1) {
-        if ((!player->sprite_state || player->sprite_state == 4 ||
-             (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
-             (player->sprite_state == 57 && !player->velocity_y)) &&
+        if ((!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+             (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+             (player->sprite_state == PLAYER_ANIM_SPRING_SHOES_DOWN && !player->velocity_y)) &&
             EntityIsWithinRange(object, player, 30, 15)) {
             if (!mailbox->contact[player_number]) {
                 GenerateSpeech(earthling->object, "Mail Order?", 0);
@@ -144,12 +148,12 @@ struct earthling_state *earthling;
             mailbox->timer = 175;
         } else if (!gPcmEffectCooldownTicks) {
             PlaySoundEffect((long)Sfx_MailboxRoar, 50, 0);
-            earthling->value_0a = 1;
+            earthling->saved_x_or_status = 1;
         }
     } else if (!earthling->state) {
         if (mailbox->timer)
             --mailbox->timer;
-        else if (player->sprite_state != 5 && player->sprite_state != 6 &&
+        else if (player->sprite_state != PLAYER_ANIM_GHOST && player->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST &&
                  EntityIsWithinRange(object, player, 100, 40))
             SetEarthlingState(earthling, 3);
         else if ((GetRandomNumber() & 255) == 1)
@@ -164,7 +168,7 @@ struct earthling_state *earthling;
             SetEarthlingState(earthling, 4);
             earthling->timer = 0;
             mailbox->timer = 33;
-            earthling->value_0a = 0;
+            earthling->saved_x_or_status = 0;
         }
     }
 }
@@ -179,10 +183,10 @@ struct earthling_state *earthling;
 
     player = &gPlayerInfo[player_number];
     object = &gPlayerInfo[earthling->object];
-    if (!((!player->sprite_state || player->sprite_state == 4 ||
-           (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
-           player->sprite_state == 71 ||
-           (player->sprite_state == 57 && !player->velocity_y)) &&
+    if (!((!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+           (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+           player->sprite_state == PLAYER_ANIM_EXTRA_LIFE ||
+           (player->sprite_state == PLAYER_ANIM_SPRING_SHOES_DOWN && !player->velocity_y)) &&
           EntityIsWithinRange(object, player, 35, 15))) {
         gPlayerWizardInteractionStates[player_number] = 0;
         return;
@@ -191,7 +195,7 @@ struct earthling_state *earthling;
         return;
     earthling->state_delay = 1;
     if (gPlayerInteractionChoiceActive[player_number] ||
-        (gPlayerInfo[0].level == gPlayerInfo[1].level &&
+        (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level &&
          gPlayerWizardInteractionStates[player_number ^ 1] && gPlayerWizardInteractionStates[player_number ^ 1] != 2))
         return;
     if (!gPlayerWizardInteractionStates[player_number]) {
@@ -212,10 +216,10 @@ struct earthling_state *earthling;
                     next_state = 2;
                     gPlayerWizardInteractionStates[player_number] = 3;
                     --gPlayerBucks[player_number];
-                    SetSprite(player, 71);
+                    SetSprite(player, PLAYER_ANIM_EXTRA_LIFE);
                     PlaySoundEffect((long)Sfx_Hallelujah, 92, 1);
                 } else
-                    PlaySound(26, 50);
+                    PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
             } else {
                 gPlayerWizardInteractionStates[player_number] = 2;
                 next_state = 5;
@@ -251,9 +255,9 @@ struct earthling_state *earthling;
 
     player = &gPlayerInfo[player_number];
     object = &gPlayerInfo[earthling->object];
-    if (!((!player->sprite_state || player->sprite_state == 4 ||
-           (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
-           (player->sprite_state == 57 && !player->velocity_y)) &&
+    if (!((!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+           (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+           (player->sprite_state == PLAYER_ANIM_SPRING_SHOES_DOWN && !player->velocity_y)) &&
           EntityIsWithinRange(object, player, 35, 15))) {
         gPlayerWisemanInteractionStates[player_number] = 0;
         return;
@@ -262,7 +266,7 @@ struct earthling_state *earthling;
         return;
     earthling->state_delay = 1;
     if (gPlayerInteractionChoiceActive[player_number] ||
-        (gPlayerInfo[0].level == gPlayerInfo[1].level &&
+        (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level &&
          gPlayerWisemanInteractionStates[player_number ^ 1] && gPlayerWisemanInteractionStates[player_number ^ 1] != 2))
         return;
     if (!gPlayerWisemanInteractionStates[player_number]) {
@@ -301,10 +305,10 @@ struct earthling_state *earthling;
 
     player = &gPlayerInfo[player_number];
     object = &gPlayerInfo[earthling->object];
-    if (!((!player->sprite_state || player->sprite_state == 4 ||
-           (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
-           player->sprite_state == 69 ||
-           (player->sprite_state == 57 && !player->velocity_y)) &&
+    if (!((!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+           (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+           player->sprite_state == PLAYER_ANIM_COVER_EARS ||
+           (player->sprite_state == PLAYER_ANIM_SPRING_SHOES_DOWN && !player->velocity_y)) &&
           EntityIsWithinRange(object, player, 35, 15))) {
         gPlayerOperaSingerInteractionStates[player_number] = 0;
         return;
@@ -313,7 +317,7 @@ struct earthling_state *earthling;
         return;
     earthling->state_delay = 1;
     if (gPlayerInteractionChoiceActive[player_number] ||
-        (gPlayerInfo[0].level == gPlayerInfo[1].level &&
+        (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level &&
          gPlayerOperaSingerInteractionStates[player_number ^ 1] && gPlayerOperaSingerInteractionStates[player_number ^ 1] != 2))
         return;
     if (!gPlayerOperaSingerInteractionStates[player_number]) {
@@ -330,17 +334,17 @@ struct earthling_state *earthling;
                 next_state = 3;
                 gPlayerOperaSingerInteractionStates[player_number] = 3;
                 gPlayerBucks[player_number] -= 3;
-                SetSprite(player, 69);
+                SetSprite(player, PLAYER_ANIM_COVER_EARS);
                 player_number ^= 1;
                 player = &gPlayerInfo[player_number];
                 if (gPlayerLives[player_number] >= 0 && !SPLIT_SCREEN &&
-                    (!player->sprite_state || player->sprite_state == 4 ||
-                     (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
-                     (player->flags_52 & 0x830400c)))
-                    SetSprite(player, 69);
+                    (!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+                     (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+                     (player->animation_group_mask & 0x830400c)))
+                    SetSprite(player, PLAYER_ANIM_COVER_EARS);
                 PlaySoundEffect((long)Sfx_OperaSing, 90, 1);
             } else
-                PlaySound(26, 50);
+                PlaySound(PSG_PERIODIC_TONE2_NOISE, 50);
         } else {
             gPlayerOperaSingerInteractionStates[player_number] = 2;
             next_state = 0;
@@ -355,10 +359,10 @@ struct earthling_state *earthling;
             player_number ^= 1;
             player = &gPlayerInfo[player_number];
             if (gPlayerLives[player_number] >= 0 && !SPLIT_SCREEN &&
-                player->sprite_state == 69)
+                player->sprite_state == PLAYER_ANIM_COVER_EARS)
                 SetSprite(player, GetActivePresentSprite(player));
         } else
-            DoVikingAbility(player->draw_flags & 6);
+            DoVikingAbility(player->draw_flags & ENTITY_EITHER_VIEW);
     }
     if (next_state != -1) {
         SetEarthlingState(earthling, next_state);
@@ -370,13 +374,13 @@ struct earthling_state *earthling;
 int NiceEarthlingCheck(earthling)
 struct earthling_state *earthling;
 {
-    if (earthling->kind == 17) {
+    if (earthling->kind == EARTHLING_OPERA_SINGER) {
         if (earthling->state == 3)
             return 1;
-    } else if (earthling->kind == 10) {
+    } else if (earthling->kind == EARTHLING_WIZARD) {
         if (earthling->state == 2)
             return 1;
-    } else if (earthling->kind == 11 && earthling->state <= 1 &&
+    } else if (earthling->kind == EARTHLING_WISEMAN && earthling->state <= 1 &&
                (gPlayerWisemanInteractionStates[0] == 3 || gPlayer2WisemanInteractionState == 3))
         return 1;
     return 0;
@@ -399,7 +403,7 @@ short player_number;
         object->height_pixels = 48;
         object->sprite_count = 4;
         object->tile_count = 40;
-        object->tile |= 0x8000;
+        object->tile |= VDP_TILE_PRIORITY;
         if (!player_number)
             animation = &PlayerAnimationDescriptors[5];
         else
@@ -410,7 +414,7 @@ short player_number;
         object->frame_duration = 1;
         object->frame = -1;
         UpdateEntityViewportSprites(gLifeRequestDisplayEntity);
-        if (object->draw_flags & 2)
+        if (object->draw_flags & ENTITY_PRIMARY_VIEW)
             return 0;
         FreeEntity(gLifeRequestDisplayEntity);
     }
@@ -430,10 +434,10 @@ short player_number;
     player = &gPlayerInfo[other_player];
     if (!gLifeRequestDisplayEntity && gPlayerLives[other_player] > 0 &&
         !gPlayerInteractionChoiceActive[other_player] && !ELEVATOR_FLAG[other_player] &&
-        (!player->sprite_state || player->sprite_state == 4 ||
-         (player->flags_52 & 0x20400000) || player->sprite_state == 76 ||
-         (player->flags_52 & 0x400c)) &&
-        !(player->flags_52 & 0x20000000) &&
+        (!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+         (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+         (player->animation_group_mask & (PLAYER_GROUP_WALK | PLAYER_GROUP_SNEAK | PLAYER_GROUP_SPRING_SHOES))) &&
+        !(player->animation_group_mask & PLAYER_GROUP_STATIONARY) &&
         (MovePadInputIntoD0(player_number) & 112) &&
         !PlayerCreateLifeRequestDisplay(player_number)) {
         SetSprite(player, GetActivePresentSprite(player));
@@ -458,7 +462,7 @@ short player_number;
                 ;
             ClearSkipVHBlankFlags();
             gMode2RegSoftcopy &= 0x3c;
-            VDP_CONTROL_WORD = 0x8104 | gMode2RegSoftcopy;
+            VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
             if (PLAYER_INDICATOR == 2) {
                 --gPlayerLives[other_player];
                 HudLoadLivesSpriteTiles(other_player);
@@ -466,12 +470,12 @@ short player_number;
             CopyLevelBetweenPlayers(0);
             gLevel912E = gLevel912C;
             player = &gPlayerInfo[player_number];
-            player->draw_flags = 1;
-            player->flags_4d = 1;
-            player->sprite_state = 0;
+            player->draw_flags = ENTITY_ACTIVE;
+            player->behavior_flags = ENTITY_COLLIDABLE;
+            player->sprite_state = PLAYER_ANIM_IDLE;
             PlayerResetRankAndResources(player_number);
             StopPlayer(player);
-            player->mode_15 = 0;
+            player->animation_motion_axes = ANIMATION_MOTION_NONE;
             PLAYER_INDICATOR = 2;
             SPLIT_SCREEN = 1;
             PlayerRelocateToPartnerOrNextLevel(player_number);

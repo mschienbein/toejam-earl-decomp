@@ -1,3 +1,9 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "present_types.h"
+#include "terrain.h"
+#include "psg_effects.h"
+#include "hardware.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "presents.h"
@@ -36,13 +42,13 @@ struct level_item *item;
 
     if (item->object = (int)AllocateEntity()) {
         object = &gPlayerInfo[item->object];
-        if (item->kind < 64)
-            object->frames = &PresentSpriteTable[gPresentInfo[item->kind].sprite];
-        else if (item->kind >= 81)
-            object->frames = &FramePointers_AF09C[item->kind - 81];
+        if (item->kind < ITEM_GROUND_BASE)
+            object->frames = &PresentSpriteTable[gPresentInfo[item->kind].appearance];
+        else if (item->kind >= ITEM_LARGE_BASE)
+            object->frames = &FramePointers_AF09C[item->kind - ITEM_LARGE_BASE];
         else {
-            object->frames = &Spr_GroundItem[item->kind - 64];
-            object->draw_flags |= 128;
+            object->frames = &Spr_GroundItem[item->kind - ITEM_GROUND_BASE];
+            object->draw_flags |= ENTITY_DRAW_LATE;
         }
         object->sequence = SingleFrameHoldAnimation;
         object->frame_phase = 0;
@@ -50,7 +56,7 @@ struct level_item *item;
         object->x = item->x;
         object->y = item->y;
         object->level = item->level;
-        if (item->kind < 81) {
+        if (item->kind < ITEM_LARGE_BASE) {
             object->width = 24;
             object->height_pixels = 16;
             object->sprite_count = 1;
@@ -60,11 +66,11 @@ struct level_item *item;
             object->height_pixels = 64;
             object->sprite_count = 2;
             object->tile_count = 32;
-            object->flags_4d |= 1;
+            object->behavior_flags |= ENTITY_COLLIDABLE;
         }
-        object->tile = 0x8000;
-        object->draw_flags |= 8;
-    } else if (item->kind < 81) {
+        object->tile = VDP_TILE_PRIORITY;
+        object->draw_flags |= ENTITY_SKIP_PHYSICS;
+    } else if (item->kind < ITEM_LARGE_BASE) {
         /* ORIGINAL BUG: MapFindItemPlacementPosition reads a fourth short argument, but
          * this call passes only the two coordinate pointers and the level. */
         MapFindItemPlacementPosition(&item->x, &item->y, item->level);
@@ -86,15 +92,15 @@ short count;
         first_y = item->y - TOEJAM_CAMERA_NEWY;
         second_x = item->x - EARL_CAMERA_NEWX;
         second_y = item->y - EARL_CAMERA_NEWY;
-        if (item->kind != -1 &&
+        if (item->kind != ITEM_UNUSED &&
             ((item->level == gLevel912C &&
               first_x + 20 > 0 && first_x < 340 && first_y + 20 > 0 &&
-              ((item->kind < 81 && first_y < 244) ||
-               (item->kind >= 81 && first_y < 288))) ||
+              ((item->kind < ITEM_LARGE_BASE && first_y < 244) ||
+               (item->kind >= ITEM_LARGE_BASE && first_y < 288))) ||
              (item->level == gLevel912E && SPLIT_SCREEN &&
               second_x + 20 > 0 && second_x < 340 && second_y + 20 > 0 &&
-              ((item->kind < 81 && second_y < 132) ||
-               (item->kind >= 81 && second_y < 176))))) {
+              ((item->kind < ITEM_LARGE_BASE && second_y < 132) ||
+               (item->kind >= ITEM_LARGE_BASE && second_y < 176))))) {
             if (!item->object)
                 EntityCreateLevelItem(item);
         } else if (item->object) {
@@ -159,10 +165,10 @@ char record_pickup;
 
     state = &gPlayerInfo[player];
     if (gPlayerLives[player] < 0 || state->height >= 4 ||
-        state->sprite_state == 3 || state->sprite_state == 7 ||
-        /* (long) view of flags_52: the signed test reproduces the ROM's mask exchange; storage stays
+        state->sprite_state == PLAYER_ANIM_SWIM_IDLE || state->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE ||
+        /* (long) view of animation_group_mask: the signed test reproduces the ROM's mask exchange; storage stays
          * unsigned ([INFERENCE] the original spelling is unknown). */
-        state->sprite_state == 77 || ((long)state->flags_52 & 0x41800L))
+        state->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE || ((long)state->animation_group_mask & (long)(PLAYER_GROUP_SWIM | PLAYER_GROUP_CLIMB | PLAYER_GROUP_INNERTUBE_MOVE)))
         return;
     for (index = 0; index < count; index++) {
         item = &items[index];
@@ -170,12 +176,12 @@ char record_pickup;
             collected = 0;
             if (abs(item->x - state->x) < 16 &&
                 abs(item->y - state->y) < 8) {
-                if (item->kind < 64) {
+                if (item->kind < ITEM_GROUND_BASE) {
                     for (slot = 0; slot < 16; slot++) {
                         if (gPlayerInventory[player][slot] == -1) {
                             gPlayerInventory[player][slot] = item->kind;
                             collected = 1;
-                            PlaySound(1, 50);
+                            PlaySound(PSG_DOUBLE_TONE_PULSE, 50);
                             EarthlingClearMolePlayerContactFlags(state);
                             break;
                         }
@@ -186,7 +192,7 @@ char record_pickup;
                     collected = 1;
                     food = item->kind;
                     food -= 64;
-                    if (item->kind == 80) {
+                    if (item->kind == ITEM_BUCK) {
                         gPlayerBucks[player]++;
                         PlaySoundEffect((long)Sfx_Money, 50, 0);
                     } else {
@@ -202,7 +208,7 @@ char record_pickup;
                             if (slot > 0)
                                 PlaySoundEffect((long)Sfx_ChowDown, 50, 0);
                             else
-                                PlaySound(18, 40);
+                                PlaySound(PSG_TONE_NOISE_BURSTS, 40);
                         }
                     }
                     StartDialogue(food + 5, player);
@@ -210,7 +216,7 @@ char record_pickup;
             }
 pickup_done:
             if (collected) {
-                item->kind = -1;
+                item->kind = ITEM_UNUSED;
                 if (record_pickup)
                     gCollectedLevelItemBits[item->level] |= (unsigned long)0x80000000L >> index;
             }
@@ -233,7 +239,7 @@ struct level_item *items;
         return;
     for (index = 0; index < 4; index++) {
         item = &items[index];
-        if (item->kind == 83 && item->object &&
+        if (item->kind == ITEM_HURT_HAZARD && item->object &&
             abs(item->x - state->x) < 24 &&
             abs(item->y - state->y) < 12) {
             /* The accepted reserved byte supplies the hurt-source kind. */
@@ -257,32 +263,32 @@ short player;
 
     state = &gPlayerInfo[player];
     terrain = (player == 0 ? LAND_UNDER_TOEJAM : LAND_UNDER_EARL) & 0xf0;
-    if (gPlayer1Powerup[player] == 5)
-        PlaySound(6, 99);
-    if (state->height > 0 && (state->flags_52 & 0x4008000L)) {
+    if (gPlayer1Powerup[player] == PRESENT_ROCKET_SKATES)
+        PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
+    if (state->height > 0 && (state->animation_group_mask & (long)(PLAYER_GROUP_ICARUS_FLY | PLAYER_GROUP_SKATES_AIR))) {
         StopPlayer(state);
         state->acceleration_height = -32;
-        sprite = (state->sprite_state & 3) + 20;
+        sprite = (state->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_FALL_UP;
         gPlayerLandingCounterSeed[player] = 2;
-    } else if (!(state->flags_52 & 0x20L) && state->height <= 0) {
+    } else if (!(state->animation_group_mask & (long)PLAYER_GROUP_FALL) && state->height <= 0) {
         StopPlayer(state);
-        gPlayer1Powerup[player] = -1;
+        gPlayer1Powerup[player] = PRESENT_NONE;
         HudLoadActionIconSprite(player);
         HudPositionActionIconSprite(player);
-        if ((state->flags_52 & 0x40000L) || state->sprite_state == 77 ||
-            (((state->flags_52 & 0x7800000L) || (state->flags_52 & 0x8000L)) &&
-             terrain == 128)) {
-            sprite = (state->sprite_state & 3) + 64;
-            state->mode_15 = 0;
-            state->draw_flags &= ~64;
-        } else if ((state->sprite_state == 0 || state->sprite_state == 4 ||
-                    (state->flags_52 & 0x20400000L) || state->sprite_state == 76 ||
-                    state->sprite_state == 3 || state->sprite_state == 7 ||
-                    (state->flags_52 & 0x7800000L) ||
-                    (state->flags_52 & 0x830c000L)) &&
-                   !(state->flags_52 & 0x20000000L)) {
+        if ((state->animation_group_mask & (long)PLAYER_GROUP_INNERTUBE_MOVE) || state->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE ||
+            (((state->animation_group_mask & (long)PLAYER_GROUP_ALL_SKATES) || (state->animation_group_mask & (long)PLAYER_GROUP_ICARUS_FLY)) &&
+             terrain == TERRAIN_WATER)) {
+            sprite = (state->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_FALL_SPLASH_UP;
+            state->animation_motion_axes = ANIMATION_MOTION_NONE;
+            state->draw_flags &= ~ENTITY_SHADOW;
+        } else if ((state->sprite_state == PLAYER_ANIM_IDLE || state->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+                    (state->animation_group_mask & (long)(PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || state->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+                    state->sprite_state == PLAYER_ANIM_SWIM_IDLE || state->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE ||
+                    (state->animation_group_mask & (long)PLAYER_GROUP_ALL_SKATES) ||
+                    (state->animation_group_mask & 0x830c000L)) &&
+                   !(state->animation_group_mask & (long)PLAYER_GROUP_STATIONARY)) {
             sprite = GetActivePresentSprite(state);
-            state->draw_flags &= ~64;
+            state->draw_flags &= ~ENTITY_SHADOW;
         }
     }
     if (sprite != -1)
@@ -298,8 +304,8 @@ void ReducePresentTimer()
 
     for (player = 0; player <= 1; player++) {
         if (gPlayer1Powerup[player] >= 0 && gPlayerLives[player] >= 0 &&
-            (&gPlayerInfo[player])->sprite_state != 5 &&
-            (&gPlayerInfo[player])->sprite_state != 6 && !P1_MENU_OPEN[player]) {
+            (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_GHOST &&
+            (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST && !P1_MENU_OPEN[player]) {
             if (ELEVATOR_FLAG[player]) {
                 if ((player == 0 && gHardwareSpriteTable[21].y == 1) ||
                     (player == 1 && gHardwareSpriteTable[22].y == 1))
@@ -339,14 +345,14 @@ void PresentClearWorldEntityReadiness()
         if (LEVEL_PLAYERS_FLAG_1[bank]) {
             item = gObjectTable[bank];
             for (index = 0; index < 28; index++, item++) {
-                if (item->kind != -1 && item->kind < 64 && item->object)
+                if (item->kind != ITEM_UNUSED && item->kind < ITEM_GROUND_BASE && item->object)
                     gPlayerInfo[item->object].sprite_ready = 0;
             }
         }
     }
     item = gDroppedPresentTable;
     for (index = 0; index < 32; index++, item++) {
-        if (item->kind != -1 && item->object)
+        if (item->kind != ITEM_UNUSED && item->object)
             gPlayerInfo[item->object].sprite_ready = 0;
     }
 }
@@ -357,7 +363,7 @@ void MapUpdateItemsAndPresents()
 {
     short bank, player;
 
-    if (P1_MENU_OPEN[0] && P1_MENU_OPEN[1])
+    if (P1_MENU_OPEN[PLAYER_TOEJAM] && P1_MENU_OPEN[PLAYER_EARL])
         return;
     if (LEVEL_PLAYERS_FLAG_1[0])
         EntityUpdateLevelItemVisibility(gObjectTable[0], 32);

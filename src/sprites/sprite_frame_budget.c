@@ -38,31 +38,31 @@ void ProcessEntityAnimationMotion()
         entity_count = 26;
     entity = gPlayerInfo;
     for (entity_number = 0; entity_number < entity_count; ++entity_number, ++entity) {
-        if (!(entity->draw_flags & 1) || IsSpeechBubbleEntity(entity_number))
+        if (!(entity->draw_flags & ENTITY_ACTIVE) || IsSpeechBubbleEntity(entity_number))
             continue;
         if (entity->frame_duration - 1 == 0) {
             if (entity->tile_count + tile_total > 112)
                 continue;
             next_frame_or_needs_tiles = entity->frame + 1;
             sequence_entry = entity->sequence[next_frame_or_needs_tiles];
-            if (sequence_entry == 255)
+            if (sequence_entry == ANIMATION_LOOP)
                 next_frame_or_needs_tiles = 0;
-            else if (sequence_entry == 254)
+            else if (sequence_entry == ANIMATION_HOLD)
                 continue;
             {
                 char frame_number;
-                frame_number = entity->sequence[next_frame_or_needs_tiles] & 127;
+                frame_number = entity->sequence[next_frame_or_needs_tiles] & ANIMATION_FRAME_MASK;
                 frame = entity->frames[frame_number];
             }
             /* The sequence index is no longer needed; keep the upload predicate in this byte. */
             next_frame_or_needs_tiles = 1;
             if (frame->reusable && entity->sprite_ready)
                 next_frame_or_needs_tiles = 0;
-            if (entity->mode_15 & 3)
+            if (entity->animation_motion_axes & ANIMATION_MOTION_XY)
                 (*entity->process)(frame, entity);
-            if ((entity->draw_flags & 6) && next_frame_or_needs_tiles)
+            if ((entity->draw_flags & ENTITY_EITHER_VIEW) && next_frame_or_needs_tiles)
                 tile_total += entity->tile_count;
-        } else if (!entity->sprite_ready && (entity->draw_flags & 6) &&
+        } else if (!entity->sprite_ready && (entity->draw_flags & ENTITY_EITHER_VIEW) &&
                    entity->tile_count + tile_total > 112) {
             /* ORIGINAL BUG: this path adds the count only when it is already over 112. */
             tile_total += entity->tile_count;

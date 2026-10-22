@@ -1,3 +1,6 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "terrain.h"
 #include "entities.h"
 #include "assets_audio.h"
 #include "audio_calls.h"
@@ -19,19 +22,19 @@ short player_number;
     char sprite;
     short center_tile;
 
-    nearby_land = player_number == 0 ? &LAND_NEAR_TOEJAM[0][0] : &LAND_NEAR_EARL[0][0];
+    nearby_land = player_number == PLAYER_TOEJAM ? &LAND_NEAR_TOEJAM[0][0] : &LAND_NEAR_EARL[0][0];
     TOEJAM_FALL_STATE[player_number] = 1;
-    sprite = (player->sprite_state & 3) + 20;
+    sprite = (player->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_FALL_UP;
     center_tile = 12;
-    if (sprite == 20 || sprite == 21) {
-        if (nearby_land[center_tile - 1] < 0x80)
+    if (sprite == PLAYER_ANIM_FALL_UP || sprite == PLAYER_ANIM_FALL_DOWN) {
+        if (nearby_land[center_tile - 1] < TERRAIN_WATER)
             player->x += 8;
-        else if (nearby_land[center_tile + 1] < 0x80)
+        else if (nearby_land[center_tile + 1] < TERRAIN_WATER)
             player->x -= 8;
     }
     player->acceleration_height = -128;
     SetSprite(player, sprite);
-    player->mode_15 = 0;
+    player->animation_motion_axes = ANIMATION_MOTION_NONE;
     player->tile &= 0x7fff;
     gTerrainPriorityUpdatePlayer = player_number;
     WAIT_FOR_VBLANK_FLAG = 1;
@@ -48,22 +51,22 @@ struct object_state *player;
     short player_number;
     char sprite;
 
-    player_number = player->entity_number;
+    player_number = player->entity_index;
     player->height = 5;
     player->velocity_height = 512;
     player->acceleration_height = -80;
-    player->mode_15 = 0;
-    sprite = (player->sprite_state & 3) + 20;
+    player->animation_motion_axes = ANIMATION_MOTION_NONE;
+    sprite = (player->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_FALL_UP;
     gPlayerLandingCounterSeed[player_number] = 1;
     player->velocity_x = 0;
     player->velocity_y = 0;
-    if (sprite == 20)
+    if (sprite == PLAYER_ANIM_FALL_UP)
         player->velocity_y = -256;
-    else if (sprite == 21)
+    else if (sprite == PLAYER_ANIM_FALL_DOWN)
         player->velocity_y = 256;
-    else if (sprite == 22)
+    else if (sprite == PLAYER_ANIM_FALL_LEFT)
         player->velocity_x = -512;
-    else if (sprite == 23)
+    else if (sprite == PLAYER_ANIM_FALL_RIGHT)
         player->velocity_x = 512;
     SetSprite(player, sprite);
 }
@@ -76,8 +79,8 @@ struct object_state *player;
     short player_number;
     unsigned short sound_choice;
 
-    player_number = player->entity_number;
-    if (player->flags_52 & 16) {
+    player_number = player->entity_index;
+    if (player->animation_group_mask & PLAYER_GROUP_LEAN) {
         if (++TOEJAM_JUMP_COUNTER[player_number] > 30) {
             if (gElevatorDepartureInProgress)
                 --TOEJAM_JUMP_COUNTER[player_number];

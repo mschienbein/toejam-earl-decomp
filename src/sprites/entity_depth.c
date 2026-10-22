@@ -67,8 +67,8 @@ void Process2FEntityFlag()
     entity = gPlayerInfo;
     entity_number = 0;
     do {
-        if (entity->draw_flags & 1) {
-            if (entity->draw_flags & 0x40)
+        if (entity->draw_flags & ENTITY_ACTIVE) {
+            if (entity->draw_flags & ENTITY_SHADOW)
                 UpdateEntityShadows(entity);
             else
                 ReleaseEntityShadows(entity);

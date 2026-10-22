@@ -1,3 +1,4 @@
+#include "player_animation.h"
 #include "entities.h"
 #include "sprites.h"
 #include "hardware.h"
@@ -17,7 +18,7 @@ short player_number;
 {
     short x, sprite_number, y;
 
-    if (player_number == 0) {
+    if (player_number == PLAYER_TOEJAM) {
         sprite_number = 15;
         y = 229;
     } else {
@@ -27,13 +28,13 @@ short player_number;
     if (P1_MENU_OPEN[player_number])
         x = 230;
     else if (SPLIT_SCREEN || P1_MENU_OPEN[player_number ^ 1]) {
-        if (player_number == 0)
+        if (player_number == PLAYER_TOEJAM)
             y = 142;
         else
             y = 252;
         x = 144;
     } else {
-        if (player_number == 0)
+        if (player_number == PLAYER_TOEJAM)
             x = 160;
         else
             x = 330;
@@ -61,10 +62,10 @@ short player_number;
     }
     /* (&gPlayerInfo[i])->field rather than gPlayerInfo[i].field: the two compile differently
      * here and only this spelling reproduces the ROM. */
-    if (gPlayerLives[player_number] < 0 || (&gPlayerInfo[player_number])->sprite_state == 5 ||
-        (&gPlayerInfo[player_number])->sprite_state == 6 || gLevel912C == 26)
+    if (gPlayerLives[player_number] < 0 || (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_GHOST ||
+        (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST || gLevel912C == 26)
         return;
-    if (player_number == 0)
+    if (player_number == PLAYER_TOEJAM)
         maximum_health = 23;
     else
         maximum_health = 31;
@@ -82,7 +83,7 @@ short player_number;
     else
         return;
     displayed_health = gHudDisplayedHealth[player_number];
-    if (player_number == 0)
+    if (player_number == PLAYER_TOEJAM)
         vram_base = 0xf680;
     else
         vram_base = 0xfa80;
@@ -108,7 +109,7 @@ short player_number;
     VDP_DATA = pixel_pattern;
     VDP_DATA = pixel_pattern;
     VDP_DATA = pixel_pattern;
-    VDP_CONTROL_WORD = 0x8f02;
+    VDP_CONTROL_WORD = VDP_AUTOINCREMENT_WORD;
 }
 
 /* Load four life-icon tiles, using the second icon image above four lives. */

@@ -11,8 +11,8 @@ void LinkPlayerSpritesForSplitWipe()
     char index, sprite_count, sprite_number, next_sprite;
     char *sprite_list;
 
-    sprite_count = gPlayerInfo[0].current_frame->count;
-    sprite_list = gPlayerInfo[0].primary_sprites;
+    sprite_count = gPlayerInfo[PLAYER_TOEJAM].current_frame->count;
+    sprite_list = gPlayerInfo[PLAYER_TOEJAM].primary_sprites;
     sprite_number = *sprite_list;
     gHardwareSpriteTable[23].link = sprite_number;
     for (index = 0; index < sprite_count; ++index) {
@@ -22,8 +22,8 @@ void LinkPlayerSpritesForSplitWipe()
         next_sprite = sprite_list[index + 1];
         gHardwareSpriteTable[sprite_number].link = next_sprite;
     }
-    sprite_count = gPlayerInfo[1].current_frame->count;
-    sprite_list = gPlayerInfo[1].primary_sprites;
+    sprite_count = gPlayerInfo[PLAYER_EARL].current_frame->count;
+    sprite_list = gPlayerInfo[PLAYER_EARL].primary_sprites;
     gHardwareSpriteTable[sprite_number].link = *sprite_list;
     for (index = 0; index < sprite_count; ++index) {
         sprite_number = sprite_list[index];

@@ -13,12 +13,12 @@ short player;
     char sprite_number;
 
     entity = &gPlayerInfo[player];
-    if (!(entity->flags_4d & 16) || !entity->sprite_ready)
+    if (!(entity->behavior_flags & ENTITY_PLAYER_SUPPRESSED) || !entity->sprite_ready)
         return;
-    if (entity->draw_flags & 2)
+    if (entity->draw_flags & ENTITY_PRIMARY_VIEW)
         sprite_list = entity->primary_sprites;
     else {
-        if (!(entity->draw_flags & 4))
+        if (!(entity->draw_flags & ENTITY_SECONDARY_VIEW))
             return;
         sprite_list = entity->secondary_sprites;
     }

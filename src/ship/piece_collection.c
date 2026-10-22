@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "sprites.h"
@@ -39,7 +40,7 @@ struct earthling_state *ship_piece;
     ship_piece->kind = -1;
     ship_piece->object = 0;
     ShowShipPieces(piece_number, player_number);
-    if (player_number == 0 || !SPLIT_SCREEN)
+    if (player_number == PLAYER_TOEJAM || !SPLIT_SCREEN)
         StartDialogue(2);
     else
         GenerateSpeech(1, "Jammin", 1);
@@ -72,7 +73,7 @@ void ShipUpdatePendingPieceIndicator()
             object->height_pixels = 32;
             object->sprite_count = 3;
             object->tile_count = 48;
-            object->tile |= 0x8000;
+            object->tile |= VDP_TILE_PRIORITY;
             animation = &AnimationDescriptors_0AF048;
             object->sequence = animation->sequence;
             object->frames = animation->frames;

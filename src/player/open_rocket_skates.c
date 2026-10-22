@@ -1,3 +1,6 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "terrain.h"
 #include "entities.h"
 #include "player.h"
 #include "ram_system.h"
@@ -15,22 +18,22 @@ unsigned short terrain;
     StopPlayer(state);
     if (state->height > 0)
         state->acceleration_height = -32;
-    else if ((state->flags_52 & 0x800) || state->sprite_state == 3 || state->sprite_state == 7) {
+    else if ((state->animation_group_mask & PLAYER_GROUP_SWIM) || state->sprite_state == PLAYER_ANIM_SWIM_IDLE || state->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE) {
         state->height = -16;
         state->velocity_height = 256;
         state->acceleration_height = 0;
     }
-    if (state->flags_52 & 0x07b5fffc)
-        sprite = state->sprite_state & 3;
-    if (terrain == 0x90 || state->height > 0)
+    if (state->animation_group_mask & 0x07b5fffc)
+        sprite = state->sprite_state & DIRECTION_MASK;
+    if (terrain == TERRAIN_VOID || state->height > 0)
         sprite += 104;
-    else if (terrain == 0x80)
+    else if (terrain == TERRAIN_WATER)
         sprite += 100;
     else
         sprite += 92;
     SetSprite(state, sprite);
-    state->mode_15 = 0;
+    state->animation_motion_axes = ANIMATION_MOTION_NONE;
     P1_PREV_PROCESSED_INPUT[player] &= 0xf0;
     if (state->height >= 0)
-        state->draw_flags |= 0x40;
+        state->draw_flags |= ENTITY_SHADOW;
 }

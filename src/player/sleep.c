@@ -1,3 +1,5 @@
+#include "player_animation.h"
+#include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
 #include "revision.h"
@@ -18,10 +20,10 @@
 void OpenSchoolBook(state)
 struct object_state *state;
 {
-    SetSprite(state, 116);
-    gPlayerBookSleepDelay[state->entity_number] = 60;
+    SetSprite(state, PLAYER_ANIM_READ_BOOK);
+    gPlayerBookSleepDelay[state->entity_index] = 60;
     StopPlayer(state);
-    state->mode_15 = 0;
+    state->animation_motion_axes = ANIMATION_MOTION_NONE;
     state->height = 0;
 }
 
@@ -37,15 +39,15 @@ struct object_state *state;
     struct object_state *wake_effect;
     struct timed_animation *animation;
 
-    player = state->entity_number;
+    player = state->entity_index;
     if (ELEVATOR_FLAG[player] || state->level == 26)
         return;
-    if (state->sprite_state == 116) {
+    if (state->sprite_state == PLAYER_ANIM_READ_BOOK) {
         if (--gPlayerBookSleepDelay[player] <= 0) {
-            next_sprite = 117;
+            next_sprite = PLAYER_ANIM_SLEEP;
             gPlayerWakeEffectsLeft[player] = GetRandomNumber() % 7 + 4;
         }
-    } else if (state->sprite_state == 117) {
+    } else if (state->sprite_state == PLAYER_ANIM_SLEEP) {
         input = MovePadInputIntoD0(player);
         if (effect = gPlayerWakeEffectEntityHandles[player]) {
             wake_effect = &gPlayerInfo[effect];
@@ -69,7 +71,7 @@ struct object_state *state;
                 wake_effect->height_pixels = 32;
                 wake_effect->sprite_count = 2;
                 wake_effect->tile_count = 32;
-                wake_effect->tile = 0x8000;
+                wake_effect->tile = VDP_TILE_PRIORITY;
                 animation = &AnimationDescriptors_0AF0B8[player];
                 wake_effect->frames = animation->frames;
                 wake_effect->frame_duration = 1;
@@ -102,7 +104,7 @@ struct object_state *state;
 #endif
         ) {
             if (++P1_IDLE_COUNTER[player] > 300) {
-                next_sprite = 117;
+                next_sprite = PLAYER_ANIM_SLEEP;
                 gPlayerWakeEffectsLeft[player] = GetRandomNumber() % 7 + 4;
             }
         } else

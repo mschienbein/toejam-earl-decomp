@@ -26,7 +26,7 @@ short IntroPart11()
     IntroPositionLargePlayerParts();
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 64;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     advance_pressed = 0;
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 51;
@@ -201,7 +201,7 @@ short IntroPart11()
         }
     }
     gMode2RegSoftcopy &= 60;
-    VDP_CONTROL_WORD = gMode2RegSoftcopy | 0x8104;
+    VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     CutsceneReleaseTextEntities();
     IntroReleaseLargePlayerSpritesAndRefresh();
     IntroReleaseLargePlayerParts();

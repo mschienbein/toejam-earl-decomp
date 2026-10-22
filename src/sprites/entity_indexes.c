@@ -16,7 +16,7 @@ void SetRAMIndexes()
     entity = gPlayerInfo;
     entity_number = 0;
     do {
-        entity->entity_number = entity_number;
+        entity->entity_index = entity_number;
         ++entity_number;
         ++entity;
     } while (entity_number < 40);

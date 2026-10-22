@@ -14,7 +14,7 @@ void UpdateCameraY()
             start_column = gCameraRowUploadStartColumn[camera];
             count = gCameraRowUploadWordCount[camera];
             if (camera == 0)
-                VDP_COMMAND = 0x60000002L + (gCameraRowUploadVramRow[camera] << 23) +
+                VDP_COMMAND = VDP_WRITE_PLANE_A + (gCameraRowUploadVramRow[camera] << 23) +
                     (start_column << 17);
             else
                 VDP_COMMAND = 0x40000003L + (gCameraRowUploadVramRow[camera] << 23) +
@@ -25,7 +25,7 @@ void UpdateCameraY()
                 first_count = 64 - start_column;
                 MoveDataToVRAM(gCameraRowUploadWords[camera], first_count);
                 if (camera == 0)
-                    VDP_COMMAND = 0x60000002L + (gCameraRowUploadVramRow[camera] << 23);
+                    VDP_COMMAND = VDP_WRITE_PLANE_A + (gCameraRowUploadVramRow[camera] << 23);
                 else
                     VDP_COMMAND = 0x40000003L + (gCameraRowUploadVramRow[camera] << 23);
                 MoveDataToVRAM(

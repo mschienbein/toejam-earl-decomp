@@ -1,3 +1,7 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "terrain.h"
+#include "psg_effects.h"
 #include "entities.h"
 #include "assets_audio.h"
 #include "audio_calls.h"
@@ -21,21 +25,21 @@ unsigned short terrain;
     short player;
     char direction, phase, jump;
 
-    player = state->entity_number;
+    player = state->entity_index;
     if (gPlayer1Powerup[player])
         return;
-    if (!gPlayerTerrainSinking[player] && (state->flags_52 & 12)) {
+    if (!gPlayerTerrainSinking[player] && (state->animation_group_mask & (PLAYER_GROUP_WALK | PLAYER_GROUP_SNEAK))) {
         state->height = 0;
-        state->draw_flags &= 0xbf;
+        state->draw_flags &= ~ENTITY_SHADOW;
         return;
     }
     if (TOEJAM_FALL_STATE[player] ||
-        !(state->sprite_state == 0 || state->sprite_state == 4 ||
-          (state->flags_52 & 0x20400000) || state->sprite_state == 76 ||
-          (state->flags_52 & 0x8000)) || ELEVATOR_FLAG[player] ||
+        !(state->sprite_state == PLAYER_ANIM_IDLE || state->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+          (state->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || state->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
+          (state->animation_group_mask & PLAYER_GROUP_ICARUS_FLY)) || ELEVATOR_FLAG[player] ||
         (gPlayerTerrainSinking[player] && state->height < -4))
         return;
-    direction = state->sprite_state & 3;
+    direction = state->sprite_state & DIRECTION_MASK;
     phase = -1;
     jump = P1_PROCESSED_INPUT[player] & 0x40;
     if (!jump) {
@@ -44,8 +48,8 @@ unsigned short terrain;
     }
     if (gPlayerChoiceActionReleaseLatches[player])
         return;
-    if (state->sprite_state == 0 || state->sprite_state == 4 ||
-        (state->flags_52 & 0x20400000) || state->sprite_state == 76) {
+    if (state->sprite_state == PLAYER_ANIM_IDLE || state->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
+        (state->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || state->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE) {
         if (!jump || !gPlayerPhasedJumpArmed[player])
             return;
         phase = 1;
@@ -55,7 +59,7 @@ unsigned short terrain;
     } else if (gPlayerPhasedJumpPhase[player] == 1 && jump) {
         phase = 0;
         gPlayerPhasedJumpPhaseTicks[player] = 0;
-        PlaySound(23, 20);
+        PlaySound(PSG_SHORT_NOISE_CRESCENDO, 20);
     } else if (state->height < 4) {
         state->velocity_x = 0;
         state->acceleration_x = 0;
@@ -66,24 +70,24 @@ unsigned short terrain;
             state->height = 0;
             state->velocity_height = 0;
             state->acceleration_height = 0;
-            state->draw_flags &= 0xbf;
-            if (terrain >= 0x80) {
-                if (terrain == 0x90)
+            state->draw_flags &= ~ENTITY_SHADOW;
+            if (terrain >= TERRAIN_WATER) {
+                if (terrain == TERRAIN_VOID)
                     TOEJAM_JUMP_COUNTER[player] = 0;
                 else {
-                    phase = direction + 64;
+                    phase = direction + PLAYER_ANIM_FALL_SPLASH_UP;
                     PlaySoundEffect((long)Sfx_Splash, 50, 0);
                 }
             } else {
                 phase = GetActivePresentSprite(state);
-                state->mode_15 = 3;
+                state->animation_motion_axes = ANIMATION_MOTION_XY;
                 gPlayerPhasedJumpArmed[player] = 0;
             }
             if (phase != -1) {
                 SetSprite(state, phase);
                 phase = -1;
             }
-        } else if (terrain == 0x90) {
+        } else if (terrain == TERRAIN_VOID) {
             if (TOEJAM_JUMP_COUNTER[player] > 10)
                 PlayerStartFalling(state, player);
             else if (gPlayerPhasedJumpPhaseTicks[player] > 1) {
@@ -97,14 +101,14 @@ unsigned short terrain;
     }
     if (gPlayerPhasedJumpPhaseTicks[player] < 64)
         ++gPlayerPhasedJumpPhaseTicks[player];
-    if (!(state->flags_52 & 0x8000)) {
-        SetSprite(state, 61);
-        state->draw_flags |= 0x40;
-        state->mode_15 = 0;
-    } else if (terrain == 0x90)
-        state->draw_flags &= 0xbf;
+    if (!(state->animation_group_mask & PLAYER_GROUP_ICARUS_FLY)) {
+        SetSprite(state, PLAYER_ANIM_ICARUS_FLY_DOWN);
+        state->draw_flags |= ENTITY_SHADOW;
+        state->animation_motion_axes = ANIMATION_MOTION_NONE;
+    } else if (terrain == TERRAIN_VOID)
+        state->draw_flags &= ~ENTITY_SHADOW;
     else
-        state->draw_flags |= 0x40;
+        state->draw_flags |= ENTITY_SHADOW;
     PlayerApplyPhasedJumpInput(state, player, phase, jump);
 }
 

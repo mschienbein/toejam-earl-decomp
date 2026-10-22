@@ -1,3 +1,4 @@
+#include "entities.h"
 #include "elevator.h"
 #include "assets_map.h"
 #include "map_calls.h"
@@ -138,7 +139,7 @@ short player, level;
             LoadFinalLevel(level);
         return;
     }
-    if (gPlayerLives[0] < 0)
+    if (gPlayerLives[PLAYER_TOEJAM] < 0)
         player = 0;
     gLevel912A = level;
     while (ChangeLevel(player)) {

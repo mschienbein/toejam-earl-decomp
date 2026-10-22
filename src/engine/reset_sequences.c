@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
 #include "assets_intro.h"
@@ -28,7 +29,7 @@ void IntroAllocateLargePlayerParts()
             for (piece = 0; piece < frame->count; ++piece)
                 entity->tile_count += ((struct render_piece (*)[12])(frame + 1))[0][piece].width *
                                       ((struct render_piece (*)[12])(frame + 1))[0][piece].height;
-            entity->tile = 0x8000;
+            entity->tile = VDP_TILE_PRIORITY;
             entity->current_frame = frame;
         }
         gIntroLargePlayerPartEntities[index] = object_number;
@@ -103,7 +104,7 @@ short index;
     if (index >= 8)
         return;
     entity = &gPlayerInfo[gIntroLargePlayerPartEntities[index]];
-    if (!(entity->draw_flags & 1))
+    if (!(entity->draw_flags & ENTITY_ACTIVE))
         return;
     ReleaseEntityViewportSprites(entity, 0);
 }
@@ -153,7 +154,7 @@ void IntroAllocateDrivingParts()
             for (piece = 0; piece < frame->count; ++piece)
                 entity->tile_count += ((struct render_piece (*)[12])(frame + 1))[0][piece].width *
                                       ((struct render_piece (*)[12])(frame + 1))[0][piece].height;
-            entity->tile = 0x8000;
+            entity->tile = VDP_TILE_PRIORITY;
             entity->current_frame = frame;
         }
         gIntroDrivingPartEntities[index] = object_number;

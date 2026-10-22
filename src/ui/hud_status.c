@@ -1,3 +1,6 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "present_types.h"
 #define TJE_LOCAL_RANKCHARSTABLE
 
 #include "entities.h"
@@ -73,19 +76,19 @@ void HudDrawRankLabels()
 {
     if (PLAYER_INDICATOR == 2) {
         VDP_COMMAND = 0x5c160003;
-        TextWriteStringTiles(RankCharsTable[gPlayerRank[0]]);
+        TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_TOEJAM]]);
         VDP_COMMAND = 0x5c400003;
-        TextWriteStringTiles(RankCharsTable[gPlayerRank[1]]);
+        TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_EARL]]);
     } else if (PLAYER_INDICATOR == 0) {
         VDP_COMMAND = 0x5c160003;
-        TextWriteStringTiles(RankCharsTable[gPlayerRank[0]]);
+        TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_TOEJAM]]);
         VDP_COMMAND = 0x5c3c0003;
         TextWriteStringTiles(" on");
         VDP_COMMAND = 0x5cba0003;
         TextWriteStringTiles("vacation");
     } else {
         VDP_COMMAND = 0x5c400003;
-        TextWriteStringTiles(RankCharsTable[gPlayerRank[1]]);
+        TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_EARL]]);
         VDP_COMMAND = 0x5c120003;
         TextWriteStringTiles(" on");
         VDP_COMMAND = 0x5c900003;
@@ -104,9 +107,9 @@ void DrawHUD()
         VBLANK_FLAG_5 = 0;
         return;
     }
-    if (!SPLIT_SCREEN && !P1_MENU_OPEN[0] && !P1_MENU_OPEN[1]) {
+    if (!SPLIT_SCREEN && !P1_MENU_OPEN[PLAYER_TOEJAM] && !P1_MENU_OPEN[PLAYER_EARL]) {
         for (row = 0; row < 5; row++) {
-            VDP_COMMAND = 0x50000003 + ((row + 23) << 23);
+            VDP_COMMAND = VDP_WRITE_WINDOW + ((row + 23) << 23);
             if (row < 4) {
                 for (column = 0; column < 40; column++) {
                     tile = CombinedHudBackgroundByteMap[row][column];
@@ -124,11 +127,11 @@ void DrawHUD()
         VDP_CONTROL_WORD = 0x9297;
         HudDrawRankLabels();
     } else {
-        if (!P1_MENU_OPEN[0] && !P1_MENU_OPEN[1])
+        if (!P1_MENU_OPEN[PLAYER_TOEJAM] && !P1_MENU_OPEN[PLAYER_EARL])
             VDP_CONTROL_WORD = 0x9200;
         HudPositionLevelNumberSprites(1);
     }
-    if (gPlayerLives[0] >= 0)
+    if (gPlayerLives[PLAYER_TOEJAM] >= 0)
         HudPositionLevelNumberSprites(0);
     else
         HudPositionLevelNumberSprites(1);
@@ -181,7 +184,7 @@ short player_number;
 void HudHidePlayerSprites(player_number)
 short player_number;
 {
-    if (player_number == 0 || player_number == 2) {
+    if (player_number == PLAYER_TOEJAM || player_number == 2) {
         VDP_COMMAND = 0x78580003;
         VDP_DATA = 1;
         gHardwareSpriteTable[11].y = 1;
@@ -201,7 +204,7 @@ short player_number;
         VDP_DATA = 1;
         gHardwareSpriteTable[19].y = 1;
     }
-    if (player_number == 1 || player_number == 2) {
+    if (player_number == PLAYER_EARL || player_number == 2) {
         VDP_COMMAND = 0x78680003;
         VDP_DATA = 1;
         gHardwareSpriteTable[13].y = 1;
@@ -241,7 +244,7 @@ short player_number;
     }
     TOEJAMS_HEALTH[player_number] = PlayerGetMaximumHealth(player_number);
     TOEJAM_RESTORE_HEALTH[player_number] = -1;
-    gPlayer1Powerup[player_number] = -1;
+    gPlayer1Powerup[player_number] = PRESENT_NONE;
     HudInitializeHealthBar(player_number, 1);
     HudLoadActionIconSprite(player_number);
     HudLoadLivesSpriteTiles(player_number);
@@ -249,22 +252,22 @@ short player_number;
 
 void SetupTheMainGame()
 {
-    if (gPlayerLives[0] >= 0) {
+    if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
         gToejamLevel = 1;
-        TOEJAMS_HEALTH[0] = 23;
-        gPlayerLives[0] = 3;
-        gPlayerBucks[0] = 3;
+        TOEJAMS_HEALTH[PLAYER_TOEJAM] = 23;
+        gPlayerLives[PLAYER_TOEJAM] = 3;
+        gPlayerBucks[PLAYER_TOEJAM] = 3;
     }
-    if (gPlayerLives[1] >= 0) {
+    if (gPlayerLives[PLAYER_EARL] >= 0) {
         gEarlLevel = 1;
         EARLS_HEALTH = 31;
-        gPlayerLives[1] = 3;
+        gPlayerLives[PLAYER_EARL] = 3;
         gPlayer2Bucks = 3;
     }
     EARL_RESTORE_HEALTH = -1;
-    TOEJAM_RESTORE_HEALTH[0] = -1;
-    gPlayer1Powerup[0] = -1;
-    gPlayer2Powerup = -1;
+    TOEJAM_RESTORE_HEALTH[PLAYER_TOEJAM] = -1;
+    gPlayer1Powerup[PLAYER_TOEJAM] = PRESENT_NONE;
+    gPlayer2Powerup = PRESENT_NONE;
     HudInitializeHealthBar(0, 1);
     HudInitializeHealthBar(1, 1);
     HudLoadLevelNumberSprites(0);
@@ -281,10 +284,10 @@ void HealthAndLivesChecks(entity, terrain_class)
 struct object_state *entity;
 unsigned short terrain_class;
 {
-    short player_number = entity->entity_number;
+    short player_number = entity->entity_index;
 
-    if (entity->sprite_state == 5 || entity->sprite_state == 6 ||
-        ((long)entity->flags_52 & 0x20000) || gLevel912C == 26 ||
+    if (entity->sprite_state == PLAYER_ANIM_GHOST || entity->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST ||
+        ((long)entity->animation_group_mask & PLAYER_GROUP_REACTION) || gLevel912C == 26 ||
         gPlayerPromotionDisplayEntities[player_number])
         return;
     if (!gHudDisplayedHealth[player_number] && TOEJAMS_HEALTH[player_number] <= 0) {
@@ -299,8 +302,8 @@ unsigned short terrain_class;
         }
         return;
     }
-    if (((long)entity->flags_52 & 0x800) || entity->sprite_state == 3 ||
-        entity->sprite_state == 7) {
+    if (((long)entity->animation_group_mask & PLAYER_GROUP_SWIM) || entity->sprite_state == PLAYER_ANIM_SWIM_IDLE ||
+        entity->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE) {
         if (TOEJAM_RESTORE_HEALTH[player_number] == -1)
             TOEJAM_RESTORE_HEALTH[player_number] = TOEJAMS_HEALTH[player_number];
         if (!(TIME_COUNTER & 12) && TOEJAMS_HEALTH[player_number] > 0)
@@ -310,8 +313,8 @@ unsigned short terrain_class;
             TOEJAMS_HEALTH[player_number] = TOEJAM_RESTORE_HEALTH[player_number];
         TOEJAM_RESTORE_HEALTH[player_number] = -1;
     }
-    if ((entity->draw_flags & 0x80) && entity->sprite_state != 2)
-        entity->draw_flags &= 0x7f;
+    if ((entity->draw_flags & ENTITY_DRAW_LATE) && entity->sprite_state != PLAYER_ANIM_FLATTENED)
+        entity->draw_flags &= ~ENTITY_DRAW_LATE;
     if (CheckPromotionScore(player_number))
         PerformPromotion(player_number, 11, terrain_class);
 }

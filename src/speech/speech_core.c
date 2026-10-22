@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
 #include "assets_ui.h"
@@ -30,7 +31,7 @@ char replace_attached;
     short slot, entity_number, index, length, viewport;
 
     source = &gPlayerInfo[speaker];
-    if (!(source->draw_flags & 6))
+    if (!(source->draw_flags & ENTITY_EITHER_VIEW))
         return 0;
     if (speaker <= 1 && source->sprite_state == 117)
         return 0;
@@ -38,7 +39,7 @@ char replace_attached;
         for (slot = 0; slot < 4; ++slot) {
             if (entity_number = gSpeechBubbleEntities[slot]) {
                 bubble = &gPlayerInfo[entity_number];
-                if ((bubble->flags_4d & 8) && bubble->parent == speaker) {
+                if ((bubble->behavior_flags & ENTITY_ATTACHED) && bubble->owner == speaker) {
                     FreeEntity(entity_number);
                     gSpeechBubbleEntities[slot] = 0;
                 }
@@ -70,31 +71,31 @@ char replace_attached;
         bubble->sprite_count = 4;
         bubble->tile_count = 13;
         if (gLevel912C < 26)
-            bubble->tile = 0x8000;
+            bubble->tile = VDP_TILE_PRIORITY;
         bubble->current_frame = &RuntimeTextMetasprite_0AFADC;
-        if (source->draw_flags & 2) {
+        if (source->draw_flags & ENTITY_PRIMARY_VIEW) {
             AllocateEntityViewportSprites(bubble, 0);
             viewport = 0;
         } else {
             AllocateEntityViewportSprites(bubble, 1);
             viewport = 1;
         }
-        if (!(bubble->draw_flags & 6)) {
+        if (!(bubble->draw_flags & ENTITY_EITHER_VIEW)) {
             FreeEntity(gSpeechBubbleEntities[slot]);
             gSpeechBubbleEntities[slot] = 0;
             return 0;
         }
-        bubble->draw_flags |= 8;
+        bubble->draw_flags |= ENTITY_SKIP_PHYSICS;
         while (VBLANK_FLAG_2)
             ;
-        QueueSpeechTextTiles(text, length, bubble->tile & 0x7ff);
+        QueueSpeechTextTiles(text, length, bubble->tile & VDP_TILE_INDEX_MASK);
         PrepareEntitySpriteFrame(bubble, &RuntimeTextMetasprite_0AFADC, 1, viewport);
         bubble->sprite_ready = 1;
         if (replace_attached) {
-            bubble->flags_4d |= 8;
-            bubble->parent = speaker;
-            bubble->flag_58 = 15;
-            bubble->offset_height = 15;
+            bubble->behavior_flags |= ENTITY_ATTACHED;
+            bubble->owner = speaker;
+            bubble->attachment_y_or_latch = 15;
+            bubble->attachment_height = 15;
         }
         if (gNextSpeechLifetimeOverride) {
             gSpeechBubbleLifetimes[slot] = gNextSpeechLifetimeOverrideLowByte;
@@ -132,7 +133,7 @@ short speaker;
     for (slot = 0; slot < 4; ++slot) {
         if (gSpeechBubbleEntities[slot]) {
             bubble = &gPlayerInfo[gSpeechBubbleEntities[slot]];
-            if ((bubble->draw_flags & 8) && bubble->parent == speaker)
+            if ((bubble->draw_flags & ENTITY_SKIP_PHYSICS) && bubble->owner == speaker)
                 return 1;
         }
     }

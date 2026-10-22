@@ -1,3 +1,4 @@
+#include "terrain.h"
 #include "entities.h"
 #include "assets_map.h"
 #include "graphics_calls.h"
@@ -44,7 +45,7 @@ short player, world_x, world_y;
         gTerrainQueryMetatileWord = map[map_y * 19 + map_x];
         tile_number = GetLevelMetatileTile(gTerrainQueryMetatileLowByte, tile_y, tile_x);
         tile_number &= 0x1ff;
-        return PlayerTilePropertyLookup[tile_number] & 0xf0;
+        return PlayerTilePropertyLookup[tile_number] & TERRAIN_CLASS_MASK;
     }
 }
 
@@ -69,12 +70,12 @@ short player;
         return;
     map = &gMapDataA[0][0];
     if (!player) {
-        entity = &gPlayerInfo[0];
+        entity = &gPlayerInfo[PLAYER_TOEJAM];
         land = &LAND_NEAR_TOEJAM[0][0];
     } else {
         entity = &gEarlPositionX;
         land = &LAND_NEAR_EARL[0][0];
-        if (gPlayerLives[0] >= 0 && SPLIT_SCREEN)
+        if (gPlayerLives[PLAYER_TOEJAM] >= 0 && SPLIT_SCREEN)
             map = &gMapDataB[0][0];
     }
     center_y = entity->y;

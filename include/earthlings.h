@@ -5,58 +5,56 @@ struct timed_animation;
 
 /* MCC68K target layout: 18 bytes; twenty records occupy one 360-byte bank. */
 struct earthling_state {
-    char kind;                       /* 00: -1 marks an unused record */
-    char object;                     /* 01: primary object handle */
-    char level;                      /* 02 */
-    char state;                      /* 03 */
-    short timer;                     /* 04 */
-    short x, y;                      /* 06, 08 */
-    /* Saved coordinates for some kinds; terrain or one-shot values for others. */
-    short value_0a, value_0c;         /* 0a, 0c */
-    char state_delay;                /* 0e */
-    char second_object;              /* 0f */
-    /* [0]: health or animation phase timer; [1]: camera visibility bits 2/4.
-     * Keep this neutral array: scalarizing it changes LoadInEarthlings code. */
-    char reserved_10[2];             /* 10, 11 */
+    char kind;                       /* 00: EARTHLING ID or -1 unused; bank setup writes. */
+    char object;                     /* 01: primary gPlayerInfo handle, 0 absent; allocator writes. */
+    char level;                      /* 02: world level, 0..25; bank setup writes. */
+    char state;                      /* 03: kind-specific animation/AI state; SetEarthlingState writes. */
+    short timer;                     /* 04: AI countdown ticks, sometimes reused; kind callback writes. */
+    short x, y;                      /* 06/08: world pixels; bank setup and motion write. */
+    short saved_x_or_status;         /* 0a: spawn X, terrain class or one-shot latch; kind owner writes. */
+    short saved_y;                   /* 0c: saved spawn Y, zeroed for some kinds; setup/relocation writes. */
+    char state_delay;                /* 0e: AI state-change delay ticks; kind callback writes. */
+    char second_object;              /* 0f: secondary entity handle, 0 absent; allocator writes. */
+    /* Keep the two-byte array: separate scalar members alter LoadInEarthlings. */
+    char health_visibility[2];       /* 10/11: health/phase countdown and viewport bits 2/4; AI/loader write. */
 };
 
-/* MCC68K target layout: 38 bytes. EARTHLING_DATA has 25 logical records;
- * record 24's reserved_25 is also EarthlingCoordinatePairs[0]. */
+/* MCC68K target layout: 38 bytes; immutable EARTHLING_DATA ROM records.
+ * Record 24's unused byte also begins EarthlingCoordinatePairs. */
 struct earthling_definition {
-    struct timed_animation *states;  /* 00 */
-    void (*update)();                /* 04: installed as the object's process */
-    void (*ability)();               /* 08: called with the earthling record */
-    void (*touch)();                 /* 0c: called with player number, record */
-    char movement_mode;              /* 10: copied to object movement mode */
-    unsigned char width;             /* 11 */
-    unsigned char height_pixels;     /* 12 */
-    char tile_count;                /* 13 */
-    char sprite_count;             /* 14 */
-    char target_chance;              /* 15 */
-    unsigned char target_distance;   /* 16 */
-    char turn_chance;                /* 17 */
-    unsigned char flags_18;          /* 18: shared movement/state flags */
-    unsigned char radius;            /* 19: spawn clearance in four-pixel units */
-    unsigned char contact_distance_x;/* 1a */
-    unsigned char contact_distance_y;/* 1b */
-    char damage;                     /* 1c */
-    unsigned char target_time_min;   /* 1d */
-    unsigned char target_time_max;   /* 1e */
-    unsigned char turn_time_min;     /* 1f */
-    unsigned char turn_time_max;     /* 20 */
-    unsigned char move_time_min;     /* 21 */
-    unsigned char move_time_max;     /* 22 */
-    char state_delay;                /* 23 */
-    char health;                     /* 24 */
-    char reserved_25;                /* 25 */
+    struct timed_animation *states;  /* 00: kind-specific animation table; ROM-authored. */
+    void (*update)();                /* 04: installed frame-motion callback; ROM-authored. */
+    void (*ability)();               /* 08: AI callback taking an earthling record; ROM-authored. */
+    void (*touch)();                 /* 0c: contact callback taking player and record; ROM-authored. */
+    char movement_mode;              /* 10: ANIMATION_MOTION axis bits copied to entity; ROM-authored. */
+    unsigned char width;             /* 11: entity width in world pixels; ROM-authored. */
+    unsigned char height_pixels;     /* 12: entity height in pixels, not elevation; ROM-authored. */
+    char tile_count;                 /* 13: reserved 8x8 tile count; ROM-authored. */
+    char sprite_count;               /* 14: reserved hardware-piece count; ROM-authored. */
+    char target_chance;              /* 15: random target-selection threshold out of 100; ROM-authored. */
+    unsigned char target_distance;   /* 16: targeting range before caller scaling; ROM-authored. */
+    char turn_chance;                /* 17: random turn-selection threshold out of 100; ROM-authored. */
+    unsigned char behavior_flags;    /* 18: secondary-object/contact and turning policy bits; ROM-authored. */
+    unsigned char radius;            /* 19: spawn clearance in four-pixel units; ROM-authored. */
+    unsigned char contact_distance_x;/* 1a: horizontal contact range in pixels; ROM-authored. */
+    unsigned char contact_distance_y;/* 1b: vertical contact range in world pixels; ROM-authored. */
+    char damage;                     /* 1c: health units removed on hurt; ROM-authored. */
+    unsigned char target_time_min;   /* 1d: minimum target-state ticks; ROM-authored. */
+    unsigned char target_time_max;   /* 1e: maximum target-state ticks; ROM-authored. */
+    unsigned char turn_time_min;     /* 1f: minimum turn-state ticks; ROM-authored. */
+    unsigned char turn_time_max;     /* 20: maximum turn-state ticks; ROM-authored. */
+    unsigned char move_time_min;     /* 21: minimum movement-state ticks; ROM-authored. */
+    unsigned char move_time_max;     /* 22: maximum movement-state ticks; ROM-authored. */
+    char state_delay;                /* 23: initial state-change delay ticks; ROM-authored. */
+    char health;                     /* 24: initial health/phase byte; ROM-authored. */
+    char unused;                     /* 25: no represented consumer; final record overlaps next asset. */
 };
 
-/* Six-byte special-earthling state shared by mailbox contact and predicates.
- * The two-entry table has kind-dependent contact bytes. */
+/* Six-byte special-earthling state shared by mailbox contact and predicates. */
 struct special_earthling_state {
-    char mode, level;                 /* 00, 01 */
-    short timer;                      /* 02 */
-    char contact[2];                  /* 04, 05 */
+    char mode, level;                /* 00/01: bank mode and level; mailbox bank configuration writes. */
+    short timer;                     /* 02: mailbox interaction countdown ticks; touch handler writes. */
+    char contact[2];                 /* 04/05: per-player contact latch; mailbox touch handler writes. */
 };
 
 #endif

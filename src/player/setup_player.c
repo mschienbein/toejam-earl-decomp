@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
 #include "assets_presents.h"
@@ -33,7 +34,7 @@ void SetupPlayer()
     gHardwareSpriteTable[24].link = 79;
     gSecondaryViewportUploadedLink = 79;
     gHardwareSpriteTable[79].link = 0;
-    entity = &gPlayerInfo[0];
+    entity = &gPlayerInfo[PLAYER_TOEJAM];
     entity->process = Player1ProcessTerrainMotion;
     entity->sequence = PlayerAnimationDescriptors[0].sequence;
     entity->frames = PlayerAnimationDescriptors[0].frames;
@@ -43,10 +44,10 @@ void SetupPlayer()
     entity->height_pixels = 32;
     entity->sprite_count = 3;
     entity->tile_count = 40;
-    entity->tile = 0x8000;
-    entity->draw_flags = 1;
-    entity->flags_4d = 1;
-    entity = &gPlayerInfo[1];
+    entity->tile = VDP_TILE_PRIORITY;
+    entity->draw_flags = ENTITY_ACTIVE;
+    entity->behavior_flags = ENTITY_COLLIDABLE;
+    entity = &gPlayerInfo[PLAYER_EARL];
     entity->process = Player2ProcessTerrainMotion;
     entity->sequence = Player2AnimationDescriptors[0].sequence;
     entity->frames = Player2AnimationDescriptors[0].frames;
@@ -56,9 +57,9 @@ void SetupPlayer()
     entity->height_pixels = 40;
     entity->sprite_count = 4;
     entity->tile_count = 40;
-    entity->tile = 0x8000;
-    entity->draw_flags = 1;
-    entity->flags_4d = 1;
+    entity->tile = VDP_TILE_PRIORITY;
+    entity->draw_flags = ENTITY_ACTIVE;
+    entity->behavior_flags = ENTITY_COLLIDABLE;
     entity = &gPlayerInfo[26];
     gInventoryDrawListHead = entity;
     for (sprite_number = 0; sprite_number < 2; ++sprite_number) {
@@ -68,7 +69,7 @@ void SetupPlayer()
         entity->height_pixels = 24;
         entity->sprite_count = 1;
         entity->tile_count = 12;
-        entity->tile = 0x8000;
+        entity->tile = VDP_TILE_PRIORITY;
         entity->next = entity + 1;
         entity = entity->next;
         for (present_number = 0; present_number < 6; ++present_number) {
@@ -78,7 +79,7 @@ void SetupPlayer()
             entity->height_pixels = 16;
             entity->sprite_count = 1;
             entity->tile_count = 6;
-            entity->tile = 0x8000;
+            entity->tile = VDP_TILE_PRIORITY;
             entity->next = entity + 1;
             entity = entity->next;
         }

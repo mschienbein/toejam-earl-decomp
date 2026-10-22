@@ -1,3 +1,4 @@
+#include "earthling_types.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "assets_audio.h"
@@ -19,19 +20,19 @@ short next_state;
 
     animation = earthling->state & 252;
     if (animation == 4) {
-        if (earthling->value_0a >= 128)
+        if (earthling->saved_x_or_status >= 128)
             next_state += 4;
     } else if (animation == 8) {
         if (!object->frame_duration) {
-            if (earthling->value_0a >= 128)
+            if (earthling->saved_x_or_status >= 128)
                 next_state += 8;
             else
                 PlaySoundEffect((long)Sfx_IceCreamHonk, 50, 0);
         } else
             next_state += 4;
     } else if (animation == 12) {
-        if (earthling->value_0a >= 80 ||
-            EntityIsWithinRange(object, &gPlayerInfo[0], 96, 48) ||
+        if (earthling->saved_x_or_status >= 80 ||
+            EntityIsWithinRange(object, &gPlayerInfo[PLAYER_TOEJAM], 96, 48) ||
             EntityIsWithinRange(object, &gEarlPositionX, 96, 48))
             next_state += 8;
         else
@@ -52,11 +53,11 @@ struct object_state *object;
 
     animation = earthling->state & 252;
     if (animation == 4) {
-        if (earthling->value_0a >= 128)
+        if (earthling->saved_x_or_status >= 128)
             next_state = earthling->state + 4;
     } else if (animation == 8) {
         if (!object->frame_duration) {
-            if (earthling->value_0a >= 128)
+            if (earthling->saved_x_or_status >= 128)
                 next_state = earthling->state + 4;
             else {
                 next_state = earthling->state - 4;
@@ -64,8 +65,8 @@ struct object_state *object;
             }
         }
     } else if (animation == 12) {
-        if (earthling->value_0a < 80 &&
-            !EntityIsWithinRange(object, &gPlayerInfo[0], 128, 64) &&
+        if (earthling->saved_x_or_status < 80 &&
+            !EntityIsWithinRange(object, &gPlayerInfo[PLAYER_TOEJAM], 128, 64) &&
             !EntityIsWithinRange(object, &gEarlPositionX, 128, 64))
             next_state = earthling->state - 4;
     }
@@ -73,9 +74,9 @@ struct object_state *object;
         SetEarthlingState(earthling, next_state);
         object->frame = -1;
         if ((next_state & 252) == 4)
-            object->flags_4d |= 1;
+            object->behavior_flags |= ENTITY_COLLIDABLE;
         else
-            object->flags_4d &= ~1;
+            object->behavior_flags &= ~ENTITY_COLLIDABLE;
     }
 }
 
@@ -90,7 +91,7 @@ struct earthling_state *earthling;
     struct earthling_definition *definition;
     unsigned char minimum, maximum;
 
-    if (earthling->kind == 7 && earthling->state == 3) {
+    if (earthling->kind == EARTHLING_CUPID && earthling->state == 3) {
         EarthlingUpdateBouncingDamageState(earthling);
         return;
     }
@@ -110,7 +111,7 @@ struct earthling_state *earthling;
             if (definition->target_chance >
                 PREGEN_RANDOMS[gRandomCacheIndex == 58 ?
                 (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100) {
-                if (earthling->kind == 7)
+                if (earthling->kind == EARTHLING_CUPID)
                     separation = 85;
                 next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance,
                                         separation, earthling->kind);
@@ -121,7 +122,7 @@ struct earthling_state *earthling;
                         (gRandomCacheIndex = 0) : ++gRandomCacheIndex] %
                         (maximum - minimum + 1) + minimum;
                 }
-                if ((earthling->kind == 6 || earthling->kind == 22) &&
+                if ((earthling->kind == EARTHLING_BEES || earthling->kind == EARTHLING_BEES_VARIANT) &&
                     earthling->state != next_state &&
                     earthling->state >= 4 && next_state >= 4) {
                     next_state = 0;
@@ -130,9 +131,9 @@ struct earthling_state *earthling;
             }
         } else
             --earthling->state_delay;
-        if (earthling->kind == 19 && next_state == 0)
+        if (earthling->kind == EARTHLING_ICE_CREAM_TRUCK && next_state == 0)
             next_state = -1;
-        if (earthling->kind == 7 && (earthling->state & 252) == 8)
+        if (earthling->kind == EARTHLING_CUPID && (earthling->state & 252) == 8)
             next_state = -1;
         else if (next_state == -1 && earthling->state != 2) {
             if (definition->turn_chance >
@@ -170,27 +171,27 @@ struct earthling_state *earthling;
                 break;
             }
         }
-        if (earthling->kind == 19 && next_state != -1)
+        if (earthling->kind == EARTHLING_ICE_CREAM_TRUCK && next_state != -1)
             next_state = EarthlingSelectTerrainAnimationState(earthling, object, next_state);
         if (next_state != -1 && earthling->state != next_state) {
             SetEarthlingState(earthling, next_state);
-            if (earthling->kind == 7 && earthling->value_0a &&
-                next_state == 0 && (object->draw_flags & 6)) {
+            if (earthling->kind == EARTHLING_CUPID && earthling->saved_x_or_status &&
+                next_state == 0 && (object->draw_flags & ENTITY_EITHER_VIEW)) {
                 PlaySoundEffect((long)Sfx_CupidSing, 40, 0);
-                earthling->value_0a = 0;
-            } else if (earthling->kind == 19) {
+                earthling->saved_x_or_status = 0;
+            } else if (earthling->kind == EARTHLING_ICE_CREAM_TRUCK) {
                 if ((next_state & 252) == 4)
-                    object->flags_4d |= 1;
+                    object->behavior_flags |= ENTITY_COLLIDABLE;
                 else
-                    object->flags_4d &= ~1;
+                    object->behavior_flags &= ~ENTITY_COLLIDABLE;
             }
         }
         if (earthling->timer <= 0)
             earthling->timer = 1;
     }
-    if (earthling->kind == 19 &&
+    if (earthling->kind == EARTHLING_ICE_CREAM_TRUCK &&
         (next_state == -1 || earthling->state != next_state))
         EarthlingUpdateTerrainAnimationState(earthling, object);
-    if (earthling->kind == 7 && (earthling->state & 252) == 8)
+    if (earthling->kind == EARTHLING_CUPID && (earthling->state & 252) == 8)
         EarthlingUpdateControlRemapAttack(earthling, object);
 }

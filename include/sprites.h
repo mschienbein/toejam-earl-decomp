@@ -1,65 +1,62 @@
 #ifndef SPRITES_H
 #define SPRITES_H
 
-/* Eight-byte VDP sprite attribute-table record. */
+/* Sequence command bytes, compared through the caller's existing byte view. */
+#define ANIMATION_HOLD 254
+#define ANIMATION_LOOP 255
+#define ANIMATION_FRAME_MASK 127
+
+/* Eight-byte VDP sprite attribute-table record, populated by the renderer. */
 struct hardware_sprite {
-    short y;
-    unsigned char size, link;
-    unsigned short tile;
-    short x;
+    short y;                         /* 00: hardware Y plus 128 bias; sprite positioning writes. */
+    unsigned char size, link;         /* 02/03: VDP size and next handle, 0 terminates; renderer writes. */
+    unsigned short tile;             /* 04: VDP tile/flip/palette/priority word; renderer writes. */
+    short x;                         /* 06: hardware X plus 128 bias; sprite positioning writes. */
 };
 
-/* Ten-byte ROM sprite piece, including action icons and transition parts.
- * format remains char because the transition uploader tests its high bit
- * with a negative comparison. The data pointer is at byte 06. */
+/* Ten-byte ROM sprite piece; signed format preserves the compression high-bit test. */
 struct render_piece {
-    unsigned char width, height;
-    char x, y, flipped_x, format;
-    char *data;
+    unsigned char width, height;     /* 00/01: 8x8 tile dimensions; ROM-authored. */
+    char x, y, flipped_x, format;     /* 02..05: pixel offsets and compression/palette flags; ROM-authored. */
+    char *data;                       /* 06: packed/raw tile stream; ROM-authored. */
 };
 
-/* Exact four-byte metasprite prefix. Storage continues with count ten-byte
- * render_piece records, beginning at (struct render_piece *)(frame + 1).
- * There is no common fixed piece count, so this prefix is not an array stride
- * for complete frames and deliberately has no speculative pieces[12] tail. */
-/* Bytes 01/02 multiply entity velocity in camera and movement callbacks. */
+/* Four-byte prefix followed by count ten-byte pieces, not a fixed-array stride. */
 struct render_frame {
-    unsigned char count;
-    char motion_x, motion_y, reusable;
+    unsigned char count;             /* 00: hardware-piece count; ROM-authored (runtime text also writes). */
+    char motion_x, motion_y, reusable;/* 01..03: velocity multipliers and tile-reuse flag; ROM-authored. */
 };
 
-/* Eight-byte sequence/frame-table pair; distinct from timed_animation. */
+/* Eight-byte sequence/frame-table pair, distinct from timed_animation. */
 struct animation_descriptor {
-    char *sequence;
-    struct render_frame **frames;
+    char *sequence;                  /* 00: animation bytecode stream; ROM-authored. */
+    struct render_frame **frames;    /* 04: metasprite-pointer table; ROM-authored. */
 };
 
-/* Ten-byte descriptor. Byte 09 is used as a Y offset by elevator parts;
- * player and effect consumers do not read that byte. */
+/* Ten-byte descriptor; elevator parts also consume the final signed Y offset. */
 struct timed_animation {
-    char *sequence;
-    struct render_frame **frames;
-    char period, y_offset;
+    char *sequence;                  /* 00: animation bytecode stream; ROM-authored. */
+    struct render_frame **frames;    /* 04: metasprite-pointer table; ROM-authored. */
+    char period, y_offset;           /* 08/09: ticks per frame and pixel Y offset; ROM-authored. */
 };
 
-/* Eighteen-byte Funkatron scene descriptor, followed separately by placement
- * records. These are external ROM interfaces even though one C unit uses them. */
+/* Eighteen-byte Funkatron descriptor, followed separately by placement records. */
 struct scene_descriptor {
-    struct render_frame **frames;
-    char *idle_sequence, *interaction_sequence;
-    char frame_phase;
-    unsigned char width, height;
-    char tile_count, sprite_count, reserved_11;
+    struct render_frame **frames;    /* 00: scene metasprite-pointer table; ROM-authored. */
+    char *idle_sequence, *interaction_sequence; /* 04/08: idle and contact bytecode; ROM-authored. */
+    char frame_phase;                /* 0c: ticks per animation frame; ROM-authored. */
+    unsigned char width, height;     /* 0d/0e: entity bounds in pixels; ROM-authored. */
+    char tile_count, sprite_count, unused; /* 0f..11: tile/piece reservations, then unused byte; ROM-authored. */
 };
 
-/* Six-byte placement record; a zero x separates descriptor groups. */
+/* Six-byte placement; zero X separates descriptor groups. */
 struct scene_placement {
-    short x, y, interaction;
+    short x, y, interaction;         /* 00/02/04: world pixels and dialogue ID, 0 absent; ROM-authored. */
 };
 
-/* Two-byte animation record: frame selection then FE hold/stop command. */
+/* Two-byte frame selection followed by the FE hold command. */
 struct held_frame2 {
-    char frame, hold;
+    char frame, hold;                /* 00/01: frame selector and hold byte; ROM-authored. */
 };
 
 #endif

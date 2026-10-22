@@ -1,3 +1,6 @@
+#include "player_animation.h"
+#include "player_animation_groups.h"
+#include "present_types.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "assets_audio.h"
@@ -21,49 +24,49 @@ struct earthling_state *earthling;
     struct object_state *player;
 
     player = &gPlayerInfo[player_number];
-    if (gPlayer1Powerup[player_number] != 1 &&
+    if (gPlayer1Powerup[player_number] != PRESENT_SPRING_SHOES &&
         abs(player->y - (earthling->y - 4)) < 5) {
-        if (player->sprite_state == 11 && earthling->x - player->x > 34) {
-            sprite = 31;
+        if (player->sprite_state == PLAYER_ANIM_WALK_RIGHT && earthling->x - player->x > 34) {
+            sprite = PLAYER_ANIM_JUMP_WINDUP_RIGHT;
             TOEJAM_JUMP_COUNTER[player_number] = 0;
-        } else if (player->sprite_state == 10 && player->x - earthling->x > 34) {
-            sprite = 30;
+        } else if (player->sprite_state == PLAYER_ANIM_WALK_LEFT && player->x - earthling->x > 34) {
+            sprite = PLAYER_ANIM_JUMP_WINDUP_LEFT;
             TOEJAM_JUMP_COUNTER[player_number] = 0;
-        } else if (player->flags_52 & 0x80) {
+        } else if (player->animation_group_mask & PLAYER_GROUP_JUMP_WINDUP) {
             if (++TOEJAM_JUMP_COUNTER[player_number] > 4) {
                 sprite = player->sprite_state + 4;
-                gPlayerInfo[earthling->object].flags_4d &= ~1;
+                gPlayerInfo[earthling->object].behavior_flags &= ~1;
                 player->height = 1;
             }
-        } else if (player->flags_52 & 0x100) {
+        } else if (player->animation_group_mask & PLAYER_GROUP_JUMP_TAKEOFF) {
             if (!player->frame_duration) {
                 StopPlayer(player);
-                gPlayerInfo[earthling->object].flags_4d |= 1;
+                gPlayerInfo[earthling->object].behavior_flags |= ENTITY_COLLIDABLE;
                 player->x = earthling->x;
                 player->y = earthling->y;
                 player->height = 35;
                 sprite = player->sprite_state + 4;
                 player->acceleration_height = -64;
             }
-        } else if (player->flags_52 & 0x200) {
+        } else if (player->animation_group_mask & PLAYER_GROUP_JUMP_DESCEND) {
             if (player->height < 22) {
                 StopPlayer(player);
                 player->height = 22;
-                player->draw_flags &= ~64;
+                player->draw_flags &= ~ENTITY_SHADOW;
                 sprite = player->sprite_state + 4;
                 PlaySoundEffect((long)Sfx_Splash, 50, 0);
             }
-        } else if (player->flags_52 & 0x400) {
+        } else if (player->animation_group_mask & PLAYER_GROUP_JUMP_SPLASH) {
             if (!player->frame_duration) {
-                sprite = 119;
+                sprite = PLAYER_ANIM_HOT_TUB;
                 player->height = 0;
                 TOEJAM_JUMP_COUNTER[player_number] = 0;
             }
-        } else if (player->sprite_state == 119) {
+        } else if (player->sprite_state == PLAYER_ANIM_HOT_TUB) {
             if (!player_number) {
-                if (P1_PROCESSED_INPUT[0] & 4) {
-                    sprite = 120;
-                    player->flags_4d |= 32;
+                if (P1_PROCESSED_INPUT[PLAYER_TOEJAM] & 4) {
+                    sprite = PLAYER_ANIM_HOT_TUB_EXIT;
+                    player->behavior_flags |= ENTITY_MASK_PIXELS;
                 } else if (!(GetRandomNumber() & 31)) {
                     player->x -= 20;
                     GenerateSpeech(0, "chat", 0);
@@ -74,15 +77,15 @@ struct earthling_state *earthling;
                     else
                         GenerateSpeech(0, "titter", 1);
                 }
-            } else if (player_number == 1) {
-                if (P1_PROCESSED_INPUT[1] & 8) {
-                    sprite = 120;
-                    player->flags_4d |= 32;
+            } else if (player_number == PLAYER_EARL) {
+                if (P1_PROCESSED_INPUT[PLAYER_EARL] & 8) {
+                    sprite = PLAYER_ANIM_HOT_TUB_EXIT;
+                    player->behavior_flags |= ENTITY_MASK_PIXELS;
                 } else if (!(GetRandomNumber() & 31)) {
                     player->x += 20;
                     GenerateSpeech(1, "chat", 0);
                     player->x -= 20;
-                } else if (gPlayerInfo[0].sprite_state != 119 &&
+                } else if (gPlayerInfo[PLAYER_TOEJAM].sprite_state != PLAYER_ANIM_HOT_TUB &&
                            !(GetRandomNumber() & 31)) {
                     if (NEXT_RANDOM & 1)
                         GenerateSpeech(1, "giggle", 1);
@@ -92,18 +95,18 @@ struct earthling_state *earthling;
             }
             if (++TOEJAM_JUMP_COUNTER[player_number] > 5)
                 ++TOEJAMS_HEALTH[player_number];
-        } else if (player->sprite_state == 120 && !player->frame_duration) {
+        } else if (player->sprite_state == PLAYER_ANIM_HOT_TUB_EXIT && !player->frame_duration) {
             if (!player_number) {
-                sprite = 23;
+                sprite = PLAYER_ANIM_FALL_RIGHT;
                 player->x -= 55;
                 player->height = 42;
             } else {
-                sprite = 22;
+                sprite = PLAYER_ANIM_FALL_LEFT;
                 player->x += 67;
                 player->height = 39;
             }
-            player->draw_flags |= 64;
-            player->flags_4d &= ~32;
+            player->draw_flags |= ENTITY_SHADOW;
+            player->behavior_flags &= ~ENTITY_MASK_PIXELS;
             player->acceleration_height = -32;
             gPlayerLandingCounterSeed[player_number] = 2;
         }

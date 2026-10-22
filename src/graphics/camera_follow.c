@@ -1,3 +1,4 @@
+#include "player_animation_groups.h"
 #include "entities.h"
 #include "sprites.h"
 #include "graphics_calls.h"
@@ -35,7 +36,7 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
         camera_x = EARL_CAMERA_NEWX;
         camera_y = EARL_CAMERA_NEWY;
     }
-    if (entity->frame_phase && (entity->mode_15 & 3)) {
+    if (entity->frame_phase && (entity->animation_motion_axes & ANIMATION_MOTION_XY)) {
         for (frame_count = 0; ; frame_count++) {
             sequence_byte = entity->sequence[frame_count];
             if ((sequence_byte & 0xf0) == 0xf0)
@@ -49,14 +50,14 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
         velocity_x /= entity->frame_phase * frame_count;
         velocity_y /= entity->frame_phase * frame_count;
     }
-    if ((entity->draw_flags & 24) || ((long)entity->flags_52 & 0x100))
+    if ((entity->draw_flags & (ENTITY_SKIP_PHYSICS | ENTITY_BLOCKED_X)) || ((long)entity->animation_group_mask & PLAYER_GROUP_JUMP_TAKEOFF))
         velocity_x = 0;
-    else if (!(entity->mode_15 & 1) && entity->x > 168 && entity->x < 2512)
+    else if (!(entity->animation_motion_axes & ANIMATION_MOTION_X) && entity->x > 168 && entity->x < 2512)
         velocity_x = entity->velocity_x;
-    if ((entity->draw_flags & 40) || ((long)entity->flags_52 & 0x100) ||
+    if ((entity->draw_flags & (ENTITY_SKIP_PHYSICS | ENTITY_BLOCKED_Y_OR_HEIGHT)) || ((long)entity->animation_group_mask & PLAYER_GROUP_JUMP_TAKEOFF) ||
             entity->sprite_state == 5 || entity->sprite_state == 6)
         velocity_y = 0;
-    else if (!(entity->mode_15 & 2)) {
+    else if (!(entity->animation_motion_axes & ANIMATION_MOTION_Y)) {
         velocity_y = entity->velocity_y;
         if (!TOEJAM_FALL_STATE[player])
             velocity_y -= entity->velocity_height / 2;
@@ -100,26 +101,26 @@ void UpdateCameraFollowing()
 
     camera_x = &TOEJAM_CAMERA_NEWX;
     camera_y = &TOEJAM_CAMERA_NEWY;
-    primary_x = gPlayerInfo[0].x - *camera_x;
-    primary_y = gPlayerInfo[0].y - *camera_y - gPlayerInfo[0].height_pixels / 2;
-    secondary_x = gPlayerInfo[1].x - EARL_CAMERA_NEWX;
-    secondary_y = gPlayerInfo[1].y - EARL_CAMERA_NEWY - gPlayerInfo[1].height_pixels / 2;
-    if (gPlayerInfo[0].height > 0 && ((long)gPlayerInfo[0].flags_52 & 0x04008000)) {
+    primary_x = gPlayerInfo[PLAYER_TOEJAM].x - *camera_x;
+    primary_y = gPlayerInfo[PLAYER_TOEJAM].y - *camera_y - gPlayerInfo[PLAYER_TOEJAM].height_pixels / 2;
+    secondary_x = gPlayerInfo[PLAYER_EARL].x - EARL_CAMERA_NEWX;
+    secondary_y = gPlayerInfo[PLAYER_EARL].y - EARL_CAMERA_NEWY - gPlayerInfo[PLAYER_EARL].height_pixels / 2;
+    if (gPlayerInfo[PLAYER_TOEJAM].height > 0 && ((long)gPlayerInfo[PLAYER_TOEJAM].animation_group_mask & (PLAYER_GROUP_ICARUS_FLY | PLAYER_GROUP_SKATES_AIR))) {
         if (SPLIT_SCREEN)
-            primary_y -= gPlayerInfo[0].height / 2;
-        else if (gPlayerInfo[0].y < gPlayerInfo[1].y)
-            primary_y -= gPlayerInfo[0].height;
+            primary_y -= gPlayerInfo[PLAYER_TOEJAM].height / 2;
+        else if (gPlayerInfo[PLAYER_TOEJAM].y < gPlayerInfo[PLAYER_EARL].y)
+            primary_y -= gPlayerInfo[PLAYER_TOEJAM].height;
     }
-    if (gPlayerInfo[1].height > 0 && ((long)gPlayerInfo[1].flags_52 & 0x04008000)) {
+    if (gPlayerInfo[PLAYER_EARL].height > 0 && ((long)gPlayerInfo[PLAYER_EARL].animation_group_mask & (PLAYER_GROUP_ICARUS_FLY | PLAYER_GROUP_SKATES_AIR))) {
         if (SPLIT_SCREEN)
-            secondary_y -= gPlayerInfo[1].height / 2;
-        else if (gPlayerInfo[1].y < gPlayerInfo[0].y)
-            secondary_y -= gPlayerInfo[1].height;
+            secondary_y -= gPlayerInfo[PLAYER_EARL].height / 2;
+        else if (gPlayerInfo[PLAYER_EARL].y < gPlayerInfo[PLAYER_TOEJAM].y)
+            secondary_y -= gPlayerInfo[PLAYER_EARL].height;
     }
     GetPlayerCameraVelocity(0, &velocity_x[0], &velocity_y[0], primary_x, primary_y);
     GetPlayerCameraVelocity(1, &velocity_x[1], &velocity_y[1], secondary_x, secondary_y);
-    if (!SPLIT_SCREEN && !P1_MENU_OPEN[0] && !HBLANK_FLAG_1 &&
-            gPlayerLives[0] >= 0 && gPlayerLives[1] >= 0) {
+    if (!SPLIT_SCREEN && !P1_MENU_OPEN[PLAYER_TOEJAM] && !HBLANK_FLAG_1 &&
+            gPlayerLives[PLAYER_TOEJAM] >= 0 && gPlayerLives[PLAYER_EARL] >= 0) {
         if (velocity_x[0] || velocity_x[1]) {
             combined_velocity = 0;
             if (velocity_x[0] < 0 && velocity_x[1] < 0) {
@@ -190,7 +191,7 @@ void UpdateCameraFollowing()
         }
         EARL_CAMERA_NEWX = *camera_x;
         EARL_CAMERA_NEWY = *camera_y;
-    } else if (gPlayerLives[0] >= 0) {
+    } else if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
         if (velocity_x[0]) {
             gCamera1FollowXFixed += velocity_x[0];
             target = gCamera1FollowXFixed >> 8;

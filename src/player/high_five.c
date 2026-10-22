@@ -1,3 +1,4 @@
+#include "player_animation.h"
 #include "entities.h"
 #include "assets_audio.h"
 #include "audio_calls.h"
@@ -22,7 +23,7 @@ short next_x, next_y;
     register short cell_x;
     unsigned char tile;
 
-    if (!state->entity_number)
+    if (!state->entity_index)
         nearby_land = &LAND_NEAR_TOEJAM[0][0];
     else
         nearby_land = &LAND_NEAR_EARL[0][0];
@@ -36,8 +37,8 @@ short next_x, next_y;
     if (tile >= 0x80) {
         state->velocity_height = 512;
         state->acceleration_height = -37;
-        state->draw_flags |= 0x40;
-        SetSprite(state, (char)((state->sprite_state & 3) + 112));
+        state->draw_flags |= ENTITY_SHADOW;
+        SetSprite(state, (char)((state->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_LEAP_UP));
         return 1;
     }
     if (!gPcmEffectCooldownTicks) {
@@ -60,13 +61,13 @@ void PlayerUpdateHealthSharingClap()
     struct object_state *toejam, *earl;
     short average_health, separation_y, separation_x;
 
-    toejam = &gPlayerInfo[0];
+    toejam = &gPlayerInfo[PLAYER_TOEJAM];
     earl = &gEarlPositionX;
     if (toejam->level != earl->level)
         return;
     if ((toejam->sprite_state & 0xfe) == 90) {
         if (!toejam->frame_duration)
-            SetSprite(toejam, 0);
+            SetSprite(toejam, PLAYER_ANIM_IDLE);
         else if (toejam->frame == 2) {
             PlaySoundEffect((long)Sfx_JamClap, 95, 1);
             ++toejam->frame;
@@ -74,19 +75,19 @@ void PlayerUpdateHealthSharingClap()
     }
     if ((earl->sprite_state & 0xfe) == 90) {
         if (!earl->frame_duration) {
-            SetSprite(earl, 0);
-            average_health = (TOEJAMS_HEALTH[0] + TOEJAMS_HEALTH[1] + 1) >> 1;
+            SetSprite(earl, PLAYER_ANIM_IDLE);
+            average_health = (TOEJAMS_HEALTH[PLAYER_TOEJAM] + TOEJAMS_HEALTH[PLAYER_EARL] + 1) >> 1;
             /* ORIGINAL BUG: These branches do not cap the compared player's
              * health to PlayerGetMaximumHealth's result ([INFERENCE] its health limit). */
             if (average_health > PlayerGetMaximumHealth(0)) {
-                TOEJAMS_HEALTH[0] = average_health;
-                TOEJAMS_HEALTH[1] = (average_health << 1) - PlayerGetMaximumHealth(0);
+                TOEJAMS_HEALTH[PLAYER_TOEJAM] = average_health;
+                TOEJAMS_HEALTH[PLAYER_EARL] = (average_health << 1) - PlayerGetMaximumHealth(0);
             } else if (average_health > PlayerGetMaximumHealth(1)) {
-                TOEJAMS_HEALTH[1] = average_health;
-                TOEJAMS_HEALTH[0] = (average_health << 1) - PlayerGetMaximumHealth(1);
+                TOEJAMS_HEALTH[PLAYER_EARL] = average_health;
+                TOEJAMS_HEALTH[PLAYER_TOEJAM] = (average_health << 1) - PlayerGetMaximumHealth(1);
             } else {
-                TOEJAMS_HEALTH[0] = average_health;
-                TOEJAMS_HEALTH[1] = average_health;
+                TOEJAMS_HEALTH[PLAYER_TOEJAM] = average_health;
+                TOEJAMS_HEALTH[PLAYER_EARL] = average_health;
             }
         } else if (earl->frame == 2)
             ++earl->frame;
@@ -96,21 +97,21 @@ void PlayerUpdateHealthSharingClap()
     if (separation_y < 0 || separation_y > 6)
         return;
     separation_x = earl->x - toejam->x;
-    if (toejam->sprite_state == 11 && earl->sprite_state == 10) {
+    if (toejam->sprite_state == PLAYER_ANIM_WALK_RIGHT && earl->sprite_state == PLAYER_ANIM_WALK_LEFT) {
         if (separation_x > 0 && separation_x < 25) {
-            SetSprite(toejam, 91);
+            SetSprite(toejam, PLAYER_ANIM_HIGH_FIVE_RIGHT);
             toejam->x = earl->x - 23;
             toejam->y = earl->y - 3;
-            SetSprite(earl, 90);
+            SetSprite(earl, PLAYER_ANIM_HIGH_FIVE_LEFT);
             toejam->height = 0;
             earl->height = 0;
         }
-    } else if (earl->sprite_state == 11 && toejam->sprite_state == 10 &&
+    } else if (earl->sprite_state == PLAYER_ANIM_WALK_RIGHT && toejam->sprite_state == PLAYER_ANIM_WALK_LEFT &&
                separation_x < 0 && separation_x > -25) {
-        SetSprite(toejam, 90);
+        SetSprite(toejam, PLAYER_ANIM_HIGH_FIVE_LEFT);
         toejam->x = earl->x + 23;
         toejam->y = earl->y - 3;
-        SetSprite(earl, 91);
+        SetSprite(earl, PLAYER_ANIM_HIGH_FIVE_RIGHT);
         toejam->height = 0;
         earl->height = 0;
     }

@@ -1,3 +1,5 @@
+#include "present_types.h"
+#include "entities.h"
 #include "sprites.h"
 #include "hardware.h"
 #include "assets_palettes.h"
@@ -21,7 +23,7 @@ short player_number;
     short sprite_number, tile_number;
     unsigned short attributes;
 
-    if (player_number == 0) {
+    if (player_number == PLAYER_TOEJAM) {
         sprite_number = 11;
         tile_number = 0x7e1;
         level_number = gToejamLevel;
@@ -51,7 +53,7 @@ short player_number;
 {
     short sprite_number, x, tens_digit, y;
 
-    if (player_number == 0) {
+    if (player_number == PLAYER_TOEJAM) {
         sprite_number = 11;
         tens_digit = gToejamLevel / 10;
     } else {
@@ -62,19 +64,19 @@ short player_number;
         y = 1;
         x = 1;
     } else if (P1_MENU_OPEN[player_number]) {
-        if (player_number == 0)
+        if (player_number == PLAYER_TOEJAM)
             y = 218;
         else
             y = 321;
         x = 348;
     } else if (SPLIT_SCREEN || P1_MENU_OPEN[player_number ^ 1]) {
-        if (player_number == 0)
+        if (player_number == PLAYER_TOEJAM)
             y = 136;
         else
             y = 249;
         x = 410;
     } else {
-        if (gPlayerLives[0] >= 0) {
+        if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
             gHardwareSpriteTable[13].y = 1;
             gHardwareSpriteTable[14].y = 1;
         }
@@ -100,7 +102,7 @@ short player_number;
     unsigned short attributes;
     struct render_piece *icon;
 
-    if (player_number == 0) {
+    if (player_number == PLAYER_TOEJAM) {
         sprite_number = 21;
         tile_number = 0x7f1;
     } else {
@@ -129,12 +131,12 @@ short player_number;
     short x, icon_number, y;
     struct render_piece *icon;
 
-    if (gPlayer1Powerup[player_number] == -1)
+    if (gPlayer1Powerup[player_number] == PRESENT_NONE)
         icon_number = player_number;
     else
         icon_number = gPlayer1Powerup[player_number] + 2;
     icon = Spr_ActionIcons[icon_number];
-    if (player_number == 0) {
+    if (player_number == PLAYER_TOEJAM) {
         icon_number = 21;
         y = 218;
     } else {
@@ -149,14 +151,14 @@ short player_number;
     else if (SPLIT_SCREEN || P1_MENU_OPEN[player_number ^ 1]) {
         x = 392;
         y = 1;
-        if (gPlayer1Powerup[player_number] != -1) {
-            if (player_number == 0)
+        if (gPlayer1Powerup[player_number] != PRESENT_NONE) {
+            if (player_number == PLAYER_TOEJAM)
                 y = 136;
             else
                 y = 249;
         }
     } else {
-        if (player_number == 0)
+        if (player_number == PLAYER_TOEJAM)
             x = 136;
         else
             x = 306;
@@ -172,7 +174,7 @@ short player_number;
 {
     int maximum_health;
 
-    if (player_number == 0)
+    if (player_number == PLAYER_TOEJAM)
         maximum_health = 23;
     else
         maximum_health = 31;

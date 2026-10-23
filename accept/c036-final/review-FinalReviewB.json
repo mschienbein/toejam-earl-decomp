@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c036-final",
+ "prepare_sha256": "940b9f66fa53ee1d2078c8b11afe64a8d9ddfe72cd8b39fb32dfb21ea09c5d8f",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-23T02:40:15Z",
+ "review_file": "delta2-review.json",
+ "review_sha256": "36eabec92643378270fa12393a18b215f39f1eaed22fec6f634c651ff7ce2c8d",
+ "reviewer": "FinalReviewB",
+ "verdict": "FAIL"
+}

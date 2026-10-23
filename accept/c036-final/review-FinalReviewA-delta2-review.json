@@ -1,0 +1,100 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "FinalReviewA",
+  "checkpoint": "c036-final",
+  "prepared_head": "102015363d417c8d12182df8e4bf8788716cd0c6",
+  "reviewed_current_head": "cd26cc78458f64fca4b5348378d74b303a335319",
+  "sealed": true,
+  "scope": "Criteria 1, 2 and 4; independent fresh builds, c036 prepare consistency, full suite, denominator and ROM-backed history audit; continuity of D1/D2 integration gates. Candidate acceptance, not a claim of already-completed finalization or publication.",
+  "head_explanation": "Current HEAD adds only five immutable c035 acceptance records after the prepared commit. All 249 build/suite inputs equal c036 prepare. No other review was opened. All reviewer writes remain under this reviewer directory; no source, acceptance ledger, original Git state or remote was changed.",
+  "prior_findings": {
+    "A1": "Closed under R012: the six named extracted FMPatchAuxiliary bytes retain their reviewed unreferenced classification and separate progress accounting.",
+    "A2": "Closed under R012: matched C source closes the 43 source-emitted text units; extracted assets remain checks.",
+    "D3": "Closed as an open review finding: DATA/REVISIONS now state 2519 identical data units, 1642 pointer-only units and the 424/536-byte tail fill; DATA, README and RESUME disclose the R007 Z80-source and R012 matched-C-literal routes.",
+    "remaining_open_items": ["D1", "D2"]
+  },
+  "criteria": [
+    {
+      "criterion": "1. Complete function source coverage, positive non-C classification and zero generated assembly/raw words",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "observed": "Each revision still contains 645 functions: 598 C, 36 handwritten_asm, 6 runtime_helper and 5 R011 not_reproducible_c. All non-C entries have high-confidence evidence and are built from src/asm; the three fragments are source-built too. Candidate C names, addresses, source paths and extents match the 598 existing ledger identities, without withdrawal or duplicate coverage. All four new fresh receipts have 108 C units and 16 68000 assembly units, with zero generated function units, fragment units, instructions and raw words. The only ledger qualification is D1: prepared source hashes have not yet been rebound by finalization.",
+      "evidence": [
+        "delta2/evidence/closure.json",
+        "delta2/evidence/builds.json",
+        "delta2/evidence/delta-inputs.json"
+      ],
+      "qualifications": ["D1"]
+    },
+    {
+      "criterion": "2. Byte-identical pinned images and complete named classified data/source closure under R007/R012",
+      "result": "PASS",
+      "observed": "I independently made two fresh full builds of each revision. All four PASS with 1048576-byte images, identical across repeats: REV 02 SHA-256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV 00 SHA-256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228. Fresh compiled-unit lists exactly equal the c036 prepared lists. Each 4163-unit data manifest validates against the catalogue and all assets extract/pack exactly. All 4120 actual inclusions per retail build are named, unsliced and target their packed or assembled units; the remaining 43 units are C-owned text totaling 2330 bytes. R012 explicitly closes those literals and the six reviewed unreferenced bytes. Driver and bootstrap still assemble from src/z80; no anonymous baserom inclusion or source binary escape was found.",
+      "evidence": [
+        "delta2/evidence/builds.json",
+        "delta2/evidence/closure.json",
+        "delta2/evidence/prepare.json",
+        "delta2/evidence/delta-inputs.json"
+      ]
+    },
+    {
+      "criterion": "4. Same-source REV 00/REV 02 with exactly the eight documented logic differences",
+      "result": "PASS",
+      "observed": "Both revisions select identical source units and options. Current source inspection again finds exactly 13 REVISION directives across the eight documented functions/files; no new revision site was introduced by the 10-file symbolic-constant patch. The ROMs, config/catalogue/classification/correspondence/data manifests, decoder and mapper remain unchanged from the prior independent complete comparison, and fresh c036 builds equal those pinned images. That comparison remains 223 byte-identical code entries, 417 address-only and 8 logic differences, with 112 bytes of code growth. Data differences remain 2519 identical units, 1642 pointer-only units, one header and one uniform tail-fill unit. No new logic/content difference is present.",
+      "evidence": [
+        "delta2/evidence/delta-inputs.json",
+        "delta2/evidence/builds.json",
+        "evidence/revisions-detailed.json",
+        "evidence/data-revisions.json"
+      ]
+    },
+    {
+      "criterion": "Supporting acceptance gates and confirmation that only D1/D2 remain open",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "observed": "c036 prepare is PASS and consistent: all 249 current input hashes, source manifests, four stored image digests and canonical receipt digests agree; all new fresh C/assembly unit lists equal prepare. The full unfiltered suite passes all 191 tests with zero failures/errors/skips. Denominator r12 verifies. tools/audit_public.py --history passes with both ROMs indexed, 1712 unique blobs, 161 trees, 424 tracked worktree files and zero findings. Current public main remains 2f0f248eac552a4cdf47ee041694c988be9f1589 with successful progress run 39878709724. All four freshly read C-code/function percentage badges show 100.00%. Both current-tree progress reports correctly exit 1 on stale accepted source hashes pending finalization. D3's substantive data-summary/route corrections are present; no additional open item was found in this assigned delta scope.",
+      "evidence": [
+        "delta2/evidence/scope.json",
+        "delta2/evidence/prepare.json",
+        "delta2/evidence/execution.json",
+        "delta2/evidence/suite.json",
+        "delta2/evidence/suite.log",
+        "delta2/evidence/denominator.log",
+        "delta2/evidence/audit-history.log",
+        "delta2/evidence/public-main.log",
+        "delta2/evidence/public-main-ci.log",
+        "delta2/evidence/bytematch.json"
+      ],
+      "qualifications": ["D1", "D2"]
+    }
+  ],
+  "findings": [
+    {
+      "id": "D1",
+      "severity": "info",
+      "blocking_candidate_acceptance": false,
+      "requires_integrator_completion": true,
+      "title": "Finalize must rebind prepared source hashes before the final release claim",
+      "observed": "The unchanged matches ledger has the correct 598 C identities per revision, but 470 source-hash records per revision differ from the prepared candidate. All candidate identities, paths, extents and total C-byte counts remain correct: 174344 REV 02 and 174232 REV 00. Both normal local progress-report commands stop at the stale ResetVDP binding. This is the expected prepare-before-finalize state, not lost C coverage; tools/accept.py:239-257 rebinds changed records during normal finalization.",
+      "disposition": "Complete the passing-review-to-finalize transaction, then require current ledger/progress success. This review did not mutate the ledger or run finalize.",
+      "evidence": [
+        "delta2/evidence/delta-inputs.json",
+        "delta2/evidence/closure.json",
+        "delta2/evidence/progress-rev02.log",
+        "delta2/evidence/progress-rev00.log"
+      ]
+    },
+    {
+      "id": "D2",
+      "severity": "info",
+      "blocking_candidate_acceptance": false,
+      "requires_integrator_completion": true,
+      "title": "Post-finalization publication, CI and ByteMatch ingestion are still the release gate",
+      "observed": "Public main is still 2f0f248eac552a4cdf47ee041694c988be9f1589, not the c036 prepared/current heads. Its progress run 39878709724 succeeds, and the current four C-code/function badges show 100.00%. Badge SVGs do not name their source commit. A finalized/pushed c036 commit and its CI/ByteMatch ingestion have not been observed.",
+      "disposition": "Publish the finalized checkpoint and rebound ledger, then observe the resulting CI and ByteMatch state before calling final acceptance publicly complete. Candidate PASS_WITH_QUALIFICATIONS is not evidence that those future actions already passed.",
+      "evidence": [
+        "delta2/evidence/public-main.log",
+        "delta2/evidence/public-main-ci.log",
+        "delta2/evidence/bytematch.json"
+      ]
+    }
+  ]
+}

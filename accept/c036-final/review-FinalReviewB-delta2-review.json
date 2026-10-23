@@ -1,0 +1,149 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "FinalReviewB",
+  "checkpoint": "c036-final",
+  "prepared_commit": "102015363d417c8d12182df8e4bf8788716cd0c6",
+  "reviewed_head": "cd26cc78458f64fca4b5348378d74b303a335319",
+  "prepare_sha256": "940b9f66fa53ee1d2078c8b11afe64a8d9ddfe72cd8b39fb32dfb21ea09c5d8f",
+  "sealed": true,
+  "sealed_utc": "2026-10-23T02:39:23.014292Z",
+  "sealed_before_other_final_review": true,
+  "criteria": [
+    {
+      "criterion": "3.1 Names and named files/types",
+      "result": "PASS",
+      "detail": "Fresh source/include address-style-name/raw OBJ-name/anonymous-record scans are empty. Existing sampled semantic names and the typed frame/ship/elevator cutovers remain intact.",
+      "evidence": [
+        "evidence/delta2/anchor.json",
+        "evidence/delta2/hunt.json"
+      ]
+    },
+    {
+      "criterion": "3.2 Structs, offsets and semantic constants",
+      "result": "FAIL",
+      "detail": "All reported D001 sites and eight related swept sites now use their correct owning constants. No old raw-record family reappeared. The fresh hunt still finds seven additional known-identity families as numeric tokens, precisely documented in E001.",
+      "evidence": [
+        "evidence/delta2/resolutions.json",
+        "evidence/delta2/hunt.json"
+      ]
+    },
+    {
+      "criterion": "3.3 Subsystem guides, source readability and preserved bugs",
+      "result": "FAIL",
+      "detail": "The player guide matches the new named facing/extra-life/fixed-world switch spellings, and no original-bug annotation was removed. Prior source/guide samples carry forward through inspected deltas. E001 remains a concrete gap against complete semantic-readability closure, not an inaccurate new guide claim.",
+      "evidence": [
+        "evidence/delta2/anchor.json",
+        "evidence/delta2/hunt.json"
+      ]
+    },
+    {
+      "criterion": "3.4 Locally marked and accepted compiler qualifications",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "detail": "The second patch adds no new coaxing operation or undocumented source-shape constraint. The inventory remains97 C markers plus one shared header,165 ledger entries,144 disclosed constraints/source models and21 observation-only forms. No accepting-review reference is missing; the fresh hunt found no new confirmed unmarked artificial operation. Existing constraints remain accepted qualifications, not claims of historical source or universal necessity.",
+      "evidence": [
+        "evidence/delta2/qualifications.json",
+        "evidence/delta2/hunt.json"
+      ]
+    },
+    {
+      "criterion": "5 STATUS/RESUME/README documentation",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "detail": "D002 is resolved: source-emitted Z80/text routes, R012 unreferenced closure and typed-unit badge coverage are explicit. Counts and both-dump instructions agree; all40 main-document local links resolve. C033 is currently truthful last-finalized provenance. Main announced citation-only final-checkpoint updates after acceptance; those future edits are not pre-certified. Optional-only readability wording remains contingent on resolving E001, the source criterion finding.",
+      "evidence": [
+        "evidence/delta2/documents.json"
+      ]
+    }
+  ],
+  "resolved_findings": [
+    {
+      "id": "D001",
+      "result": "REPORTED_FAMILIES_RESOLVED",
+      "detail": "All five reported families have their owning constants. Full diff inspection also confirms the eight swept uses and preserves the original values and operators. The40 literal-name replacements introduce no new source-shape operation; two consumers add only the required existing headers.",
+      "source": [
+        "src/elevator/elevator_transitions.c:102,104,211,215",
+        "src/ui/inventory.c:812,816",
+        "src/player/rocket_motion.c:27-34,92-125",
+        "src/player/ability_helpers.c:43-55,71",
+        "src/earthlings/spawning_and_banks.c:501-502,786",
+        "src/player/active_present_falling_and_respawn.c:567,662,673",
+        "src/player/open_rocket_skates.c:16",
+        "src/player/edge_hop_and_clap.c:38",
+        "src/presents/projectile_effects.c:170",
+        "src/presents/present_effects.c:443"
+      ]
+    },
+    {
+      "id": "D002",
+      "result": "RESOLVED",
+      "detail": "README and RESUME now distinguish extracted assets from the Z80 source and43 matched-C string literals. README describes the badge as typed-unit coverage rather than only asset production. The six unreferenced bytes remain explicitly excluded from typed-byte credit and accepted as closed under R012.",
+      "source": [
+        "README.md:14-24,31-32",
+        "docs/RESUME.md:6-9"
+      ],
+      "metadata": {
+        "rev02": {
+          "C_functions": 598,
+          "C_bytes": 174344,
+          "catalogued_functions": 645,
+          "fragments": 3,
+          "inline_C_text_units": 43,
+          "inline_C_text_bytes": 2330,
+          "unreferenced_bytes": 6,
+          "z80_source_bytes": 1332
+        },
+        "rev00": {
+          "C_functions": 598,
+          "C_bytes": 174232,
+          "catalogued_functions": 645,
+          "fragments": 3,
+          "inline_C_text_units": 43,
+          "inline_C_text_bytes": 2330,
+          "unreferenced_bytes": 6,
+          "z80_source_bytes": 1332
+        }
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "E001",
+      "severity": "medium",
+      "blocking": true,
+      "criterion": "3.2 and3.3",
+      "title": "Additional established domain identities still use numeric spellings",
+      "observed": "The five D001 families were correctly repaired, but the requested fresh hunt identifies seven additional directly evidenced families. These include terrain VOID/WALKABLE thresholds, Earthling bank kind assignments, first-level gift exclusions, ground-item and buck classes, the HUD promotion identity, selected/mystery inventory identities and controller-A relatching. Each has an existing owning-domain constant and an actual semantic consumer, not merely a coincident number.",
+      "locations": [
+        "src/presents/projectile_effects.c:159-160",
+        "src/earthlings/spawning_and_banks.c:820",
+        "src/earthlings/terrain_movement.c:98,133",
+        "src/player/active_present_falling_and_respawn.c:102-103",
+        "src/player/earthling_damage_reactions.c:308",
+        "src/player/entity_motion_terrain.c:244-246",
+        "src/earthlings/spawning_and_banks.c:225,227,230,242",
+        "src/presents/level_item_setup.c:365-370",
+        "src/presents/level_item_setup.c:374-377",
+        "src/ui/hud.c:758-759",
+        "src/ui/inventory.c:443,555",
+        "src/earthlings/nice_earthling_touch.c:88-89",
+        "src/ui/inventory.c:442,513-514,524-525"
+      ],
+      "required_fix": "Apply the exact existing constants listed in evidence/delta2/hunt.json, preserving comparison strictness, original branches and behavior. In particular, do not turn terrain<80 into<=80, do not repair the original unreachable population branch, and do not replace unrelated numeric geometry or private animation indices. This is the specified no-unexplained-semantic-magic criterion, not a request for new validation, abstraction or gameplay changes.",
+      "evidence": [
+        "evidence/delta2/hunt.json"
+      ]
+    }
+  ],
+  "blocking_findings": 1,
+  "verification_exercised": [
+    "Read the complete second source diff: ten C files,40 literal-to-existing-constant replacements and two needed header includes; inspected the documentation delta.",
+    "Fresh source/include hunts for address identities,raw record accesses,known semantic literal consumers,casts,unused state,self-assignment,sizeof-address,zero identities and compiler-shape prose.",
+    "Checked all249 prepared input hashes and198 source/include files against c036 preparation, with no mismatch or observed source/document movement during the review.",
+    "Recomputed source/credit/catalogue counts,inline-C-text unit coverage,qualification inventory and40 main-document local-link targets."
+  ],
+  "limitations": [
+    "No compiler,matcher,full build,test suite,emulator/gameplay,public-history audit or CI/ByteMatch job was run by this scoped reviewer. Prepared PASS/suite and author matcher records were inspected rather than represented as independently exercised gates.",
+    "The baseline50-name,30-function,30-guide-claim and12-original-bug samples carry forward only through separately reviewed changes; this delta is not a second full execution or wholly new sample.",
+    "The fresh hunt is finite. Unknown per-kind artwork/animation identities and coincident values are not given invented semantics; unobserved historical intent remains [INFERENCE].",
+    "No other final-review artifact was read before sealing. No tracked file,Git state,acceptance record or peer artifact was modified; new evidence is confined to this reviewer root and contains no ROM bytes or encoded ROM payloads."
+  ]
+}

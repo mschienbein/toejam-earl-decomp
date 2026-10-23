@@ -1,0 +1,173 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "FinalReviewB",
+  "checkpoint": "c035-final",
+  "prepared_commit": "e9594e6cfcce9bbf2c46105b23925c6c43999863",
+  "reviewed_documentation_commit": "3929a9b39de441fe733f2d8bf1ab62bd5058b318",
+  "prepare_sha256": "1e90a789d9dd9cf200d44a2348f40bcb5b7e18c9437ffe6e9d1a0808f979ba53",
+  "sealed": true,
+  "sealed_utc": "2026-10-23T02:10:58.662538Z",
+  "sealed_before_other_final_review": true,
+  "criteria": [
+    {
+      "criterion": "3.1 Names and named files/types",
+      "result": "PASS",
+      "detail": "Fresh whole-source/include address-name, raw OBJ-name and anonymous-record searches are empty. No previously sampled canonical function/global name disappeared. New ship/elevator/item names are descriptive and evidence-bounded.",
+      "evidence": [
+        "evidence/delta/anchor.json",
+        "evidence/delta/resolutions.json",
+        "evidence/delta/hunt.json"
+      ]
+    },
+    {
+      "criterion": "3.2 Structs, offsets and semantic IDs",
+      "result": "FAIL",
+      "detail": "All three F001 raw-record families and the original F002 sites are resolved. The fresh hunt nevertheless finds five concrete known-ID families still expressed as literals: D001. Remaining ABI, pixel-buffer, packed-frequency-array and documented two-record elevator arithmetic were classified rather than indiscriminately flagged.",
+      "evidence": [
+        "evidence/delta/resolutions.json",
+        "evidence/delta/hunt.json"
+      ]
+    },
+    {
+      "criterion": "3.3 Subsystem guides, source readability and preserved bugs",
+      "result": "FAIL",
+      "detail": "Player, ship and elevator guide edits agree with the typed source/protocol changes. Prior samples carry forward subject to separately reviewed deltas, and preserved ORIGINAL BUG comments remain. D001 prevents complete semantic-readability closure; no new guide-accuracy or bug-comment blocker was found.",
+      "evidence": [
+        "evidence/delta/anchor.json",
+        "evidence/delta/resolutions.json",
+        "evidence/delta/hunt.json"
+      ]
+    },
+    {
+      "criterion": "3.4 Locally marked, accepted compiler qualifications",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "detail": "All seven F003 omissions are fixed. The current inventory is97 C markers plus one shared-header marker,165 ledger rows (144 constraints/source models and21 observation-only rows), and no missing accepting-review reference. Fresh suspicious-spelling/prose hunts found no additional confirmed unmarked artificial operation. Retained accepted qualifications remain qualifications, not historical-source or uniqueness claims.",
+      "evidence": [
+        "evidence/delta/qualifications.json"
+      ]
+    },
+    {
+      "criterion": "5 STATUS/RESUME/README and new ruling/count documentation",
+      "result": "FAIL",
+      "detail": "The README import prerequisite is fixed.598/598 C,174344/174232 C bytes,645 functions,three fragments and six unreferenced bytes remain consistent. Fresh private-ROM span comparisons support223 identical code pairs and2519 identical data units; the417/8 code split and1642 other-data differences agree with the source/metadata accounting described in the evidence. R012 is respected, but the main docs still contradict its accepted C-literal producer exception: D002.",
+      "evidence": [
+        "evidence/delta/documents.json",
+        "evidence/delta/anchor.json"
+      ]
+    }
+  ],
+  "resolved_findings": [
+    {
+      "id": "F001",
+      "result": "RESOLVED",
+      "observed": "The player producer and both callbacks use render_frame.motion_x/motion_y; the ship state has named members and all former[0]/[4] consumers are migrated; owner arbitration uses MUSIC_PRIORITY/MUSIC_SELECTED. Fresh searches find none of the reported raw families.",
+      "source": [
+        "src/player/entity_motion_terrain.c:70-72,95,110,314-324",
+        "include/ram_ship.h:7-22",
+        "src/ship/ship_screen_and_collection.c:72-99,626-645",
+        "src/earthlings/spawning_and_banks.c:232-234",
+        "src/asm/sound.s:819,822,825"
+      ]
+    },
+    {
+      "id": "F002",
+      "result": "REPORTED_SITES_RESOLVED; CATEGORY_NOT_CLOSED",
+      "observed": "Reported ghost, sinking-terrain, item-kind and elevator protocol sites use named constants. The item82 name stays conservative; elevator names fit the observed transition roles and retain byte storage. A fresh corpus hunt finds the distinct remaining known-ID families in D001.",
+      "source": [
+        "include/elevator_states.h:4-21",
+        "include/present_types.h:36-42",
+        "src/ui/inventory.c:410-413",
+        "src/presents/level_item_setup.c:284-293",
+        "src/elevator/elevator_transitions.c:81-185,200-266"
+      ]
+    },
+    {
+      "id": "F003",
+      "result": "RESOLVED",
+      "observed": "All seven cited constraints now have the exact marker; the wider sweep labels existing result-width/declaration/lifetime/control-flow constraints. Historical accepting-review provenance remains explicit, and observation-only forms are not promoted into necessity claims.",
+      "rows": [
+        "Q008",
+        "Q016",
+        "Q059",
+        "Q062",
+        "Q120",
+        "Q123",
+        "Q127"
+      ],
+      "source": [
+        "src/cutscenes/title_and_transition.c:315-318",
+        "src/ui/inventory.c:35-37",
+        "src/player/rocket_motion.c:59-63",
+        "src/presents/item_updates.c:298-308",
+        "src/player/earthling_damage_reactions.c:250-257",
+        "src/cutscenes/ending_player_release.c:18-31",
+        "src/cutscenes/cutscene_text.c:14-17"
+      ]
+    },
+    {
+      "id": "F004",
+      "result": "IMPORT_PREREQUISITE_RESOLVED",
+      "observed": "README now imports both retail dumps before their builds, matching RESUME. R012 introduces a separate producer-description consistency issue, D002.",
+      "source": [
+        "README.md:48-55",
+        "docs/RESUME.md:16-19"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "D001",
+      "severity": "medium",
+      "blocking": true,
+      "criterion": "3.2",
+      "title": "Fresh hunt still finds known semantic IDs as raw literals",
+      "locations": [
+        "src/elevator/elevator_transitions.c:102,104,211,215",
+        "src/ui/inventory.c:812,816",
+        "src/player/rocket_motion.c:27-34,92-125",
+        "src/player/ability_helpers.c:38-55",
+        "src/player/ability_helpers.c:58-70",
+        "src/earthlings/spawning_and_banks.c:500-502"
+      ],
+      "observed": "The original F002 locations were repaired, but the category is not closed. Six hide/show operations still use64/~64 instead of ENTITY_HIDDEN; rocket-facing branches use0..3 despite DIRECTION_UP/DOWN/LEFT/RIGHT; fixed-world Earthling switches use23/24/5 despite their existing kind names; the lemonade reward calls OpenSelectedPresent with17 instead of PRESENT_EXTRA_LIFE; and a terrain predicate uses selection0x80 while already naming its peer operand TERRAIN_WATER. These are directly established domain identities, not numeric coordinates/counts or disclosed compiler constraints.",
+      "required_fix": "Use the existing owning-domain constants in these five precisely bounded families, retaining current storage and behavior. Include the relevant existing header where necessary; do not substitute player-facing constants into map-direction bitfields or invent names for unestablished per-kind animation artwork. The optional-only readability completion language is premature while this required naming work remains.",
+      "evidence": [
+        "evidence/delta/hunt.json"
+      ]
+    },
+    {
+      "id": "D002",
+      "severity": "low",
+      "blocking": true,
+      "criterion": "5 documentation",
+      "title": "README and RESUME still claim all data is produced from typed assets, contrary to R012",
+      "locations": [
+        "README.md:14-15,21,29",
+        "docs/RESUME.md:6",
+        "docs/rulings/R012-closure-interpretations.md:13-17",
+        "docs/DATA.md:13-18,72-77",
+        "tools/build.py:375-404"
+      ],
+      "observed": "R012 explicitly accepts43 text units/2330 bytes per revision emitted from matched C string literals, with extracted assets serving as checks. Current DATA.md now explains that accurately, but README still says all data is rebuilt from typed assets and labels the complete other-data row that way; RESUME likewise says all data comes from typed assets. Independent metadata aggregation locates exactly43 text units/2330 bytes inside compiled-source spans, and build placement replaces the covered data units with those compiled units.",
+      "required_fix": "Carry the R007/R012 source-production exceptions into README and RESUME and describe the data-table/badge coverage accurately. A concise assets-or-source qualification or explicit exception and R012 link is sufficient. No reopening of the accepted closure policy, denominator change or implementation rewrite is requested.",
+      "evidence": [
+        "evidence/delta/documents.json"
+      ]
+    }
+  ],
+  "blocking_findings": 2,
+  "verification_exercised": [
+    "Inspected all49 source/include changed-file diffs and the documentation deltas; re-read intervening DATA/REVISIONS edits.",
+    "Fresh whole-corpus address/raw-offset/semantic-ID/compiler-shape hunts and qualification inventory checks.",
+    "Verified all249 prepared build-input hashes, including198 source/include files; no mismatch after documentation-only HEAD movement.",
+    "Independently compared648 paired code spans and4163 paired data units using pinned originals, reporting counts only; checked inline-text ownership metadata.",
+    "Rechecked local links, source/credit/catalogue counts and historical accepting review/finalize records."
+  ],
+  "limitations": [
+    "No compiler, matcher, full build, suite, gameplay/emulator, public-history auditor or CI/ByteMatch job was run by this scoped reviewer. The prepared PASS/suite record and author matcher report were inspected, not substituted for independently executed gates.",
+    "417 address-only code entries are the complement of223 actual identical pairs and eight explicit REVISION functions; a fresh exhaustive relocation-normalization proof was not run here.",
+    "Finite source hunts do not prove global compiler necessity/uniqueness or absence of every possible artificial spelling.",
+    "No other final-review artifact was read before sealing. R012 was read as explicitly requested governing user policy, including its brief context summary; the other reviewer verdict/evidence was not consulted.",
+    "No tracked file, Git state, acceptance record or peer artifact was changed. All new artifacts are under this reviewer root and contain no ROM bytes or encoded ROM payloads."
+  ]
+}

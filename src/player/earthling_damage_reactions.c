@@ -142,9 +142,9 @@ struct earthling_state *earthling;
 #include "speech.h"
 #include "sprite_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: (unsigned short)GetMapTerrainAtWorldPosition()
+ * retains the observed result-expression width with the shared byte return.
+ * Exact historical spelling remains unknown [INFERENCE]. */
 
 #define NEXT_RANDOM gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
@@ -250,8 +250,9 @@ struct earthling_state *earthling;
     int exclusion_index;
     struct object_state *player;
 
-    /* Keep the promoted exclusion-array index separate from the bounded
-     * object-table index; this reproduces the observed scratch allocation. */
+    /* MATCHING QUALIFICATION: keep the promoted int exclusion_index
+     * separate from the short bounded object-table index. Combining their
+     * lifetimes changes scratch allocation in both revisions. */
     exclusion_index = player_number;
     if (!gPlayerInteractionChoiceActive[exclusion_index] && earthling->state != 3)
         player = &gPlayerInfo[player_number];

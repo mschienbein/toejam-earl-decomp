@@ -451,8 +451,9 @@ char *falling;
                 SetPositionOnNewLevel(2);
             else if (falling[0]) {
                 player = &gPlayerInfo[PLAYER_EARL];
-                /* (long) view of animation_group_mask: the signed 32-bit test reproduces the ROM's D0 mask and allocation;
-                 * the stored field stays unsigned ([INFERENCE] the original spelling is unknown). */
+                /* MATCHING QUALIFICATION: the signed-long animation mask
+                 * views retain D0 mask allocation in both partner tests below.
+                 * Shared storage stays unsigned; historical spelling is unknown [INFERENCE]. */
                 if (gPlayer2TerrainUnderfoot >= TERRAIN_WATER ||
                     ((long)player->animation_group_mask & (long)PLAYER_GROUP_STATIONARY) || player->sprite_state == PLAYER_ANIM_GHOST ||
                     player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST || gPlayer2Lives < 0)
@@ -859,8 +860,8 @@ short player_number;
     }
     player->x = other_player->x;
     player->y = other_player->y;
-    /* (long) view of animation_group_mask: the signed 32-bit test reproduces the ROM's D0 mask and allocation;
-     * the stored field stays unsigned ([INFERENCE] the original spelling is unknown). */
+    /* MATCHING QUALIFICATION: the signed-long animation mask view retains
+     * D0 mask allocation. Storage stays unsigned; historical spelling is unknown [INFERENCE]. */
     if ((long)other_player->animation_group_mask & (long)PLAYER_GROUP_STATIONARY)
         player->y += 10;
     if (!gElevatorDepartureInProgress) {

@@ -1,5 +1,6 @@
 #include "entities.h"
 #include "player.h"
+#include "sprites.h"
 #include "random.h"
 #include "player_animation.h"
 #include "player_animation_groups.h"
@@ -66,9 +67,9 @@ struct movement_destination {
  * stage changes MCC68K's register allocation. The unused long[1] keeps the
  * observed untouched four-byte frame slot; its historical purpose is
  * unknown [INFERENCE]. */
-void PlayerProcessTerrainMotion(player, direction)
+void PlayerProcessTerrainMotion(player, frame)
 short player;
-char *direction;
+struct render_frame *frame;
 {
     short velocity_delta;
     int fraction_output;
@@ -91,7 +92,7 @@ char *direction;
         entity->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST)
         return;
     if (entity->animation_motion_axes & ANIMATION_MOTION_X) {
-        velocity_delta = (short)(entity->velocity_x * direction[1]);
+        velocity_delta = (short)(entity->velocity_x * frame->motion_x);
         fixed_position = (entity->x << 8) + entity->fraction_x + velocity_delta;
         coordinate = (short)(fixed_position >> 8);
         destination.x = coordinate;
@@ -106,7 +107,7 @@ char *direction;
         destination.tile_x = 2;
     }
     if (entity->animation_motion_axes & ANIMATION_MOTION_Y) {
-        velocity_delta = (short)(entity->velocity_y * direction[2]);
+        velocity_delta = (short)(entity->velocity_y * frame->motion_y);
         fixed_position = (entity->y << 8) + entity->fraction_y + velocity_delta;
         fraction = fixed_position & 255;
         destination.fraction_y = (fraction_output = fraction);
@@ -309,16 +310,16 @@ struct object_state *state;
     state->acceleration_height = 0;
 }
 
-/* Apply terrain motion to the first player using the supplied direction byte. */
-void Player1ProcessTerrainMotion(direction)
-char *direction;
+/* Apply the first player's terrain motion using the rendered frame's multipliers. */
+void Player1ProcessTerrainMotion(frame)
+struct render_frame *frame;
 {
-    PlayerProcessTerrainMotion(0, direction);
+    PlayerProcessTerrainMotion(0, frame);
 }
 
-/* Apply terrain motion to the second player using the supplied direction byte. */
-void Player2ProcessTerrainMotion(direction)
-char *direction;
+/* Apply the second player's terrain motion using the rendered frame's multipliers. */
+void Player2ProcessTerrainMotion(frame)
+struct render_frame *frame;
 {
-    PlayerProcessTerrainMotion(1, direction);
+    PlayerProcessTerrainMotion(1, frame);
 }

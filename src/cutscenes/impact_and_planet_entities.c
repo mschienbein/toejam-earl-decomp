@@ -7,9 +7,9 @@
 #include "ram_player.h"
 #include "sprite_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the explicit (int)AllocateEntity() result views
+ * retain the observed call-result width with the shared short declaration.
+ * Exact historical spelling remains unknown [INFERENCE]. */
 
 /* Allocate the rocketship impact object at the supplied position. */
 void IntroCreateRocketshipImpact(x, y)

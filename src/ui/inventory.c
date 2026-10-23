@@ -1,4 +1,5 @@
 #include "present_types.h"
+#include "player_animation.h"
 #include "psg_effects.h"
 #include "entities.h"
 #include "presents.h"
@@ -31,9 +32,9 @@ void ForceTextBackgroundColorToBlack(force_black)
 short force_black;
 {
     short black = 0;
-    /* The observed zero write is MOVE.W, not CLR.W. Keeping a word colour
-     * also avoids a CLR access to the VDP data port. [INFERENCE] This may
-     * be why the original materializes zero in a register. */
+    /* MATCHING QUALIFICATION: materialize zero in the named short black
+     * to retain MOVE.W rather than CLR.W at the VDP data port. Literal-zero
+     * alternatives differ; a hardware rationale is unproved [INFERENCE]. */
 
     VDP_COMMAND = 0xc01e0000L;
     if (force_black)
@@ -408,8 +409,8 @@ void ProcessInventory()
     opening[1] = 0;
     for (player_number = PLAYER_TOEJAM; player_number <= PLAYER_EARL; ++player_number) {
         object = &gPlayerInfo[player_number];
-        if (gPlayerLives[player_number] < 0 || object->sprite_state == 5 ||
-            object->sprite_state == 6)
+        if (gPlayerLives[player_number] < 0 || object->sprite_state == PLAYER_ANIM_GHOST ||
+            object->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST)
             continue;
         if (!(gPlayerPreviousProcessedInput[player_number] & INPUT_BUTTON_B) &&
             (gPlayerProcessedInput[player_number] & INPUT_BUTTON_B)) {

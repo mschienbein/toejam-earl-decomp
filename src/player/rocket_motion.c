@@ -56,9 +56,10 @@ unsigned short terrain;
             sprite = (state->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_FALL_UP;
             gPlayerLandingCounterSeed[player] = 2;
         }
-    } else if (direction != (state->sprite_state & (unsigned long)3))
-        /* The unsigned long mask reproduces the ROM's register order; a plain 3 keeps the size
-         * but swaps scratch registers ([INFERENCE] the original spelling is unknown). */
+    } else if (direction != (state->sprite_state & (unsigned long)DIRECTION_MASK))
+        /* MATCHING QUALIFICATION: the unsigned-long direction mask retains
+         * the observed scratch-register order; a plain int mask keeps the
+         * size but swaps scratch registers. Historical spelling is unknown [INFERENCE]. */
         sprite = (state->sprite_state & PLAYER_ANIM_FAMILY_MASK) + direction;
     if (sprite != -1)
         SetSprite(state, sprite);

@@ -2,6 +2,7 @@
 #include "music_ids.h"
 #include "entities.h"
 #include "elevator.h"
+#include "elevator_states.h"
 #include "audio_calls.h"
 #include "core_calls.h"
 #include "elevator_calls.h"
@@ -12,9 +13,9 @@
 #include "ram_ui.h"
 #include "random.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the (int)GetLevelMusicIndex() result view
+ * retains the observed call-result width with the shared short declaration.
+ * Exact historical spelling remains unknown [INFERENCE]. */
 
 /* Report input or nearby players on this elevator's level, marking nearby
  * players in gPlayerElevatorApproachInputGate before the elevator changes state. */
@@ -35,8 +36,8 @@ char flag;
             } else if ((short)abs(entity->x - elevator->x) < 10) {
                 distance_y = entity->y - elevator->y;
                 if (distance_y < 20 &&
-                    ((elevator->state <= 1 && distance_y >= 10) ||
-                     (elevator->state == 3 && distance_y > 0))) {
+                    ((elevator->state <= ELEVATOR_STATE_CLOSED_READY && distance_y >= 10) ||
+                     (elevator->state == ELEVATOR_STATE_OPEN && distance_y > 0))) {
                     gPlayerElevatorApproachInputGate[player] = 1;
                     occupied = 1;
                 }
@@ -68,7 +69,7 @@ struct elevator_record *elevator;
 }
 
 /* Advance the two departure elevators and keep attached players centered.
- * State values and sounds are observed; their narrative roles are [INFERENCE]. */
+ * State names describe transition roles, not recovered animation artwork. */
 void ProcessElevatorStep1()
 {
     short elevator_number, player, distance_or_frame, distance_y;
@@ -80,13 +81,13 @@ void ProcessElevatorStep1()
         flag = elevator_number * 2 + 1;
         elevator = &gElevatorRecords[elevator_number][0];
         state = elevator->state;
-        if (state == 11)
+        if (state == ELEVATOR_STATE_ABSENT)
             continue;
-        next_state = -1;
-        if (state == 13) {
+        next_state = ELEVATOR_STATE_UNCHANGED;
+        if (state == ELEVATOR_STATE_BLOCKED_BY_ARRIVAL) {
             if (gPrimaryArrivalElevatorLevel != elevator->level + 1 &&
                 gSecondaryArrivalElevatorLevel != elevator->level + 1) {
-                next_state = 10;
+                next_state = ELEVATOR_STATE_REACTIVATING;
                 entity = gPlayerInfo[PLAYER_TOEJAM].level == elevator->level ?
                     &gPlayerInfo[PLAYER_TOEJAM] : &gPlayerInfo[PLAYER_EARL];
                 distance_or_frame = abs(entity->x - elevator->x);
@@ -94,33 +95,33 @@ void ProcessElevatorStep1()
                 if (distance_or_frame < 22 && distance_y < 7)
                     entity->y = elevator->y + 12;
             }
-        } else if (state == 10) {
+        } else if (state == ELEVATOR_STATE_REACTIVATING) {
             if (elevator->entity && !gPlayerInfo[elevator->entity].frame_duration) {
                 if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM]) {
-                    next_state = 1;
+                    next_state = ELEVATOR_STATE_CLOSED_READY;
                     gPlayerInfo[PLAYER_TOEJAM].behavior_flags &= ~64;
                 } else if (flag == gPlayerElevatorFlags[PLAYER_EARL]) {
                     gPlayerInfo[PLAYER_EARL].behavior_flags &= ~64;
-                    next_state = 1;
+                    next_state = ELEVATOR_STATE_CLOSED_READY;
                 } else
-                    next_state = 0;
+                    next_state = ELEVATOR_STATE_CLOSED_EMPTY;
             }
-        } else if (state == 2) {
+        } else if (state == ELEVATOR_STATE_OPENING) {
             if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration)
-                next_state = 3;
-        } else if (state == 4) {
+                next_state = ELEVATOR_STATE_OPEN;
+        } else if (state == ELEVATOR_STATE_CLOSING) {
             if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration) {
                 if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM] || flag == gPlayerElevatorFlags[PLAYER_EARL])
-                    next_state = 1;
+                    next_state = ELEVATOR_STATE_CLOSED_READY;
                 else
-                    next_state = 0;
+                    next_state = ELEVATOR_STATE_CLOSED_EMPTY;
             }
-        } else if (state == 6) {
+        } else if (state == ELEVATOR_STATE_DEPARTURE_START) {
             if (!elevator->entity)
                 continue;
             distance_or_frame = gPlayerInfo[elevator->entity + 2].frame;
             if (!gPlayerInfo[elevator->entity + 2].frame_duration) {
-                next_state = 5;
+                next_state = ELEVATOR_STATE_DEPARTURE_CYCLES;
                 gDepartureElevatorShakeCycles = 5;
                 gDepartureElevatorShakeDelay = 2;
                 PlaySound(PSG_GATED_TONE_SWEEP, AUDIO_PRIORITY_NORMAL);
@@ -131,18 +132,18 @@ void ProcessElevatorStep1()
                 }
             } else if (distance_or_frame < 12 && !((distance_or_frame + 1) & 3))
                 PlaySound(PSG_TONE_PULSE, AUDIO_PRIORITY_NORMAL);
-        } else if (state == 5) {
+        } else if (state == ELEVATOR_STATE_DEPARTURE_CYCLES) {
             if (elevator->entity && ElevatorStepDepartureHeightCycles(elevator)) {
-                next_state = 7;
+                next_state = ELEVATOR_STATE_DEPARTURE_FINISH;
                 PlaySound(PSG_NOISE_SWEEP, 65);
             }
-        } else if (state == 7) {
+        } else if (state == ELEVATOR_STATE_DEPARTURE_FINISH) {
             if (elevator->entity && !gPlayerInfo[elevator->entity].frame_duration) {
                 if (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level &&
                     gPlayerElevatorFlags[PLAYER_TOEJAM] != gPlayerElevatorFlags[PLAYER_EARL])
-                    next_state = 10;
+                    next_state = ELEVATOR_STATE_REACTIVATING;
                 else {
-                    next_state = 11;
+                    next_state = ELEVATOR_STATE_ABSENT;
                     PlaySound(PSG_SILENCE, 98);
                 }
             }
@@ -152,23 +153,23 @@ void ProcessElevatorStep1()
                     gPlayerInfo[PLAYER_TOEJAM].level < gPlayerInfo[PLAYER_EARL].level) ||
                    (flag == gPlayerElevatorFlags[PLAYER_EARL] && !gPlayer2InventoryOpen &&
                     gPlayerInfo[PLAYER_EARL].level < gPlayerInfo[PLAYER_TOEJAM].level)) {
-            if (state == 3)
-                next_state = 4;
-            else if (state == 1) {
+            if (state == ELEVATOR_STATE_OPEN)
+                next_state = ELEVATOR_STATE_CLOSING;
+            else if (state == ELEVATOR_STATE_CLOSED_READY) {
                 gElevatorDepartureInProgress = 1;
-                next_state = 6;
+                next_state = ELEVATOR_STATE_DEPARTURE_START;
                 if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM])
                     gPlayerInfo[PLAYER_TOEJAM].behavior_flags |= ENTITY_HIDDEN;
                 if (flag == gPlayerElevatorFlags[PLAYER_EARL])
                     gPlayerInfo[PLAYER_EARL].behavior_flags |= ENTITY_HIDDEN;
             }
         } else if (ElevatorCheckPlayerProximityAndInput(elevator, flag)) {
-            if (state != 3 && state != 2) {
-                next_state = 2;
+            if (state != ELEVATOR_STATE_OPEN && state != ELEVATOR_STATE_OPENING) {
+                next_state = ELEVATOR_STATE_OPENING;
                 PlaySound(PSG_NOISE_ACCENT, 30);
             }
-        } else if (state > 1 && state != 4) {
-            next_state = 4;
+        } else if (state > ELEVATOR_STATE_CLOSED_READY && state != ELEVATOR_STATE_CLOSING) {
+            next_state = ELEVATOR_STATE_CLOSING;
             PlaySound(PSG_NOISE_ACCENT, 30);
         }
         for (player = 0; player <= PLAYER_EARL; ++player) {
@@ -179,9 +180,9 @@ void ProcessElevatorStep1()
                 entity->x = elevator->x;
             }
         }
-        if (next_state != -1)
+        if (next_state != ELEVATOR_STATE_UNCHANGED)
             ElevatorSetState(elevator, next_state);
-        if (next_state == 11)
+        if (next_state == ELEVATOR_STATE_ABSENT)
             ElevatorAdvanceRidersToNextLevel(flag);
     }
 }
@@ -199,12 +200,12 @@ void ProcessElevatorStep2()
         flag = elevator_number * 2 + 2;
         elevator = &gElevatorRecords[elevator_number][1];
         state = elevator->state;
-        if (state == 11)
+        if (state == ELEVATOR_STATE_ABSENT)
             continue;
-        next_state = -1;
-        if (state == 8) {
+        next_state = ELEVATOR_STATE_UNCHANGED;
+        if (state == ELEVATOR_STATE_ARRIVAL_START) {
             if (elevator->entity && !gPlayerInfo[elevator->entity].frame_duration) {
-                next_state = 1;
+                next_state = ELEVATOR_STATE_CLOSED_READY;
                 entity = 0;
                 if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM])
                     gPlayerInfo[PLAYER_TOEJAM].behavior_flags &= ~64;
@@ -224,32 +225,32 @@ void ProcessElevatorStep2()
                 if (gCurrentMusicSelection == MUSIC_TRANSITION)
                     gRequestedMusicSelection = (int)GetLevelMusicIndex(gHighestLevel);
             }
-        } else if (state == 2) {
+        } else if (state == ELEVATOR_STATE_OPENING) {
             if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration)
-                next_state = 3;
-        } else if (state == 4) {
+                next_state = ELEVATOR_STATE_OPEN;
+        } else if (state == ELEVATOR_STATE_CLOSING) {
             if (!elevator->entity || !gPlayerInfo[elevator->entity + 2].frame_duration) {
                 if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM] || flag == gPlayerElevatorFlags[PLAYER_EARL])
-                    next_state = 1;
+                    next_state = ELEVATOR_STATE_CLOSED_READY;
                 else if (!elevator->entity)
-                    next_state = 11;
+                    next_state = ELEVATOR_STATE_ABSENT;
                 else {
-                    next_state = 0;
+                    next_state = ELEVATOR_STATE_CLOSED_EMPTY;
                     gArrivalElevatorCloseDelay = 30;
                 }
             }
-        } else if (state == 0 && --gArrivalElevatorCloseDelay <= 0)
-            next_state = 9;
-        else if (state == 9) {
+        } else if (state == ELEVATOR_STATE_CLOSED_EMPTY && --gArrivalElevatorCloseDelay <= 0)
+            next_state = ELEVATOR_STATE_ARRIVAL_FINISH;
+        else if (state == ELEVATOR_STATE_ARRIVAL_FINISH) {
             if (!elevator->entity || !gPlayerInfo[elevator->entity].frame_duration)
-                next_state = 11;
+                next_state = ELEVATOR_STATE_ABSENT;
         } else if (ElevatorCheckPlayerProximityAndInput(elevator, flag)) {
-            if (state != 3 && state != 2) {
-                next_state = 2;
+            if (state != ELEVATOR_STATE_OPEN && state != ELEVATOR_STATE_OPENING) {
+                next_state = ELEVATOR_STATE_OPENING;
                 PlaySound(PSG_NOISE_ACCENT, 30);
             }
-        } else if (state > 1 && state != 4) {
-            next_state = 4;
+        } else if (state > ELEVATOR_STATE_CLOSED_READY && state != ELEVATOR_STATE_CLOSING) {
+            next_state = ELEVATOR_STATE_CLOSING;
             PlaySound(PSG_NOISE_ACCENT, 30);
         }
         for (player = 0; player <= PLAYER_EARL; ++player) {
@@ -260,7 +261,7 @@ void ProcessElevatorStep2()
                 entity->x = elevator->x;
             }
         }
-        if (next_state != -1)
+        if (next_state != ELEVATOR_STATE_UNCHANGED)
             ElevatorSetState(elevator, next_state);
     }
 }

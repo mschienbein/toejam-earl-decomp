@@ -20,9 +20,9 @@
 #include "sprite_calls.h"
 #include "title_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the explicit (int)GetRandomNumber() result
+ * views retain the observed wide arithmetic with the shared word return.
+ * Exact historical spelling remains unknown [INFERENCE]. */
 
 /* Run the jam scene until Start has been held for 51 consecutive updates. */
 void StartJamOut(song)
@@ -385,8 +385,8 @@ short reset;
                 goto stop_scroll;
             case 1:
                 JamOutShowFourPairLayout();
-            /* The first two layouts converge on this scroll reset in the ROM.
-             * Separate resets produce MCC68K's opposite tail-sharing order. */
+            /* MATCHING QUALIFICATION: the first two layouts share this
+             * scroll-reset label. Separate resets reverse MCC68K's tail-sharing order. */
             stop_scroll:
                 gJamScrollStep = 0;
                 break;

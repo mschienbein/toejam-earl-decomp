@@ -8,9 +8,9 @@
 #include "random.h"
 #include "sprite_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the explicit (int)GetRandomNumber() result
+ * views retain the observed wide arithmetic with the shared word return.
+ * Exact historical spelling remains unknown [INFERENCE]. */
 
 /* Allocate eight drifting objects, summing each frame's tile dimensions.
  * Their y range excludes the open interval 150..170. */

@@ -31,9 +31,9 @@
 #include "sprite_calls.h"
 #include "ui_calls.h"
 
-/* Compatible incomplete-array compiler view. The actual complete shared
- * declaration changes the observed instructions; historical source spelling
- * is unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the compatible incomplete tile-buffer array
+ * preserves long-index/offset instructions; its shared [8192] bound changes
+ * them. Historical source spelling is unknown [INFERENCE]. */
 extern char gSpriteTileUploadBuffer[];
 
 /* Expand each nonzero packed pixel nibble to palette index fifteen. */
@@ -69,7 +69,7 @@ char force_frame;
         frame_number = 1;
         gShipBackgroundAnimationTimer = 12;
     } else if (--gShipBackgroundAnimationTimer <= 0) {
-        if (gShipScreenState[0] == 1)
+        if (gShipScreenState.background_frame == 1)
             frame_number = 2;
         else
             frame_number = 1;
@@ -96,7 +96,7 @@ char force_frame;
         WaitForNextVBlank(1);
         TextAnimateFontBanks(8);
         UploadQueuedSpriteGraphics(1, 1);
-        gShipScreenState[0] = frame_number;
+        gShipScreenState.background_frame = frame_number;
     } else {
         WaitForNextVBlank(1);
         TextAnimateFontBanks(8);
@@ -137,7 +137,7 @@ short background_number;
 
     frame_number = 0;
     if (--gShipBackgroundAnimationTimer <= 0) {
-        if (gShipScreenState[0] == 1)
+        if (gShipScreenState.background_frame == 1)
             frame_number = 2;
         else
             frame_number = 1;
@@ -161,7 +161,7 @@ short background_number;
         WaitForNextVBlank(1);
         TextAnimateFontBanks(8);
         UploadQueuedSpriteGraphics(1, 1);
-        gShipScreenState[0] = frame_number;
+        gShipScreenState.background_frame = frame_number;
     } else {
         WaitForNextVBlank(1);
         TextAnimateFontBanks(8);
@@ -207,7 +207,7 @@ short player_number;
     }
     gFrameCounter = 0;
     gShipBackgroundAnimationTimer = 0;
-    gShipScreenState[0] = 1;
+    gShipScreenState.background_frame = 1;
     AnimateTransitionBackground(20);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
@@ -574,9 +574,9 @@ short selected_piece, player_number;
 #include "speech.h"
 #include "sprite_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the (int)AllocateEntityWithEviction() result view
+ * retains the observed call-result width with the shared short declaration.
+ * Exact historical spelling remains unknown [INFERENCE]. */
 
 /* Release the collected world object, show the corresponding ship piece,
  * and restore the appropriate single-screen or split-screen message. */
@@ -623,7 +623,7 @@ void ShipUpdatePendingPieceIndicator()
             FreeEntity(*active_object);
             *active_object = 0;
         }
-    } else if (gShipScreenState[4]) {
+    } else if (gShipScreenState.pending_piece_notice_level) {
         if (!gSplitScreenEnabled) {
             *active_object = (int)AllocateEntityWithEviction(0);
             object = &gPlayerInfo[*active_object];
@@ -642,7 +642,7 @@ void ShipUpdatePendingPieceIndicator()
             object->frame_duration = 1;
             object->frame = -1;
         }
-        gShipScreenState[4] = 0;
+        gShipScreenState.pending_piece_notice_level = 0;
     }
 }
 

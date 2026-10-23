@@ -504,8 +504,8 @@ short camera, position_x, position_y;
         gCamera2TileRowCursor = (short)((int)position_y >> 3) - 1;
     }
     {
-        /* Compiler-shape note: the named int argument retains the original
-         * in-place promotion of the exhausted short camera selector. */
+        /* MATCHING QUALIFICATION: the named block-local int selected_camera
+         * retains in-place promotion of the exhausted short camera selector. */
         int selected_camera;
         selected_camera = camera;
         RedrawCameraTileRows(selected_camera);

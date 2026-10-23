@@ -16,8 +16,9 @@ void EndingReleaseActivePlayerEntities()
 }
 
 /* Either live handle enables the query, but both branches index the first.
- * Preserve the duplicate pointer selections: MCC68K shares their later frame
- * read, unlike a combined guard or duplicate return expressions. */
+ * MATCHING QUALIFICATION: duplicate the first-handle pointer selection
+ * before the shared frame read. Combined guards, early returns and duplicate
+ * return expressions change output; this does not repair the handle choice. */
 short EndingGetFirstPlayerAnimationFrame()
 {
     struct object_state *object;

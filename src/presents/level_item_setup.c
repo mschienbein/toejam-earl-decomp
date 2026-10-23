@@ -23,7 +23,7 @@
 #include "sprite_calls.h"
 
 /* ORIGINAL BUG: this consumer retains the observed int result view.
- * Both the shared unsigned char declaration and ordinary integral promotion
+ * MATCHING QUALIFICATION: both the shared unsigned char declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int GetMapTerrainAtWorldPosition();
 /* Reserve the two fixed identities, then assign the other present sprites
@@ -282,15 +282,15 @@ short level;
                 break;
         }
         if (attempts == 10)
-            items[slot].kind = -1;
+            items[slot].kind = ITEM_UNUSED;
         else {
-            if (GetMapTerrainAtWorldPosition(map_index, position_x, position_y) == 32) {
+            if (GetMapTerrainAtWorldPosition(map_index, position_x, position_y) == TERRAIN_SINKING) {
                 if (GetRandomNumber() & 1)
-                    items[slot].kind = 82;
+                    items[slot].kind = ITEM_LARGE_UNIDENTIFIED;
                 else
-                    items[slot].kind = 83;
+                    items[slot].kind = ITEM_HURT_HAZARD;
             } else
-                items[slot].kind = 81;
+                items[slot].kind = ITEM_LARGE_BASE;
             items[slot].level = level;
             items[slot].x = position_x;
             items[slot].y = position_y;

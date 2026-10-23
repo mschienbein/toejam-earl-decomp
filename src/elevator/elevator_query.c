@@ -1,4 +1,5 @@
 #include "elevator.h"
+#include "elevator_states.h"
 #include "elevator_calls.h"
 #include "ram_elevator.h"
 
@@ -10,7 +11,7 @@ char elevator_number;
 
     elevator_number -= 1;
     record_number = elevator_number >> 1;
-    if (gElevatorRecords[record_number][elevator_number & 1].state == 3)
+    if (gElevatorRecords[record_number][elevator_number & 1].state == ELEVATOR_STATE_OPEN)
         return 1;
     return 0;
 }

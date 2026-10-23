@@ -1,4 +1,5 @@
 #include "elevator.h"
+#include "elevator_states.h"
 #include "sprites.h"
 #include "hardware.h"
 #include "assets_map.h"
@@ -7,7 +8,7 @@
 #include "ram_elevator.h"
 
 /* Upload and position the first elevator icon on the requested level,
- * except for elevators in state 13. */
+ * except for elevators blocked by an arrival on the next level. */
 void Map_DrawElevator(level, sprite)
 short level;
 struct hardware_sprite *sprite;
@@ -17,7 +18,7 @@ struct hardware_sprite *sprite;
 
     for (elevator_number = 0; elevator_number <= 1; ++elevator_number) {
         elevator = &gElevatorRecords[elevator_number][0];
-        if (elevator->level != level || elevator->state == 13)
+        if (elevator->level != level || elevator->state == ELEVATOR_STATE_BLOCKED_BY_ARRIVAL)
             continue;
         world_x = elevator->x;
         world_x -= 128;

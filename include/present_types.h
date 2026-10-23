@@ -37,6 +37,8 @@
 #define ITEM_GROUND_BASE 64
 #define ITEM_BUCK 80
 #define ITEM_LARGE_BASE 81
+/* Kind 82 is placed on sinking terrain and level zero; depicted identity unknown [INFERENCE]. */
+#define ITEM_LARGE_UNIDENTIFIED 82
 #define ITEM_HURT_HAZARD 83
 
 #endif

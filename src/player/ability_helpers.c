@@ -1,4 +1,5 @@
 #include "player_animation.h"
+#include "present_types.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "presents.h"
@@ -17,17 +18,17 @@
 void InitializeLevelZeroFixedItems(item)
 struct level_item *item;
 {
-    item->kind = 82;
+    item->kind = ITEM_LARGE_UNIDENTIFIED;
     item->level = 0;
     item->x = 1464;
     item->y = 854;
     ++item;
-    item->kind = 82;
+    item->kind = ITEM_LARGE_UNIDENTIFIED;
     item->level = 0;
     item->x = 1536;
     item->y = 928;
     ++item;
-    item->kind = 82;
+    item->kind = ITEM_LARGE_UNIDENTIFIED;
     item->level = 0;
     item->x = 1336;
     item->y = 1110;

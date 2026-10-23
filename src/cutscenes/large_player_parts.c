@@ -122,8 +122,9 @@ void IntroPositionLargePlayerParts()
     IntroPositionLargePlayerPart(7, 148, 112);
 }
 
-/* Keep the selector order: the repeated target is hoisted into a preserved
- * address register, and the original combines the argument stack cleanups. */
+/* MATCHING QUALIFICATION: retain the ordered repeated selector calls.
+ * The target is hoisted into a preserved address register, and the original
+ * combines their argument stack cleanups. */
 void IntroReleaseLargePlayerSpritesAndRefresh()
 {
     IntroReleaseLargePlayerPartSprites(0);

@@ -11,14 +11,16 @@
 #include "sprite_calls.h"
 #include "ui_calls.h"
 
-/* Compatible incomplete-array compiler view. The actual complete shared
- * declaration changes the observed instructions; historical source spelling
- * is unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: this compatible incomplete-array declaration
+ * preserves long-index/offset instructions. The shared complete [8192]
+ * bound changes them; historical source spelling is unknown [INFERENCE]. */
 extern char gSpriteTileUploadBuffer[];
 
 /* Both runtime text objects contain the common four-byte frame prefix and
  * eight ten-byte pieces (84 bytes each), not a fixed generic frame tail.
- * Text slot bytes retain the short allocator result after int promotion. */
+ * MATCHING QUALIFICATION: the explicit (int)AllocateEntity() result views
+ * retain the observed call-result width with the shared short declaration.
+ * Text slot bytes still store the short allocator result after promotion. */
 
 /* Remap both packed font-pixel nibbles into the text sprite's palette. */
 void CutsceneAppendRemappedFontTiles(source, tile_count)

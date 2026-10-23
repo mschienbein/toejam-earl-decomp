@@ -65,7 +65,8 @@ short player;
     short tile_number, random_tile, half;
     short level;
     unsigned short *map;
-    /* The selected level byte is read but not used by the drawing loops. */
+    /* MATCHING QUALIFICATION: assign the selected level to unused short
+     * level. Removing either read changes both revisions' drawing output. */
 
     if (!player) {
         map = gPlayer1LevelMap[0];
@@ -297,7 +298,8 @@ void MapInitializeScreenSprites(sprites)
 struct hardware_sprite *sprites;
 {
     short slot, sprite;
-    /* The original keeps allocation slot and sprite index as separate counters. */
+    /* MATCHING QUALIFICATION: retain slot and sprite as lockstep counters;
+     * a one-counter simplification changes both revisions' output. */
     unsigned short first_tile;
 
     first_tile = AllocateSpriteTileRun(8);

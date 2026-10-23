@@ -26,9 +26,9 @@
 #include "sprite_calls.h"
 #include "ui_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the (int)AllocateEntityWithEviction() and
+ * (int)AllocateEntity() result views retain the observed call-result widths.
+ * The shared short declarations stay canonical; historical spelling is unknown [INFERENCE]. */
 
 /* Interaction choices use one display object and one result byte per player. */
 

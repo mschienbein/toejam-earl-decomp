@@ -33,9 +33,9 @@
 #include "random.h"
 #include "sprite_calls.h"
 
-/* Compatible incomplete-array compiler view. The actual complete shared
- * declaration changes the observed instructions; historical source spelling
- * is unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the compatible incomplete TileAlternativePointers
+ * declaration preserves long-index/offset instructions. Its shared [98]
+ * bound changes them; historical source spelling is unknown [INFERENCE]. */
 extern unsigned char *TileAlternativePointers[];
 
 /* Obtain a free entity, releasing one existing secondary entity if needed.
@@ -334,8 +334,9 @@ short camera, x, y;
 }
 
 /* Redraw a changing metatile in viewport order and start path effects.
- * Each sweep owns its tile offset; the effect offset is shared by both sweeps.
- * This scope split reproduces the original D6 tile / D5 effect allocation. */
+ * MATCHING QUALIFICATION: each sweep owns its tile_offset while both share
+ * effect_offset, retaining D6 tile / D5 effect allocation. Broader or reordered
+ * tile-offset lifetimes differ in the accepted controls. */
 void MapAnimateMetatilePathChange(camera, row, column)
 short camera, row, column;
 {

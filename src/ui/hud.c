@@ -327,8 +327,8 @@ short player_number;
         HudLoadLivesSpriteTiles(player_number);
         HudPositionLivesSprite(player_number);
     }
-    /* (&gPlayerInfo[i])->field rather than gPlayerInfo[i].field: the two compile differently
-     * here and only this spelling reproduces the ROM. */
+    /* MATCHING QUALIFICATION: (&gPlayerInfo[player_number])->field retains
+     * the observed code; equivalent direct indexed members compile differently. */
     if (gPlayerLives[player_number] < 0 || (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_GHOST ||
         (&gPlayerInfo[player_number])->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST || gPlayer1MapLevel == LEVEL_FINAL)
         return;
@@ -455,9 +455,9 @@ short player;
 #include "ram_ui.h"
 #include "ui_calls.h"
 
-/* Compatible incomplete-array compiler view. The actual complete shared
- * declaration changes the observed instructions; historical source spelling
- * is unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the compatible incomplete RankCharsTable array
+ * preserves long-index/offset instructions. Its shared [9] bound changes
+ * them; historical source spelling is unknown [INFERENCE]. */
 extern char *RankCharsTable[];
 
 /* Position the life icons for the menu, split-screen, or combined HUD. */

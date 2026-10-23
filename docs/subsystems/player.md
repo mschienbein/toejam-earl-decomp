@@ -95,7 +95,8 @@ with position, tile indices, and fractional bytes; it is not a RAM overlay type.
 
 `SetupPlayer` installs `Player1ProcessTerrainMotion`/`Player2ProcessTerrainMotion`,
 player-specific initial animation descriptors, and different sprite extents/counts.
-Both callbacks forward to `PlayerProcessTerrainMotion` with an explicit player index.
+Both callbacks receive `struct render_frame *` and forward it with an explicit
+player index to `PlayerProcessTerrainMotion`, which uses `motion_x`/`motion_y`.
 It also initializes hardware sprite links and the inventory draw-list head.
 
 The main loop alternates view/land/sprite work with an entity-processing phase.
@@ -140,8 +141,8 @@ mode therefore jointly control motion (`sprite_checks_and_movement.c`).
 
 `PlayerProcessTerrainMotion` skips absent/menu-open players, skip-physics records,
 paused animation groups, and ghost states. For animation-controlled axes it forms
-a proposed 24.8 position from velocity times the frame-motion byte; other axes keep
-the current coordinate/fraction and center cache index. It clears blocked-axis
+a proposed 24.8 position from velocity times the frame's named `motion_x`/`motion_y`;
+other axes keep the current coordinate/fraction and center cache index. It clears blocked-axis
 flags, then tests new partner, narrow-entity, and elevator crossings axis by axis,
 restoring blocked coordinates, fractions, and cache indices. Whirlwind motion has
 its own map-border/position path; whirlwind recovery bypasses ordinary terrain

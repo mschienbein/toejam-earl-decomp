@@ -19,14 +19,15 @@
 #include "sprite_calls.h"
 #include "ui_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the explicit (int)AllocateEntity() result views
+ * retain the observed call-result width with the shared short declaration.
+ * Exact historical spelling remains unknown [INFERENCE]. */
 
 /* Select players, then run auxiliary menus until a world is selected.
  * ORIGINAL BUG: FurtherInitialisation passes no argument, but this incoming
  * short slot is read at entry before being overwritten by the first menu.
- * A no-argument definition removes the observed four-byte stack load. */
+ * MATCHING QUALIFICATION: a no-argument definition removes the observed
+ * four-byte stack load; the missing-argument interface remains nonportable. */
 void NewGameMainMenu(selection)
 short selection;
 {

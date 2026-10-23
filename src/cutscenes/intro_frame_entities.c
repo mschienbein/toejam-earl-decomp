@@ -27,6 +27,8 @@ void IntroCreateHiddenFrameEntities()
             object = &gPlayerInfo[object_number];
             object->sprite_count = frame->piece_count;
             object->tile_count = 0;
+            /* MATCHING QUALIFICATION: the shared bounded piece view keeps
+             * word indexing; its capacity is not this frame's ROM extent. */
             for (piece_number = 0; piece_number < frame->piece_count; ++piece_number)
                 object->tile_count += ((struct render_frame_piece_view *)frame)->pieces[piece_number].width *
                                       ((struct render_frame_piece_view *)frame)->pieces[piece_number].height;

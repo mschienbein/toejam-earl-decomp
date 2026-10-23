@@ -10,8 +10,8 @@ between levels. A special shared ride scene temporarily replaces normal VBlank w
 
 Source paths describe the repository layout in `src/elevator`; identifiers match
 the shared headers and canonical identities in `config/rev02/names.json`.
-Elevator state numbers have no dedicated constants; narrative roles are
-[INFERENCE] where not explicit.
+`include/elevator_states.h` names the byte-state protocol by observed transition roles;
+the names do not claim recovered animation artwork or historical identifiers.
 
 ## Files and roles
 
@@ -20,7 +20,7 @@ Elevator state numbers have no dedicated constants; narrative roles are
   ride dialogue/VBlank, and the actual cross-level transaction.
 - `src/elevator/elevator_transitions.c`: proximity/input detection, accelerating
   departure height cycles, departure and arrival state machines, and their order.
-- `src/elevator/elevator_query.c`: `ProcessElevator`, a state-3 query despite its name.
+- `src/elevator/elevator_query.c`: `ProcessElevator`, an `ELEVATOR_STATE_OPEN` query despite its name.
 - Related ownership: map generation fills anchor cells; players own their current
   elevator identifiers; map rendering draws an icon in `src/map/elevator_icon.c`.
 
@@ -29,6 +29,15 @@ Elevator state numbers have no dedicated constants; narrative roles are
 `include/elevator.h` defines the eight-byte `elevator_record`: world `x/y`, `level`,
 `state`, display `entity` handle, and `timer`. `elevator_position` is a two-byte
 map-cell coordinate pair, not a pair of world-position shorts.
+
+The `ELEVATOR_STATE_` constants retain the table indices and byte storage:
+`CLOSED_EMPTY` (0), `CLOSED_READY` (1), `OPENING` (2), `OPEN` (3), `CLOSING` (4),
+`DEPARTURE_CYCLES` (5), `DEPARTURE_START` (6), `DEPARTURE_FINISH` (7),
+`ARRIVAL_START` (8), `ARRIVAL_FINISH` (9), `REACTIVATING` (10), `ABSENT` (11),
+`RIDE_SCENE` (12), and `BLOCKED_BY_ARRIVAL` (13). The closed-state names describe
+the empty/ready branches of the state machines; arrival completion also selects
+`CLOSED_READY`. `UNCHANGED` (-1) is a local next-state sentinel, never an installed
+record state.
 
 `include/ram_elevator.h` declares `gElevatorRecords[2][2]`. The first index selects
 one of two retained level pairs; member zero is used for departure processing and

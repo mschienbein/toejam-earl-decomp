@@ -2,6 +2,7 @@
 #include "music_ids.h"
 #include "entities.h"
 #include "elevator.h"
+#include "elevator_states.h"
 #include "sprites.h"
 #include "sprite_frame_views.h"
 #include "ui.h"
@@ -42,7 +43,7 @@ char state;
     short x, y;
 
     elevator->state = state;
-    if (state == 11) {
+    if (state == ELEVATOR_STATE_ABSENT) {
         elevator->level = -1;
         return;
     }
@@ -87,8 +88,8 @@ void ElevatorInvalidateSecondaryRecords()
 {
     gElevatorRecords[0][1].level = -1;
     gElevatorRecords[1][1].level = -1;
-    gElevatorRecords[0][1].state = 11;
-    gElevatorRecords[1][1].state = 11;
+    gElevatorRecords[0][1].state = ELEVATOR_STATE_ABSENT;
+    gElevatorRecords[1][1].state = ELEVATOR_STATE_ABSENT;
 }
 
 /* Reuse the matching level record, or replace one of the two records for
@@ -124,11 +125,11 @@ char level, elevator_type;
     if (!elevator_type) {
         if (gElevatorRecords[0][1].level == level + 1 ||
             gElevatorRecords[1][1].level == level + 1)
-            elevator->state = 13;
+            elevator->state = ELEVATOR_STATE_BLOCKED_BY_ARRIVAL;
         else
-            elevator->state = 0;
+            elevator->state = ELEVATOR_STATE_CLOSED_EMPTY;
     } else
-        elevator->state = 8;
+        elevator->state = ELEVATOR_STATE_ARRIVAL_START;
     if (level == 1) {
         map_x = 9;
         map_y = 10;
@@ -148,11 +149,11 @@ char level, elevator_type;
 void SetupInitialElevator()
 {
     SetupElevator(1, 0);
-    gElevatorRecords[0][1].state = 11;
+    gElevatorRecords[0][1].state = ELEVATOR_STATE_ABSENT;
     gElevatorRecords[0][1].level = -1;
-    gElevatorRecords[1][0].state = 11;
+    gElevatorRecords[1][0].state = ELEVATOR_STATE_ABSENT;
     gElevatorRecords[1][0].level = -1;
-    gElevatorRecords[1][1].state = 11;
+    gElevatorRecords[1][1].state = ELEVATOR_STATE_ABSENT;
     gElevatorRecords[1][1].level = -1;
 }
 
@@ -213,7 +214,7 @@ void ElevatorUpdateEntityVisibility()
             primary_y = elevator->y - gCamera1PendingY;
             secondary_x = elevator->x - gCamera2PendingX;
             secondary_y = elevator->y - gCamera2PendingY;
-            if (elevator->state != 11 && elevator->state != 13 &&
+            if (elevator->state != ELEVATOR_STATE_ABSENT && elevator->state != ELEVATOR_STATE_BLOCKED_BY_ARRIVAL &&
                 elevator->level > 0 &&
                 ((elevator->level == gPlayer1MapLevel && primary_x + 160 > 0 &&
                   primary_x < 480 && primary_y + 112 > 0 && primary_y < 336) ||
@@ -228,7 +229,7 @@ void ElevatorUpdateEntityVisibility()
                     FreeEntity(elevator->entity + 2);
                     elevator->entity = 0;
                 }
-                if (elevator->state == 11)
+                if (elevator->state == ELEVATOR_STATE_ABSENT)
                     elevator->level = -1;
             }
         }
@@ -249,11 +250,11 @@ short player_number, x, y, elevation;
         for (pair = 0; pair <= 1; ++pair) {
             elevator_number = pair * 2 + elevator_type + 1;
             elevator = &gElevatorRecords[pair][elevator_type];
-            if (elevator->state != 11 && elevator->state != 13 &&
+            if (elevator->state != ELEVATOR_STATE_ABSENT && elevator->state != ELEVATOR_STATE_BLOCKED_BY_ARRIVAL &&
                 player->level == elevator->level) {
                 distance_x = abs(x - elevator->x);
                 if (gPlayerElevatorFlags[player_number] == elevator_number) {
-                    if (elevator->state != 3)
+                    if (elevator->state != ELEVATOR_STATE_OPEN)
                         return 1;
                     if (y <= elevator->y || distance_x)
                         return 1;
@@ -267,7 +268,7 @@ short player_number, x, y, elevation;
                     if (distance_y < 7) {
                         if (player->height > 0)
                             return 1;
-                        if (elevator->state == 3 && distance_x < 10 &&
+                        if (elevator->state == ELEVATOR_STATE_OPEN && distance_x < 10 &&
                             player->y > elevator->y) {
                             if (!elevation && y < elevator->y + 8)
                                 gPlayerElevatorFlags[player_number] = elevator_number;
@@ -293,7 +294,7 @@ short x, y;
 
     elevator = &gElevatorRecords[0][0];
     for (record_number = 0; record_number < 4; ++record_number, ++elevator) {
-        if (elevator->state != 11 && elevator->state != 13 &&
+        if (elevator->state != ELEVATOR_STATE_ABSENT && elevator->state != ELEVATOR_STATE_BLOCKED_BY_ARRIVAL &&
             player->level == elevator->level && abs(x - elevator->x) < 20) {
             distance_y = abs(y - (elevator->y + 5));
             if (distance_y < 7 &&
@@ -386,7 +387,7 @@ void MapClearActiveLevelObjects()
             FreeEntity(elevator->entity + 2);
             elevator->entity = 0;
         }
-        ElevatorSetState(elevator, 11);
+        ElevatorSetState(elevator, ELEVATOR_STATE_ABSENT);
     }
     ClearTransientEntities();
 }
@@ -437,9 +438,9 @@ void ElevatorLoadRideBackgroundTiles()
 {
     short part_number;
     char packing;
-    /* The 4-piece payload view preserves MCC68K word indexing. Four
-     * pieces are observed in each transition frame; the common frame type remains
-     * only its four-byte prefix. */
+    /* MATCHING QUALIFICATION: the four-piece access view retains MCC68K
+     * word indexing. Four pieces exist in these transition frames; the
+     * common frame type remains only its four-byte prefix. */
     struct render_frame *frame;
     struct render_piece *part;
 
@@ -591,7 +592,7 @@ struct elevator_record *elevator;
     first->sprite_ready = 0;
     second->level = gPlayer1MapLevel;
     second->sprite_ready = 0;
-    ElevatorSetState(elevator, 12);
+    ElevatorSetState(elevator, ELEVATOR_STATE_RIDE_SCENE);
     ClearTransientEntities();
     do {
         UpdateAndQueueEntitySprites();
@@ -686,7 +687,7 @@ char elevator_number;
     }
     if (gVBlankFunc) {
         ElevatorEndRideScene();
-        ElevatorSetState(elevator, 11);
+        ElevatorSetState(elevator, ELEVATOR_STATE_ABSENT);
     }
     DisableBlankingGraphics();
     gMode2RegSoftcopy &= 0x3c;

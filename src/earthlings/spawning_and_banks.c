@@ -28,27 +28,28 @@
 #include "ship.h"
 #include "sprite_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: (int)AllocateEntity() preserves the observed
+ * call-result width; (unsigned short)GetRandomNumber() narrows this file's
+ * int RNG view for word draws. Historical spelling remains unknown [INFERENCE]. */
 
 /* ORIGINAL BUG: this consumer retains the observed int result view.
- * Both the shared unsigned char declaration and ordinary integral promotion
+ * MATCHING QUALIFICATION: both the shared unsigned char declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int GetMapTerrainAtWorldPosition();
 
 /* ORIGINAL BUG: this consumer retains the observed int result view.
- * Both the shared char declaration and ordinary integral promotion
+ * MATCHING QUALIFICATION: both the shared char declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int EarthlingConfigureMailboxLevelBank();
 
 /* ORIGINAL BUG: this consumer retains the observed int result view.
- * Both the shared unsigned short declaration and ordinary integral promotion
+ * MATCHING QUALIFICATION: both the shared unsigned short declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int GetRandomNumber();
 
 /* Reject elevator overlap and any occupied earthling inside the combined radii.
- * The original normalizes the overlap predicate to zero or one before testing it. */
+ * MATCHING QUALIFICATION: retain the explicit ? 1 : 0 normalization before
+ * testing the overlap predicate; no separate per-site removal control is claimed. */
 int CheckEarthlingOverlap(definition, bank, x, y, level)
 struct earthling_definition *definition;
 short bank, x, y, level;
@@ -230,7 +231,7 @@ short level;
             MapGetShipPieceWorldPosition(&position_x, &position_y);
             ship_piece = 0;
             if (gHighestLevel == level)
-                gShipScreenState[4] = level;
+                gShipScreenState.pending_piece_notice_level = level;
         } else {
             if (saved_random) {
                 StackBasedRandom(saved_random);

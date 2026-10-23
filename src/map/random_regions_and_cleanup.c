@@ -69,6 +69,9 @@ short range_index;
     minimum = MapGenerationRangePairs[range_row][range_index][0];
     maximum = MapGenerationRangePairs[range_row][range_index][1];
     random = GetRandomNumber();
+    /* MATCHING QUALIFICATION: keep int span, unsigned-long selected and the
+     * separate unsigned-short result to retain long addition and final word
+     * normalization through the public unsigned-long return. All stages are used. */
     {
         int span;
         unsigned long selected;

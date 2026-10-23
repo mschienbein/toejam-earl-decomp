@@ -33,9 +33,9 @@
 #include "sprite_calls.h"
 #include "ui_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: explicit (int) result views of AllocateEntity(),
+ * AllocateEntityWithEviction() and GetLevelMusicIndex() retain the observed
+ * result widths with shared narrow returns; historical spelling is unknown [INFERENCE]. */
 
 /* Create or restart the player's short-lived effect at the given position. */
 int PresentStartTransientEffect(player_number, x, y, height, level)

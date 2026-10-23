@@ -6,9 +6,9 @@
 #include "ram_map.h"
 #include "random.h"
 
-/* Compatible incomplete-array compiler view. The actual complete shared
- * declaration changes the observed instructions; historical source spelling
- * is unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the compatible incomplete TileAlternativePointers
+ * declaration preserves long-index/offset instructions. Its shared [98]
+ * bound changes them; historical source spelling is unknown [INFERENCE]. */
 extern unsigned char *TileAlternativePointers[];
 
 /* Refine marked map cells using the low-byte shapes of adjacent cells. */

@@ -28,9 +28,9 @@
 #include "sprite_calls.h"
 #include "ui_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: the explicit (int)AllocateEntity() result view
+ * retains the observed call-result width with the shared short declaration.
+ * Exact historical spelling remains unknown [INFERENCE]. */
 
 /* Allocate a world-item object and configure its frames, size and position.
  * Non-present ground items set drawing flag 0x80; kinds 81 and up use the
@@ -166,8 +166,8 @@ char record_pickup;
     state = &gPlayerInfo[player];
     if (gPlayerLives[player] < 0 || state->height >= 4 ||
         state->sprite_state == PLAYER_ANIM_SWIM_IDLE || state->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE ||
-        /* (long) view of animation_group_mask: the signed test reproduces the ROM's mask exchange; storage stays
-         * unsigned ([INFERENCE] the original spelling is unknown). */
+        /* MATCHING QUALIFICATION: the signed-long animation_group_mask view
+         * retains the observed mask/register exchange; storage stays unsigned. */
         state->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE || ((long)state->animation_group_mask & (long)(PLAYER_GROUP_SWIM | PLAYER_GROUP_CLIMB | PLAYER_GROUP_INNERTUBE_MOVE)))
         return;
     for (index = 0; index < count; index++) {
@@ -296,8 +296,10 @@ short player;
 }
 
 /* Decrement each eligible player's active-present timer and blink the HUD
- * icon near expiration by testing the timer against masks 12 and 2. The
- * (&gPlayerInfo[player])->field spelling reproduces the ROM's schedule. */
+ * icon near expiration by testing the timer against masks 12 and 2.
+ * MATCHING QUALIFICATION: (&gPlayerInfo[player])->field retains the
+ * observed scheduling; direct members and pointer-local alternatives shrink
+ * the function in the accepted controls. */
 void ReducePresentTimer()
 {
     short player, show;

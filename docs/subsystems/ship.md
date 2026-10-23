@@ -33,18 +33,20 @@ Content/entity identifiers come from `include/earthling_types.h`,
 
 ## Key data and RAM state
 
-`include/ram_ship.h` distinguishes two ten-byte arrays with very different roles:
+`include/ram_ship.h` distinguishes two ten-byte blocks with very different roles:
 
 - `gShipPieceLevelAssignments[10]` maps piece index to the level containing it.
   Zero marks an already absent/collected piece; the initializer writes nonzero
   level assignments, and summaries count nonzero entries.
-- `gShipScreenState[10]` is display state, not a second copy of that assignment
-  table. Byte zero holds the selected background frame in the shown animation
-  routines; byte four is used as a pending-piece notice; named views of byte two
-  and byte six are the background timer and indicator entity handle.
+- `gShipScreenState` is a `ship_screen_state` record, not a second copy of that
+  assignment table. `background_frame` selects the background animation frame;
+  `background_timer` counts down to the next frame. `pending_piece_notice_level`
+  holds the newly reached piece-bearing level until its notice is consumed, and
+  `indicator_entity` holds the displayed notice's entity handle. The remaining
+  six bytes have no observed access and retain their layout.
 
-`gShipBackgroundAnimationTimer` and `gShipPieceIndicatorEntity` are existing aliases
-of display-state bytes, not separately allocated fields (`include/ram_ship.h`).
+The catalogue's `gShipBackgroundAnimationTimer` and `gShipPieceIndicatorEntity`
+symbols alias the corresponding record members, not separately allocated storage.
 This distinction matters because historical/address-derived display names can
 otherwise be mistaken for the piece-to-level assignment table.
 
@@ -92,7 +94,7 @@ visibility, allocation, and contact dispatch rather than a separate ship entity 
 
 `MapGetShipPieceWorldPosition` converts the ship anchor map cell to world position.
 When that level is the highest reached, retaining its Earthling bank sets
-`gShipScreenState[4]` for a notice (`spawning_and_banks.c`). `Map_DrawShipPiece` in
+`gShipScreenState.pending_piece_notice_level` for a notice (`spawning_and_banks.c`). `Map_DrawShipPiece` in
 `src/map/map_drawing_and_controller.c` locates the `EARTHLING_SHIP_PIECE` record among the first two
 loaded Earthlings and draws its map icon.
 

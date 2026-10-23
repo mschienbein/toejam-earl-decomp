@@ -29,17 +29,17 @@
 #include "random.h"
 #include "sprite_calls.h"
 
-/* Explicit integral value promotions preserve the observed int-valued call
- * uses with correct shared return declarations; exact historical spelling
- * remains unknown [INFERENCE]. */
+/* MATCHING QUALIFICATION: explicit (int) result views of AllocateEntity()
+ * and AllocateEntityWithEviction() retain the observed call-result widths.
+ * Shared short returns stay canonical; historical spelling is unknown [INFERENCE]. */
 
 /* ORIGINAL BUG: this consumer retains the observed int result view.
- * Both the shared unsigned char declaration and ordinary integral promotion
+ * MATCHING QUALIFICATION: both the shared unsigned char declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int GetMapTerrainAtWorldPosition();
 
 /* ORIGINAL BUG: this consumer retains the observed int result view.
- * Both the shared short declaration and ordinary integral promotion
+ * MATCHING QUALIFICATION: both the shared short declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int PresentRegisterDecoyHit();
 /* Launch a tomato from an earthling toward a velocity-adjusted target.

@@ -209,8 +209,8 @@ void HandleVBlank()
             SelectViewportSpriteChain(0);
             if (gTerrainPriorityUpdatePending) {
                 MapClearTilePriorityNearPlayer();
-                /* The ROM jumps directly to the shared frame increment.
-                 * An early return duplicates it rather than matching. */
+                /* MATCHING QUALIFICATION: jump to the shared frame increment;
+                 * an early return duplicates it instead of sharing the tail. */
                 goto end_frame;
             } else if (!gVBlankGraphicsPaused) {
                 if (gInventoryRedrawPhase)
@@ -609,7 +609,8 @@ void FurtherInitialisation()
      * The ROM has no explicit initialization of this local. Its allocated
      * D2 register last held gFrameCounter << 16, whose low word is zero.
      * [INFERENCE] The original source relied on an uninitialized frame count;
-     * adding an initializer changes the bytes (and should not be hidden). */
+     * MATCHING QUALIFICATION: adding an initializer changes the bytes;
+     * the observed source model is compiler-specific, not portable C. */
     short frame;
     unsigned short time;
     gMode2RegSoftcopy = 0x60;

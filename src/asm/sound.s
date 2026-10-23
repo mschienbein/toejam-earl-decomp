@@ -816,13 +816,13 @@ MusicUpdateSequencer:
     move.l (%a3,%d1.w),%d3
     beq.s .L_owner_set
     movea.l %d3,%a4
-    cmp.b (0xd,%a4),%d2
+    cmp.b (MUSIC_PRIORITY,%a4),%d2
     bge.s .L_owner_replace
     clr.b (MUSIC_SELECTED,%a0)
-    move.b #0x1,(0x13,%a4)
+    move.b #0x1,(MUSIC_SELECTED,%a4)
     bra.s .L_owner_next
 .L_owner_replace:
-    clr.b (0x13,%a4)
+    clr.b (MUSIC_SELECTED,%a4)
 .L_owner_set:
     move.b #0x1,(MUSIC_SELECTED,%a0)
     move.l %a0,(%a3,%d1.w)

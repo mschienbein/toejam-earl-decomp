@@ -312,7 +312,9 @@ unsigned short TitleScreenVideo()
     gSceneLastMusicEventTime = gFrameCounter;
     while (gFrameCounter - start_time < 1200) {
 #endif
-        /* Preserve the observed discarded word read after advancing the RNG. */
+        /* MATCHING QUALIFICATION: assign the unused short random_word to
+         * retain word normalization after the RNG call; ignoring the call
+         * result or only casting it discards the observed normalization. */
         random_word = GetRandomNumber();
         if (!CutsceneStepFrameAndMusicCadence(3, 0)) {
             gTitleLogoSelector ^= 1;

@@ -13,7 +13,7 @@
 #include "ram_ui.h"
 
 /* ORIGINAL BUG: this consumer retains the observed int result view.
- * Both the shared unsigned char declaration and ordinary integral promotion
+ * MATCHING QUALIFICATION: both the shared unsigned char declaration and ordinary integral promotion
  * fail the complete-file match; historical missing declarations are [INFERENCE]. */
 extern int GetMapTerrainAtWorldPosition();
 /* Probe eight pixels vertically or sixteen horizontally in states 4..7. */

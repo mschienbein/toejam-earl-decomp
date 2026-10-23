@@ -1,0 +1,162 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "FinalReviewB",
+  "checkpoint": "c034-final",
+  "reviewed_commit": "56a0aae573198261c1bf945691d988de82880efd",
+  "prepare_sha256": "210a8fbcce1399831510285b2b79fcf5693eed771893e6aefe8dca21ba00d102",
+  "sealed": true,
+  "sealed_utc": "2026-10-23T01:13:35.845436Z",
+  "sealed_before_other_final_review": true,
+  "scope": [
+    "Criterion3 readability",
+    "Criterion5 STATUS/RESUME/README documentation only"
+  ],
+  "criteria": [
+    {
+      "criterion": "3.1 Names: source/header address-name scan and50 semantic samples",
+      "result": "PASS",
+      "detail": "No func_/dat_/rom_/ram_/loc_ hex identities or raw OBJ offset names found. All645 catalogued functions have canonical names;50 sampled identities (30 functions,10 globals,10 types) fit their current code. All598 C source names are in the canonical inventory.",
+      "evidence": [
+        "evidence/scans.json",
+        "evidence/names.json",
+        "evidence/anchor.json"
+      ]
+    },
+    {
+      "criterion": "3.2 Structs, named fields and domain constants instead of raw offsets/magic",
+      "result": "FAIL",
+      "detail": "Most shared records, MMIO, variable-frame access views and genuinely numeric operations are clear. F001 identifies three concrete unqualified record-access families; F002 identifies remaining semantic-ID literals.",
+      "evidence": [
+        "evidence/structure.json"
+      ]
+    },
+    {
+      "criterion": "3.3 Subsystem guides,30 C functions,30 claims and preserved-bug comments",
+      "result": "FAIL",
+      "detail": "All16 source folders map to15 subsystem guides. All30 sampled guide claims and12 ORIGINAL BUG code/document samples agree. The30-function sample has meaningful names/locals and purpose comments, but the player frame-byte accesses and unnamed elevator protocol still prevent the required source-readability closure (F001/F002).",
+      "evidence": [
+        "evidence/subsystems.json",
+        "evidence/functions.json",
+        "evidence/bugs.json"
+      ]
+    },
+    {
+      "criterion": "3.4 Fake/compiler-coaxed matches only as locally marked, accepted qualifications",
+      "result": "FAIL",
+      "detail": "The165-row ledger has no missing accepting-review reference, and referenced finalized verdicts pass. The37 source markers plus one shared-header marker do not cover every already-recorded constraint with the exact required marker: see the seven definite F003 examples. Candidate spellings were hunted without claiming untested per-site necessity.",
+      "evidence": [
+        "evidence/qualifications.json",
+        "evidence/scans.json"
+      ]
+    },
+    {
+      "criterion": "5 Documentation: final STATUS top entry, RESUME and README",
+      "result": "FAIL",
+      "detail": "598/598 C functions,174344/174232 bytes,645 total functions, three fragments, R007/R011 treatment, data partitions and38 local links agree with current metadata. C033 is truthfully the latest accepted source checkpoint, not falsely presented as c034 finalization. README nevertheless omits the REV00 import prerequisite (F004); optional-only readability language also overstates closure while F001-F003 remain.",
+      "evidence": [
+        "evidence/documents.json",
+        "evidence/anchor.json"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F001",
+      "severity": "medium",
+      "blocking": true,
+      "criterion": "3.2 and3.3",
+      "title": "Raw record-field accesses remain where named layouts already exist",
+      "locations": [
+        "src/player/entity_motion_terrain.c:69-71,94,109,312-323",
+        "include/ram_ship.h:7-12; src/ship/ship_screen_and_collection.c:72-99,140-164,626-645; src/earthlings/spawning_and_banks.c:233",
+        "src/asm/sound.s:819,822,825; include/sound.inc:12,18"
+      ],
+      "observed": "The player callback consumes render_frame as char *direction and selects motion bytes [1]/[2], although the caller passes render_frame and the Earthling callback already uses motion_x/motion_y. The heterogeneous ship-display block still selects known frame/notice fields through [0]/[4]. FM ownership uses raw 0xd/0x13 field displacements despite MUSIC_PRIORITY/MUSIC_SELECTED equates. These retained forms have no corresponding representation qualification in the ledger.",
+      "required_fix": "Use the named frame fields through the real frame type and migrate both wrappers; model or explicitly name the distinct ship-display fields without numeric record offsets; use the existing music-field equates. If a typed spelling truly cannot match, supply the concrete matching evidence, local MATCHING QUALIFICATION and accepting ledger review rather than silently retaining an unexplained raw record view.",
+      "evidence": [
+        "evidence/structure.json",
+        "evidence/functions.json"
+      ]
+    },
+    {
+      "id": "F002",
+      "severity": "medium",
+      "blocking": true,
+      "criterion": "3.2",
+      "title": "Known semantic IDs remain unexplained numeric literals",
+      "locations": [
+        "src/ui/inventory.c:411-412",
+        "src/presents/level_item_setup.c:287-293",
+        "src/elevator/elevator_query.c:13; src/elevator/elevator_scene.c:45,90-91,127-131,216,252-270"
+      ],
+      "observed": "Player ghost states are tested as5/6 even though PLAYER_ANIM_GHOST/PLAYER_ANIM_LAST_LIFE_GHOST exist. Large-item placement uses terrain32 and item83/81 instead of TERRAIN_SINKING/ITEM_HURT_HAZARD/ITEM_LARGE_BASE. Elevator state3/8/11/13 protocols remain unnamed; the elevator guide expressly acknowledges the absence of constants while describing their roles. These are domain IDs, not genuinely numeric coordinates/counts or disclosed compiler requirements.",
+      "required_fix": "Use the existing domain constants at the identified consumers and give the evidenced elevator protocol states named constants while retaining byte storage. Apply the same naming to their affected callsites and keep uncertain identities explicitly uncertain rather than inventing depicted content names.",
+      "evidence": [
+        "evidence/structure.json"
+      ]
+    },
+    {
+      "id": "F003",
+      "severity": "low",
+      "blocking": true,
+      "criterion": "3.4",
+      "title": "The required MATCHING QUALIFICATION marker is not applied to all recorded coaxing",
+      "locations": [
+        "src/cutscenes/title_and_transition.c:289,315-316",
+        "src/ui/inventory.c:33-40",
+        "src/player/rocket_motion.c:59-62",
+        "src/presents/item_updates.c:298-308",
+        "src/player/earthling_damage_reactions.c:250-256",
+        "src/cutscenes/ending_player_release.c:18-30",
+        "src/cutscenes/cutscene_text.c:14-17"
+      ],
+      "observed": "All165 ledger rows have accepting-review references, and the referenced finalized reviews pass. However, at least seven positively documented retained source constraints have only older prose comments and no MATCHING QUALIFICATION marker: Q008,Q016,Q059,Q062,Q120,Q123,Q127. This is a searchable local-marker coverage gap, not a claim that these forms lack a ledger entry or that the historical compiler experiments have been disproved.",
+      "required_fix": "Standardize the existing constraint comments to the required MATCHING QUALIFICATION prefix, precisely covering the retained operation/declaration; sweep the other ledgered constraints for the same omission. Preserve accepting-review provenance and do not relabel observation-only register hints as proven necessity.",
+      "evidence": [
+        "evidence/qualifications.json"
+      ]
+    },
+    {
+      "id": "F004",
+      "severity": "medium",
+      "blocking": true,
+      "criterion": "5 documentation",
+      "title": "README quick start requests REV00 without importing its required original",
+      "locations": [
+        "README.md:48-54",
+        "docs/RESUME.md:16-19",
+        "tools/build.py:352-355",
+        "tools/rom.py:98-114,117-136"
+      ],
+      "observed": "The README imports only the RevA/REV02 dump and immediately instructs building REV00. The importer identifies and writes just one revision; build first loads that selected revision original, and load raises when its orig file is absent. RESUME correctly imports both dumps.",
+      "inference": "[INFERENCE] On a fresh checkout following only the displayed commands, the REV00 build stops for missing orig/rev00/baserom.bin. The error path was inspected, not executed.",
+      "required_fix": "Add the REV00 dump import before its build, as RESUME already does, or explicitly make that command conditional on importing the second dump. Retain truthful latest-accepted c033 provenance while c034 is under review. Also do not leave STATUS/RESUME saying remaining readability is optional until F001-F003 are resolved.",
+      "evidence": [
+        "evidence/documents.json"
+      ]
+    }
+  ],
+  "blocking_findings": 4,
+  "sample_counts": {
+    "names": 50,
+    "functions": 30,
+    "documentation_claims": 30,
+    "subsystem_guides": 15,
+    "source_folders": 16,
+    "original_bug_samples": 12,
+    "ledger_rows": 165,
+    "source_and_include_files_bound_to_prepare": 197
+  },
+  "verification_exercised": [
+    "Read-only source/header/document inspection and targeted whole-corpus scans.",
+    "Independent aggregation of catalogue, classification, accepted-match and typed-data metadata.",
+    "All197 source/include digests equal the c034 prepare manifest; credited source hashes agree; inspected source/documents remained unchanged through the review.",
+    "Public accepting review and finalize records inspected for the qualification chain."
+  ],
+  "limitations": [
+    "No compiler, matcher, build, test suite, emulator/gameplay, public-history auditor or CI/ByteMatch job was run by this scoped reviewer. Recorded earlier build/suite results were inspected only as documentation provenance, not re-exercised verification.",
+    "The review does not independently certify criteria1,2,4 or the runtime/CI portions of criterion5.",
+    "Finite static hunts do not establish compiler-necessity or absence of every possible alternative spelling; unknown historical source intent remains [INFERENCE].",
+    "No other final review was read before sealing. No tracked files, Git state, acceptance records or peer artifacts were modified."
+  ]
+}

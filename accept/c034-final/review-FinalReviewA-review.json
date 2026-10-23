@@ -1,0 +1,136 @@
+{
+  "verdict": "FAIL",
+  "reviewer": "FinalReviewA",
+  "checkpoint": "c034-final",
+  "reviewed_head": "56a0aae573198261c1bf945691d988de82880efd",
+  "sealed": true,
+  "independence": "No other final review was read before sealing this verdict; no reviewed tracked file or original repository Git state was changed.",
+  "scope": "Definition-of-done criteria 1, 2, 4 and the assigned criterion-5 prepare/suite/denominator/audit/current-CI/ByteMatch checks. This is the prerequisite independent review, not checkpoint finalization or publication.",
+  "criteria": [
+    {
+      "criterion": "1. Every catalogued function is credited C or positively classified non-C and built from source; zero generated assembly and raw words",
+      "result": "PASS",
+      "observed": "Each revision has 645 functions: 598 credited C, 36 handwritten_asm, 6 runtime_helper and 5 R011 not_reproducible_c. All 47 non-C functions have high-confidence classification and evidence and are built from src/asm. All three fragments also have named assembly sources. No leftover functions, stale credits or duplicate credit addresses were found. Fresh builds contain 108 C units and 16 68000 assembly units; generated function/fragment units, generated instructions and raw words are all zero.",
+      "evidence": [
+        "evidence/functions.json",
+        "evidence/builds.json",
+        "evidence/inclusions.json"
+      ]
+    },
+    {
+      "criterion": "2. Fresh pinned byte-identical builds, fully typed named data rebuilt from extracted assets, no anonymous incbin, and Z80 from source",
+      "result": "FAIL",
+      "observed": "Two fresh builds of each revision PASS identically at the pinned SHA-256 and size; REV 02 also matches the assignment's SHA-1. All 4163 units extract/pack exactly, every actual retail incbin is named and unsliced, and the 1294-byte driver plus 38-byte bootstrap are assembled from src/z80. However, six bytes per revision remain explicitly unreferenced and excluded from typed-byte credit. In addition, 43 named text units totaling 2330 bytes per revision are emitted from C literals, not the packed extracted assets. These are preservation/provenance gaps against the literal requirement, not byte mismatches.",
+      "evidence": [
+        "evidence/roms.json",
+        "evidence/builds.json",
+        "evidence/data-coverage.json",
+        "evidence/inclusions.json"
+      ],
+      "findings": [
+        "A1",
+        "A2"
+      ]
+    },
+    {
+      "criterion": "4. REV 00 builds from the same sources; exactly the eight documented logic differences are revision-conditional",
+      "result": "PASS",
+      "observed": "The source manifests and options are identical. Thirteen REVISION directives in eight source files affect exactly the eight documented functions. Full code-pair comparison finds 223 byte-identical entries, 417 address-only entries and 8 logic changes; code growth is 112 bytes. All data differences are pointer relocations, the cartridge header or uniform tail fill. The documentation's 431/209 raw-byte counts are incorrect but no ninth logic change was found.",
+      "evidence": [
+        "evidence/revisions-detailed.json",
+        "evidence/data-revisions.json",
+        "evidence/prepare.json"
+      ],
+      "findings": [
+        "A3"
+      ]
+    },
+    {
+      "criterion": "5. Consistent c034 prepare record, independent full suite, denominator verify, private-ROM history audit, green current main CI and 100% C ByteMatch metrics",
+      "result": "PASS",
+      "observed": "All 248 prepare input hashes, source manifests, four stored image hashes and four canonical receipt digests agree. The independent unfiltered suite passes all 191 tests with zero failures, errors or skips. Denominator r12 verifies. Public-history audit passes with both ROMs indexed, 1627 Git blobs, 153 trees, 412 tracked worktree files and zero findings. Public main 2f0f248eac552a4cdf47ee041694c988be9f1589 has successful progress run 39878709724. All four live ByteMatch C-code/function percentage badges show 100.00%; local reports give 598/598 C functions in each revision. Prepared HEAD and c034 final publication are not yet public; this is explicitly not evidence of future finalization/publication.",
+      "evidence": [
+        "evidence/prepare.json",
+        "evidence/execution.json",
+        "evidence/suite.json",
+        "evidence/suite.log",
+        "evidence/denominator.log",
+        "evidence/audit-public-history.log",
+        "evidence/public-state.json",
+        "evidence/bytematch.json"
+      ],
+      "findings": [
+        "A4"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "A1",
+      "severity": "high",
+      "blocking": true,
+      "criterion": 2,
+      "title": "Six bytes per revision remain outside typed data closure",
+      "locations": [
+        "config/rev02/data_units.json: FMPatchAuxiliary",
+        "config/rev00/data_units.json: FMPatchAuxiliary",
+        "tools/assets.py:776-780,868-877",
+        "tools/build.py:296-301",
+        "docs/DATA.md:34,49-57"
+      ],
+      "observed": "FMPatchAuxiliary is six bytes at REV 02 0x03C34A and REV 00 0x03C2DA, with unknown semantic format. Its codec preserves a bounded byte list. Actual receipts report 867770 typed of 867776 manifest bytes for REV 02, and 867882 typed of 867888 for REV 00, with six unreferenced bytes separately excluded. Calling these bytes typed in README/STATUS does not establish a recovered type.",
+      "required_resolution": "Recover an evidence-backed typed format/ownership, or obtain an explicit user-approved exception to complete typed closure. Renaming the kind alone is not a semantic resolution.",
+      "evidence": [
+        "evidence/data-coverage.json",
+        "evidence/builds.json"
+      ]
+    },
+    {
+      "id": "A2",
+      "severity": "high",
+      "blocking": true,
+      "criterion": 2,
+      "title": "Forty-three text units do not feed the build from their extracted assets",
+      "locations": [
+        "tools/mcc.py:40-42,308-321",
+        "tools/cunits.py:131-135",
+        "tools/build.py:375-404,470-473"
+      ],
+      "observed": "All four fresh builds contain 4120 named inclusions. The remaining 43 manifest units are text totaling 2330 bytes, covered by compiled C-unit extents. Their assets are extracted/packed but their packed binaries are absent from the link path. The compiler receives unchanged source and emits the string literals under STRINTEXT. This preserves and matches the bytes, but does not meet the literal extracted-asset origin requirement for every data byte.",
+      "required_resolution": "Feed these literals from the extracted named text assets at build time, or obtain an explicit user-approved source-literal exception. No anonymous ROM slicing was found.",
+      "evidence": [
+        "evidence/inclusions.json",
+        "evidence/builds.json"
+      ]
+    },
+    {
+      "id": "A3",
+      "severity": "low",
+      "blocking": false,
+      "criterion": 4,
+      "title": "Revision documentation confuses masked-signature equality with byte equality",
+      "locations": [
+        "docs/REVISIONS.md:18-21,43-47"
+      ],
+      "observed": "Direct comparison gives 223 byte-identical code entries and 417 address-only changes, plus the same eight logic changes. The stated 431 is the weaker correspondence signature-equality count, not byte equality. ROMTailFill also has different sizes, 424 and 536 bytes, so the all-units-same-sizes sentence needs that exception.",
+      "required_resolution": "Correct the raw-byte/address-only counts and clarify the tail-fill size exception without changing the verified eight-function logic-difference list.",
+      "evidence": [
+        "evidence/revisions-detailed.json",
+        "evidence/data-revisions.json"
+      ]
+    },
+    {
+      "id": "A4",
+      "severity": "info",
+      "blocking": false,
+      "criterion": 5,
+      "title": "Current public gates do not certify a future final publication",
+      "observed": "Public main is 2f0f248eac552a4cdf47ee041694c988be9f1589, not prepared HEAD 56a0aae573198261c1bf945691d988de82880efd. The only source delta is collision-assembly comments; other deltas are documents. Current main CI is green and both C metrics are 100% for both revisions. Badge SVGs contain no source commit identity. Post-review c034 finalization and publication remain the integrator's transaction.",
+      "evidence": [
+        "evidence/public-state.json",
+        "evidence/bytematch.json"
+      ]
+    }
+  ],
+  "report": "report.md"
+}

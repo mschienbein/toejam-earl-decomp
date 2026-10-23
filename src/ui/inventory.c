@@ -1,4 +1,5 @@
 #include "present_types.h"
+#include "dialogue_ids.h"
 #include "player_animation.h"
 #include "psg_effects.h"
 #include "entities.h"
@@ -105,7 +106,7 @@ long viewport;
 
     while (gSpriteGraphicsUploadPending)
         ;
-    if (viewport == 0)
+    if (viewport == VIEWPORT_PRIMARY)
         viewport_mask = ENTITY_PRIMARY_VIEW;
     else
         viewport_mask = ENTITY_SECONDARY_VIEW;
@@ -126,9 +127,9 @@ void InventoryServiceRedrawPhase()
     short column, row, row_end;
     unsigned short tile;
 
-    if (gInventoryRedrawPhase >= 3) {
+    if (gInventoryRedrawPhase >= INVENTORY_REDRAW_BACKGROUND_LOWER) {
         if (!gInventoryRedrawPlayer) {
-            if (gInventoryRedrawPhase == 4) {
+            if (gInventoryRedrawPhase == INVENTORY_REDRAW_BACKGROUND_UPPER) {
                 row = 0;
                 row_end = 7;
             } else {
@@ -136,7 +137,7 @@ void InventoryServiceRedrawPhase()
                 row_end = 14;
             }
         } else {
-            if (gInventoryRedrawPhase == 4) {
+            if (gInventoryRedrawPhase == INVENTORY_REDRAW_BACKGROUND_UPPER) {
                 row = 14;
                 row_end = 21;
             } else {
@@ -148,24 +149,24 @@ void InventoryServiceRedrawPhase()
             VDP_COMMAND = VDP_WRITE_WINDOW + ((long)row << 23);
             for (column = 0; column < 40; column++) {
                 tile = FontBackgroundByteMap[row][column];
-                if (tile & 0x40)
+                if (tile & BYTEMAP_HORIZONTAL_FLIP)
                     tile |= VDP_TILE_HORIZONTAL_FLIP;
-                if (tile & 0x80)
+                if (tile & BYTEMAP_VERTICAL_FLIP)
                     tile |= VDP_TILE_VERTICAL_FLIP;
-                tile &= 0xff3f;
+                tile &= BYTEMAP_FLIP_CLEAR_MASK;
                 VDP_DATA = tile + 0x8580;
             }
         }
-    } else if (gInventoryRedrawPhase == 2) {
+    } else if (gInventoryRedrawPhase == INVENTORY_REDRAW_STATS) {
         ForceTextBackgroundColorToBlack(1);
         InventoryDrawPlayerStats(gInventoryRedrawPlayer);
         InventoryDrawActionBanner(gInventoryRedrawPlayer, gInventoryBannerMode[gInventoryRedrawPlayer], 1);
         DrawHUD();
-    } else if (gPlayerInventoryOpen[gInventoryRedrawPlayer] == 2)
+    } else if (gPlayerInventoryOpen[gInventoryRedrawPlayer] == INVENTORY_MAIL_ORDER)
         InventoryDrawMailOrderOffers(gInventoryRedrawPlayer);
     else {
         LoadPresentsIntoInventory(gInventoryRedrawPlayer);
-        if (gPlayerInventoryOpen[gInventoryRedrawPlayer] == 3)
+        if (gPlayerInventoryOpen[gInventoryRedrawPlayer] == INVENTORY_IDENTIFY)
             InventoryDrawBucks(gInventoryRedrawPlayer);
     }
     gInventoryRedrawPhase--;
@@ -200,30 +201,30 @@ short player_number, menu_kind;
     struct object_state *player;
 
     if (player_number == PLAYER_TOEJAM)
-        viewport = 0;
+        viewport = VIEWPORT_PRIMARY;
     else
-        viewport = 1;
+        viewport = VIEWPORT_SECONDARY;
     player = &gPlayerInfo[player_number];
     if (gSplitScreenEnabled) {
         EntityClearViewportSprites(viewport);
         player->behavior_flags |= ENTITY_PLAYER_SUPPRESSED;
         player->frame_duration = 0;
     }
-    if (menu_kind == 1)
-        gInventoryBannerMode[player_number] = 0;
-    else if (menu_kind == 2) {
-        gInventoryBannerMode[player_number] = 2;
+    if (menu_kind == INVENTORY_PRESENTS)
+        gInventoryBannerMode[player_number] = INVENTORY_BANNER_OPEN;
+    else if (menu_kind == INVENTORY_MAIL_ORDER) {
+        gInventoryBannerMode[player_number] = INVENTORY_BANNER_MAIL_ORDER;
         SetMailOrderPresents(player_number, player->level);
     } else
-        gInventoryBannerMode[player_number] = 3;
+        gInventoryBannerMode[player_number] = INVENTORY_BANNER_IDENTIFY;
 #if REVISION >= 2
     gPlayerIdleTicks[player_number] = 0;
 #endif
     InventoryInitializeDisplayEntities(player_number);
     gInventoryRedrawPlayer = player_number;
-    gInventoryRedrawPhase = 4;
+    gInventoryRedrawPhase = INVENTORY_REDRAW_BACKGROUND_UPPER;
     while (gInventoryRedrawPhase) {
-        if (!gPlayerInventoryOpen[player_number] && gInventoryRedrawPhase <= 2)
+        if (!gPlayerInventoryOpen[player_number] && gInventoryRedrawPhase <= INVENTORY_REDRAW_STATS)
             gPlayerInventoryOpen[player_number] = menu_kind;
     }
     if (!gSplitScreenEnabled) {
@@ -268,7 +269,7 @@ void InventoryRedrawSynchronously(player_number)
 int player_number;
 {
     gInventoryRedrawPlayer = player_number;
-    gInventoryRedrawPhase = 4;
+    gInventoryRedrawPhase = INVENTORY_REDRAW_BACKGROUND_UPPER;
     while (gInventoryRedrawPhase)
         InventoryServiceRedrawPhase();
 }
@@ -280,7 +281,7 @@ short player_number;
     while (gInventoryRedrawPhase)
         ;
     gInventoryRedrawPlayer = player_number;
-    gInventoryRedrawPhase = 1;
+    gInventoryRedrawPhase = INVENTORY_REDRAW_CONTENTS;
     while (gInventoryRedrawPhase)
         ;
 }
@@ -294,7 +295,7 @@ short player_number;
     if (gPlayerInventoryOpen[player_number]) {
         InventoryDeactivateDisplayEntities(player_number);
         if (gSplitScreenEnabled) {
-            gPlayerInventoryOpen[player_number] = 0;
+            gPlayerInventoryOpen[player_number] = INVENTORY_CLOSED;
             if (!gPlayerInventoryOpen[player_number ^ 1] && !PlayersRequireSeparateViews())
                 UpdateScreenSplitMode(1);
             else
@@ -309,7 +310,7 @@ short player_number;
                 gCamera2PendingX = gCamera1PendingX;
                 gCamera2PendingY = gCamera1PendingY;
             }
-            gPlayerInventoryOpen[player_number] = 0;
+            gPlayerInventoryOpen[player_number] = INVENTORY_CLOSED;
             WaitForVBlankWithGraphicsPaused();
             DisableBlankingGraphics();
             DrawHUD();
@@ -319,7 +320,7 @@ short player_number;
         }
         DisableTextFontAnimationIfMenusClosed();
     } else if (!gPlayerElevatorFlags[player_number] || !gElevatorDepartureInProgress)
-        DrawInventory(player_number, 1);
+        DrawInventory(player_number, INVENTORY_PRESENTS);
 }
 
 /* Apply a just-opened present to the other living player when appropriate. */
@@ -373,7 +374,7 @@ int player_number;
     InventoryRefreshContentsAndWait(player_number);
     if (gPlayerLives[player_number ^ 1] >= 0) {
         if (!gPlayerInventoryOpen[player_number ^ 1]) {
-            DrawInventory(player_number ^ 1, 1);
+            DrawInventory(player_number ^ 1, INVENTORY_PRESENTS);
             InventoryUpdateSelectorEntity(player_number ^ 1);
             close_other = 1;
         } else
@@ -418,24 +419,24 @@ void ProcessInventory()
             return;
         }
         if (gPlayerInventoryOpen[player_number]) {
-            if (gPlayerInventoryOpen[player_number] == 1 &&
+            if (gPlayerInventoryOpen[player_number] == INVENTORY_PRESENTS &&
                 !(gPlayerPreviousProcessedInput[player_number] & INPUT_BUTTON_C) &&
                 (gPlayerProcessedInput[player_number] & INPUT_BUTTON_C)) {
-                gInventoryBannerMode[player_number] ^= 1;
+                gInventoryBannerMode[player_number] ^= INVENTORY_BANNER_DROP;
                 InventoryDrawActionBanner(player_number, gInventoryBannerMode[player_number], 0);
                 PlaySound(PSG_TONE_PULSE, AUDIO_PRIORITY_NORMAL);
             } else if (!(gPlayerPreviousProcessedInput[player_number] & INPUT_BUTTON_A) &&
                        (gPlayerProcessedInput[player_number] & INPUT_BUTTON_A)) {
-                if (gPlayerInventoryOpen[player_number] == 2) {
+                if (gPlayerInventoryOpen[player_number] == INVENTORY_MAIL_ORDER) {
                     ToggleInventory(player_number);
                     InventoryBuySelectedMailOrderPresent(player_number);
-                } else if (gPlayerInventoryOpen[player_number] == 3) {
+                } else if (gPlayerInventoryOpen[player_number] == INVENTORY_IDENTIFY) {
                     if (InventoryIdentifySelectedPresent(player_number)) {
                         InventoryRefreshContentsAndWait(player_number);
                         if (gPlayerInventoryOpen[player_number ^ 1])
                             InventoryRefreshContentsAndWait(player_number ^ 1);
                     }
-                } else if (gInventoryBannerMode[player_number] == 1) {
+                } else if (gInventoryBannerMode[player_number] == INVENTORY_BANNER_DROP) {
                     InventoryDropSelectedPresent(player_number);
                     InventoryRefreshContentsAndWait(player_number);
                 } else {
@@ -452,7 +453,7 @@ void ProcessInventory()
                 if (gPlayerProcessedInput[player_number] & INPUT_UP) {
                     if (gPlayerInventorySelectionRow[player_number] > 0)
                         --gPlayerInventorySelectionRow[player_number];
-                    else if (gPlayerInventoryOpen[player_number] != 2 &&
+                    else if (gPlayerInventoryOpen[player_number] != INVENTORY_MAIL_ORDER &&
                              gPlayerInventoryScrollRow[player_number] > 0) {
                         --gPlayerInventoryScrollRow[player_number];
                         InventoryRefreshContentsAndWait(player_number);
@@ -460,13 +461,13 @@ void ProcessInventory()
                 } else if (gPlayerProcessedInput[player_number] & INPUT_DOWN) {
                     if (gPlayerInventorySelectionRow[player_number] < 2)
                         ++gPlayerInventorySelectionRow[player_number];
-                    else if (gPlayerInventoryOpen[player_number] != 2 &&
+                    else if (gPlayerInventoryOpen[player_number] != INVENTORY_MAIL_ORDER &&
                              gPlayerInventoryScrollRow[player_number] < 5 &&
                              gPlayerInventory[player_number][(gPlayerInventoryScrollRow[player_number] + 3) * 2] != PRESENT_NONE) {
                         ++gPlayerInventoryScrollRow[player_number];
                         InventoryRefreshContentsAndWait(player_number);
                     }
-                } else if (gPlayerInventoryOpen[player_number] != 2)
+                } else if (gPlayerInventoryOpen[player_number] != INVENTORY_MAIL_ORDER)
                     gPlayerInventorySelectionColumn[player_number] ^= 1;
                 PlaySound(PSG_TONE_PULSE, AUDIO_PRIORITY_NORMAL);
             }
@@ -509,7 +510,7 @@ void CheckBButton()
 void InventoryOpenMailOrderMenu(player_number)
 short player_number;
 {
-    DrawInventory(player_number, 2);
+    DrawInventory(player_number, INVENTORY_MAIL_ORDER);
     gPlayerProcessedInput[player_number] = INPUT_BUTTON_A;
     gPlayerPreviousProcessedInput[player_number] = INPUT_BUTTON_A;
     CheckBButton();
@@ -520,7 +521,7 @@ short player_number;
 void InventoryOpenIdentificationMenu(player)
 short player;
 {
-    DrawInventory(player, 3);
+    DrawInventory(player, INVENTORY_IDENTIFY);
     gPlayerProcessedInput[player] = INPUT_BUTTON_A;
     gPlayerPreviousProcessedInput[player] = INPUT_BUTTON_A;
     CheckBButton();
@@ -600,7 +601,7 @@ short player;
     } else {
         PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
         if (slot == 16)
-            StartDialogue(25, player);
+            StartDialogue(DIALOGUE_INVENTORY_FULL, player);
         else
             GenerateSpeech(player, "Need Bucks", 1);
     }
@@ -786,7 +787,7 @@ short player_number;
     char exhausted = 0;
     struct object_state *selector;
 
-    if (gPlayerInventoryOpen[player_number] != 2) {
+    if (gPlayerInventoryOpen[player_number] != INVENTORY_MAIL_ORDER) {
         while (gPlayerInventory[player_number][(gPlayerInventoryScrollRow[player_number] + gPlayerInventorySelectionRow[player_number]) * 2 +
          gPlayerInventorySelectionColumn[player_number]] == PRESENT_NONE) {
             if (gPlayerInventorySelectionRow[player_number] == 0 &&
@@ -827,16 +828,16 @@ short player_number;
     gPlayerInventorySelectionRow[player_number] = 0;
     gPlayerInventorySelectionColumn[player_number] = 0;
     gPlayerInventoryScrollRow[player_number] = 0;
-    group = 1;
+    group = VIEWPORT_SECONDARY;
     ready_mask = ENTITY_SECONDARY_VIEW;
     if (player_number == PLAYER_TOEJAM) {
-        first_object = 26;
+        first_object = INVENTORY_SELECTOR_TOEJAM;
         if (gSplitScreenEnabled) {
-            group = 0;
+            group = VIEWPORT_PRIMARY;
             ready_mask = ENTITY_PRIMARY_VIEW;
         }
     } else
-        first_object = 33;
+        first_object = INVENTORY_SELECTOR_EARL;
     object = &gPlayerInfo[first_object];
     for (object_number = first_object; object_number < first_object + 7;
          ++object_number, ++object) {
@@ -857,13 +858,13 @@ short player_number;
     short group, first_object, object_number;
     struct object_state *object;
 
-    group = 1;
+    group = VIEWPORT_SECONDARY;
     if (player_number == PLAYER_TOEJAM) {
-        first_object = 26;
+        first_object = INVENTORY_SELECTOR_TOEJAM;
         if (gSplitScreenEnabled)
-            group = 0;
+            group = VIEWPORT_PRIMARY;
     } else
-        first_object = 33;
+        first_object = INVENTORY_SELECTOR_EARL;
     for (object_number = first_object; object_number < first_object + 7;
          ++object_number) {
         object = &gPlayerInfo[object_number];
@@ -984,39 +985,39 @@ short player_number, menu, already_blanked;
                 VDP_DATA = 0x824e;
         }
     }
-    if (menu == 0) {
+    if (menu == INVENTORY_BANNER_OPEN) {
         column = 14;
         for (row = 0; row < 3; ++row) {
             VDP_COMMAND = (((base_row + row) << 23) + VDP_WRITE_WINDOW) + (column << 17);
             for (character = 0; character < 13; ++character) {
                 tile = InventoryCompactMapA[row][character];
-                if (tile & 64)
+                if (tile & BYTEMAP_HORIZONTAL_FLIP)
                     tile |= VDP_TILE_HORIZONTAL_FLIP;
-                tile &= ~0xc0;
+                tile &= ~(BYTEMAP_HORIZONTAL_FLIP | BYTEMAP_VERTICAL_FLIP);
                 VDP_DATA = 0x8233 + tile;
             }
         }
-    } else if (menu == 1) {
+    } else if (menu == INVENTORY_BANNER_DROP) {
         column = 14;
         for (row = 0; row < 3; ++row) {
             VDP_COMMAND = (((base_row + row) << 23) + VDP_WRITE_WINDOW) + (column << 17);
             for (character = 0; character < 13; ++character) {
                 tile = InventoryCompactMapB[row][character];
-                if (tile & 64)
+                if (tile & BYTEMAP_HORIZONTAL_FLIP)
                     tile |= VDP_TILE_HORIZONTAL_FLIP;
-                tile &= ~0xc0;
+                tile &= ~(BYTEMAP_HORIZONTAL_FLIP | BYTEMAP_VERTICAL_FLIP);
                 VDP_DATA = 0xe24e + tile;
             }
         }
-    } else if (menu == 2) {
+    } else if (menu == INVENTORY_BANNER_MAIL_ORDER) {
         column = 15;
         for (row = 0; row < 3; ++row) {
             VDP_COMMAND = (((base_row + row) << 23) + VDP_WRITE_WINDOW) + (column << 17);
             for (character = 0; character < 11; ++character) {
                 tile = InventoryCompactMapC[row][character];
-                if (tile & 64)
+                if (tile & BYTEMAP_HORIZONTAL_FLIP)
                     tile |= VDP_TILE_HORIZONTAL_FLIP;
-                tile &= ~0xc0;
+                tile &= ~(BYTEMAP_HORIZONTAL_FLIP | BYTEMAP_VERTICAL_FLIP);
                 VDP_DATA = 0x8267 + tile;
             }
         }
@@ -1026,9 +1027,9 @@ short player_number, menu, already_blanked;
             VDP_COMMAND = (((base_row + row) << 23) + VDP_WRITE_WINDOW) + (column << 17);
             for (character = 0; character < 22; ++character) {
                 tile = InventoryCompactMapD[row][character];
-                if (tile & 64)
+                if (tile & BYTEMAP_HORIZONTAL_FLIP)
                     tile |= VDP_TILE_HORIZONTAL_FLIP;
-                tile &= ~0xc0;
+                tile &= ~(BYTEMAP_HORIZONTAL_FLIP | BYTEMAP_VERTICAL_FLIP);
                 VDP_DATA = 0xc1cd + tile;
             }
         }

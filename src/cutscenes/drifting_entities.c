@@ -43,8 +43,8 @@ void CutsceneCreateDriftingEntities()
             object->frames = CutsceneDriftingEntityFrames;
             object->frame_phase = 1;
             object->frame_duration = 1;
-            object->frame = -1;
-            AllocateEntityViewportSprites(object, 0);
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
+            AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
             object->sprite_ready = 0;
         }
         gCutsceneDriftingEntities[object_number] = slot;

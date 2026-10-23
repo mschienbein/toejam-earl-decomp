@@ -18,7 +18,7 @@ void AnimateSplitScreenWipe()
     for (step = 0; step < 2; ++step, ++entity) {
         while (!(entity->draw_flags & ENTITY_PRIMARY_VIEW)) {
             entity->sprite_ready = 0;
-            AllocateEntityViewportSprites(entity, 0);
+            AllocateEntityViewportSprites(entity, VIEWPORT_PRIMARY);
             if (!(entity->draw_flags & ENTITY_PRIMARY_VIEW))
                 EntityReleaseOneByPriority();
         }

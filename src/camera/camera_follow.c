@@ -149,10 +149,10 @@ void UpdateCameraFollowing()
             gCamera1FollowXFixed += combined_velocity;
             target = gCamera1FollowXFixed >> 8;
             while (target > *camera_x)
-                if (blocked = MoveCameraRight(0))
+                if (blocked = MoveCameraRight(VIEWPORT_PRIMARY))
                     break;
             while (target < *camera_x)
-                if (blocked = MoveCameraLeft(0))
+                if (blocked = MoveCameraLeft(VIEWPORT_PRIMARY))
                     break;
             if (blocked) {
                 gCamera1FollowXFixed = *camera_x << 8;
@@ -184,10 +184,10 @@ void UpdateCameraFollowing()
             gCamera1FollowYFixed += combined_velocity;
             target = gCamera1FollowYFixed >> 8;
             while (target > *camera_y)
-                if (blocked = MoveCameraDown(0))
+                if (blocked = MoveCameraDown(VIEWPORT_PRIMARY))
                     break;
             while (target < *camera_y)
-                if (blocked = MoveCameraUp(0))
+                if (blocked = MoveCameraUp(VIEWPORT_PRIMARY))
                     break;
             if (blocked)
                 gCamera1FollowYFixed = *camera_y << 8;
@@ -199,10 +199,10 @@ void UpdateCameraFollowing()
             gCamera1FollowXFixed += velocity_x[PLAYER_TOEJAM];
             target = gCamera1FollowXFixed >> 8;
             while (target > *camera_x)
-                if (blocked = MoveCameraRight(0))
+                if (blocked = MoveCameraRight(VIEWPORT_PRIMARY))
                     break;
             while (target < *camera_x)
-                if (blocked = MoveCameraLeft(0))
+                if (blocked = MoveCameraLeft(VIEWPORT_PRIMARY))
                     break;
             if (blocked) {
                 gCamera1FollowXFixed = *camera_x << 8;
@@ -213,10 +213,10 @@ void UpdateCameraFollowing()
             gCamera1FollowYFixed += velocity_y[PLAYER_TOEJAM];
             target = gCamera1FollowYFixed >> 8;
             while (target > *camera_y)
-                if (blocked = MoveCameraDown(0))
+                if (blocked = MoveCameraDown(VIEWPORT_PRIMARY))
                     break;
             while (target < *camera_y)
-                if (blocked = MoveCameraUp(0))
+                if (blocked = MoveCameraUp(VIEWPORT_PRIMARY))
                     break;
             if (blocked) {
                 gCamera1FollowYFixed = *camera_y << 8;
@@ -227,10 +227,10 @@ void UpdateCameraFollowing()
             gCamera2FollowXFixed += velocity_x[PLAYER_EARL];
             target = gCamera2FollowXFixed >> 8;
             while (target > gCamera2PendingX)
-                if (blocked = MoveCameraRight(1))
+                if (blocked = MoveCameraRight(VIEWPORT_SECONDARY))
                     break;
             while (target < gCamera2PendingX)
-                if (blocked = MoveCameraLeft(1))
+                if (blocked = MoveCameraLeft(VIEWPORT_SECONDARY))
                     break;
             if (blocked) {
                 gCamera2FollowXFixed = gCamera2PendingX << 8;
@@ -241,10 +241,10 @@ void UpdateCameraFollowing()
             gCamera2FollowYFixed += velocity_y[PLAYER_EARL];
             target = gCamera2FollowYFixed >> 8;
             while (target > gCamera2PendingY)
-                if (blocked = MoveCameraDown(1))
+                if (blocked = MoveCameraDown(VIEWPORT_SECONDARY))
                     break;
             while (target < gCamera2PendingY)
-                if (blocked = MoveCameraUp(1))
+                if (blocked = MoveCameraUp(VIEWPORT_SECONDARY))
                     break;
             if (blocked)
                 gCamera2FollowYFixed = gCamera2PendingY << 8;
@@ -254,10 +254,10 @@ void UpdateCameraFollowing()
             gCamera1FollowXFixed += velocity_x[PLAYER_EARL];
             target = gCamera1FollowXFixed >> 8;
             while (target > *camera_x)
-                if (blocked = MoveCameraRight(0))
+                if (blocked = MoveCameraRight(VIEWPORT_PRIMARY))
                     break;
             while (target < *camera_x)
-                if (blocked = MoveCameraLeft(0))
+                if (blocked = MoveCameraLeft(VIEWPORT_PRIMARY))
                     break;
             if (blocked) {
                 gCamera1FollowXFixed = *camera_x << 8;
@@ -268,10 +268,10 @@ void UpdateCameraFollowing()
             gCamera1FollowYFixed += velocity_y[PLAYER_EARL];
             target = gCamera1FollowYFixed >> 8;
             while (target > *camera_y)
-                if (blocked = MoveCameraDown(0))
+                if (blocked = MoveCameraDown(VIEWPORT_PRIMARY))
                     break;
             while (target < *camera_y)
-                if (blocked = MoveCameraUp(0))
+                if (blocked = MoveCameraUp(VIEWPORT_PRIMARY))
                     break;
             if (blocked)
                 gCamera1FollowYFixed = *camera_y << 8;

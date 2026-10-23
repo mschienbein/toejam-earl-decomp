@@ -26,20 +26,20 @@ unsigned char list_number, value;
 int MapTraceTransitionChain(row, column, incoming, outgoing)
 short row, column, incoming, outgoing;
 {
-    if ((gPlayer1LevelMap[row][column] & 0x1f00) ||
+    if ((gPlayer1LevelMap[row][column] & MAP_TRANSITION_MASK) ||
         (gLevelAnchorPositions[0].x == column && gLevelAnchorPositions[0].y == row) ||
         (gLevelAnchorPositions[1].x == column && gLevelAnchorPositions[1].y == row) ||
         (gLevelAnchorPositions[2].x == column && gLevelAnchorPositions[2].y == row))
         return 0;
     ++gTransitionPathVisitCount;
-    if (incoming == 8 && outgoing == 8) {
+    if (incoming == MAP_PATH_LEFT && outgoing == MAP_PATH_LEFT) {
         if (MapTransitionContainsMetatile(3, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row, column - 1, 8, 8)) {
+            MapTraceTransitionChain(row, column - 1, MAP_PATH_LEFT, MAP_PATH_LEFT)) {
             gPlayer1LevelMap[row][column] |= 0x300;
             return 1;
         }
         if (MapTransitionContainsMetatile(4, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row + 1, column, 4, 8)) {
+            MapTraceTransitionChain(row + 1, column, MAP_PATH_DOWN, MAP_PATH_LEFT)) {
             gPlayer1LevelMap[row][column] |= 0x400;
             return 1;
         }
@@ -48,14 +48,14 @@ short row, column, incoming, outgoing;
             gPlayer1LevelMap[row][column] |= 0x200;
             return 1;
         }
-    } else if (incoming == 2 && outgoing == 2) {
+    } else if (incoming == MAP_PATH_RIGHT && outgoing == MAP_PATH_RIGHT) {
         if (MapTransitionContainsMetatile(5, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row, column + 1, 2, 2)) {
+            MapTraceTransitionChain(row, column + 1, MAP_PATH_RIGHT, MAP_PATH_RIGHT)) {
             gPlayer1LevelMap[row][column] |= 0x500;
             return 1;
         }
         if (MapTransitionContainsMetatile(6, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row + 1, column, 4, 2)) {
+            MapTraceTransitionChain(row + 1, column, MAP_PATH_DOWN, MAP_PATH_RIGHT)) {
             gPlayer1LevelMap[row][column] |= 0x600;
             return 1;
         }
@@ -64,36 +64,36 @@ short row, column, incoming, outgoing;
             gPlayer1LevelMap[row][column] |= 0x100;
             return 1;
         }
-    } else if (incoming == 4 && outgoing == 8) {
+    } else if (incoming == MAP_PATH_DOWN && outgoing == MAP_PATH_LEFT) {
         if (MapTransitionContainsMetatile(7, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row, column - 1, 8, 4)) {
+            MapTraceTransitionChain(row, column - 1, MAP_PATH_LEFT, MAP_PATH_DOWN)) {
             gPlayer1LevelMap[row][column] |= 0x700;
             return 1;
         }
         if (MapTransitionContainsMetatile(8, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row + 1, column, 4, 2)) {
+            MapTraceTransitionChain(row + 1, column, MAP_PATH_DOWN, MAP_PATH_RIGHT)) {
             gPlayer1LevelMap[row][column] |= 0x800;
             return 1;
         }
-    } else if (incoming == 4 && outgoing == 2) {
+    } else if (incoming == MAP_PATH_DOWN && outgoing == MAP_PATH_RIGHT) {
         if (MapTransitionContainsMetatile(9, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row, column + 1, 2, 4)) {
+            MapTraceTransitionChain(row, column + 1, MAP_PATH_RIGHT, MAP_PATH_DOWN)) {
             gPlayer1LevelMap[row][column] |= 0x900;
             return 1;
         }
         if (MapTransitionContainsMetatile(10, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row + 1, column, 4, 8)) {
+            MapTraceTransitionChain(row + 1, column, MAP_PATH_DOWN, MAP_PATH_LEFT)) {
             gPlayer1LevelMap[row][column] |= 0xa00;
             return 1;
         }
-    } else if (incoming == 8 && outgoing == 4) {
+    } else if (incoming == MAP_PATH_LEFT && outgoing == MAP_PATH_DOWN) {
         if (MapTransitionContainsMetatile(11, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row, column - 1, 8, 8)) {
+            MapTraceTransitionChain(row, column - 1, MAP_PATH_LEFT, MAP_PATH_LEFT)) {
             gPlayer1LevelMap[row][column] |= 0xb00;
             return 1;
         }
         if (MapTransitionContainsMetatile(12, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row + 1, column, 4, 8)) {
+            MapTraceTransitionChain(row + 1, column, MAP_PATH_DOWN, MAP_PATH_LEFT)) {
             gPlayer1LevelMap[row][column] |= 0xc00;
             return 1;
         }
@@ -102,14 +102,14 @@ short row, column, incoming, outgoing;
             gPlayer1LevelMap[row][column] |= 0xd00;
             return 1;
         }
-    } else if (incoming == 2 && outgoing == 4) {
+    } else if (incoming == MAP_PATH_RIGHT && outgoing == MAP_PATH_DOWN) {
         if (MapTransitionContainsMetatile(14, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row, column + 1, 2, 2)) {
+            MapTraceTransitionChain(row, column + 1, MAP_PATH_RIGHT, MAP_PATH_RIGHT)) {
             gPlayer1LevelMap[row][column] |= 0xe00;
             return 1;
         }
         if (MapTransitionContainsMetatile(15, gPlayer1LevelMap[row][column]) &&
-            MapTraceTransitionChain(row + 1, column, 4, 2)) {
+            MapTraceTransitionChain(row + 1, column, MAP_PATH_DOWN, MAP_PATH_RIGHT)) {
             gPlayer1LevelMap[row][column] |= 0xf00;
             return 1;
         }
@@ -131,18 +131,18 @@ void MapAssignTransitionChain()
 
     for (row = 0; row < MAP_ROWS; ++row)
         for (column = 0; column < MAP_COLUMNS; ++column)
-            gPlayer1LevelMap[row][column] &= 0xe0ff;
+            gPlayer1LevelMap[row][column] &= MAP_TRANSITION_CLEAR_MASK;
     gTransitionPathMinimumVisits = 25;
     for (pass = 0; pass < 2; ++pass) {
         for (row = 0; row < MAP_ROWS; ++row)
             for (column = 0; column < MAP_COLUMNS; ++column) {
                 gTransitionPathVisitCount = 0;
                 if (MapTransitionContainsMetatile(1, gPlayer1LevelMap[row][column])) {
-                    if (MapTraceTransitionChain(row, column - 1, 8, 8)) {
+                    if (MapTraceTransitionChain(row, column - 1, MAP_PATH_LEFT, MAP_PATH_LEFT)) {
                         gPlayer1LevelMap[row][column] |= 0x100;
                         return;
                     }
-                    if (MapTraceTransitionChain(row, column + 1, 2, 2)) {
+                    if (MapTraceTransitionChain(row, column + 1, MAP_PATH_RIGHT, MAP_PATH_RIGHT)) {
                         gPlayer1LevelMap[row][column] |= 0x200;
                         return;
                     }

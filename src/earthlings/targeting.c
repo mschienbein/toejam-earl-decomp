@@ -1,6 +1,7 @@
 #include "player_animation.h"
 #include "player_animation_groups.h"
 #include "earthling_types.h"
+#include "earthlings.h"
 #include "present_types.h"
 #include "entities.h"
 #include "player.h"
@@ -101,7 +102,7 @@ char mode;
         }
     }
     if (maximum_distance < distance[PLAYER_TOEJAM] && maximum_distance < distance[PLAYER_EARL])
-        return -1;
+        return EARTHLING_STATE_UNCHANGED;
     if (distance[PLAYER_TOEJAM] < distance[PLAYER_EARL])
         selected_player = PLAYER_TOEJAM;
     else

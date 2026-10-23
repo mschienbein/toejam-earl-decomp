@@ -7,6 +7,18 @@
 #define PLAYER_TOEJAM_BASE_HEALTH 23
 #define PLAYER_EARL_BASE_HEALTH 31
 
+/* PlayerResetRankAndResources starts at 0; CheckPromotionScore stops promotions at 8. */
+#define PLAYER_RANK_INITIAL 0
+#define PLAYER_RANK_MAX 8
+/* PlayerFinalizeLastLifeExit writes rank 9 and level 99 after releasing a player's level. */
+#define PLAYER_RANK_ELIMINATED 9
+#define PLAYER_LEVEL_ELIMINATED 99
+
+/* PlayerStartFalling selects 1; CheckPlayerFalling handles landing in 2 and clears to 0. */
+#define PLAYER_FALL_NONE 0
+#define PLAYER_FALL_DESCENDING 1
+#define PLAYER_FALL_LANDING 2
+
 /* Player statistics keep their canonical byte views and incomplete
  * outer bounds. The player-two scalars alias element one of the
  * corresponding lives, bucks, rank, health and health-restore arrays. */

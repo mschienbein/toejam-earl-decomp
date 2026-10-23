@@ -3,6 +3,30 @@
 
 #include "entities.h"
 
+#define INVENTORY_CLOSED 0 /* ToggleInventory clears gPlayerInventoryOpen on close. */
+#define INVENTORY_PRESENTS 1 /* ToggleInventory opens the ordinary present inventory. */
+#define INVENTORY_MAIL_ORDER 2 /* InventoryOpenMailOrderMenu selects the mailbox offers. */
+#define INVENTORY_IDENTIFY 3 /* InventoryOpenIdentificationMenu selects paid identification. */
+
+#define INVENTORY_BANNER_OPEN 0 /* DrawInventory selects this banner for ordinary presents. */
+#define INVENTORY_BANNER_DROP 1 /* ProcessInventory dispatches this banner to dropping. */
+#define INVENTORY_BANNER_MAIL_ORDER 2 /* DrawInventory selects this banner for mail order. */
+#define INVENTORY_BANNER_IDENTIFY 3 /* DrawInventory selects this banner for identification. */
+
+#define INVENTORY_REDRAW_CONTENTS 1 /* InventoryServiceRedrawPhase ends with the present/offer contents. */
+#define INVENTORY_REDRAW_STATS 2 /* InventoryServiceRedrawPhase draws stats, banner and HUD here. */
+#define INVENTORY_REDRAW_BACKGROUND_LOWER 3 /* InventoryServiceRedrawPhase uploads each view's lower seven rows. */
+#define INVENTORY_REDRAW_BACKGROUND_UPPER 4 /* InventoryServiceRedrawPhase starts with each view's upper seven rows. */
+
+#define INVENTORY_SELECTOR_TOEJAM 26 /* InventoryInitializeDisplayEntities starts ToeJam's seven-record group here. */
+#define INVENTORY_SELECTOR_EARL 33 /* InventoryInitializeDisplayEntities starts Earl's seven-record group here. */
+
+#define INTERACTION_CHOICE_ACCEPT 0 /* CheckAButton's Up selection returns the accepting response. */
+#define INTERACTION_CHOICE_DECLINE 1 /* CheckAButton's Down selection returns the declining response. */
+#define INTERACTION_RESPONSE_NONE 0 /* Choice display creation and cancellation clear the response. */
+#define INTERACTION_RESPONSE_DECLINE 1 /* CheckAButton returns this for the Down-selected display state. */
+#define INTERACTION_RESPONSE_ACCEPT 2 /* CheckAButton returns this to the mail-order/purchase handlers. */
+
 /* Inventory control and text state keeps its canonical byte views.
  * Incomplete outer bounds are retained, not inferred from adjacent symbols.
  * gPlayerInventoryOpen[1] also has the scalar gPlayer2InventoryOpen name in ram_system.h. */

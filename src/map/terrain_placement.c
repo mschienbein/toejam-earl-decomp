@@ -23,7 +23,7 @@ unsigned char flags;
     unsigned char property;
     char valid;
 
-    if ((metatile & METATILE_OVERLAY_MASK) && !(flags & 4))
+    if ((metatile & METATILE_OVERLAY_MASK) && !(flags & TERRAIN_PLACEMENT_ALLOW_OVERLAY))
         return 0;
     if (metatile & METATILE_MIRROR_X)
         mirrored = 1;
@@ -31,9 +31,9 @@ unsigned char flags;
     if (metatile == 34 || metatile == 82 || metatile == 84)
         return 0;
     if (width >= 16 && height >= 8) {
-        if (((flags & 1) && (metatile == 30 || metatile == 33)) ||
-            ((flags & 8) && (metatile == 75 || metatile == 76 || metatile == 80)) ||
-            ((flags & 2) && (metatile == 53 || (metatile >= 56 && metatile <= 58)))) {
+        if (((flags & TERRAIN_PLACEMENT_GROUND) && (metatile == 30 || metatile == 33)) ||
+            ((flags & TERRAIN_PLACEMENT_WATER) && (metatile == 75 || metatile == 76 || metatile == 80)) ||
+            ((flags & TERRAIN_PLACEMENT_SINKING) && (metatile == 53 || (metatile >= 56 && metatile <= 58)))) {
             *position_x = 63;
             *position_y = 31;
             return 1;
@@ -51,9 +51,9 @@ unsigned char flags;
                 for (column = origin_x; column < origin_x + width; ++column) {
                     tile_word = LevelMetatileMaps[metatile][row][column];
                     property = PlayerTilePropertyLookup[tile_word & VDP_TILE_INDEX_MASK];
-                    if (!(((flags & 1) && property == TERRAIN_GROUND) ||
-                          ((flags & 2) && property == TERRAIN_SINKING) ||
-                          ((flags & 8) && property == TERRAIN_WATER))) {
+                    if (!(((flags & TERRAIN_PLACEMENT_GROUND) && property == TERRAIN_GROUND) ||
+                          ((flags & TERRAIN_PLACEMENT_SINKING) && property == TERRAIN_SINKING) ||
+                          ((flags & TERRAIN_PLACEMENT_WATER) && property == TERRAIN_WATER))) {
                         valid = 0;
                         break;
                     }
@@ -92,14 +92,14 @@ register int player;
         player = PLAYER_EARL;
     else if (gPlayer2Lives < 0)
         player = PLAYER_TOEJAM;
-    if (player == 2) {
+    if (player == PLAYER_BOTH) {
         width = 12;
         level = gPlayerInfo[PLAYER_TOEJAM].level;
     } else {
         width = 4;
         level = gPlayerInfo[player].level;
     }
-    if (level <= 1) {
+    if (level <= LEVEL_FIRST) {
         width = 16;
         height = 8;
     }
@@ -113,14 +113,14 @@ register int player;
         random = GetRandomNumber();
         column = random % 19;
         metatile = map[row * MAP_COLUMNS + column];
-        if (metatile & 0x4000) {
+        if (metatile & METATILE_PENDING_PATH_CHANGE) {
             --search_counter;
             continue;
         }
-        if (TerrainValidation(metatile, width, height, &position_x, &position_y, 3)) {
+        if (TerrainValidation(metatile, width, height, &position_x, &position_y, TERRAIN_PLACEMENT_GROUND_OR_SINKING)) {
             position_y += (row + 1) * 64;
             position_x += (column + 1) * 128;
-            if (player == 2) {
+            if (player == PLAYER_BOTH) {
                 if (!ElevatorContainsPosition(position_x - 32, position_y, level) &&
                     !ElevatorContainsPosition(position_x + 32, position_y, level))
                     goto set_position;
@@ -138,11 +138,11 @@ register int player;
         column = start_column;
         do {
             metatile = map[row * MAP_COLUMNS + column];
-            if (!(metatile & 0x4000) &&
-                TerrainValidation(metatile, width, height, &position_x, &position_y, 3)) {
+            if (!(metatile & METATILE_PENDING_PATH_CHANGE) &&
+                TerrainValidation(metatile, width, height, &position_x, &position_y, TERRAIN_PLACEMENT_GROUND_OR_SINKING)) {
                 position_y += (row + 1) * 64;
                 position_x += (column + 1) * 128;
-                if (player == 2) {
+                if (player == PLAYER_BOTH) {
                     if (!ElevatorContainsPosition(position_x - 32, position_y, level) &&
                         !ElevatorContainsPosition(position_x + 32, position_y, level))
                         goto set_position;
@@ -157,14 +157,14 @@ set_position:
     /* ORIGINAL BUG: If the exhaustive scan finds no valid position, its last
      * output coordinates are still used. The random loop also does not count
      * marked metatiles, so an entirely marked map never reaches the scan. */
-    if (player == PLAYER_TOEJAM || player == 2) {
+    if (player == PLAYER_TOEJAM || player == PLAYER_BOTH) {
         gPlayerInfo[PLAYER_TOEJAM].y = position_y;
         gPlayerInfo[PLAYER_TOEJAM].x = position_x;
     }
-    if (player == PLAYER_EARL || player == 2) {
+    if (player == PLAYER_EARL || player == PLAYER_BOTH) {
         gPlayerInfo[PLAYER_EARL].y = position_y;
         gPlayerInfo[PLAYER_EARL].x = position_x;
-        if (player == 2)
+        if (player == PLAYER_BOTH)
             gPlayerInfo[PLAYER_EARL].x += 64;
     }
 }

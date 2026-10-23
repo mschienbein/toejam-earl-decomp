@@ -199,7 +199,7 @@ struct object_state *entity;
 struct movement_destination *destination;
 {
     short alternate = 0;
-    short sprite = -1;
+    short sprite = PLAYER_ANIM_UNCHANGED;
     unsigned char *terrain;
     unsigned char property;
     short saved_x, saved_y;
@@ -225,7 +225,7 @@ struct movement_destination *destination;
     }
     property = terrain[destination->tile_y * 5 + destination->tile_x] & TERRAIN_CLASS_MASK;
     if ((long)entity->animation_group_mask & (PLAYER_GROUP_SWIM | PLAYER_GROUP_INNERTUBE_MOVE)) {
-        if (entity->level == 1 || entity->level == LEVEL_FINAL) {
+        if (entity->level == LEVEL_FIRST || entity->level == LEVEL_FINAL) {
             if (destination->x <= 28 || destination->x >= 2652) {
                 destination->x = entity->x;
                 entity->draw_flags |= ENTITY_BLOCKED_X;
@@ -281,7 +281,7 @@ struct movement_destination *destination;
             sprite = PLAYER_ANIM_LEAN_DOWN;
         if (entity->velocity_y < 0 && (terrain[2] >= TERRAIN_WATER || terrain[7] >= TERRAIN_WATER))
             sprite = PLAYER_ANIM_LEAN_UP;
-        if (sprite != -1) {
+        if (sprite != PLAYER_ANIM_UNCHANGED) {
             if (alternate || gPlayerPowerups[player] == PRESENT_SPRING_SHOES) {
                 sprite += PLAYER_ANIM_JUMP_WINDUP_UP - PLAYER_ANIM_LEAN_UP;
                 if (gPlayerPowerups[player] != PRESENT_SPRING_SHOES) {

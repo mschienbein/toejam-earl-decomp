@@ -3,6 +3,12 @@
 
 #include "earthlings.h"
 
+/* Friendly touch handlers reset to 0, prompt in 1, finish in 2 and run their service in 3. */
+#define EARTHLING_INTERACTION_IDLE 0
+#define EARTHLING_INTERACTION_CHOICE_PENDING 1
+#define EARTHLING_INTERACTION_COMPLETE 2
+#define EARTHLING_INTERACTION_ACTIVE 3
+
 /* Two twenty-record earthling banks. gEarthlingBank2Records is the
  * existing record-array alias of gEarthlingBanks[1]. The load-flag
  * copy likewise aliases gEarthlingBankUsers[1]; incomplete outer bounds

@@ -35,20 +35,20 @@ select_players:
     selection = MenuWhoHandler();
     gControllerPortsSwapped = 0;
     switch (selection) {
-    case 0:
+    case MENU_WHO_BOTH:
         gPlayerLives[PLAYER_TOEJAM] = 0;
         gPlayerRank[PLAYER_TOEJAM] = 0;
-        gPlayerInfo[PLAYER_TOEJAM].level = 0;
+        gPlayerInfo[PLAYER_TOEJAM].level = LEVEL_ZERO;
         gPlayerLives[PLAYER_EARL] = 0;
         gPlayerRank[PLAYER_EARL] = 0;
-        gPlayerInfo[PLAYER_EARL].level = 0;
-        gPlayerSelection = 2;
+        gPlayerInfo[PLAYER_EARL].level = LEVEL_ZERO;
+        gPlayerSelection = PLAYER_BOTH;
         gControllerPortsSwapped = 0;
         break;
-    case 1:
+    case MENU_WHO_TOEJAM:
         gPlayerLives[PLAYER_TOEJAM] = 0;
         gPlayerRank[PLAYER_TOEJAM] = 0;
-        gPlayerInfo[PLAYER_TOEJAM].level = 0;
+        gPlayerInfo[PLAYER_TOEJAM].level = LEVEL_ZERO;
         gPlayerLives[PLAYER_EARL] = -1;
         gPlayerRank[PLAYER_EARL] = 9;
         gPlayerInfo[PLAYER_EARL].level = 99;
@@ -60,13 +60,13 @@ select_players:
             gControllerPortsSwapped = 0;
             break;
         }
-    case 2:
+    case MENU_WHO_EARL:
         gPlayerLives[PLAYER_TOEJAM] = -1;
         gPlayerRank[PLAYER_TOEJAM] = 9;
         gPlayerInfo[PLAYER_TOEJAM].level = 99;
         gPlayerLives[PLAYER_EARL] = 0;
         gPlayerRank[PLAYER_EARL] = 0;
-        gPlayerInfo[PLAYER_EARL].level = 0;
+        gPlayerInfo[PLAYER_EARL].level = LEVEL_ZERO;
         gPlayerSelection = PLAYER_EARL;
         if (GetCtrl1Input()) {
             gControllerPortsSwapped = 1;
@@ -78,19 +78,19 @@ select_players:
     }
 select_game:
     switch ((short)MenuWhatHandler()) {
-    case 0:
+    case MENU_WHAT_RANDOM_WORLD:
         break;
-    case 1:
+    case MENU_WHAT_JAM_OUT:
         StartJamOut(MenuJamOutHandler());
         goto select_players;
-    case 2:
+    case MENU_WHAT_INTRO:
         IntroVideo();
         goto select_players;
-    case 3:
+    case MENU_WHAT_CONTROLLERS:
         gControllerButtonsAcSwapped = MenuControllerOptionsHandler();
         goto select_game;
-    case 4:
-        gWorldType = 1;
+    case MENU_WHAT_FIXED_WORLD:
+        gWorldType = WORLD_TYPE_FIXED;
         break;
     default:
         goto select_game;
@@ -131,7 +131,7 @@ void ShowGameOverAndReset()
 int MenuWhoHandler()
 {
     int selection;
-    AddMenuHeader(0);
+    AddMenuHeader(MENU_HEADER_WHO);
     selection = GeneralMenuHandler(2, MenuWhoItems, MenuWhoItemCount);
     RemoveMenuHeader();
     return selection;
@@ -141,7 +141,7 @@ int MenuWhoHandler()
 int MenuControllerOptionsHandler()
 {
     int selection;
-    AddMenuHeader(3);
+    AddMenuHeader(MENU_HEADER_CONTROLLERS);
     selection = GeneralMenuHandler(2, MenuControllerOptionsItems, MenuControllerOptionsItemCount);
     RemoveMenuHeader();
     return selection;
@@ -151,7 +151,7 @@ int MenuControllerOptionsHandler()
 int MenuWhatHandler()
 {
     int selection;
-    AddMenuHeader(1);
+    AddMenuHeader(MENU_HEADER_WHAT);
     selection = GeneralMenuHandler(2, MenuWhatItems, MenuWhatItemCount);
     RemoveMenuHeader();
     return selection;
@@ -161,7 +161,7 @@ int MenuWhatHandler()
 int MenuJamOutHandler()
 {
     int selection;
-    AddMenuHeader(2);
+    AddMenuHeader(MENU_HEADER_JAM_OUT);
     selection = GeneralMenuHandler(2, MenuJamOutItems, MenuJamOutItemCount);
     RemoveMenuHeader();
     return selection;
@@ -243,7 +243,7 @@ register struct menu_item *items;
         WaitForNextVBlank(1);
         UploadQueuedSpriteGraphics(0, 0);
         TextAnimateFontBanks(8);
-        SelectViewportSpriteChain(0);
+        SelectViewportSpriteChain(VIEWPORT_PRIMARY);
         GetRandomNumber();
         input = (unsigned char)GetCtrl1Input() | GetCtrl2Input();
         if (input != previous_input) {
@@ -307,7 +307,7 @@ void CreateMenuCursorEntity()
         cursor->frame_duration = 1;
         cursor->frame = -1;
         cursor->sprite_ready = 0;
-        AllocateEntityViewportSprites(cursor, 0);
+        AllocateEntityViewportSprites(cursor, VIEWPORT_PRIMARY);
     }
 }
 
@@ -348,7 +348,7 @@ short header_number;
         header->frame_duration = 1;
         header->frame = -1;
         header->sprite_ready = 0;
-        AllocateEntityViewportSprites(header, 0);
+        AllocateEntityViewportSprites(header, VIEWPORT_PRIMARY);
     }
 }
 

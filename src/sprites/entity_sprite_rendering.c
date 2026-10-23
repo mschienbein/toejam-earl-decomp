@@ -84,7 +84,7 @@ struct object_state *first_entity;
             }
             if ((sprite_number = entity->primary_shadow) && !(entity->behavior_flags & ENTITY_HIDDEN)) {
                 if (!IsSpriteSlotLocked(sprite_number)) {
-                    shadow_width = (gHardwareSpriteTable[sprite_number].size & 12) + 4;
+                    shadow_width = (gHardwareSpriteTable[sprite_number].size & VDP_SPRITE_WIDTH_MASK) + 4;
                     gHardwareSpriteTable[sprite_number].x = screen_x - shadow_width;
                     if (elevation < 0)
                         screen_y -= 2;
@@ -116,7 +116,7 @@ struct object_state *first_entity;
             }
             if ((sprite_number = entity->secondary_shadow) && !(entity->behavior_flags & ENTITY_HIDDEN)) {
                 if (!IsSpriteSlotLocked(sprite_number)) {
-                    shadow_width = (gHardwareSpriteTable[sprite_number].size & 12) + 4;
+                    shadow_width = (gHardwareSpriteTable[sprite_number].size & VDP_SPRITE_WIDTH_MASK) + 4;
                     gHardwareSpriteTable[sprite_number].x = screen_x - shadow_width;
                     if (elevation < 0)
                         screen_y -= 2;
@@ -168,20 +168,20 @@ void BuildViewportSpriteLinks()
                     secondary_sprites[secondary_count++] = entity->secondary_sprites[piece_number];
         }
     }
-    gHardwareSpriteTable[23].link = 79;
-    previous_sprite = 23;
+    gHardwareSpriteTable[SPRITE_CHAIN_PRIMARY_HEAD_SLOT].link = SPRITE_CHAIN_TERMINATOR_SLOT;
+    previous_sprite = SPRITE_CHAIN_PRIMARY_HEAD_SLOT;
     for (piece_number = 0; piece_number < primary_count; ++piece_number) {
         sprite_number = primary_sprites[piece_number];
-        gHardwareSpriteTable[sprite_number].link = 79;
+        gHardwareSpriteTable[sprite_number].link = SPRITE_CHAIN_TERMINATOR_SLOT;
         gHardwareSpriteTable[previous_sprite].link = sprite_number;
         previous_sprite = sprite_number;
     }
-    gHardwareSpriteTable[24].link = 79;
-    gHardwareSpriteTable[previous_sprite].link = 24;
-    previous_sprite = 24;
+    gHardwareSpriteTable[SPRITE_CHAIN_SECONDARY_HEAD_SLOT].link = SPRITE_CHAIN_TERMINATOR_SLOT;
+    gHardwareSpriteTable[previous_sprite].link = SPRITE_CHAIN_SECONDARY_HEAD_SLOT;
+    previous_sprite = SPRITE_CHAIN_SECONDARY_HEAD_SLOT;
     for (piece_number = 0; piece_number < secondary_count; ++piece_number) {
         sprite_number = secondary_sprites[piece_number];
-        gHardwareSpriteTable[sprite_number].link = 79;
+        gHardwareSpriteTable[sprite_number].link = SPRITE_CHAIN_TERMINATOR_SLOT;
         gHardwareSpriteTable[previous_sprite].link = sprite_number;
         previous_sprite = sprite_number;
     }
@@ -381,7 +381,7 @@ int reuse_tiles, viewport;
         if (!reuse_tiles) {
             if (format < 0)
                 SpriteUnpackInterleavedRLE(piece, tile_count);
-            else if (format & 64)
+            else if (format & SPRITE_FORMAT_RAW_TILES)
                 SpriteUnpackRaw(piece, tile_count);
             else
                 SpriteUnpackRLE(piece, tile_count);
@@ -401,7 +401,7 @@ int reuse_tiles, viewport;
             height_in_tiles = (int)piece->height;
             sprite_size += height_in_tiles - 1;
             gHardwareSpriteTable[sprite_number].size = sprite_size;
-            gHardwareSpriteTable[sprite_number].tile = ((short)(format & 3) << 13) + tile_base + tile_offset;
+            gHardwareSpriteTable[sprite_number].tile = ((short)(format & SPRITE_FORMAT_PALETTE_MASK) << 13) + tile_base + tile_offset;
             tile_offset += tile_count;
         } else {
             gHardwareSpriteTable[sprite_number].size = 0;
@@ -552,12 +552,12 @@ load_frame:
                 }
                 entity->current_frame = frame;
                 if (entity->draw_flags & ENTITY_PRIMARY_VIEW) {
-                    PrepareEntitySpriteFrame(entity, frame, reuse_tiles, 0);
+                    PrepareEntitySpriteFrame(entity, frame, reuse_tiles, VIEWPORT_PRIMARY);
                     reuse_tiles = 1;
                     entity->sprite_ready = 1;
                 }
                 if (entity->draw_flags & ENTITY_SECONDARY_VIEW) {
-                    PrepareEntitySpriteFrame(entity, frame, reuse_tiles, 1);
+                    PrepareEntitySpriteFrame(entity, frame, reuse_tiles, VIEWPORT_SECONDARY);
                     reuse_tiles = 1;
                     entity->sprite_ready = 1;
                 }

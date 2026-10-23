@@ -1,4 +1,5 @@
 #include "present_types.h"
+#include "dialogue_ids.h"
 #include "psg_effects.h"
 #include "fm_effects.h"
 #include "music_ids.h"
@@ -233,18 +234,18 @@ short player_number;
             PlaySoundEffect((long)Sfx_Jammin, 90, 0);
             ++sound_stage;
         } else if (sound_stage == 6 && !gPcmEffectCooldownTicks)
-            gRequestedMusicSelection = 0;
+            gRequestedMusicSelection = MUSIC_SCENE_DEFAULT;
     }
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     RestoreGameplayGraphics();
     if (gPlayerInventoryOpen[player_number ^ 1]) {
         InventoryDeactivateDisplayEntities(player_number ^ 1);
-        gPlayerInventoryOpen[player_number ^ 1] = 0;
+        gPlayerInventoryOpen[player_number ^ 1] = INVENTORY_CLOSED;
     }
     SelectSpriteChainStart(0);
     gSplitScreenEnabled = 0;
-    HudHidePlayerSprites(2);
+    HudHidePlayerSprites(PLAYER_BOTH);
     gPlayerPowerups[PLAYER_TOEJAM] = PRESENT_NONE;
     gPlayer2Powerup = PRESENT_NONE;
     VDP_CONTROL_WORD = 0x9100;
@@ -312,16 +313,16 @@ short piece_number;
 
     /* ORIGINAL BUG: an out-of-range piece leaves piece_name uninitialized. */
     switch (piece_number) {
-    case 0: piece_name = "rocketship windshield"; break;
-    case 1: piece_name = "left megawatt speaker"; break;
-    case 2: piece_name = "super funkomatic amplamator"; break;
-    case 3: piece_name = "amplamator connector fin"; break;
-    case 4: piece_name = "forward stabilizing unit"; break;
-    case 5: piece_name = "rear leg"; break;
-    case 6: piece_name = "awesome snowboard"; break;
-    case 7: piece_name = "righteous rapmaster capsule"; break;
-    case 8: piece_name = "right megawatt speaker"; break;
-    case 9: piece_name = "hyperfunk thruster"; break;
+    case SHIP_PIECE_WINDSHIELD: piece_name = "rocketship windshield"; break;
+    case SHIP_PIECE_LEFT_SPEAKER: piece_name = "left megawatt speaker"; break;
+    case SHIP_PIECE_AMPLAMATOR: piece_name = "super funkomatic amplamator"; break;
+    case SHIP_PIECE_CONNECTOR_FIN: piece_name = "amplamator connector fin"; break;
+    case SHIP_PIECE_FORWARD_STABILIZER: piece_name = "forward stabilizing unit"; break;
+    case SHIP_PIECE_REAR_LEG: piece_name = "rear leg"; break;
+    case SHIP_PIECE_SNOWBOARD: piece_name = "awesome snowboard"; break;
+    case SHIP_PIECE_RAPMASTER_CAPSULE: piece_name = "righteous rapmaster capsule"; break;
+    case SHIP_PIECE_RIGHT_SPEAKER: piece_name = "right megawatt speaker"; break;
+    case SHIP_PIECE_THRUSTER: piece_name = "hyperfunk thruster"; break;
     }
     for (character_count = 0; piece_name[character_count]; ++character_count)
         ;
@@ -427,7 +428,7 @@ short player_number;
 
     gFrameCounter = 0;
     while (gFrameCounter < 240) {
-        if (player_number == PLAYER_TOEJAM || player_number == 2) {
+        if (player_number == PLAYER_TOEJAM || player_number == PLAYER_BOTH) {
             pressed_buttons = ReadMappedPlayerInput(PLAYER_TOEJAM);
             pressed_buttons &= INPUT_ACTION_MASK;
             if (pressed_buttons) {
@@ -436,7 +437,7 @@ short player_number;
                 break;
             }
         }
-        if (player_number == PLAYER_EARL || player_number == 2) {
+        if (player_number == PLAYER_EARL || player_number == PLAYER_BOTH) {
             pressed_buttons = ReadMappedPlayerInput(PLAYER_EARL);
             pressed_buttons &= INPUT_ACTION_MASK;
             if (pressed_buttons) {
@@ -534,7 +535,7 @@ short selected_piece, player_number;
     if (selected_piece >= 0) {
         ShowShipPieceName(selected_piece);
         AnimateShipScreenPalette();
-    } else if (player_number != 2)
+    } else if (player_number != PLAYER_BOTH)
         ShowMissingShipPieceSummary(player_number);
     for (ship_number = 0; ship_number < 10; ++ship_number) {
         if ((*levels)[ship_number])
@@ -603,7 +604,7 @@ struct earthling_state *ship_piece;
     ship_piece->object = 0;
     ShowShipPieces(piece_number, player_number);
     if (player_number == PLAYER_TOEJAM || !gSplitScreenEnabled)
-        StartDialogue(2);
+        StartDialogue(DIALOGUE_SHIP_PIECE_COLLECTED);
     else
         GenerateSpeech(PLAYER_EARL, "Jammin", 1);
 }
@@ -656,5 +657,5 @@ void ShowRandomUncollectedShipPiece()
     do {
         piece_number = (piece_number + 1) % 10;
     } while (!gShipPieceLevelAssignments[piece_number]);
-    ShowShipPieces(piece_number, 2);
+    ShowShipPieces(piece_number, PLAYER_BOTH);
 }

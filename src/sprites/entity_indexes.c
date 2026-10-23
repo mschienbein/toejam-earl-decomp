@@ -10,9 +10,9 @@ void SetRAMIndexes()
     struct object_state *entity;
     short entity_number;
 
-    gHardwareSpriteTable[0].link = 23;
-    gHardwareSpriteTable[23].link = 79;
-    gHardwareSpriteTable[24].link = 79;
+    gHardwareSpriteTable[SPRITE_CHAIN_ROOT_SLOT].link = SPRITE_CHAIN_PRIMARY_HEAD_SLOT;
+    gHardwareSpriteTable[SPRITE_CHAIN_PRIMARY_HEAD_SLOT].link = SPRITE_CHAIN_TERMINATOR_SLOT;
+    gHardwareSpriteTable[SPRITE_CHAIN_SECONDARY_HEAD_SLOT].link = SPRITE_CHAIN_TERMINATOR_SLOT;
     entity = gPlayerInfo;
     entity_number = 0;
     do {

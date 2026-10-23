@@ -1,6 +1,7 @@
 #include "player_animation.h"
 #include "present_types.h"
 #include "earthling_types.h"
+#include "terrain.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "presents.h"
@@ -20,17 +21,17 @@ void InitializeLevelZeroFixedItems(item)
 struct level_item *item;
 {
     item->kind = ITEM_LARGE_UNIDENTIFIED;
-    item->level = 0;
+    item->level = LEVEL_ZERO;
     item->x = 1464;
     item->y = 854;
     ++item;
     item->kind = ITEM_LARGE_UNIDENTIFIED;
-    item->level = 0;
+    item->level = LEVEL_ZERO;
     item->x = 1536;
     item->y = 928;
     ++item;
     item->kind = ITEM_LARGE_UNIDENTIFIED;
-    item->level = 0;
+    item->level = LEVEL_ZERO;
     item->x = 1336;
     item->y = 1110;
 }
@@ -67,16 +68,16 @@ struct earthling_state *earthling;
     if (earthling->state == 1 &&
         !gPlayerInfo[earthling->object].frame_duration)
         SetEarthlingState(earthling, 0);
-    if (gPlayerLemonadeRewardStates[player_number] == 1 && !gPcmEffectCooldownTicks) {
+    if (gPlayerLemonadeRewardStates[player_number] == LEMONADE_REWARD_PENDING && !gPcmEffectCooldownTicks) {
         OpenSelectedPresent(player_number, PRESENT_EXTRA_LIFE);
-        gPlayerLemonadeRewardStates[player_number] = 2;
+        gPlayerLemonadeRewardStates[player_number] = LEMONADE_REWARD_GRANTED;
     }
     if (player->sprite_state == PLAYER_ANIM_DRINK_LEMONADE && !player->frame_duration) {
         SetSprite(player, GetActivePresentSprite(player));
         GenerateSpeech(player_number, "Burp", 1);
         PlaySoundEffect((long)Sfx_Burp, AUDIO_PRIORITY_NORMAL, 0);
         if (!gPlayerLemonadeRewardStates[player_number])
-            gPlayerLemonadeRewardStates[player_number] = 1;
+            gPlayerLemonadeRewardStates[player_number] = LEMONADE_REWARD_PENDING;
     } else if (player->sprite_state == PLAYER_ANIM_WALK_UP && player->y > earthling->y) {
         SetSprite(player, PLAYER_ANIM_DRINK_LEMONADE);
         SetEarthlingState(earthling, 1);

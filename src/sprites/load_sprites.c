@@ -16,8 +16,8 @@ short force, tiles_only;
         return;
     if (!tiles_only) {
         DmaCopyWordsToVram(gHardwareSpriteTable, 0xf800, 320);
-        gPrimaryViewportUploadedLink = gHardwareSpriteTable[23].link;
-        gSecondaryViewportUploadedLink = gHardwareSpriteTable[24].link;
+        gPrimaryViewportUploadedLink = gHardwareSpriteTable[SPRITE_CHAIN_PRIMARY_HEAD_SLOT].link;
+        gSecondaryViewportUploadedLink = gHardwareSpriteTable[SPRITE_CHAIN_SECONDARY_HEAD_SLOT].link;
     }
     tile_source = (unsigned short *)gSpriteTileUploadBuffer;
     for (queue_index = 0; queue_index < gSpriteTileUploadQueueWordCount; queue_index += 2) {

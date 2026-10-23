@@ -21,7 +21,7 @@ char sprite_state;
     entity->frames = definition->frames;
     entity->frame_phase = definition->period;
     entity->frame_duration = 1;
-    entity->frame = -1;
+    entity->frame = SPRITE_FRAME_BEFORE_FIRST;
     entity->sprite_state = sprite_state;
     entity->animation_group_mask = 1 << (entity->sprite_state >> 2);
 }

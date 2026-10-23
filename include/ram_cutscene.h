@@ -1,6 +1,9 @@
 #ifndef TJE_RAM_CUTSCENE_H
 #define TJE_RAM_CUTSCENE_H
 
+/* Intro and ending scene loops stop when their script dispatch stores this shared sentinel. */
+#define CUTSCENE_SCRIPT_DONE (-1)
+
 
 /* Exact observed views; unspecified outer bounds do not claim allocations. */
 extern short gSegaPaletteUploadPending;

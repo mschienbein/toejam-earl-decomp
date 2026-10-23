@@ -12,6 +12,23 @@
 #define SPRITE_TILE_POOL_FIRST 640
 #define SPRITE_TILES_PER_GROUP 8
 
+/* SetRAMIndexes starts the hardware chain at record zero. */
+#define SPRITE_CHAIN_ROOT_SLOT 0
+/* SelectSpriteChainStart selects record one for the player-only chain and eleven for the HUD. */
+#define SPRITE_CHAIN_PLAYER_HEAD_SLOT 1
+#define SPRITE_CHAIN_HUD_HEAD_SLOT 11
+/* BuildViewportSpriteLinks starts each viewport list at its reserved sentinel record. */
+#define SPRITE_CHAIN_PRIMARY_HEAD_SLOT 23
+#define SPRITE_CHAIN_SECONDARY_HEAD_SLOT 24
+/* BuildViewportSpriteLinks and TerminateSpriteChainAtHead link unused tails through record 79. */
+#define SPRITE_CHAIN_TERMINATOR_SLOT 79
+/* SetupPlayer terminates record 79's link with the VDP end-of-chain value. */
+#define SPRITE_LINK_END 0
+
+/* FunkatronUpdateSceneEntities switches between the descriptor's idle and interaction sequences. */
+#define FUNKATRON_SPRITE_IDLE 0
+#define FUNKATRON_SPRITE_INTERACTION 1
+
 /* Dynamic entity handles map to the allocator's separate byte flags. */
 #define DYNAMIC_ENTITY_FIRST_SLOT 6
 #define DYNAMIC_ENTITY_GAMEPLAY_SLOTS 20

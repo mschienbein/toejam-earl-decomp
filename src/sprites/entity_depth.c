@@ -16,7 +16,7 @@ struct object_state *entity;
 
     viewport_bit = ENTITY_PRIMARY_VIEW;
     sprite_number = entity->primary_shadow;
-    viewport = 0;
+    viewport = VIEWPORT_PRIMARY;
     do {
         if (entity->draw_flags & viewport_bit) {
             if (IsSpriteSlotLocked(sprite_number))
@@ -33,13 +33,13 @@ struct object_state *entity;
                     return;
             }
             if (sprite_number) {
-                if (entity->height < 0 && entity->sprite_state != -1) {
+                if (entity->height < 0 && entity->sprite_state != SPRITE_STATE_NO_DESCRIPTOR) {
                     gHardwareSpriteTable[sprite_number].size = VDP_SPRITE_SIZE_4X1;
                     gHardwareSpriteTable[sprite_number].tile = 0x87f9;
                 } else {
                     unsigned char old_depth = gHardwareSpriteTable[sprite_number].size & 0x70;
 
-                    if (entity->height >= 128 || entity->sprite_state == -1)
+                    if (entity->height >= 128 || entity->sprite_state == SPRITE_STATE_NO_DESCRIPTOR)
                         depth = 16;
                     else
                         depth = 127 - entity->height;
@@ -47,7 +47,7 @@ struct object_state *entity;
                     if (depth != old_depth) {
                         gHardwareSpriteTable[sprite_number].size = depth;
                         depth >>= 4;
-                        gHardwareSpriteTable[sprite_number].size |= (depth << 1) & 12;
+                        gHardwareSpriteTable[sprite_number].size |= (depth << 1) & VDP_SPRITE_WIDTH_MASK;
                         gHardwareSpriteTable[sprite_number].tile = SpriteTileAllocationLookup[depth - 1] + 0xe7a0;
                     }
                 }
@@ -56,7 +56,7 @@ struct object_state *entity;
         viewport_bit = ENTITY_SECONDARY_VIEW;
         sprite_number = entity->secondary_shadow;
         ++viewport;
-    } while (viewport <= 1);
+    } while (viewport <= VIEWPORT_SECONDARY);
 }
 
 /* Walk the 26 entity records and dispatch the active record's flag mode. */

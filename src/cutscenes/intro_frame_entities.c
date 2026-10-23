@@ -37,13 +37,13 @@ void IntroCreateHiddenFrameEntities()
             object->y = 160;
             object->tile |= VDP_TILE_PRIORITY;
             object->behavior_flags |= ENTITY_HIDDEN;
-            AllocateEntityViewportSprites(object, 0);
+            AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
             object->sprite_ready = 0;
             object->sequence = &IntroHeldFrameStreams[index].frame;
             object->frames = frames;
             object->frame_phase = 1;
             object->frame_duration = 1;
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
         }
         gIntroComponentEntities[index] = object_number;
     }

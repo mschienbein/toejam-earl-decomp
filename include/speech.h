@@ -6,6 +6,9 @@
 #define SPEECH_TEXT_UPLOAD_TILES 13
 #define SPEECH_BUBBLE_PREFIX_GLYPH 27
 
+/* StartDialogue returns -1 when no reply slot or eligible player speaker is available. */
+#define DIALOGUE_SLOT_UNAVAILABLE (-1)
+
 /* K&R return interfaces. Represented C definitions establish their types;
  * remaining ROM-only declarations describe the observed ABI, not a uniquely
  * recovered historical C spelling. */

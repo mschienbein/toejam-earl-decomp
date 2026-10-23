@@ -14,22 +14,22 @@ short animation, x, y;
 
     object = &gPlayerInfo[gCutsceneRocketshipEntity];
     if (object->draw_flags & ENTITY_PRIMARY_VIEW)
-        ReleaseEntityViewportSprites(object, 0);
+        ReleaseEntityViewportSprites(object, VIEWPORT_PRIMARY);
     object->x = x;
     object->y = y;
     object->sprite_ready = 0;
     object->sequence = &IntroHeldFrameStreams[animation].frame;
     object->frame_duration = 1;
-    object->frame = -1;
-    AllocateEntityViewportSprites(object, 0);
+    object->frame = SPRITE_FRAME_BEFORE_FIRST;
+    AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
     object = &gPlayerInfo[gCutsceneRocketshipExhaustEntity];
     if (object->draw_flags & ENTITY_PRIMARY_VIEW)
-        ReleaseEntityViewportSprites(object, 0);
+        ReleaseEntityViewportSprites(object, VIEWPORT_PRIMARY);
     object->x = x;
     object->y = y;
     object->sprite_ready = 0;
     object->sequence = IntroAnimationPointers[animation];
     object->frame_duration = 1;
-    object->frame = -1;
-    AllocateEntityViewportSprites(object, 0);
+    object->frame = SPRITE_FRAME_BEFORE_FIRST;
+    AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
 }

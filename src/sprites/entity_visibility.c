@@ -17,7 +17,7 @@ short viewport;
 
     viewport_height = 112;
     viewport_width = 320;
-    if (viewport == 0) {
+    if (viewport == VIEWPORT_PRIMARY) {
         if (gPlayerInventoryOpen[PLAYER_TOEJAM] || entity->level != gPlayer1MapLevel)
             return 0;
         relative_x = entity->x - gCamera1PendingX;
@@ -54,26 +54,26 @@ int entity_number;
             if (!IsSpeechBubbleEntity(entity_number) && !(entity->draw_flags & ENTITY_PRIMARY_VIEW))
                 add_primary = 1;
         } else if (entity->draw_flags & ENTITY_PRIMARY_VIEW)
-            ReleaseEntityViewportSprites(entity, 0);
+            ReleaseEntityViewportSprites(entity, VIEWPORT_PRIMARY);
         if (IsEntityVisibleInViewport(entity, 1)) {
             if (!IsSpeechBubbleEntity(entity_number) && !(entity->draw_flags & ENTITY_SECONDARY_VIEW))
                 add_secondary = 1;
         } else if (entity->draw_flags & ENTITY_SECONDARY_VIEW)
-            ReleaseEntityViewportSprites(entity, 1);
+            ReleaseEntityViewportSprites(entity, VIEWPORT_SECONDARY);
         if (add_primary) {
             if (entity_number == PLAYER_TOEJAM && (entity->draw_flags & ENTITY_SECONDARY_VIEW))
-                ReleaseEntityViewportSprites(entity, 1);
+                ReleaseEntityViewportSprites(entity, VIEWPORT_SECONDARY);
             if (entity_number != PLAYER_EARL || !(entity->draw_flags & ENTITY_SECONDARY_VIEW)) {
                 entity->sprite_ready = 0;
-                AllocateEntityViewportSprites(entity, 0);
+                AllocateEntityViewportSprites(entity, VIEWPORT_PRIMARY);
             }
         }
         if (add_secondary) {
             if (entity_number == PLAYER_EARL && (entity->draw_flags & ENTITY_PRIMARY_VIEW))
-                ReleaseEntityViewportSprites(entity, 0);
+                ReleaseEntityViewportSprites(entity, VIEWPORT_PRIMARY);
             if (entity_number != PLAYER_TOEJAM || !(entity->draw_flags & ENTITY_PRIMARY_VIEW)) {
                 entity->sprite_ready = 0;
-                AllocateEntityViewportSprites(entity, 1);
+                AllocateEntityViewportSprites(entity, VIEWPORT_SECONDARY);
             }
         }
     }

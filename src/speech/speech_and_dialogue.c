@@ -119,10 +119,10 @@ char replace_attached;
             bubble->tile = VDP_TILE_PRIORITY;
         bubble->current_frame = &SpeechBubbleTextFrame;
         if (source->draw_flags & ENTITY_PRIMARY_VIEW) {
-            AllocateEntityViewportSprites(bubble, 0);
+            AllocateEntityViewportSprites(bubble, VIEWPORT_PRIMARY);
             viewport = 0;
         } else {
-            AllocateEntityViewportSprites(bubble, 1);
+            AllocateEntityViewportSprites(bubble, VIEWPORT_SECONDARY);
             viewport = 1;
         }
         if (!(bubble->draw_flags & ENTITY_EITHER_VIEW)) {
@@ -207,7 +207,7 @@ short dialogue_number, speaker;
     if (gDelayedSpeechReplyTimers[0]) {
         slot = 1;
         if (gDelayedSpeechReplyTimers[1]) {
-            slot = -1;
+            slot = DIALOGUE_SLOT_UNAVAILABLE;
             return slot;
         }
     }
@@ -215,7 +215,7 @@ short dialogue_number, speaker;
     if (dialogue->first_speaker <= PLAYER_EARL)
         speaker = dialogue->first_speaker;
     else if (gDelayedSpeechReplyTimers[slot ^ 1] && gDelayedSpeechReplySpeakers[slot ^ 1] == speaker) {
-        slot = -1;
+        slot = DIALOGUE_SLOT_UNAVAILABLE;
         return slot;
     }
     /* MATCHING QUALIFICATION: This redundant short-to-short copy deliberately
@@ -231,7 +231,7 @@ short dialogue_number, speaker;
         gDelayedSpeechReplySpeakers[slot] = selected_speaker ^ 1;
     reply_speaker = gDelayedSpeechReplySpeakers[slot];
     if (selected_speaker <= PLAYER_EARL && (gPlayerLives[selected_speaker] < 0 || gPlayerInventoryOpen[selected_speaker])) {
-        slot = -1;
+        slot = DIALOGUE_SLOT_UNAVAILABLE;
         return slot;
     }
     if (dialogue->first_line)
@@ -283,7 +283,7 @@ void UpdateSpeechAndDialogue()
         player_number = GetRandomNumber() & 1;
         if (EarthlingResetStateTwoByDrawMask(gPlayerInfo[player_number].draw_flags & ENTITY_EITHER_VIEW)) {
             slot = StartDialogue(0, player_number);
-            if (slot != -1) {
+            if (slot != DIALOGUE_SLOT_UNAVAILABLE) {
                 PlaySoundEffect((long)Sfx_Achoo, AUDIO_PRIORITY_NORMAL, 0);
                 if (gSplitScreenEnabled)
                     gDelayedSpeechReplyTimers[slot] = 0;

@@ -25,4 +25,17 @@
 #define METATILE_BASE_MASK 0x7f
 #define METATILE_OVERLAY_MASK 0x1f00
 
+/* GetOverlayMetatileTile and LoadMapIntoVRAM decode the compact overlay selector, not the base ID. */
+#define OVERLAY_METATILE_MIRROR_X 0x10
+#define OVERLAY_METATILE_BASE_MASK 15
+
+/* TerrainValidation accepts these flags by comparing each sampled tile's terrain property. */
+#define TERRAIN_PLACEMENT_GROUND 1
+#define TERRAIN_PLACEMENT_SINKING 2
+#define TERRAIN_PLACEMENT_WATER 8
+/* TerrainValidation rejects nonzero overlay selectors unless this flag is present. */
+#define TERRAIN_PLACEMENT_ALLOW_OVERLAY 4
+/* SetPositionOnNewLevel and MapFindItemPlacementPosition allow ground or sinking terrain. */
+#define TERRAIN_PLACEMENT_GROUND_OR_SINKING 3
+
 #endif

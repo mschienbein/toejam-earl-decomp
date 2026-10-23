@@ -14,6 +14,12 @@ extern char gPlayerPromotionDisplayEntities[];
 extern char gPlayerDoorwayEntities[];
 extern char gPlayerDecoyHitCounts[];
 
+/* PresentUpdateDoorways stores player index + 1 in the low two contact bits. */
+#define DOORWAY_CONTACT_PLAYER_MASK 3
+#define DOORWAY_CONTACT_PLAYER_BIAS 1
+/* PresentUpdateDoorways sets bit 4 while the contacting player is centered in the doorway. */
+#define DOORWAY_CONTACT_CENTERED 4
+
 /* gSecondDoorwayPlayerContactFlags is the existing scalar alias of gDoorwayPlayerContactFlags[1]. */
 extern char gDoorwayPlayerContactFlags[];
 extern char gSecondDoorwayPlayerContactFlags;
@@ -47,6 +53,11 @@ extern char gPlayerTomatoRainSpawnDelay[2];
 
 /* Six mole-effect object handles shared with land/effect cleanup. */
 extern char gMoleEffectEntities[6];
+
+/* LemonadeAbility changes the available reward to pending after a burp, then grants it once. */
+#define LEMONADE_REWARD_AVAILABLE 0
+#define LEMONADE_REWARD_PENDING 1
+#define LEMONADE_REWARD_GRANTED 2
 
 /* Second-player burp-count alias and per-player lemonade reward state. */
 extern char gPlayer2BurpsLeft;

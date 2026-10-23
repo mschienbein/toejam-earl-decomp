@@ -215,7 +215,7 @@ short level;
     }
     special = EarthlingConfigureMailboxLevelBank(bank, level);
     for (record_number = 0; record_number < EARTHLINGS_PER_BANK; ++record_number) {
-        if (level == 1) {
+        if (level == LEVEL_FIRST) {
             if (saved_random) {
                 StackBasedRandom(saved_random);
                 saved_random = 0;
@@ -279,9 +279,9 @@ void SetupInitialEarthlings()
         gEarthlingBank2Records[record_number].kind = EARTHLING_UNUSED;
     }
     if (gPlayerLives[PLAYER_TOEJAM] >= 0)
-        EarthlingRetainLevelBank(1);
+        EarthlingRetainLevelBank(LEVEL_FIRST);
     if (gPlayer2Lives >= 0)
-        EarthlingRetainLevelBank(1);
+        EarthlingRetainLevelBank(LEVEL_FIRST);
     AssignShipPieceLevels();
 }
 
@@ -389,7 +389,7 @@ struct earthling_state *earthling;
         object->tile = VDP_TILE_PRIORITY;
         if (earthling->kind != EARTHLING_SHARK)
             object->behavior_flags |= ENTITY_COLLIDABLE;
-        if ((data->behavior_flags & 1) &&
+        if ((data->behavior_flags & EARTHLING_HAS_COMPANION) &&
             (gCachedRandomValues[gRandomCacheIndex == 58 ?
                            (gRandomCacheIndex = 0) : ++gRandomCacheIndex] & 1) &&
             (earthling->second_object = (int)AllocateEntity())) {
@@ -445,18 +445,18 @@ struct earthling_state *earthlings;
             if (earthling->level == gPlayer1MapLevel &&
                 toejam_x + 160 > 0 && toejam_x < 480 &&
                 toejam_y + 112 > 0 && toejam_y < 336)
-                earthling->health_visibility[1] |= 2;
+                earthling->health_visibility[1] |= EARTHLING_PRIMARY_VIEW;
             else
-                earthling->health_visibility[1] &= ~2;
+                earthling->health_visibility[1] &= ~EARTHLING_PRIMARY_VIEW;
             if (earthling->level == gPlayer2MapLevel && gSplitScreenEnabled &&
                 earl_x + 160 > 0 && earl_x < 480 &&
                 earl_y + 112 > 0 && earl_y < 336)
-                earthling->health_visibility[1] |= 4;
+                earthling->health_visibility[1] |= EARTHLING_SECONDARY_VIEW;
             else
-                earthling->health_visibility[1] &= ~4;
+                earthling->health_visibility[1] &= ~EARTHLING_SECONDARY_VIEW;
         } else
             earthling->health_visibility[1] = 0;
-        if (earthling->health_visibility[1] & 6) {
+        if (earthling->health_visibility[1] & EARTHLING_EITHER_VIEW) {
             if (!earthling->object)
                 EarthlingAllocateEntities(earthling);
         } else {
@@ -624,7 +624,7 @@ void EarthlingDispatchPlayerContacts()
                         !(player->behavior_flags & ENTITY_PLAYER_SUPPRESSED) &&
                         EntityIsWithinRange(object, player, data->contact_distance_x,
                                     data->contact_distance_y)) {
-                        if ((data->behavior_flags & 1) && earthling->state == 2) {
+                        if ((data->behavior_flags & EARTHLING_HAS_COMPANION) && earthling->state == 2) {
                             SetEarthlingState(earthling, 0);
                             earthling->timer = 0;
                         }
@@ -733,7 +733,7 @@ char draw_mask;
                 if (earthling->kind != EARTHLING_UNUSED && earthling->object &&
                     earthling->state == 2) {
                     data = &EarthlingDefinitions[earthling->kind];
-                    if ((data->behavior_flags & 1) &&
+                    if ((data->behavior_flags & EARTHLING_HAS_COMPANION) &&
                         (gPlayerInfo[earthling->object].draw_flags & draw_mask)) {
                         SetEarthlingState(earthling, 0);
                         earthling->timer = 0;

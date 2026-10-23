@@ -9,9 +9,9 @@ char elevator_number;
 {
     char record_number;
 
-    elevator_number -= 1;
+    elevator_number -= ELEVATOR_HANDLE_PRIMARY_DEPARTURE;
     record_number = elevator_number >> 1;
-    if (gElevatorRecords[record_number][elevator_number & 1].state == ELEVATOR_STATE_OPEN)
+    if (gElevatorRecords[record_number][elevator_number & ELEVATOR_HANDLE_TYPE_MASK].state == ELEVATOR_STATE_OPEN)
         return 1;
     return 0;
 }

@@ -93,9 +93,9 @@ short random_steps, turn_chance;
 {
     short direction_steps = 0;
     /* The absent-direction sentinels are signed words. */
-    short opposite_direction = -1;
+    short opposite_direction = MAP_PATH_DIRECTION_NONE;
     short row, column;
-    short previous_direction = -1;
+    short previous_direction = MAP_PATH_DIRECTION_NONE;
     short repeated_steps = 0;
     short steps = 0;
     short direction, next_direction;
@@ -112,22 +112,22 @@ short random_steps, turn_chance;
                 next_direction = MapPathTurnDirections[GetRandomNumber() % 3 + 1 + direction];
             else if (GetRandomNumber() % 100 < 50) {
                 if (target_row - row > 0)
-                    next_direction = 4;
+                    next_direction = MAP_PATH_DOWN;
                 else if (target_row != row)
-                    next_direction = 1;
+                    next_direction = MAP_PATH_UP;
                 else if (GetRandomNumber() % 100 < 50)
-                    next_direction = 1;
+                    next_direction = MAP_PATH_UP;
                 else
-                    next_direction = 4;
+                    next_direction = MAP_PATH_DOWN;
             } else {
                 if (target_column - column > 0)
-                    next_direction = 2;
+                    next_direction = MAP_PATH_RIGHT;
                 else if (column != target_column)
-                    next_direction = 8;
+                    next_direction = MAP_PATH_LEFT;
                 else if (GetRandomNumber() % 100 < 50)
-                    next_direction = 8;
+                    next_direction = MAP_PATH_LEFT;
                 else
-                    next_direction = 2;
+                    next_direction = MAP_PATH_RIGHT;
             }
         }
         if (!turn_chance || GetRandomNumber() % 100 < 80)
@@ -142,27 +142,27 @@ short random_steps, turn_chance;
         } else
             repeated_steps = 0;
         if (direction != opposite_direction &&
-            ((direction == 1 && row > 2) ||
-             (direction == 4 && row < 24) ||
-             (direction == 8 && column > 2) ||
-             (direction == 2 && column < 17))) {
-            gPlayer1LevelMap[row][column] |= direction | 0x2000;
+            ((direction == MAP_PATH_UP && row > 2) ||
+             (direction == MAP_PATH_DOWN && row < 24) ||
+             (direction == MAP_PATH_LEFT && column > 2) ||
+             (direction == MAP_PATH_RIGHT && column < 17))) {
+            gPlayer1LevelMap[row][column] |= direction | MAP_REGION_PATH;
             if (copy_directions)
                 gMapPathDirectionBanks[row][column] |= direction;
-            if (direction == 1) {
+            if (direction == MAP_PATH_UP) {
                 --row;
-                opposite_direction = 4;
-            } else if (direction == 4) {
+                opposite_direction = MAP_PATH_DOWN;
+            } else if (direction == MAP_PATH_DOWN) {
                 ++row;
-                opposite_direction = 1;
-            } else if (direction == 8) {
+                opposite_direction = MAP_PATH_UP;
+            } else if (direction == MAP_PATH_LEFT) {
                 --column;
-                opposite_direction = 2;
-            } else if (direction == 2) {
+                opposite_direction = MAP_PATH_RIGHT;
+            } else if (direction == MAP_PATH_RIGHT) {
                 ++column;
-                opposite_direction = 8;
+                opposite_direction = MAP_PATH_LEFT;
             }
-            gPlayer1LevelMap[row][column] |= opposite_direction | 0x2000;
+            gPlayer1LevelMap[row][column] |= opposite_direction | MAP_REGION_PATH;
             if (copy_directions)
                 gMapPathDirectionBanks[row][column] |= opposite_direction;
             previous_direction = direction;
@@ -188,25 +188,25 @@ short direction, region, join_chance;
     row = *row_position;
     column = *column_position;
     while (1) {
-        if (direction == 1)
+        if (direction == MAP_PATH_UP)
             --row;
-        if (direction == 4)
+        if (direction == MAP_PATH_DOWN)
             ++row;
-        if (direction == 8)
+        if (direction == MAP_PATH_LEFT)
             --column;
-        if (direction == 2)
+        if (direction == MAP_PATH_RIGHT)
             ++column;
         if (row < 0 || column < 0 || row >= 25 || column >= 18)
             break;
-        if ((row == 0 || row == 24) && (direction & 10))
+        if ((row == 0 || row == 24) && (direction & MAP_PATH_HORIZONTAL_MASK))
             return 0;
-        if ((column == 0 || column == 17) && (direction & 5))
+        if ((column == 0 || column == 17) && (direction & MAP_PATH_VERTICAL_MASK))
             return 0;
         overlaps = 0;
         for (row_offset = 0; row_offset < 2; ++row_offset)
             for (column_offset = 0; column_offset < 2; ++column_offset) {
                 tile = gPlayer1LevelMap[row + row_offset][column + column_offset];
-                if ((tile & 0x3000) == 0x1000 && tile != region) {
+                if ((tile & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY && tile != region) {
                     ++overlaps;
                     if (overlaps >= 2 && join_chance > GetRandomNumber() % 100) {
                         *row_position = row;
@@ -240,13 +240,13 @@ short direction, region;
     row = *row_position;
     column = *column_position;
     while (1) {
-        if (direction == 1)
+        if (direction == MAP_PATH_UP)
             --row;
-        if (direction == 4)
+        if (direction == MAP_PATH_DOWN)
             ++row;
-        if (direction == 8)
+        if (direction == MAP_PATH_LEFT)
             --column;
-        if (direction == 2)
+        if (direction == MAP_PATH_RIGHT)
             ++column;
         if (row < 1 || column < 1 || row >= 24 || column >= 17)
             break;
@@ -262,7 +262,7 @@ short direction, region;
         for (row_offset = -1; row_offset < 3; ++row_offset)
             for (column_offset = -1; column_offset < 3; ++column_offset) {
                 tile = gPlayer1LevelMap[row + row_offset][column + column_offset];
-                if (tile != region && tile != ((region & 0x700) | 0x1000))
+                if (tile != region && tile != ((region & MAP_REGION_LABEL_MASK) | MAP_REGION_BOUNDARY))
                     return 0;
             }
         for (row_offset = 0; row_offset < 2; ++row_offset)
@@ -315,24 +315,24 @@ short column;
   sizeof(&stop_chance);
   region = region_number << 8;
   region |= terrain_kind;
-  if (terrain_kind == 0x1000)
+  if (terrain_kind == MAP_REGION_BOUNDARY)
   {
     stop_chance = MapGetRandomGenerationParameter(0);
     join_chance = MapGetRandomGenerationParameter(2);
   }
   else
-    if (terrain_kind == 0x3000)
+    if (terrain_kind == MAP_REGION_FILLED)
     stop_chance = MapGetRandomGenerationParameter(1);
   remaining_steps = 0;
   while (1)
   {
-    if (terrain_kind == 0x1000)
+    if (terrain_kind == MAP_REGION_BOUNDARY)
     {
       for (row_offset = 0; row_offset < 2; ++row_offset)
         for (column_offset = 0; column_offset < 2; ++column_offset)
       {
         tile = gPlayer1LevelMap[row + row_offset][column + column_offset];
-        if (((tile & 0x3000) == 0x1000) && (tile != region))
+        if (((tile & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY) && (tile != region))
         {
           for (row_offset = 0; row_offset < 26; ++row_offset)
             for (column_offset = 0; column_offset < 19; ++column_offset)
@@ -353,7 +353,7 @@ short column;
     if (remaining_steps <= 0)
     {
       remaining_steps = GetRandomNumber() & 1;
-      if (terrain_kind == 0x3000)
+      if (terrain_kind == MAP_REGION_FILLED)
         ++remaining_steps;
       preferred_direction = MapPathTurnDirections[((GetRandomNumber() % 3) + 1) + direction];
     }
@@ -362,11 +362,11 @@ short column;
     tried_directions = 0;
     while (1)
     {
-      if ((terrain_kind == 0x1000) && MapFindRegionGrowthOrigin(&row, &column, direction, region, join_chance))
+      if ((terrain_kind == MAP_REGION_BOUNDARY) && MapFindRegionGrowthOrigin(&row, &column, direction, region, join_chance))
         break;
-      if ((terrain_kind != 0x1000) && MapFindInteriorGrowthOrigin(&row, &column, direction, region))
+      if ((terrain_kind != MAP_REGION_BOUNDARY) && MapFindInteriorGrowthOrigin(&row, &column, direction, region))
         break;
-      if ((tried_directions |= direction) != 15)
+      if ((tried_directions |= direction) != MAP_PATH_DIRECTION_MASK)
       {
         do
         {
@@ -386,7 +386,7 @@ short column;
       if (minimum_cells > 0)
         for (row_offset = 0; row_offset < 26; ++row_offset)
         for (column_offset = 0; column_offset < 19; ++column_offset)
-        if (terrain_kind == (gPlayer1LevelMap[row_offset][column_offset] & 0x3000))
+        if (terrain_kind == (gPlayer1LevelMap[row_offset][column_offset] & MAP_REGION_KIND_MASK))
         ++cell_count;
 
 
@@ -418,7 +418,7 @@ short start_row, start_column, height, width, replacement;
     for (row = start_row; row < start_row + height; ++row)
         for (column = start_column; column < start_column + width; ++column) {
             tile = gPlayer1LevelMap[row][column];
-            if ((tile & 0x3000) == 0x1000 && tile != replacement) {
+            if ((tile & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY && tile != replacement) {
                 for (map_row = 0; map_row < MAP_ROWS; ++map_row)
                     for (map_column = 0; map_column < MAP_COLUMNS; ++map_column)
                         if (gPlayer1LevelMap[map_row][map_column] == tile)
@@ -436,8 +436,8 @@ short row, column;
     short changed = 0;
     short terrain;
 
-    if ((gPlayer1LevelMap[row][column] & 1) &&
-        ((terrain = gPlayer1LevelMap[row - 1][column]) & 0x3000) == 0x1000 &&
+    if ((gPlayer1LevelMap[row][column] & MAP_PATH_UP) &&
+        ((terrain = gPlayer1LevelMap[row - 1][column]) & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY &&
         (gPlayer1LevelMap[row - 1][column - 1] != terrain ||
          gPlayer1LevelMap[row - 1][column + 1] != terrain ||
          gPlayer1LevelMap[row - 2][column - 1] != terrain ||
@@ -445,8 +445,8 @@ short row, column;
         MapFillRectangleAndMergeRegions(row - 2, column - 1, 2, 3, terrain);
         changed = 1;
     }
-    if ((gPlayer1LevelMap[row][column] & 4) &&
-        ((terrain = gPlayer1LevelMap[row + 1][column]) & 0x3000) == 0x1000 &&
+    if ((gPlayer1LevelMap[row][column] & MAP_PATH_DOWN) &&
+        ((terrain = gPlayer1LevelMap[row + 1][column]) & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY &&
         (gPlayer1LevelMap[row + 1][column - 1] != terrain ||
          gPlayer1LevelMap[row + 1][column + 1] != terrain ||
          gPlayer1LevelMap[row + 2][column - 1] != terrain ||
@@ -454,8 +454,8 @@ short row, column;
         MapFillRectangleAndMergeRegions(row + 1, column - 1, 2, 3, terrain);
         changed = 1;
     }
-    if ((gPlayer1LevelMap[row][column] & 8) &&
-        ((terrain = gPlayer1LevelMap[row][column - 1]) & 0x3000) == 0x1000 &&
+    if ((gPlayer1LevelMap[row][column] & MAP_PATH_LEFT) &&
+        ((terrain = gPlayer1LevelMap[row][column - 1]) & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY &&
         (gPlayer1LevelMap[row - 1][column - 1] != terrain ||
          gPlayer1LevelMap[row + 1][column - 1] != terrain ||
          gPlayer1LevelMap[row - 1][column - 2] != terrain ||
@@ -463,8 +463,8 @@ short row, column;
         MapFillRectangleAndMergeRegions(row - 1, column - 2, 3, 2, terrain);
         changed = 1;
     }
-    if ((gPlayer1LevelMap[row][column] & 2) &&
-        ((terrain = gPlayer1LevelMap[row][column + 1]) & 0x3000) == 0x1000 &&
+    if ((gPlayer1LevelMap[row][column] & MAP_PATH_RIGHT) &&
+        ((terrain = gPlayer1LevelMap[row][column + 1]) & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY &&
         (gPlayer1LevelMap[row - 1][column + 1] != terrain ||
          gPlayer1LevelMap[row + 1][column + 1] != terrain ||
          gPlayer1LevelMap[row - 1][column + 2] != terrain ||
@@ -491,8 +491,8 @@ void MapWidenHorizontalRegionEdges()
         previous_terrain = 0xffff;
         for (column = 0; column < MAP_COLUMNS; column++) {
             terrain = gPlayer1LevelMap[row][column];
-            if ((terrain & 0x3000) == 0x1000 &&
-                (row == 0 || (gPlayer1LevelMap[row - 1][column] & 0x3000) != 0x1000)) {
+            if ((terrain & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY &&
+                (row == 0 || (gPlayer1LevelMap[row - 1][column] & MAP_REGION_KIND_MASK) != MAP_REGION_BOUNDARY)) {
                 if (terrain == previous_terrain)
                     run_length++;
                 else {
@@ -518,8 +518,8 @@ void MapWidenHorizontalRegionEdges()
         previous_terrain = 0xffff;
         for (column = 0; column < MAP_COLUMNS; column++) {
             terrain = gPlayer1LevelMap[row][column];
-            if ((terrain & 0x3000) == 0x1000 &&
-                (row == 25 || (gPlayer1LevelMap[row + 1][column] & 0x3000) != 0x1000)) {
+            if ((terrain & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY &&
+                (row == 25 || (gPlayer1LevelMap[row + 1][column] & MAP_REGION_KIND_MASK) != MAP_REGION_BOUNDARY)) {
                 if (terrain == previous_terrain)
                     run_length++;
                 else {
@@ -554,8 +554,8 @@ void MapWidenVerticalRegionEdges()
         previous_terrain = 0xffff;
         for (row = 0; row < MAP_ROWS; row++) {
             terrain = gPlayer1LevelMap[row][column];
-            if ((terrain & 0x3000) == 0x1000 &&
-                (column == 0 || (gPlayer1LevelMap[row][column - 1] & 0x3000) != 0x1000)) {
+            if ((terrain & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY &&
+                (column == 0 || (gPlayer1LevelMap[row][column - 1] & MAP_REGION_KIND_MASK) != MAP_REGION_BOUNDARY)) {
                 if (terrain == previous_terrain)
                     run_length++;
                 else {
@@ -581,8 +581,8 @@ void MapWidenVerticalRegionEdges()
         previous_terrain = 0xffff;
         for (row = 0; row < MAP_ROWS; row++) {
             terrain = gPlayer1LevelMap[row][column];
-            if ((terrain & 0x3000) == 0x1000 &&
-                (column == 18 || (gPlayer1LevelMap[row][column + 1] & 0x3000) != 0x1000)) {
+            if ((terrain & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY &&
+                (column == 18 || (gPlayer1LevelMap[row][column + 1] & MAP_REGION_KIND_MASK) != MAP_REGION_BOUNDARY)) {
                 if (terrain == previous_terrain)
                     run_length++;
                 else {
@@ -616,7 +616,7 @@ void MapStabilizeRegionConnections()
         changed = 0;
         for (row = 0; row < MAP_ROWS; ++row) {
             for (column = 0; column < MAP_COLUMNS; ++column) {
-                if ((gPlayer1LevelMap[row][column] & 0x3000) == 0x2000) {
+                if ((gPlayer1LevelMap[row][column] & MAP_REGION_KIND_MASK) == MAP_REGION_PATH) {
                     if (MapExpandRegionsBesidePaths(row, column))
                         changed = 1;
                 }
@@ -635,15 +635,15 @@ void MapSeedFilledTerrainRegions()
 
     for (row = 0; row < MAP_ROWS; ++row) {
         for (column = 0; column < MAP_COLUMNS; ++column)
-            gPlayer1LevelMap[row][column] &= 0xf7ff;
+            gPlayer1LevelMap[row][column] &= MAP_REGION_VISITED_CLEAR_MASK;
     }
     probability = MapGetRandomGenerationParameter(4);
     for (row = 0; row < 23; ++row) {
         for (column = 0; column < 16; ++column) {
             cell = gPlayer1LevelMap[row][column];
-            if ((cell & 0x3000) == 0x1000) {
+            if ((cell & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY) {
                 eligible = 1;
-                replacement = (cell & 0x700) | 0x3000;
+                replacement = (cell & MAP_REGION_LABEL_MASK) | MAP_REGION_FILLED;
                 for (scan_row = row; scan_row < row + 4; ++scan_row) {
                     for (scan_column = column; scan_column < column + 4;
                          ++scan_column) {
@@ -662,7 +662,7 @@ void MapSeedFilledTerrainRegions()
                     }
                 }
                 if (eligible && probability > GetRandomNumber() % 100)
-                    MapGrowTerrainRegion(0x3000, (cell >> 8) & 7, 0,
+                    MapGrowTerrainRegion(MAP_REGION_FILLED, (cell >> 8) & MAP_REGION_LABEL_INDEX_MASK, 0,
                                 row + 1, column + 1);
             }
         }
@@ -683,42 +683,42 @@ short region_count;
         for (row = 0; row < MAP_ROWS; ++row) {
             for (column = 0; column < MAP_COLUMNS; ++column) {
                 cell = gPlayer1LevelMap[row][column];
-                if (((cell & 0x3000) == 0x1000 ||
-                     (cell & 0x3000) == 0x3000) &&
-                    region == ((cell >> 8) & 7)) {
-                    gPlayer1LevelMap[row][column] |= 0x800;
+                if (((cell & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY ||
+                     (cell & MAP_REGION_KIND_MASK) == MAP_REGION_FILLED) &&
+                    region == ((cell >> 8) & MAP_REGION_LABEL_INDEX_MASK)) {
+                    gPlayer1LevelMap[row][column] |= MAP_REGION_VISITED;
                     if (upper_table)
-                        gPlayer1LevelMap[row][column] |= 0x8000;
+                        gPlayer1LevelMap[row][column] |= MAP_REGION_ALTERNATE_SHAPES;
                 } else
-                    gPlayer1LevelMap[row][column] &= 0xf7ff;
+                    gPlayer1LevelMap[row][column] &= MAP_REGION_VISITED_CLEAR_MASK;
             }
         }
         for (row = 0; row < MAP_ROWS; ++row) {
             for (column = 0; column < MAP_COLUMNS; ++column) {
                 cell = gPlayer1LevelMap[row][column];
-                if (cell & 0x800) {
+                if (cell & MAP_REGION_VISITED) {
                     corner_mask = 0;
                     if (row > 0 && column > 0 &&
-                        (gPlayer1LevelMap[row][column - 1] & 0x800) &&
-                        (gPlayer1LevelMap[row - 1][column - 1] & 0x800) &&
-                        (gPlayer1LevelMap[row - 1][column] & 0x800))
-                        corner_mask |= 1;
+                        (gPlayer1LevelMap[row][column - 1] & MAP_REGION_VISITED) &&
+                        (gPlayer1LevelMap[row - 1][column - 1] & MAP_REGION_VISITED) &&
+                        (gPlayer1LevelMap[row - 1][column] & MAP_REGION_VISITED))
+                        corner_mask |= MAP_CORNER_UPPER_LEFT;
                     if (row > 0 && column < 18 &&
-                        (gPlayer1LevelMap[row - 1][column] & 0x800) &&
-                        (gPlayer1LevelMap[row - 1][column + 1] & 0x800) &&
-                        (gPlayer1LevelMap[row][column + 1] & 0x800))
-                        corner_mask |= 2;
+                        (gPlayer1LevelMap[row - 1][column] & MAP_REGION_VISITED) &&
+                        (gPlayer1LevelMap[row - 1][column + 1] & MAP_REGION_VISITED) &&
+                        (gPlayer1LevelMap[row][column + 1] & MAP_REGION_VISITED))
+                        corner_mask |= MAP_CORNER_UPPER_RIGHT;
                     if (row < 25 && column < 18 &&
-                        (gPlayer1LevelMap[row][column + 1] & 0x800) &&
-                        (gPlayer1LevelMap[row + 1][column + 1] & 0x800) &&
-                        (gPlayer1LevelMap[row + 1][column] & 0x800))
-                        corner_mask |= 4;
+                        (gPlayer1LevelMap[row][column + 1] & MAP_REGION_VISITED) &&
+                        (gPlayer1LevelMap[row + 1][column + 1] & MAP_REGION_VISITED) &&
+                        (gPlayer1LevelMap[row + 1][column] & MAP_REGION_VISITED))
+                        corner_mask |= MAP_CORNER_LOWER_RIGHT;
                     if (row < 25 && column > 0 &&
-                        (gPlayer1LevelMap[row + 1][column] & 0x800) &&
-                        (gPlayer1LevelMap[row + 1][column - 1] & 0x800) &&
-                        (gPlayer1LevelMap[row][column - 1] & 0x800))
-                        corner_mask |= 8;
-                    if ((cell & 0x3000) == 0x1000) {
+                        (gPlayer1LevelMap[row + 1][column] & MAP_REGION_VISITED) &&
+                        (gPlayer1LevelMap[row + 1][column - 1] & MAP_REGION_VISITED) &&
+                        (gPlayer1LevelMap[row][column - 1] & MAP_REGION_VISITED))
+                        corner_mask |= MAP_CORNER_LOWER_LEFT;
+                    if ((cell & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY) {
                         if (upper_table)
                             gPlayer1LevelMap[row][column] |=
                                 MapGenerationLookupTables.edge_alternate[corner_mask];

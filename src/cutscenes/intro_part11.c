@@ -31,7 +31,7 @@ short IntroPart11()
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 51;
     gCutsceneMusicActorAnimationEnabled = 1;
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
            !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         do {
             CutsceneStepFrameAndMusicCadence(0, gCutsceneMusicActorAnimationEnabled);
@@ -196,7 +196,7 @@ short IntroPart11()
             gCutsceneScriptCountdown = 85;
             break;
         case 32:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -206,5 +206,5 @@ short IntroPart11()
     IntroReleaseLargePlayerSpritesAndRefresh();
     IntroReleaseLargePlayerParts();
     CutsceneStepFrameAndMusicCadence(0, 0);
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }

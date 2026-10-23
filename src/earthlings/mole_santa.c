@@ -90,7 +90,7 @@ void SantaLogic(earthling)
 struct earthling_state *earthling;
 {
     struct object_state *santa, *toejam, *earl;
-    short next_state = -1;
+    short next_state = EARTHLING_STATE_UNCHANGED;
 
     if (!earthling->object)
         return;
@@ -153,7 +153,7 @@ struct earthling_state *earthling;
                     EarthlingRelocateRecord(earthling);
                     santa->x = earthling->x;
                     santa->y = earthling->y;
-                } while (IsEntityVisibleInViewport(santa, 0) || IsEntityVisibleInViewport(santa, 1));
+                } while (IsEntityVisibleInViewport(santa, VIEWPORT_PRIMARY) || IsEntityVisibleInViewport(santa, VIEWPORT_SECONDARY));
                 if (!(gPlayerInfo[PLAYER_TOEJAM].animation_group_mask & PLAYER_GROUP_ALL_SKATES) &&
                     !(gPlayerInfo[PLAYER_EARL].animation_group_mask & PLAYER_GROUP_ALL_SKATES))
                     PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
@@ -194,7 +194,7 @@ struct earthling_state *earthling;
                 next_state = 2;
         }
     }
-    if (next_state != -1) {
+    if (next_state != EARTHLING_STATE_UNCHANGED) {
         SetEarthlingState(earthling, next_state);
         santa->frame = -1;
     }

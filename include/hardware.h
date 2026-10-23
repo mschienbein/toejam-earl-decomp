@@ -33,6 +33,8 @@
 #define BYTEMAP_VERTICAL_FLIP 0x80
 #define BYTEMAP_FLIP_CLEAR_MASK 0xff3f
 #define VDP_SPRITE_SIZE_4X1 12
+/* PositionEntitySprites extracts the VDP sprite width field before sizing a shadow. */
+#define VDP_SPRITE_WIDTH_MASK 12
 
 #define Z80_RAM ((char *)0xa00000L)
 #define Z80_RESET (*(short *)0xa11200L)

@@ -153,9 +153,9 @@ short x, y;
         entity->tile_count = 32;
         entity->tile = VDP_TILE_PRIORITY;
         entity->current_frame = &CutsceneRemappedTextFrame;
-        AllocateEntityViewportSprites(entity, 0);
+        AllocateEntityViewportSprites(entity, VIEWPORT_PRIMARY);
         CutsceneQueueCenteredRemappedTextLine(text, length, entity->tile & VDP_TILE_INDEX_MASK);
-        PrepareEntitySpriteFrame(entity, &CutsceneRemappedTextFrame, 1, 0);
+        PrepareEntitySpriteFrame(entity, &CutsceneRemappedTextFrame, 1, VIEWPORT_PRIMARY);
         entity->sprite_ready = 1;
     }
 }
@@ -183,9 +183,9 @@ short x, y;
         entity->tile_count = 32;
         entity->tile = VDP_TILE_PRIORITY;
         entity->current_frame = &CutsceneRemappedTextFrame;
-        AllocateEntityViewportSprites(entity, 0);
+        AllocateEntityViewportSprites(entity, VIEWPORT_PRIMARY);
         CutsceneQueueCenteredRemappedTextLine(text, length, entity->tile & VDP_TILE_INDEX_MASK);
-        PrepareEntitySpriteFrame(entity, &CutsceneRemappedTextFrame, 1, 0);
+        PrepareEntitySpriteFrame(entity, &CutsceneRemappedTextFrame, 1, VIEWPORT_PRIMARY);
         entity->sprite_ready = 1;
     }
 }
@@ -214,9 +214,9 @@ short x, y;
         entity->tile_count = 32;
         entity->tile = VDP_TILE_PRIORITY;
         entity->current_frame = &CutsceneOriginalPaletteTextFrame;
-        AllocateEntityViewportSprites(entity, 0);
+        AllocateEntityViewportSprites(entity, VIEWPORT_PRIMARY);
         CutsceneQueueCenteredOriginalPaletteTextLine(text, length, entity->tile & VDP_TILE_INDEX_MASK);
-        PrepareEntitySpriteFrame(entity, &CutsceneOriginalPaletteTextFrame, 1, 0);
+        PrepareEntitySpriteFrame(entity, &CutsceneOriginalPaletteTextFrame, 1, VIEWPORT_PRIMARY);
         entity->sprite_ready = 1;
     }
 }

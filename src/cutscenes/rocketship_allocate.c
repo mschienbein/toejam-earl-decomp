@@ -22,7 +22,7 @@ void CutsceneAllocateRocketshipPair()
     object->frames = Spr_IntroRocketshipDodging;
     object->frame_phase = 1;
     object->frame_duration = 1;
-    object->frame = -1;
+    object->frame = SPRITE_FRAME_BEFORE_FIRST;
     gCutsceneRocketshipExhaustEntity = (int)AllocateEntity();
     object = &gPlayerInfo[gCutsceneRocketshipExhaustEntity];
     object->tile_count = 15;
@@ -34,5 +34,5 @@ void CutsceneAllocateRocketshipPair()
     object->frames = Spr_RocketshipExhaust;
     object->frame_phase = 6;
     object->frame_duration = 1;
-    object->frame = -1;
+    object->frame = SPRITE_FRAME_BEFORE_FIRST;
 }

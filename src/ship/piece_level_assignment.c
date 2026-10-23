@@ -22,7 +22,7 @@ void AssignShipPieceLevels()
         do {
             gShipPieceLevelAssignments[piece] = GetRandomNumber() %
                 ((group * 5 + 5) - (group * 5 + 1) + 1) + (group * 5 + 1);
-        } while (gShipPieceLevelAssignments[piece] <= 1 || gShipPieceLevelAssignments[piece] >= 25);
+        } while (gShipPieceLevelAssignments[piece] <= LEVEL_FIRST || gShipPieceLevelAssignments[piece] >= LEVEL_LAST_ORDINARY);
     }
     for (group = 0; group < 5; ++group) {
         do {
@@ -37,5 +37,5 @@ void AssignShipPieceLevels()
         gShipPieceLevelAssignments[piece] = level;
     }
     piece = GetRandomNumber() % 10;
-    gShipPieceLevelAssignments[piece] = 25;
+    gShipPieceLevelAssignments[piece] = LEVEL_LAST_ORDINARY;
 }

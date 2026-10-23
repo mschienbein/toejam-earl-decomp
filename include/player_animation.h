@@ -1,6 +1,9 @@
 #ifndef TJE_PLAYER_ANIMATION_H
 #define TJE_PLAYER_ANIMATION_H
 
+/* GetActivePresentSprite and player update selectors return -1 to leave the current sprite alone. */
+#define PLAYER_ANIM_UNCHANGED -1
+
 /* Mask off the directional member of a four-animation family. */
 #define PLAYER_ANIM_FAMILY_MASK 0xfc
 /* Ignore only the left/right member bit of a two-animation pair. */

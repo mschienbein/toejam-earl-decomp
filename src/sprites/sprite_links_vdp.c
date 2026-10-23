@@ -6,21 +6,21 @@
 void TerminateSpriteChainAtHead()
 {
     VDP_COMMAND = 0x78020003L;
-    VDP_DATA = 79;
+    VDP_DATA = SPRITE_CHAIN_TERMINATOR_SLOT;
 }
 
 /* Terminate the primary viewport chain. */
 void TerminatePrimarySpriteChain()
 {
     VDP_COMMAND = 0x78ba0003L;
-    VDP_DATA = 79;
+    VDP_DATA = SPRITE_CHAIN_TERMINATOR_SLOT;
 }
 
 /* Enable the primary viewport's chain and terminate the secondary one. */
 void SelectPrimaryViewportSprites()
 {
     VDP_COMMAND = 0x78c20003L;
-    VDP_DATA = 79;
+    VDP_DATA = SPRITE_CHAIN_TERMINATOR_SLOT;
     VDP_COMMAND = 0x78ba0003L;
     VDP_DATA = (char)gPrimaryViewportUploadedLink;
 }
@@ -29,7 +29,7 @@ void SelectPrimaryViewportSprites()
 void SelectSecondaryViewportSprites()
 {
     VDP_COMMAND = 0x78ba0003L;
-    VDP_DATA = 24;
+    VDP_DATA = SPRITE_CHAIN_SECONDARY_HEAD_SLOT;
     VDP_COMMAND = 0x78c20003L;
     VDP_DATA = (char)gSecondaryViewportUploadedLink;
 }

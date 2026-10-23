@@ -1,6 +1,15 @@
 #ifndef TJE_RAM_CAMERA_H
 #define TJE_RAM_CAMERA_H
 
+/* MoveCameraUp/Down/Right/Left set these entering-edge bits for BuildPendingCameraTiles. */
+#define CAMERA_TILE_ENTER_TOP 1
+#define CAMERA_TILE_ENTER_RIGHT 2
+#define CAMERA_TILE_ENTER_BOTTOM 4
+#define CAMERA_TILE_ENTER_LEFT 8
+/* BuildPendingCameraTiles suppresses a transfer when both opposed edges are pending. */
+#define CAMERA_TILE_VERTICAL_EDGES 5
+#define CAMERA_TILE_HORIZONTAL_EDGES 10
+
 /* Committed and pending camera coordinates and split-screen selection. */
 extern short gCamera1CommittedX;
 extern short gCamera1CommittedY;

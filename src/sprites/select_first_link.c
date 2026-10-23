@@ -8,11 +8,11 @@ short primary_only;
 {
     if (primary_only) {
         VDP_COMMAND = 0x78020003L;
-        VDP_DATA = 1;
-        gHardwareSpriteRootLink = 1;
+        VDP_DATA = SPRITE_CHAIN_PLAYER_HEAD_SLOT;
+        gHardwareSpriteRootLink = SPRITE_CHAIN_PLAYER_HEAD_SLOT;
     } else {
         VDP_COMMAND = 0x78020003L;
-        VDP_DATA = 11;
-        gHardwareSpriteRootLink = 11;
+        VDP_DATA = SPRITE_CHAIN_HUD_HEAD_SLOT;
+        gHardwareSpriteRootLink = SPRITE_CHAIN_HUD_HEAD_SLOT;
     }
 }

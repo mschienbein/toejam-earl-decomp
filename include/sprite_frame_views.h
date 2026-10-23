@@ -3,6 +3,11 @@
 
 #include "sprites.h"
 
+/* PrepareEntitySpriteFrame routes tile_format bit six to SpriteUnpackRaw. */
+#define SPRITE_FORMAT_RAW_TILES 0x40
+/* PrepareEntitySpriteFrame shifts tile_format's low two palette bits into the VDP tile word. */
+#define SPRITE_FORMAT_PALETTE_MASK 3
+
 /* Variable-payload access views, never allocation or array-stride types.
  * Only header.piece_count pieces are present. Twelve is the entity's maximum
  * piece capacity; four is the smaller consumers' maximum, not a fixed stride.

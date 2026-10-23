@@ -1,6 +1,7 @@
 #include "player_animation.h"
 #include "player_animation_groups.h"
 #include "present_types.h"
+#include "dialogue_ids.h"
 #include "terrain.h"
 #include "psg_effects.h"
 #include "revision.h"
@@ -92,10 +93,10 @@ short player_number, present_number;
         OpenTelephone(player_number);
     } else if (present_number == PRESENT_EXTRA_BUCK) {
         ++gPlayerBucks[player_number];
-        StartDialogue(29, player_number);
+        StartDialogue(DIALOGUE_EXTRA_BUCK, player_number);
     } else if (present_number == PRESENT_JACKPOT) {
         gPlayerBucks[player_number] += 5;
-        StartDialogue(30, player_number);
+        StartDialogue(DIALOGUE_JACKPOT, player_number);
     } else if (present_number == PRESENT_EARTHLING)
         OpenEarthlingPresent(player, terrain);
     else if (present_number == PRESENT_SCHOOL_BOOK) {
@@ -156,17 +157,17 @@ unsigned short terrain;
         PlayerInitializePhasedJumpMotion(player_number);
         break;
     case PRESENT_TOMATOES:
-        StartDialogue(26, player_number);
+        StartDialogue(DIALOGUE_TOMATOES, player_number);
         break;
     case PRESENT_SLING_SHOT:
-        StartDialogue(27, player_number);
+        StartDialogue(DIALOGUE_SLING_SHOT, player_number);
         break;
     case PRESENT_ROSE_BUSHES:
         GenerateSpeech(player_number, "rosebushes!", 1);
         break;
     case PRESENT_SUPER_HITOPS:
         gPlayerPowerupTimers[player_number] = 750;
-        StartDialogue(28, player_number);
+        StartDialogue(DIALOGUE_SUPER_HITOPS, player_number);
         break;
     }
     if (present_number != PRESENT_ROCKET_SKATES)

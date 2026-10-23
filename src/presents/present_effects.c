@@ -1,6 +1,7 @@
 #include "player_animation.h"
 #include "player_animation_groups.h"
 #include "present_types.h"
+#include "dialogue_ids.h"
 #include "terrain.h"
 #include "psg_effects.h"
 #include "fm_effects.h"
@@ -448,7 +449,7 @@ short player_number;
 {
     if (gPlayerBurpsLeft[player_number]) {
         if (gPlayerBurpTimers[player_number] == -1) {
-            StartDialogue(24, player_number);
+            StartDialogue(DIALOGUE_BURP, player_number);
             AudioRequestChannelTemplateEffect(FM_EFFECT_BURP);
             gPlayerBurpTimers[player_number] = 50;
         } else if (--gPlayerBurpTimers[player_number] < 0) {

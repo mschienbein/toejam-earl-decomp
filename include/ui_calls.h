@@ -4,6 +4,27 @@
 /* The health bar occupies two four-tile-wide hardware sprites. */
 #define HUD_HEALTH_BAR_TILES 8
 
+#define HUD_SPRITE_TOEJAM_LEVEL_UNITS 11 /* HudLoadLevelNumberSprites assigns ToeJam's units digit here. */
+#define HUD_SPRITE_TOEJAM_LEVEL_TENS 12 /* HudLoadLevelNumberSprites assigns ToeJam's next sprite its tens digit. */
+#define HUD_SPRITE_EARL_LEVEL_UNITS 13 /* HudLoadLevelNumberSprites assigns Earl's units digit here. */
+#define HUD_SPRITE_EARL_LEVEL_TENS 14 /* HudLoadLevelNumberSprites assigns Earl's next sprite its tens digit. */
+#define HUD_SPRITE_TOEJAM_HEALTH_LEFT 15 /* HudPositionHealthBarSprites positions ToeJam's first bar sprite here. */
+#define HUD_SPRITE_TOEJAM_HEALTH_RIGHT 16 /* HudPositionHealthBarSprites places ToeJam's next sprite 32 pixels right. */
+#define HUD_SPRITE_EARL_HEALTH_LEFT 17 /* HudPositionHealthBarSprites positions Earl's first bar sprite here. */
+#define HUD_SPRITE_EARL_HEALTH_RIGHT 18 /* HudPositionHealthBarSprites places Earl's next sprite 32 pixels right. */
+#define HUD_SPRITE_TOEJAM_LIVES 19 /* HudLoadLivesSpriteTiles assigns ToeJam's life-icon tiles here. */
+#define HUD_SPRITE_EARL_LIVES 20 /* HudLoadLivesSpriteTiles assigns Earl's life-icon tiles here. */
+#define HUD_SPRITE_TOEJAM_ACTION 21 /* HudLoadActionIconSprite assigns ToeJam's present/default icon here. */
+#define HUD_SPRITE_EARL_ACTION 22 /* HudLoadActionIconSprite assigns Earl's present/default icon here. */
+
+#define PAUSE_CHOICE_CONTINUE 0 /* RunFinalLevelPauseMenu starts here and returns without resetting. */
+#define PAUSE_CHOICE_RESET 1 /* RunFinalLevelPauseMenu selects this panel before RestartFromResetEntry. */
+#define PAUSE_CHOICE_HIDDEN (-1) /* RunFinalLevelPauseMenu passes this to clear the choice panel. */
+
+/* DrawPresentDisplayPanel's byte format differs from the shared BYTEMAP_* flip encoding. */
+#define PRESENT_PANEL_HORIZONTAL_FLIP 0x80 /* DrawPresentDisplayPanel expands this bit to VDP horizontal flip. */
+#define PRESENT_PANEL_TILE_INDEX_MASK 0x7f /* DrawPresentDisplayPanel strips that flag before adding the tile base. */
+
 /* K&R return interfaces. Represented C definitions establish their types;
  * remaining ROM-only declarations describe the observed ABI, not a uniquely
  * recovered historical C spelling. */

@@ -72,7 +72,7 @@ struct earthling_state *earthling;
 {
     struct object_state *object;
     struct earthling_definition *definition;
-    short next_state = -1, search_bias = 0;
+    short next_state = EARTHLING_STATE_UNCHANGED, search_bias = 0;
     unsigned char minimum_time, maximum_time;
 
     object = &gPlayerInfo[earthling->object];
@@ -93,7 +93,7 @@ struct earthling_state *earthling;
                     search_bias = 100;
                 next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance,
                                          search_bias, earthling->kind);
-                if (next_state != -1) {
+                if (next_state != EARTHLING_STATE_UNCHANGED) {
                     minimum_time = definition->target_time_min;
                     maximum_time = definition->target_time_max;
                     earthling->timer = NEXT_RANDOM %
@@ -107,7 +107,7 @@ struct earthling_state *earthling;
             }
         } else
             --earthling->state_delay;
-        if (next_state == -1 && earthling->state != 2) {
+        if (next_state == EARTHLING_STATE_UNCHANGED && earthling->state != 2) {
             if (NEXT_RANDOM % 100 < definition->turn_chance) {
                 next_state = EarthlingSelectTurnState(earthling);
                 if (earthling->kind == EARTHLING_SHOPPER && next_state == 0 &&
@@ -116,7 +116,7 @@ struct earthling_state *earthling;
                 if (earthling->state != next_state)
                     object->frame = -1;
                 else
-                    next_state = -1;
+                    next_state = EARTHLING_STATE_UNCHANGED;
                 minimum_time = definition->turn_time_min;
                 maximum_time = definition->turn_time_max;
                 earthling->timer = NEXT_RANDOM %
@@ -129,7 +129,7 @@ struct earthling_state *earthling;
                     (maximum_time - minimum_time + 1) + minimum_time;
             }
         }
-        if ((definition->behavior_flags & 2) && next_state >= 4 &&
+        if ((definition->behavior_flags & EARTHLING_TURN_CHANGE_AXIS) && next_state >= 4 &&
             earthling->state != next_state &&
             (next_state & 2) == (earthling->state & 2)) {
             next_state = (next_state ^ 2) & 254;
@@ -145,7 +145,7 @@ struct earthling_state *earthling;
             case 7: object->velocity_x = 320; break;
             }
         }
-        if (next_state != -1 && earthling->state != next_state) {
+        if (next_state != EARTHLING_STATE_UNCHANGED && earthling->state != next_state) {
             SetEarthlingState(earthling, next_state);
             if (earthling->kind == EARTHLING_DENTIST || earthling->kind == EARTHLING_DENTIST_VARIANT)
                 object->frame = -1;

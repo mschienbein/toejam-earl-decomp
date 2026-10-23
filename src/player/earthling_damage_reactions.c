@@ -59,7 +59,7 @@ struct earthling_state *earthling;
     delta_y = player->y;
     delta_y -= attacker->y;
     /* Initialize the pose and trial position after measuring the hit. */
-    sprite = -1;
+    sprite = PLAYER_ANIM_UNCHANGED;
     trial_x = player->x;
     trial_y = player->y;
     if (abs(attack_direction) > 10) {
@@ -93,7 +93,7 @@ struct earthling_state *earthling;
         sprite = PLAYER_ANIM_HURT_DOWN;
     else if (player->velocity_y < 0)
         sprite = PLAYER_ANIM_HURT_UP;
-    else if (sprite == -1)
+    else if (sprite == PLAYER_ANIM_UNCHANGED)
         sprite = PLAYER_ANIM_HURT_UP;
     SetSprite(player, sprite);
     player->animation_motion_axes = ANIMATION_MOTION_XY;
@@ -178,7 +178,7 @@ void HulaAbility(player_number, earthling)
 short player_number;
 struct earthling_state *earthling;
 {
-    char sprite = -1;
+    char sprite = PLAYER_ANIM_UNCHANGED;
     short distance_x, distance_y, distance;
     struct object_state *player, *dancer;
 
@@ -216,7 +216,7 @@ struct earthling_state *earthling;
         sprite = GetActivePresentSprite(player);
         gPlayerHulaContactDelay[player_number] = 0;
     }
-    if (sprite != -1 && sprite != player->sprite_state) {
+    if (sprite != PLAYER_ANIM_UNCHANGED && sprite != player->sprite_state) {
         player->animation_motion_axes = ANIMATION_MOTION_XY;
         SetSprite(player, sprite);
     }
@@ -348,7 +348,7 @@ void PlayerUpdateWhirlwindAndRecovery(player, terrain)
 struct object_state *player;
 unsigned short terrain;
 {
-    char sprite_or_direction = -1;
+    char sprite_or_direction = PLAYER_ANIM_UNCHANGED;
     short player_number;
     int quarter_velocity;
 
@@ -372,7 +372,7 @@ unsigned short terrain;
                 if ((NEXT_RANDOM & 3) == 1)
                     GenerateSpeech(player_number, "I feel sick", 1);
             }
-            if (sprite_or_direction != -1)
+            if (sprite_or_direction != PLAYER_ANIM_UNCHANGED)
                 SetSprite(player, sprite_or_direction);
         } else if (!(gPlayerWhirlwindRecoveryTimers[player_number] & 15))
             ++player->frame_phase;

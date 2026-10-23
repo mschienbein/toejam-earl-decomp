@@ -47,9 +47,9 @@ void EndingCreatePoseComposite()
         object->tile |= VDP_TILE_PRIORITY;
         object->sequence = &IntroHeldFrameStreams[0].frame;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = 6;
-        AllocateEntityViewportSprites(object, 0);
+        AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
     }
 }
 
@@ -68,7 +68,7 @@ short frame, x, y;
         object->draw_flags |= ENTITY_DRAW_LATE;
         object->sequence = &IntroHeldFrameStreams[frame].frame;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = 6;
     }
 }
@@ -98,9 +98,9 @@ void EndingCreateSixPieceComposite()
         object->tile |= VDP_TILE_PRIORITY;
         object->sequence = &IntroHeldFrameStreams[0].frame;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = 6;
-        AllocateEntityViewportSprites(object, 0);
+        AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
     }
 }
 
@@ -144,9 +144,9 @@ void EndingCreateRightOffsetComposite()
         object->tile |= VDP_TILE_PRIORITY;
         object->sequence = &EndingFrameIndexStreams[242];
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = 6;
-        AllocateEntityViewportSprites(object, 0);
+        AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
     }
 }
 
@@ -188,9 +188,9 @@ void IntroCreateFallingRocketship()
         object->sprite_ready = 0;
         object->sequence = &IntroFrameIndexLists[7];
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = 6;
-        AllocateEntityViewportSprites(object, 0);
+        AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
     }
 }
 
@@ -235,9 +235,9 @@ unsigned short x, y;
         object->sprite_ready = 0;
         object->sequence = &EndingFrameIndexStreams[245];
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = 4;
-        AllocateEntityViewportSprites(object, 0);
+        AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
     }
 }
 
@@ -259,7 +259,7 @@ void EndingRestartElevatedCompositeSequence()
         object->sprite_ready = 0;
         object->sequence = &EndingFrameIndexStreams[249];
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = 4;
     }
 }

@@ -23,9 +23,9 @@
 void RunFinalLevelPauseMenu(player_number)
 short player_number;
 {
-    short reset_selected = 0;
+    short reset_selected = PAUSE_CHOICE_CONTINUE;
 
-    DrawPauseChoicePanel(0);
+    DrawPauseChoicePanel(PAUSE_CHOICE_CONTINUE);
     PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
     WaitForNextVBlank(1);
     PlaySound(PSG_TONE_PHRASE, 99);
@@ -36,19 +36,19 @@ short player_number;
         ;
     for (;;) {
         if (!reset_selected && (ReadMappedPlayerInput(player_number) & INPUT_DOWN)) {
-            DrawPauseChoicePanel(1);
-            reset_selected = 1;
+            DrawPauseChoicePanel(PAUSE_CHOICE_RESET);
+            reset_selected = PAUSE_CHOICE_RESET;
             continue;
         }
         if (reset_selected && (ReadMappedPlayerInput(player_number) & INPUT_UP)) {
-            DrawPauseChoicePanel(0);
-            reset_selected = 0;
+            DrawPauseChoicePanel(PAUSE_CHOICE_CONTINUE);
+            reset_selected = PAUSE_CHOICE_CONTINUE;
             continue;
         }
         if (ReadMappedPlayerInput(player_number) & (INPUT_START | INPUT_BUTTON_A))
             break;
     }
-    DrawPauseChoicePanel(-1);
+    DrawPauseChoicePanel(PAUSE_CHOICE_HIDDEN);
     if (reset_selected)
         RestartFromResetEntry();
     gCurrentMusicSelection = MUSIC_SELECTION_INVALID;
@@ -80,7 +80,7 @@ short player_number;
         object->x = gCamera1PendingX + 160;
         object->y = gCamera1PendingY + 225;
         object->level = gPlayer1MapLevel;
-        viewport = 0;
+        viewport = VIEWPORT_PRIMARY;
         viewport_mask = ENTITY_PRIMARY_VIEW;
         if (gSplitScreenEnabled) {
             if (player_number == PLAYER_TOEJAM)
@@ -90,7 +90,7 @@ short player_number;
                 object->level = gPlayer2MapLevel;
                 object->x = gCamera2PendingX + 160;
                 object->y = gCamera2PendingY + 225;
-                viewport = 1;
+                viewport = VIEWPORT_SECONDARY;
                 viewport_mask = ENTITY_SECONDARY_VIEW;
             }
         } else

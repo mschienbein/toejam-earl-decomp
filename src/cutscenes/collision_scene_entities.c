@@ -24,10 +24,10 @@ void IntroCreateCollisionSceneEntities()
         parent->height = 1;
         parent->sequence = &IntroHeldFrameStreams[1].frame;
         parent->frame_duration = 1;
-        parent->frame = -1;
+        parent->frame = SPRITE_FRAME_BEFORE_FIRST;
         parent->frame_phase = 6;
         parent->sprite_ready = 0;
-        AllocateEntityViewportSprites(parent, 0);
+        AllocateEntityViewportSprites(parent, VIEWPORT_PRIMARY);
     }
     for (index = 0; index < 3; ++index) {
         if (gIntroCollisionAttachedEntities[index] = (int)AllocateEntity()) {
@@ -51,7 +51,7 @@ void IntroCreateCollisionSceneEntities()
             object->height = 1;
             object->sequence = &IntroHeldFrameStreams[1].frame;
             object->frame_duration = 1;
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
             object->frame_phase = 6;
             object->behavior_flags |= ENTITY_SHARED_TILES;
             /* ORIGINAL BUG: parent is uninitialized if its allocation failed
@@ -59,7 +59,7 @@ void IntroCreateCollisionSceneEntities()
             object->tile = parent->tile;
             object->owner = gIntroCollisionParentEntity;
             object->sprite_ready = 0;
-            AllocateEntityViewportSprites(object, 0);
+            AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
         }
     }
 }

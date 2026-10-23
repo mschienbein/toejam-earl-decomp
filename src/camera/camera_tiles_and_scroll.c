@@ -1,4 +1,5 @@
 #include "hardware.h"
+#include "entities.h"
 #include "assets_map.h"
 #include "graphics_calls.h"
 #include "ram_camera.h"
@@ -38,8 +39,8 @@ unsigned short metatile, row, column;
 {
     unsigned short tile;
 
-    if (metatile & 0x10) {
-        metatile &= 15;
+    if (metatile & OVERLAY_METATILE_MIRROR_X) {
+        metatile &= OVERLAY_METATILE_BASE_MASK;
         metatile--;
         tile = OverlayMetatileMaps[metatile][row][15 - column];
         if (tile)
@@ -86,7 +87,7 @@ short camera;
   sizeof(&tile_column);
   sizeof(&transfer_count);
   sizeof(&world_column);
-  if (camera == 0)
+  if (camera == VIEWPORT_PRIMARY)
   {
     if (top_edge)
     {
@@ -108,10 +109,10 @@ short camera;
       screen_row &= 31;
     }
     map = &gPlayer1LevelMap[0][0];
-    if ((gPlayer1MapLevel == 1) || (gPlayer1MapLevel == LEVEL_FINAL))
+    if ((gPlayer1MapLevel == LEVEL_FIRST) || (gPlayer1MapLevel == LEVEL_FINAL))
       wraps = 1;
     gCamera1TileColumnCursor--;
-    gCameraRowUploadStartColumn[0] = gCamera1TileColumnCursor & 63;
+    gCameraRowUploadStartColumn[VIEWPORT_PRIMARY] = gCamera1TileColumnCursor & 63;
     world_column = gCamera1TileColumnCursor;
     gCamera1TileColumnCursor++;
   }
@@ -136,10 +137,10 @@ short camera;
       map_row = map_row >> 3;
       screen_row &= 31;
     }
-    if ((gPlayer2MapLevel == 1) || (gPlayer2MapLevel == LEVEL_FINAL))
+    if ((gPlayer2MapLevel == LEVEL_FIRST) || (gPlayer2MapLevel == LEVEL_FINAL))
       wraps = 1;
     gCamera2TileColumnCursor--;
-    gCameraRowUploadStartColumn[1] = gCamera2TileColumnCursor & 63;
+    gCameraRowUploadStartColumn[VIEWPORT_SECONDARY] = gCamera2TileColumnCursor & 63;
     world_column = gCamera2TileColumnCursor;
     gCamera2TileColumnCursor++;
     map = &gPlayer2LevelMap[0][0];
@@ -210,11 +211,11 @@ void UpdateCameraY()
     short first_count;
     short camera, start_column, count;
 
-    for (camera = 0; camera < 2; camera++) {
+    for (camera = VIEWPORT_PRIMARY; camera < 2; camera++) {
         if (gCameraRowUploadPending[camera]) {
             start_column = gCameraRowUploadStartColumn[camera];
             count = gCameraRowUploadWordCount[camera];
-            if (camera == 0)
+            if (camera == VIEWPORT_PRIMARY)
                 VDP_COMMAND = VDP_WRITE_PLANE_A + (gCameraRowUploadVramRow[camera] << 23) +
                     (start_column << 17);
             else
@@ -225,7 +226,7 @@ void UpdateCameraY()
             else {
                 first_count = 64 - start_column;
                 MoveDataToVRAM(gCameraRowUploadWords[camera], first_count);
-                if (camera == 0)
+                if (camera == VIEWPORT_PRIMARY)
                     VDP_COMMAND = VDP_WRITE_PLANE_A + (gCameraRowUploadVramRow[camera] << 23);
                 else
                     VDP_COMMAND = 0x40000003L + (gCameraRowUploadVramRow[camera] << 23);
@@ -288,7 +289,7 @@ short camera;
   sizeof(&tile_column);
   sizeof(&transfer_count);
   sizeof(&world_row);
-  if (camera == 0)
+  if (camera == VIEWPORT_PRIMARY)
   {
     if (left_edge)
     {
@@ -343,7 +344,7 @@ short camera;
     map = &gPlayer2LevelMap[0][0];
   }
   gCameraColumnUploadVramColumn[camera] = screen_column;
-  if (((camera == 0) && ((gPlayer1MapLevel == 1) || (gPlayer1MapLevel == LEVEL_FINAL))) || ((camera == 1) && ((gPlayer2MapLevel == 1) || (gPlayer2MapLevel == LEVEL_FINAL))))
+  if (((camera == VIEWPORT_PRIMARY) && ((gPlayer1MapLevel == LEVEL_FIRST) || (gPlayer1MapLevel == LEVEL_FINAL))) || ((camera == VIEWPORT_SECONDARY) && ((gPlayer2MapLevel == LEVEL_FIRST) || (gPlayer2MapLevel == LEVEL_FINAL))))
     wraps = 1;
   if ((map_x == 0) || (map_x > 19))
   {
@@ -415,11 +416,11 @@ void UpdateCameraX()
     char count;
 
     VDP_CONTROL_WORD = 0x8f80;
-    for (camera = 0; camera < 2; camera++) {
+    for (camera = VIEWPORT_PRIMARY; camera < 2; camera++) {
         if (gCameraColumnUploadPending[camera]) {
             start_row = gCameraColumnUploadStartRow[camera];
             count = gCameraColumnUploadWordCount[camera];
-            if (camera == 0)
+            if (camera == VIEWPORT_PRIMARY)
                 VDP_COMMAND = VDP_WRITE_PLANE_A + (start_row << 23) +
                     (gCameraColumnUploadVramColumn[camera] << 17);
             else
@@ -430,7 +431,7 @@ void UpdateCameraX()
             else {
                 first_count = 32 - start_row;
                 MoveDataToVRAM(gCameraColumnUploadWords[camera], first_count);
-                if (camera == 0)
+                if (camera == VIEWPORT_PRIMARY)
                     VDP_COMMAND = VDP_WRITE_PLANE_A + (gCameraColumnUploadVramColumn[camera] << 17);
                 else
                     VDP_COMMAND = 0x40000003L + (gCameraColumnUploadVramColumn[camera] << 17);
@@ -449,10 +450,10 @@ short camera;
 {
     short end_row;
 
-    if (camera == 0) {
+    if (camera == VIEWPORT_PRIMARY) {
         end_row = gCamera1TileRowCursor + gCameraColumnUploadHeight;
         while (end_row > gCamera1TileRowCursor) {
-            BuildCameraTileRow(1, 0);
+            BuildCameraTileRow(1, VIEWPORT_PRIMARY);
             UpdateCameraY();
             gCamera1TileRowCursor++;
         }
@@ -461,7 +462,7 @@ short camera;
     } else {
         end_row = gCamera2TileRowCursor + gCameraColumnUploadHeight;
         while (end_row > gCamera2TileRowCursor) {
-            BuildCameraTileRow(1, 1);
+            BuildCameraTileRow(1, VIEWPORT_SECONDARY);
             UpdateCameraY();
             gCamera2TileRowCursor++;
         }
@@ -477,7 +478,7 @@ void SetCameraViewOrigin(camera, position_x, position_y)
 short camera, position_x, position_y;
 {
     if (gPlayerLives[PLAYER_TOEJAM] < 0)
-        camera = 0;
+        camera = VIEWPORT_PRIMARY;
     if (position_x < 8)
         position_x = 8;
     if (position_x > 2360)
@@ -493,7 +494,7 @@ short camera, position_x, position_y;
             position_y = 1560;
         gCameraColumnUploadHeight = 32;
     }
-    if (camera == 0) {
+    if (camera == VIEWPORT_PRIMARY) {
         gCamera1PendingX = position_x;
         gCamera1PendingY = position_y;
         gCamera1TileColumnCursor = (short)((int)position_x >> 3) - 1;
@@ -522,26 +523,26 @@ void BuildPendingCameraTiles()
 {
     char directions;
 
-    directions = gCamera1PendingTileDirections & 5;
-    if (directions && directions != 5) {
+    directions = gCamera1PendingTileDirections & CAMERA_TILE_VERTICAL_EDGES;
+    if (directions && directions != CAMERA_TILE_VERTICAL_EDGES) {
         gCamera1TileRowCursor = gCamera1PendingTileRow;
-        BuildCameraTileRow(directions & 1, 0);
+        BuildCameraTileRow(directions & CAMERA_TILE_ENTER_TOP, VIEWPORT_PRIMARY);
     }
-    directions = gCamera1PendingTileDirections & 10;
-    if (directions && directions != 10) {
+    directions = gCamera1PendingTileDirections & CAMERA_TILE_HORIZONTAL_EDGES;
+    if (directions && directions != CAMERA_TILE_HORIZONTAL_EDGES) {
         gCamera1TileColumnCursor = gCamera1PendingTileColumn;
-        BuildCameraTileColumn(directions & 8, 0);
+        BuildCameraTileColumn(directions & CAMERA_TILE_ENTER_LEFT, VIEWPORT_PRIMARY);
     }
     gCamera1PendingTileDirections = 0;
-    directions = gCamera2PendingTileDirections & 5;
-    if (directions && directions != 5) {
+    directions = gCamera2PendingTileDirections & CAMERA_TILE_VERTICAL_EDGES;
+    if (directions && directions != CAMERA_TILE_VERTICAL_EDGES) {
         gCamera2TileRowCursor = gCamera2PendingTileRow;
-        BuildCameraTileRow(directions & 1, 1);
+        BuildCameraTileRow(directions & CAMERA_TILE_ENTER_TOP, VIEWPORT_SECONDARY);
     }
-    directions = gCamera2PendingTileDirections & 10;
-    if (directions && directions != 10) {
+    directions = gCamera2PendingTileDirections & CAMERA_TILE_HORIZONTAL_EDGES;
+    if (directions && directions != CAMERA_TILE_HORIZONTAL_EDGES) {
         gCamera2TileColumnCursor = gCamera2PendingTileColumn;
-        BuildCameraTileColumn(directions & 8, 1);
+        BuildCameraTileColumn(directions & CAMERA_TILE_ENTER_LEFT, VIEWPORT_SECONDARY);
     }
     gCamera2PendingTileDirections = 0;
 }
@@ -591,15 +592,15 @@ short camera;
     short new_row;
 
     if (gPlayerLives[PLAYER_TOEJAM] < 0)
-        camera = 0;
-    if (camera == 0) {
+        camera = VIEWPORT_PRIMARY;
+    if (camera == VIEWPORT_PRIMARY) {
         if (gCamera1PendingY > 8) {
             gCamera1PendingY--;
             new_row = (gCamera1PendingY >> 3) - 1;
             if (new_row != gCamera1TileRowCursor) {
-                if (gCameraRowUploadPending[0])
-                    TryUpdateCameraY(0);
-                gCamera1PendingTileDirections |= 1;
+                if (gCameraRowUploadPending[VIEWPORT_PRIMARY])
+                    TryUpdateCameraY(VIEWPORT_PRIMARY);
+                gCamera1PendingTileDirections |= CAMERA_TILE_ENTER_TOP;
                 gCamera1PendingTileRow = new_row;
             }
         } else
@@ -609,9 +610,9 @@ short camera;
             gCamera2PendingY--;
             new_row = (gCamera2PendingY >> 3) - 1;
             if (new_row != gCamera2TileRowCursor) {
-                if (gCameraRowUploadPending[1])
-                    TryUpdateCameraY(1);
-                gCamera2PendingTileDirections |= 1;
+                if (gCameraRowUploadPending[VIEWPORT_SECONDARY])
+                    TryUpdateCameraY(VIEWPORT_SECONDARY);
+                gCamera2PendingTileDirections |= CAMERA_TILE_ENTER_TOP;
                 gCamera2PendingTileRow = new_row;
             }
         } else
@@ -629,15 +630,15 @@ short camera;
     short new_row;
 
     if (gPlayerLives[PLAYER_TOEJAM] < 0)
-        camera = 0;
-    if (camera == 0) {
+        camera = VIEWPORT_PRIMARY;
+    if (camera == VIEWPORT_PRIMARY) {
         if ((gSplitScreenEnabled && gCamera1PendingY < 1672) || gCamera1PendingY < 1560) {
             gCamera1PendingY++;
             new_row = (gCamera1PendingY >> 3) - 1;
             if (new_row != gCamera1TileRowCursor) {
-                if (gCameraRowUploadPending[0])
-                    TryUpdateCameraY(0);
-                gCamera1PendingTileDirections |= 4;
+                if (gCameraRowUploadPending[VIEWPORT_PRIMARY])
+                    TryUpdateCameraY(VIEWPORT_PRIMARY);
+                gCamera1PendingTileDirections |= CAMERA_TILE_ENTER_BOTTOM;
                 gCamera1PendingTileRow = new_row;
             }
         } else
@@ -647,9 +648,9 @@ short camera;
             gCamera2PendingY++;
             new_row = (gCamera2PendingY >> 3) - 1;
             if (new_row != gCamera2TileRowCursor) {
-                if (gCameraRowUploadPending[1])
-                    TryUpdateCameraY(1);
-                gCamera2PendingTileDirections |= 4;
+                if (gCameraRowUploadPending[VIEWPORT_SECONDARY])
+                    TryUpdateCameraY(VIEWPORT_SECONDARY);
+                gCamera2PendingTileDirections |= CAMERA_TILE_ENTER_BOTTOM;
                 gCamera2PendingTileRow = new_row;
             }
         } else
@@ -667,15 +668,15 @@ short camera;
     short new_column;
 
     if (gPlayerLives[PLAYER_TOEJAM] < 0)
-        camera = 0;
-    if (camera == 0) {
+        camera = VIEWPORT_PRIMARY;
+    if (camera == VIEWPORT_PRIMARY) {
         if (gCamera1PendingX > 8) {
             gCamera1PendingX--;
             new_column = (gCamera1PendingX >> 3) - 1;
             if (new_column != gCamera1TileColumnCursor) {
-                if (gCameraColumnUploadPending[0])
-                    TryUpdateCameraX(0);
-                gCamera1PendingTileDirections |= 8;
+                if (gCameraColumnUploadPending[VIEWPORT_PRIMARY])
+                    TryUpdateCameraX(VIEWPORT_PRIMARY);
+                gCamera1PendingTileDirections |= CAMERA_TILE_ENTER_LEFT;
                 gCamera1PendingTileColumn = new_column;
             }
         } else
@@ -685,9 +686,9 @@ short camera;
             gCamera2PendingX--;
             new_column = (gCamera2PendingX >> 3) - 1;
             if (new_column != gCamera2TileColumnCursor) {
-                if (gCameraColumnUploadPending[1])
-                    TryUpdateCameraX(1);
-                gCamera2PendingTileDirections |= 8;
+                if (gCameraColumnUploadPending[VIEWPORT_SECONDARY])
+                    TryUpdateCameraX(VIEWPORT_SECONDARY);
+                gCamera2PendingTileDirections |= CAMERA_TILE_ENTER_LEFT;
                 gCamera2PendingTileColumn = new_column;
             }
         } else
@@ -705,15 +706,15 @@ short camera;
     short new_column;
 
     if (gPlayerLives[PLAYER_TOEJAM] < 0)
-        camera = 0;
-    if (camera == 0) {
+        camera = VIEWPORT_PRIMARY;
+    if (camera == VIEWPORT_PRIMARY) {
         if (gCamera1PendingX < 2360) {
             gCamera1PendingX++;
             new_column = (gCamera1PendingX >> 3) - 1;
             if (new_column != gCamera1TileColumnCursor) {
-                if (gCameraColumnUploadPending[0])
-                    TryUpdateCameraX(0);
-                gCamera1PendingTileDirections |= 2;
+                if (gCameraColumnUploadPending[VIEWPORT_PRIMARY])
+                    TryUpdateCameraX(VIEWPORT_PRIMARY);
+                gCamera1PendingTileDirections |= CAMERA_TILE_ENTER_RIGHT;
                 gCamera1PendingTileColumn = new_column;
             }
         } else
@@ -723,9 +724,9 @@ short camera;
             gCamera2PendingX++;
             new_column = (gCamera2PendingX >> 3) - 1;
             if (new_column != gCamera2TileColumnCursor) {
-                if (gCameraColumnUploadPending[1])
-                    TryUpdateCameraX(1);
-                gCamera2PendingTileDirections |= 2;
+                if (gCameraColumnUploadPending[VIEWPORT_SECONDARY])
+                    TryUpdateCameraX(VIEWPORT_SECONDARY);
+                gCamera2PendingTileDirections |= CAMERA_TILE_ENTER_RIGHT;
                 gCamera2PendingTileColumn = new_column;
             }
         } else

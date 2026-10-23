@@ -55,7 +55,7 @@ struct elevator_record *elevator;
     struct object_state *entity;
 
     if (--gDepartureElevatorShakeDelay <= 0) {
-        entity = &gPlayerInfo[elevator->entity + 2];
+        entity = &gPlayerInfo[elevator->entity + ELEVATOR_ENTITY_SECONDARY_OFFSET];
         if ((entity->height += 4) > 28) {
             entity->height = 0;
             --gDepartureElevatorShakeCycles;
@@ -77,9 +77,9 @@ void ProcessElevatorStep1()
     struct elevator_record *elevator;
     struct object_state *entity;
 
-    for (elevator_number = 0; elevator_number <= 1; ++elevator_number) {
-        flag = elevator_number * 2 + 1;
-        elevator = &gElevatorRecords[elevator_number][0];
+    for (elevator_number = ELEVATOR_BANK_PRIMARY; elevator_number <= ELEVATOR_BANK_SECONDARY; ++elevator_number) {
+        flag = elevator_number * 2 + ELEVATOR_HANDLE_PRIMARY_DEPARTURE;
+        elevator = &gElevatorRecords[elevator_number][ELEVATOR_TYPE_DEPARTURE];
         state = elevator->state;
         if (state == ELEVATOR_STATE_ABSENT)
             continue;
@@ -107,10 +107,10 @@ void ProcessElevatorStep1()
                     next_state = ELEVATOR_STATE_CLOSED_EMPTY;
             }
         } else if (state == ELEVATOR_STATE_OPENING) {
-            if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration)
+            if (elevator->entity && !gPlayerInfo[elevator->entity + ELEVATOR_ENTITY_SECONDARY_OFFSET].frame_duration)
                 next_state = ELEVATOR_STATE_OPEN;
         } else if (state == ELEVATOR_STATE_CLOSING) {
-            if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration) {
+            if (elevator->entity && !gPlayerInfo[elevator->entity + ELEVATOR_ENTITY_SECONDARY_OFFSET].frame_duration) {
                 if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM] || flag == gPlayerElevatorFlags[PLAYER_EARL])
                     next_state = ELEVATOR_STATE_CLOSED_READY;
                 else
@@ -119,8 +119,8 @@ void ProcessElevatorStep1()
         } else if (state == ELEVATOR_STATE_DEPARTURE_START) {
             if (!elevator->entity)
                 continue;
-            distance_or_frame = gPlayerInfo[elevator->entity + 2].frame;
-            if (!gPlayerInfo[elevator->entity + 2].frame_duration) {
+            distance_or_frame = gPlayerInfo[elevator->entity + ELEVATOR_ENTITY_SECONDARY_OFFSET].frame;
+            if (!gPlayerInfo[elevator->entity + ELEVATOR_ENTITY_SECONDARY_OFFSET].frame_duration) {
                 next_state = ELEVATOR_STATE_DEPARTURE_CYCLES;
                 gDepartureElevatorShakeCycles = 5;
                 gDepartureElevatorShakeDelay = 2;
@@ -196,9 +196,9 @@ void ProcessElevatorStep2()
     struct elevator_record *elevator;
     struct object_state *entity;
 
-    for (elevator_number = 0; elevator_number <= 1; ++elevator_number) {
-        flag = elevator_number * 2 + 2;
-        elevator = &gElevatorRecords[elevator_number][1];
+    for (elevator_number = ELEVATOR_BANK_PRIMARY; elevator_number <= ELEVATOR_BANK_SECONDARY; ++elevator_number) {
+        flag = elevator_number * 2 + ELEVATOR_HANDLE_PRIMARY_ARRIVAL;
+        elevator = &gElevatorRecords[elevator_number][ELEVATOR_TYPE_ARRIVAL];
         state = elevator->state;
         if (state == ELEVATOR_STATE_ABSENT)
             continue;
@@ -226,10 +226,10 @@ void ProcessElevatorStep2()
                     gRequestedMusicSelection = (int)GetLevelMusicIndex(gHighestLevel);
             }
         } else if (state == ELEVATOR_STATE_OPENING) {
-            if (elevator->entity && !gPlayerInfo[elevator->entity + 2].frame_duration)
+            if (elevator->entity && !gPlayerInfo[elevator->entity + ELEVATOR_ENTITY_SECONDARY_OFFSET].frame_duration)
                 next_state = ELEVATOR_STATE_OPEN;
         } else if (state == ELEVATOR_STATE_CLOSING) {
-            if (!elevator->entity || !gPlayerInfo[elevator->entity + 2].frame_duration) {
+            if (!elevator->entity || !gPlayerInfo[elevator->entity + ELEVATOR_ENTITY_SECONDARY_OFFSET].frame_duration) {
                 if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM] || flag == gPlayerElevatorFlags[PLAYER_EARL])
                     next_state = ELEVATOR_STATE_CLOSED_READY;
                 else if (!elevator->entity)

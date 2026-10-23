@@ -15,7 +15,7 @@ void LinkPlayerSpritesForSplitWipe()
         ->piece_count;
     sprite_list = gPlayerInfo[PLAYER_TOEJAM].primary_sprites;
     sprite_number = *sprite_list;
-    gHardwareSpriteTable[23].link = sprite_number;
+    gHardwareSpriteTable[SPRITE_CHAIN_PRIMARY_HEAD_SLOT].link = sprite_number;
     for (index = 0; index < sprite_count; ++index) {
         sprite_number = sprite_list[index];
         if (index >= sprite_count - 1)
@@ -31,7 +31,7 @@ void LinkPlayerSpritesForSplitWipe()
         if (index < sprite_count - 1)
             next_sprite = sprite_list[index + 1];
         else
-            next_sprite = 79;
+            next_sprite = SPRITE_CHAIN_TERMINATOR_SLOT;
         gHardwareSpriteTable[sprite_number].link = next_sprite;
     }
     DmaCopyWordsToVram(gHardwareSpriteTable, 0xf800, 320);

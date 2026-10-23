@@ -1,4 +1,5 @@
 #include "elevator.h"
+#include "map.h"
 #include "map_calls.h"
 #include "ram_elevator.h"
 #include "ram_map.h"
@@ -11,55 +12,55 @@
 int MapFindRouteToSecondAnchor(map_y, map_x)
 short map_y, map_x;
 {
-    if (gPlayer1LevelMap[map_y][map_x] & 0x0800)
+    if (gPlayer1LevelMap[map_y][map_x] & MAP_REGION_VISITED)
         return 0;
-    gPlayer1LevelMap[map_y][map_x] |= 0x0800;
+    gPlayer1LevelMap[map_y][map_x] |= MAP_REGION_VISITED;
     if (gLevelAnchorPositions[1].y == map_y && gLevelAnchorPositions[1].x == map_x)
         return 1;
-    if ((gPlayer1LevelMap[map_y][map_x] & 0x3000) == 0x1000) {
+    if ((gPlayer1LevelMap[map_y][map_x] & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY) {
         if (map_y > 0 &&
             (gPlayer1LevelMap[map_y - 1][map_x] ==
-                 (gPlayer1LevelMap[map_y][map_x] & ~0x0800) ||
-             (gPlayer1LevelMap[map_y - 1][map_x] & 4)) &&
+                 (gPlayer1LevelMap[map_y][map_x] & ~MAP_REGION_VISITED) ||
+             (gPlayer1LevelMap[map_y - 1][map_x] & MAP_PATH_DOWN)) &&
             MapFindRouteToSecondAnchor(map_y - 1, map_x))
             return 1;
         if (map_y < 25 &&
             (gPlayer1LevelMap[map_y + 1][map_x] ==
-                 (gPlayer1LevelMap[map_y][map_x] & ~0x0800) ||
-             (gPlayer1LevelMap[map_y + 1][map_x] & 1)) &&
+                 (gPlayer1LevelMap[map_y][map_x] & ~MAP_REGION_VISITED) ||
+             (gPlayer1LevelMap[map_y + 1][map_x] & MAP_PATH_UP)) &&
             MapFindRouteToSecondAnchor(map_y + 1, map_x))
             return 1;
         if (map_x > 0 &&
             (gPlayer1LevelMap[map_y][map_x - 1] ==
-                 (gPlayer1LevelMap[map_y][map_x] & ~0x0800) ||
-             (gPlayer1LevelMap[map_y][map_x - 1] & 2)) &&
+                 (gPlayer1LevelMap[map_y][map_x] & ~MAP_REGION_VISITED) ||
+             (gPlayer1LevelMap[map_y][map_x - 1] & MAP_PATH_RIGHT)) &&
             MapFindRouteToSecondAnchor(map_y, map_x - 1))
             return 1;
         if (map_x < 18 &&
             (gPlayer1LevelMap[map_y][map_x + 1] ==
-                 (gPlayer1LevelMap[map_y][map_x] & ~0x0800) ||
-             (gPlayer1LevelMap[map_y][map_x + 1] & 8)) &&
+                 (gPlayer1LevelMap[map_y][map_x] & ~MAP_REGION_VISITED) ||
+             (gPlayer1LevelMap[map_y][map_x + 1] & MAP_PATH_LEFT)) &&
             MapFindRouteToSecondAnchor(map_y, map_x + 1))
             return 1;
-    } else if ((gPlayer1LevelMap[map_y][map_x] & 0x3000) == 0x2000) {
-        if ((gPlayer1LevelMap[map_y][map_x] & 1) &&
-            ((gPlayer1LevelMap[map_y - 1][map_x] & 0x3000) == 0x1000 ||
-             (gPlayer1LevelMap[map_y - 1][map_x] & 4)) &&
+    } else if ((gPlayer1LevelMap[map_y][map_x] & MAP_REGION_KIND_MASK) == MAP_REGION_PATH) {
+        if ((gPlayer1LevelMap[map_y][map_x] & MAP_PATH_UP) &&
+            ((gPlayer1LevelMap[map_y - 1][map_x] & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY ||
+             (gPlayer1LevelMap[map_y - 1][map_x] & MAP_PATH_DOWN)) &&
             MapFindRouteToSecondAnchor(map_y - 1, map_x))
             return 1;
-        if ((gPlayer1LevelMap[map_y][map_x] & 4) &&
-            ((gPlayer1LevelMap[map_y + 1][map_x] & 0x3000) == 0x1000 ||
-             (gPlayer1LevelMap[map_y + 1][map_x] & 1)) &&
+        if ((gPlayer1LevelMap[map_y][map_x] & MAP_PATH_DOWN) &&
+            ((gPlayer1LevelMap[map_y + 1][map_x] & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY ||
+             (gPlayer1LevelMap[map_y + 1][map_x] & MAP_PATH_UP)) &&
             MapFindRouteToSecondAnchor(map_y + 1, map_x))
             return 1;
-        if ((gPlayer1LevelMap[map_y][map_x] & 8) &&
-            ((gPlayer1LevelMap[map_y][map_x - 1] & 0x3000) == 0x1000 ||
-             (gPlayer1LevelMap[map_y][map_x - 1] & 2)) &&
+        if ((gPlayer1LevelMap[map_y][map_x] & MAP_PATH_LEFT) &&
+            ((gPlayer1LevelMap[map_y][map_x - 1] & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY ||
+             (gPlayer1LevelMap[map_y][map_x - 1] & MAP_PATH_RIGHT)) &&
             MapFindRouteToSecondAnchor(map_y, map_x - 1))
             return 1;
-        if ((gPlayer1LevelMap[map_y][map_x] & 2) &&
-            ((gPlayer1LevelMap[map_y][map_x + 1] & 0x3000) == 0x1000 ||
-             (gPlayer1LevelMap[map_y][map_x + 1] & 8)) &&
+        if ((gPlayer1LevelMap[map_y][map_x] & MAP_PATH_RIGHT) &&
+            ((gPlayer1LevelMap[map_y][map_x + 1] & MAP_REGION_KIND_MASK) == MAP_REGION_BOUNDARY ||
+             (gPlayer1LevelMap[map_y][map_x + 1] & MAP_PATH_LEFT)) &&
             MapFindRouteToSecondAnchor(map_y, map_x + 1))
             return 1;
     }

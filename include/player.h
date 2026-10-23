@@ -1,6 +1,9 @@
 #ifndef TJE_PLAYER_H
 #define TJE_PLAYER_H
 
+/* PlayerApplyDirectionalMovementAnimation resolves request 0 with GetActivePresentSprite. */
+#define PLAYER_MOVEMENT_ACTIVE_PRESENT 0
+
 /* K&R return interfaces. Represented C definitions establish their types;
  * remaining ROM-only declarations describe the observed ABI, not a uniquely
  * recovered historical C spelling. */

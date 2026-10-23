@@ -41,9 +41,9 @@ unsigned short x, y;
             object->height = 100;
             object->sprite_ready = 0;
             object->frame_duration = 1;
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
             object->frame_phase = 6;
-            AllocateEntityViewportSprites(object, 0);
+            AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
         }
     }
     if (second_active) {
@@ -63,9 +63,9 @@ unsigned short x, y;
             object->height = 100;
             object->sprite_ready = 0;
             object->frame_duration = 1;
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
             object->frame_phase = 6;
-            AllocateEntityViewportSprites(object, 0);
+            AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
         }
     }
 }

@@ -1,6 +1,11 @@
 #ifndef TJE_SPRITE_CALLS_H
 #define TJE_SPRITE_CALLS_H
 
+/* UpdateAndQueueEntitySprites increments the sequence index before reading its first entry. */
+#define SPRITE_FRAME_BEFORE_FIRST (-1)
+/* SetSprite rejects negative descriptor states; UpdateEntityShadows gives -1 a fixed shadow. */
+#define SPRITE_STATE_NO_DESCRIPTOR (-1)
+
 /* K&R return interfaces. Represented C definitions establish their types;
  * remaining ROM-only declarations describe the observed ABI, not a uniquely
  * recovered historical C spelling. */

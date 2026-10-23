@@ -28,11 +28,11 @@ short player_number;
     unsigned short attributes;
 
     if (player_number == PLAYER_TOEJAM) {
-        sprite_number = 11;
+        sprite_number = HUD_SPRITE_TOEJAM_LEVEL_UNITS;
         tile_number = 0x7e1;
         level_number = gToejamLevel;
     } else {
-        sprite_number = 13;
+        sprite_number = HUD_SPRITE_EARL_LEVEL_UNITS;
         tile_number = 0x7e9;
         level_number = gEarlLevel;
     }
@@ -58,10 +58,10 @@ short player_number;
     short sprite_number, x, tens_digit, y;
 
     if (player_number == PLAYER_TOEJAM) {
-        sprite_number = 11;
+        sprite_number = HUD_SPRITE_TOEJAM_LEVEL_UNITS;
         tens_digit = gToejamLevel / 10;
     } else {
-        sprite_number = 13;
+        sprite_number = HUD_SPRITE_EARL_LEVEL_UNITS;
         tens_digit = gEarlLevel / 10;
     }
     if (gPlayerLives[player_number] < 0) {
@@ -81,8 +81,8 @@ short player_number;
         x = 410;
     } else {
         if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
-            gHardwareSpriteTable[13].y = 1;
-            gHardwareSpriteTable[14].y = 1;
+            gHardwareSpriteTable[HUD_SPRITE_EARL_LEVEL_UNITS].y = 1;
+            gHardwareSpriteTable[HUD_SPRITE_EARL_LEVEL_TENS].y = 1;
         }
         y = 321;
         x = 276;
@@ -107,10 +107,10 @@ short player_number;
     struct render_piece *icon;
 
     if (player_number == PLAYER_TOEJAM) {
-        sprite_number = 21;
+        sprite_number = HUD_SPRITE_TOEJAM_ACTION;
         tile_number = 0x7f1;
     } else {
-        sprite_number = 22;
+        sprite_number = HUD_SPRITE_EARL_ACTION;
         tile_number = 0x7f5;
     }
     powerup = gPlayerPowerups[player_number];
@@ -141,10 +141,10 @@ short player_number;
         icon_number = gPlayerPowerups[player_number] + 2;
     icon = Spr_ActionIcons[icon_number];
     if (player_number == PLAYER_TOEJAM) {
-        icon_number = 21;
+        icon_number = HUD_SPRITE_TOEJAM_ACTION;
         y = 218;
     } else {
-        icon_number = 22;
+        icon_number = HUD_SPRITE_EARL_ACTION;
         y = 321;
     }
     if (gPlayerLives[player_number] < 0) {
@@ -210,11 +210,11 @@ short player_number, upload_now;
     gHudDisplayedHealth[player_number] = 0;
     if (player_number == PLAYER_TOEJAM) {
         tile_number = 0x7b4;
-        sprite_number = 15;
+        sprite_number = HUD_SPRITE_TOEJAM_HEALTH_LEFT;
         maximum_health = PLAYER_TOEJAM_BASE_HEALTH;
     } else {
         tile_number = 0x7d4;
-        sprite_number = 17;
+        sprite_number = HUD_SPRITE_EARL_HEALTH_LEFT;
         maximum_health = PLAYER_EARL_BASE_HEALTH;
     }
     if (gPlayerLives[player_number] >= 0)
@@ -286,10 +286,10 @@ short player_number;
     short x, sprite_number, y;
 
     if (player_number == PLAYER_TOEJAM) {
-        sprite_number = 15;
+        sprite_number = HUD_SPRITE_TOEJAM_HEALTH_LEFT;
         y = 229;
     } else {
-        sprite_number = 17;
+        sprite_number = HUD_SPRITE_EARL_HEALTH_LEFT;
         y = 332;
     }
     if (gPlayerInventoryOpen[player_number])
@@ -398,11 +398,11 @@ short player;
         return;
     if (player == PLAYER_TOEJAM) {
         tile = 0x7bc;
-        sprite_number = 19;
+        sprite_number = HUD_SPRITE_TOEJAM_LIVES;
         icons = IconTilesA;
     } else {
         tile = 0x7dc;
-        sprite_number = 20;
+        sprite_number = HUD_SPRITE_EARL_LIVES;
         icons = IconTilesB;
     }
     lives = gPlayerLives[player];
@@ -467,10 +467,10 @@ short player;
     short sprite_number, y, lives, x;
 
     if (player == PLAYER_TOEJAM) {
-        sprite_number = 19;
+        sprite_number = HUD_SPRITE_TOEJAM_LIVES;
         y = 226;
     } else {
-        sprite_number = 20;
+        sprite_number = HUD_SPRITE_EARL_LIVES;
         y = 329;
     }
     lives = gPlayerLives[player];
@@ -507,7 +507,7 @@ short player;
 /* Print each active player's rank and the absent player's vacation label. */
 void HudDrawRankLabels()
 {
-    if (gPlayerSelection == 2) {
+    if (gPlayerSelection == PLAYER_BOTH) {
         VDP_COMMAND = 0x5c160003;
         TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_TOEJAM]]);
         VDP_COMMAND = 0x5c400003;
@@ -546,11 +546,11 @@ void DrawHUD()
             if (row < 4) {
                 for (column = 0; column < 40; column++) {
                     tile = CombinedHudBackgroundByteMap[row][column];
-                    if (tile & 0x40)
+                    if (tile & BYTEMAP_HORIZONTAL_FLIP)
                         tile |= VDP_TILE_HORIZONTAL_FLIP;
-                    if (tile & 0x80)
+                    if (tile & BYTEMAP_VERTICAL_FLIP)
                         tile |= VDP_TILE_VERTICAL_FLIP;
-                    tile &= 0xff3f;
+                    tile &= BYTEMAP_FLIP_CLEAR_MASK;
                     VDP_DATA = tile + 0x8580;
                 }
             } else
@@ -618,45 +618,45 @@ short player_number;
 void HudHidePlayerSprites(player_number)
 short player_number;
 {
-    if (player_number == PLAYER_TOEJAM || player_number == 2) {
+    if (player_number == PLAYER_TOEJAM || player_number == PLAYER_BOTH) {
         VDP_COMMAND = 0x78580003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[11].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_TOEJAM_LEVEL_UNITS].y = 1;
         VDP_COMMAND = 0x78600003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[12].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_TOEJAM_LEVEL_TENS].y = 1;
         VDP_COMMAND = 0x78a80003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[21].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_TOEJAM_ACTION].y = 1;
         VDP_COMMAND = 0x78780003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[15].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_TOEJAM_HEALTH_LEFT].y = 1;
         VDP_COMMAND = 0x78800003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[16].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_TOEJAM_HEALTH_RIGHT].y = 1;
         VDP_COMMAND = 0x78980003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[19].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_TOEJAM_LIVES].y = 1;
     }
-    if (player_number == PLAYER_EARL || player_number == 2) {
+    if (player_number == PLAYER_EARL || player_number == PLAYER_BOTH) {
         VDP_COMMAND = 0x78680003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[13].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_EARL_LEVEL_UNITS].y = 1;
         VDP_COMMAND = 0x78700003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[14].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_EARL_LEVEL_TENS].y = 1;
         VDP_COMMAND = 0x78b00003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[22].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_EARL_ACTION].y = 1;
         VDP_COMMAND = 0x78880003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[17].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_EARL_HEALTH_LEFT].y = 1;
         VDP_COMMAND = 0x78900003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[18].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_EARL_HEALTH_RIGHT].y = 1;
         VDP_COMMAND = 0x78a00003;
         VDP_DATA = 1;
-        gHardwareSpriteTable[20].y = 1;
+        gHardwareSpriteTable[HUD_SPRITE_EARL_LIVES].y = 1;
     }
 }
 
@@ -670,7 +670,7 @@ short player_number;
     while (gPlayerPoints[player_number] >= GetScoreForPromo(gPlayerRank[player_number]))
         ++gPlayerRank[player_number];
     gPlayerBucks[player_number] = 0;
-    if (gPlayerSelection == 2)
+    if (gPlayerSelection == PLAYER_BOTH)
         gPlayerLives[player_number] = 0;
     else {
         gPlayerLives[player_number] = 3;
@@ -688,13 +688,13 @@ short player_number;
 void SetupTheMainGame()
 {
     if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
-        gToejamLevel = 1;
+        gToejamLevel = LEVEL_FIRST;
         gPlayerHealth[PLAYER_TOEJAM] = PLAYER_TOEJAM_BASE_HEALTH;
         gPlayerLives[PLAYER_TOEJAM] = 3;
         gPlayerBucks[PLAYER_TOEJAM] = 3;
     }
     if (gPlayerLives[PLAYER_EARL] >= 0) {
-        gEarlLevel = 1;
+        gEarlLevel = LEVEL_FIRST;
         gPlayer2Health = PLAYER_EARL_BASE_HEALTH;
         gPlayerLives[PLAYER_EARL] = 3;
         gPlayer2Bucks = 3;

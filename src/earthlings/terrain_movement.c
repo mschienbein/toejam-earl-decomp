@@ -109,8 +109,8 @@ int EarthlingIsUpdateBlocked(earthling)
 struct earthling_state *earthling;
 {
     if (earthling) {
-        if (((earthling->health_visibility[1] & 2) && !gPlayerInventoryOpen[PLAYER_TOEJAM]) ||
-            ((earthling->health_visibility[1] & 4) && !gPlayer2InventoryOpen))
+        if (((earthling->health_visibility[1] & EARTHLING_PRIMARY_VIEW) && !gPlayerInventoryOpen[PLAYER_TOEJAM]) ||
+            ((earthling->health_visibility[1] & EARTHLING_SECONDARY_VIEW) && !gPlayer2InventoryOpen))
             return 0;
         else
             return 1;

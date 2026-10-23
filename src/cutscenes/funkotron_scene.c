@@ -31,7 +31,7 @@ short placement_number, descriptor_number;
         object->sprite_count = descriptor->sprite_count;
         object->tile_count = descriptor->tile_count;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->x = FunkatronScenePlacements[placement_number].x;
         object->y = FunkatronScenePlacements[placement_number].y;
         object->level = LEVEL_FINAL;
@@ -89,8 +89,8 @@ void FunkatronUpdateSceneEntities()
                     EntityIsWithinRange(object, &gPlayerInfo[PLAYER_EARL], 80, 50)) {
                     if (!object->sprite_state) {
                         object->sequence = descriptor->interaction_sequence;
-                        object->frame = -1;
-                        object->sprite_state = 1;
+                        object->frame = SPRITE_FRAME_BEFORE_FIRST;
+                        object->sprite_state = FUNKATRON_SPRITE_INTERACTION;
                     }
                     player_number = PLAYER_TOEJAM;
                     if (!object->attachment_x_or_latch &&
@@ -111,8 +111,8 @@ void FunkatronUpdateSceneEntities()
                     }
                 } else if (object->sprite_state) {
                     object->sequence = descriptor->idle_sequence;
-                    object->frame = -1;
-                    object->sprite_state = 0;
+                    object->frame = SPRITE_FRAME_BEFORE_FIRST;
+                    object->sprite_state = FUNKATRON_SPRITE_IDLE;
                 }
             }
         } else if (object_number) {

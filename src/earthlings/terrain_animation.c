@@ -49,7 +49,7 @@ void EarthlingUpdateTerrainAnimationState(earthling, object)
 struct earthling_state *earthling;
 struct object_state *object;
 {
-    short next_state = -1;
+    short next_state = EARTHLING_STATE_UNCHANGED;
     short animation;
 
     animation = earthling->state & 252;
@@ -87,7 +87,7 @@ struct object_state *object;
 void EarthlingThinkTimedMovement(earthling)
 struct earthling_state *earthling;
 {
-    short next_state = -1, separation = 0;
+    short next_state = EARTHLING_STATE_UNCHANGED, separation = 0;
     struct object_state *object;
     struct earthling_definition *definition;
     unsigned char minimum, maximum;
@@ -116,7 +116,7 @@ struct earthling_state *earthling;
                     separation = 85;
                 next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance,
                                         separation, earthling->kind);
-                if (next_state != -1) {
+                if (next_state != EARTHLING_STATE_UNCHANGED) {
                     minimum = definition->target_time_min;
                     maximum = definition->target_time_max;
                     earthling->timer = gCachedRandomValues[gRandomCacheIndex == 58 ?
@@ -133,10 +133,10 @@ struct earthling_state *earthling;
         } else
             --earthling->state_delay;
         if (earthling->kind == EARTHLING_ICE_CREAM_TRUCK && next_state == 0)
-            next_state = -1;
+            next_state = EARTHLING_STATE_UNCHANGED;
         if (earthling->kind == EARTHLING_CUPID && (earthling->state & 252) == 8)
-            next_state = -1;
-        else if (next_state == -1 && earthling->state != 2) {
+            next_state = EARTHLING_STATE_UNCHANGED;
+        else if (next_state == EARTHLING_STATE_UNCHANGED && earthling->state != 2) {
             if (definition->turn_chance >
                 gCachedRandomValues[gRandomCacheIndex == 58 ?
                 (gRandomCacheIndex = 0) : ++gRandomCacheIndex] % 100) {
@@ -172,9 +172,9 @@ struct earthling_state *earthling;
                 break;
             }
         }
-        if (earthling->kind == EARTHLING_ICE_CREAM_TRUCK && next_state != -1)
+        if (earthling->kind == EARTHLING_ICE_CREAM_TRUCK && next_state != EARTHLING_STATE_UNCHANGED)
             next_state = EarthlingSelectTerrainAnimationState(earthling, object, next_state);
-        if (next_state != -1 && earthling->state != next_state) {
+        if (next_state != EARTHLING_STATE_UNCHANGED && earthling->state != next_state) {
             SetEarthlingState(earthling, next_state);
             if (earthling->kind == EARTHLING_CUPID && earthling->saved_x_or_status &&
                 next_state == 0 && (object->draw_flags & ENTITY_EITHER_VIEW)) {
@@ -191,7 +191,7 @@ struct earthling_state *earthling;
             earthling->timer = 1;
     }
     if (earthling->kind == EARTHLING_ICE_CREAM_TRUCK &&
-        (next_state == -1 || earthling->state != next_state))
+        (next_state == EARTHLING_STATE_UNCHANGED || earthling->state != next_state))
         EarthlingUpdateTerrainAnimationState(earthling, object);
     if (earthling->kind == EARTHLING_CUPID && (earthling->state & 252) == 8)
         EarthlingUpdateControlRemapAttack(earthling, object);

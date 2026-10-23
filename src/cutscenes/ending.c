@@ -92,7 +92,7 @@ short EndingPlayDialogueAndDeparture()
     mouth_timer = 0;
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 34;
-    while (gCutsceneScriptState != -1) {
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE) {
         WaitForNextVBlank(1);
         UploadQueuedSpriteGraphics(0, 0);
         SelectViewportSpriteChain(PLAYER_TOEJAM);
@@ -101,7 +101,7 @@ short EndingPlayDialogueAndDeparture()
         switch (gCutsceneScriptState) {
         case 0:
             if (!--gCutsceneScriptCountdown) {
-                if (gPlayerSelection == 2)
+                if (gPlayerSelection == PLAYER_BOTH)
                     CutsceneLoadOriginalPaletteTextLine("we did it", 90, 95);
                 else
                     CutsceneLoadOriginalPaletteTextLine("i did it", 90, 95);
@@ -118,7 +118,7 @@ short EndingPlayDialogueAndDeparture()
             }
             break;
         case 2:
-            if (gPlayerSelection == 2 && !clap_played &&
+            if (gPlayerSelection == PLAYER_BOTH && !clap_played &&
                 28 == EndingGetFirstPlayerAnimationFrame()) {
                 clap_played = 1;
                 PlaySoundEffect((long)Sfx_JamClap, 90, 0);
@@ -154,7 +154,7 @@ short EndingPlayDialogueAndDeparture()
                 ++gCutsceneScriptState;
             break;
         case 7:
-            if (gPlayerSelection == 2)
+            if (gPlayerSelection == PLAYER_BOTH)
                 CutsceneLoadOriginalPaletteTextLine("crank it earl!", 160, 30);
             else
                 CutsceneLoadOriginalPaletteTextLine(" crank it!", 160, 30);
@@ -195,7 +195,7 @@ short EndingPlayDialogueAndDeparture()
             EndingSetPoseComposite(1, character_x, 127);
             break;
         case 12:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -238,7 +238,7 @@ short EndingPlayUpwardRocketshipDeparture()
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 17;
-    while (gCutsceneScriptState != -1) {
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE) {
         CutsceneStepFrameAndMusicCadence(0, 0);
         switch (gCutsceneScriptState) {
         case 0:
@@ -253,7 +253,7 @@ short EndingPlayUpwardRocketshipDeparture()
                     move_period = 1;
                 move_timer = move_period;
                 --character_x;
-                if (character_x == 107 && gPlayerSelection == 2)
+                if (character_x == 107 && gPlayerSelection == PLAYER_BOTH)
                     CutsceneTextLoad("Can I drive?", character_x + 70,
                                      character_y - 85);
             }
@@ -264,13 +264,13 @@ short EndingPlayUpwardRocketshipDeparture()
         case 2:
             --character_x;
             CutscenePositionRocketshipPair(character_x, character_y);
-            if (character_x == 57 && gPlayerSelection == 2)
+            if (character_x == 57 && gPlayerSelection == PLAYER_BOTH)
                 CutsceneTextLoad("No!", character_x + 35, character_y - 80);
             if (character_x <= -30)
                 ++gCutsceneScriptState;
             break;
         case 3:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -302,7 +302,7 @@ short EndingPlayScrollingCredits()
     gCutsceneScriptState = 0;
     scroll = 0;
     animation_phase = 0;
-    while (gCutsceneScriptState != -1) {
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE) {
         WaitForNextVBlank(1);
         VDP_COMMAND = 0x7c020003L;
         VDP_DATA = scroll / 4;
@@ -388,7 +388,7 @@ short EndingPlayScrollingCredits()
             gCutsceneScriptCountdown = 136;
             break;
         case 18:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -420,7 +420,7 @@ short EndingPlayDescendingRocketshipScene()
     gMode2RegSoftcopy |= 64;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptState = 0;
-    while (gCutsceneScriptState != -1) {
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE) {
         CutsceneStepFrameAndMusicCadence(0, 0);
         switch (gCutsceneScriptState) {
         case 0:
@@ -450,7 +450,7 @@ short EndingPlayDescendingRocketshipScene()
                 ++gCutsceneScriptState;
             break;
         case 3:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -490,7 +490,7 @@ short EndingPlayBouncingRocketshipScene()
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 17;
-    while (gCutsceneScriptState != -1) {
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE) {
         gSpriteGraphicsUploadPending = 0;
         UpdateAndQueueEntitySprites();
         WaitForNextVBlank(1);
@@ -525,7 +525,7 @@ short EndingPlayBouncingRocketshipScene()
                 EndingSetPoseComposite(0, character_x, 127);
         }
         if (character_x < -30)
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
     }
     gMode2RegSoftcopy &= 60;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;

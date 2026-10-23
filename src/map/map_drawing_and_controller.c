@@ -82,11 +82,11 @@ short player;
                 left_tile = FontBackgroundByteMap[row][column];
             else
                 left_tile = FontBackgroundByteMap[row - 1][column];
-            if (left_tile & 0x40)
+            if (left_tile & BYTEMAP_HORIZONTAL_FLIP)
                 left_tile |= VDP_TILE_HORIZONTAL_FLIP;
-            if (left_tile & 0x80)
+            if (left_tile & BYTEMAP_VERTICAL_FLIP)
                 left_tile |= VDP_TILE_VERTICAL_FLIP;
-            left_tile &= 0xff3f;
+            left_tile &= BYTEMAP_FLIP_CLEAR_MASK;
             VDP_DATA = left_tile + 0x4580;
         }
     }
@@ -105,7 +105,7 @@ short player;
                     palette = 1;
                 else if (tile_number > 101)
                     palette = TileLookupAuxiliary[tile_number - 102];
-                if (gMapDirectionalPathMode && (gMapPathDirectionBanks[row][column] & 15))
+                if (gMapDirectionalPathMode && (gMapPathDirectionBanks[row][column] & MAP_PATH_DIRECTION_MASK))
                     palette = 3;
                 left_tile |= palette << 13;
                 right_tile |= palette << 13;
@@ -236,10 +236,10 @@ struct hardware_sprite *sprites;
         for (column = 0; column < MAP_COLUMNS; ++column) {
             overlay = (map[row * MAP_COLUMNS + column] & METATILE_OVERLAY_MASK) >> 8;
             if (overlay) {
-                overlay_number = overlay & 15;
+                overlay_number = overlay & OVERLAY_METATILE_BASE_MASK;
                 left_tile = (overlay_number + 121) * 2 + 1;
                 right_tile = (overlay_number + 121) * 2 + 2;
-                if (overlay & 16) {
+                if (overlay & OVERLAY_METATILE_MIRROR_X) {
                     VDP_DATA = right_tile | (VDP_TILE_PRIORITY | VDP_TILE_HORIZONTAL_FLIP);
                     VDP_DATA = left_tile | (VDP_TILE_PRIORITY | VDP_TILE_HORIZONTAL_FLIP);
                 } else {

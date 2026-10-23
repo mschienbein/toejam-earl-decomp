@@ -1,4 +1,5 @@
 #include "earthling_types.h"
+#include "terrain.h"
 #include "earthlings.h"
 #include "earthling_calls.h"
 #include "ram_earthlings.h"
@@ -15,7 +16,7 @@ short level;
         if (gEarthlingBankUsers[bank] && gEarthlingBankLevels[bank] == level) {
             --gEarthlingBankUsers[bank];
             if (!gEarthlingBankUsers[bank]) {
-                gEarthlingBankLevels[bank] = -1;
+                gEarthlingBankLevels[bank] = LEVEL_UNLOADED;
                 for (record_number = 0; record_number < EARTHLINGS_PER_BANK; ++record_number) {
                     object_number = gEarthlingBanks[bank][record_number].object;
                     /* Byte zero is set to the released-record marker. */

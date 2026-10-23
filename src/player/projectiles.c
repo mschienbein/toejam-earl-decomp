@@ -123,7 +123,7 @@ short unused;
         } else if (!player->frame_duration)
             SetSprite(player, GetActivePresentSprite(player));
     }
-    shooting_sprite = -1;
+    shooting_sprite = PLAYER_ANIM_UNCHANGED;
     if (!gPlayerElevatorFlags[player_number] && (player->animation_group_mask & PLAYER_GROUP_WALK) &&
         (gPlayerProcessedInput[player_number] & INPUT_BUTTON_A) &&
         (gPlayerProcessedInput[player_number] & INPUT_DIRECTION_MASK)) {
@@ -132,7 +132,7 @@ short unused;
             shooting_sprite = direction + PLAYER_ANIM_THROW_TOMATO_UP;
         if (gPlayerPowerups[player_number] == PRESENT_SLING_SHOT)
             shooting_sprite = direction + PLAYER_ANIM_SLING_SHOT_UP;
-        if (shooting_sprite != -1)
+        if (shooting_sprite != PLAYER_ANIM_UNCHANGED)
             SetSprite(player, shooting_sprite);
     }
 }

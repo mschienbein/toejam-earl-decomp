@@ -1,6 +1,7 @@
 #include "player_animation.h"
 #include "player_animation_groups.h"
 #include "present_types.h"
+#include "dialogue_ids.h"
 #include "terrain.h"
 #include "psg_effects.h"
 #include "hardware.h"
@@ -147,7 +148,7 @@ void EatFudgeSundae(player_number)
 short player_number;
 {
     gPlayerHealth[player_number] += 12;
-    StartDialogue(6, player_number);
+    StartDialogue(DIALOGUE_FUDGE_SUNDAE, player_number);
 }
 
 /* Collect nearby present and food items, removing successful pickups and
@@ -188,7 +189,7 @@ char record_pickup;
                         }
                     }
                     if (slot == 16 && !HasSpeakerSpeech(player))
-                        StartDialogue(25, player);
+                        StartDialogue(DIALOGUE_INVENTORY_FULL, player);
                 } else {
                     collected = 1;
                     food = item->kind;
@@ -212,7 +213,7 @@ char record_pickup;
                                 PlaySound(PSG_TONE_NOISE_BURSTS, 40);
                         }
                     }
-                    StartDialogue(food + 5, player);
+                    StartDialogue(food + DIALOGUE_GROUND_ITEM_BASE, player);
                 }
             }
 pickup_done:
@@ -310,8 +311,8 @@ void ReducePresentTimer()
             (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_GHOST &&
             (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST && !gPlayerInventoryOpen[player]) {
             if (gPlayerElevatorFlags[player]) {
-                if ((player == PLAYER_TOEJAM && gHardwareSpriteTable[21].y == 1) ||
-                    (player == PLAYER_EARL && gHardwareSpriteTable[22].y == 1))
+                if ((player == PLAYER_TOEJAM && gHardwareSpriteTable[HUD_SPRITE_TOEJAM_ACTION].y == 1) ||
+                    (player == PLAYER_EARL && gHardwareSpriteTable[HUD_SPRITE_EARL_ACTION].y == 1))
                     HudPositionActionIconSprite(player);
             } else {
                 show = 0;
@@ -329,9 +330,9 @@ void ReducePresentTimer()
                 if (show)
                     HudPositionActionIconSprite(player);
                 else if (player == PLAYER_TOEJAM)
-                    gHardwareSpriteTable[21].y = 1;
+                    gHardwareSpriteTable[HUD_SPRITE_TOEJAM_ACTION].y = 1;
                 else
-                    gHardwareSpriteTable[22].y = 1;
+                    gHardwareSpriteTable[HUD_SPRITE_EARL_ACTION].y = 1;
             }
         }
     }

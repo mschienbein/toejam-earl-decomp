@@ -100,15 +100,15 @@ void EntityReleaseOneByPriority()
 char MapReversePathDirection(direction)
 int direction;
 {
-    if (direction != -1) {
-        if (direction == 2)
-            direction = 8;
-        else if (direction == 8)
-            direction = 2;
-        else if (direction == 1)
-            direction = 4;
+    if (direction != MAP_PATH_DIRECTION_NONE) {
+        if (direction == MAP_PATH_RIGHT)
+            direction = MAP_PATH_LEFT;
+        else if (direction == MAP_PATH_LEFT)
+            direction = MAP_PATH_RIGHT;
+        else if (direction == MAP_PATH_UP)
+            direction = MAP_PATH_DOWN;
         else
-            direction = 1;
+            direction = MAP_PATH_UP;
     }
     return direction;
 }
@@ -136,7 +136,7 @@ unsigned char MapGetBankPathDirections(bank, row, column)
 short bank, row, column;
 {
     if (!bank)
-        return gMapPathDirectionBanks[row][column] & 15;
+        return gMapPathDirectionBanks[row][column] & MAP_PATH_DIRECTION_MASK;
     else
         return gMapPathDirectionBanks[row][column] >> 4;
 }
@@ -159,34 +159,34 @@ short bank, row, column;
     else
         map = &gPlayer2LevelMap[0][0];
     cell = map[row * MAP_COLUMNS + column];
-    if (!(cell & 0x4000))
-        return -1;
+    if (!(cell & METATILE_PENDING_PATH_CHANGE))
+        return MAP_PATH_CELL_UNAVAILABLE;
     directions = MapGetBankPathDirections(bank, row, column);
     if (!directions) {
-        if (gLandPathTraversalDirection != -1)
+        if (gLandPathTraversalDirection != MAP_PATH_DIRECTION_NONE)
             finished = 1;
         directions = MapGetBankPathDirections(bank, row - 1, column);
-        if (gLandPathTraversalDirection == 4 || (directions & 4)) {
-            if (gLandPathTraversalDirection == -1)
-                gLandPathTraversalDirection = 1;
+        if (gLandPathTraversalDirection == MAP_PATH_DOWN || (directions & MAP_PATH_DOWN)) {
+            if (gLandPathTraversalDirection == MAP_PATH_DIRECTION_NONE)
+                gLandPathTraversalDirection = MAP_PATH_UP;
             shape = 16;
         } else {
             directions = MapGetBankPathDirections(bank, row, column + 1);
-            if (gLandPathTraversalDirection == 8 || (directions & 8)) {
-                if (gLandPathTraversalDirection == -1)
-                    gLandPathTraversalDirection = 2;
+            if (gLandPathTraversalDirection == MAP_PATH_LEFT || (directions & MAP_PATH_LEFT)) {
+                if (gLandPathTraversalDirection == MAP_PATH_DIRECTION_NONE)
+                    gLandPathTraversalDirection = MAP_PATH_RIGHT;
                 shape = 17;
             } else {
                 directions = MapGetBankPathDirections(bank, row + 1, column);
-                if (gLandPathTraversalDirection == 1 || (directions & 1)) {
-                    if (gLandPathTraversalDirection == -1)
-                        gLandPathTraversalDirection = 4;
+                if (gLandPathTraversalDirection == MAP_PATH_UP || (directions & MAP_PATH_UP)) {
+                    if (gLandPathTraversalDirection == MAP_PATH_DIRECTION_NONE)
+                        gLandPathTraversalDirection = MAP_PATH_DOWN;
                     shape = 18;
                 } else {
                     directions = MapGetBankPathDirections(bank, row, column - 1);
-                    if (gLandPathTraversalDirection == 2 || (directions & 2)) {
-                        if (gLandPathTraversalDirection == -1)
-                            gLandPathTraversalDirection = 8;
+                    if (gLandPathTraversalDirection == MAP_PATH_RIGHT || (directions & MAP_PATH_RIGHT)) {
+                        if (gLandPathTraversalDirection == MAP_PATH_DIRECTION_NONE)
+                            gLandPathTraversalDirection = MAP_PATH_LEFT;
                         shape = 19;
                     }
                 }
@@ -194,7 +194,7 @@ short bank, row, column;
         }
         /* ORIGINAL BUG: if no pending or adjacent direction supplies an edge,
          * shape is read uninitialized here. */
-        if (cell & 0x8000)
+        if (cell & MAP_REGION_ALTERNATE_SHAPES)
             shape = MapGenerationLookupTables.edge_alternate[shape];
         else
             shape = MapGenerationLookupTables.edge_plain[shape];
@@ -202,22 +202,22 @@ short bank, row, column;
     } else {
         metatile = cell & 0xff;
         shape = MapFindPathShapeForMetatile(metatile);
-        if ((opposite = (char)MapReversePathDirection(gLandPathTraversalDirection)) != -1) {
+        if ((opposite = (char)MapReversePathDirection(gLandPathTraversalDirection)) != MAP_PATH_DIRECTION_NONE) {
             shape |= opposite;
             directions &= ~opposite;
         }
-        if (gLandPathTraversalDirection == -1 || !(gLandPathTraversalDirection & directions)) {
-            if (directions & 1)
-                gLandPathTraversalDirection = 1;
-            else if (directions & 2)
-                gLandPathTraversalDirection = 2;
-            else if (directions & 4)
-                gLandPathTraversalDirection = 4;
-            else if (directions & 8)
-                gLandPathTraversalDirection = 8;
+        if (gLandPathTraversalDirection == MAP_PATH_DIRECTION_NONE || !(gLandPathTraversalDirection & directions)) {
+            if (directions & MAP_PATH_UP)
+                gLandPathTraversalDirection = MAP_PATH_UP;
+            else if (directions & MAP_PATH_RIGHT)
+                gLandPathTraversalDirection = MAP_PATH_RIGHT;
+            else if (directions & MAP_PATH_DOWN)
+                gLandPathTraversalDirection = MAP_PATH_DOWN;
+            else if (directions & MAP_PATH_LEFT)
+                gLandPathTraversalDirection = MAP_PATH_LEFT;
             else {
-                if (gLandPathTraversalDirection == -1)
-                    return -1;
+                if (gLandPathTraversalDirection == MAP_PATH_DIRECTION_NONE)
+                    return MAP_PATH_CELL_UNAVAILABLE;
                 finished = 1;
             }
         }
@@ -226,21 +226,21 @@ short bank, row, column;
         directions &= ~shape;
         shape = MapGenerationLookupTables.tiles[shape];
         if (!bank) {
-            gMapPathDirectionBanks[row][column] &= 0xf0;
+            gMapPathDirectionBanks[row][column] &= MAP_PATH_SECONDARY_BANK_MASK;
             gMapPathDirectionBanks[row][column] |= directions;
         } else {
-            gMapPathDirectionBanks[row][column] &= 15;
+            gMapPathDirectionBanks[row][column] &= MAP_PATH_DIRECTION_MASK;
             gMapPathDirectionBanks[row][column] |= directions << 4;
         }
     }
     alternatives = TileAlternativePointers[shape];
     alternative = GetRandomNumber() % alternatives[0];
     ++alternative;
-    cell &= 0x9f00;
+    cell &= METATILE_PATH_REPLACEMENT_MASK;
     cell |= (unsigned short)alternatives[alternative];
     if (directions)
-        cell |= 0x4000;
-    cell |= 0x2000;
+        cell |= METATILE_PENDING_PATH_CHANGE;
+    cell |= METATILE_ITEM_PLACEMENT_INHIBITED;
     map[row * MAP_COLUMNS + column] = cell;
     return finished;
 }
@@ -316,11 +316,11 @@ short camera, x, y;
     for (animation = 0; animation < 8; ++animation) {
         object = &gPlayerInfo[gLandPathAnimationEntities[animation]];
         if (!object->frame_duration) {
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
             object->frame_duration = 1;
             object->x = x;
             object->y = y;
-            if (gLandPathTraversalDirection & 5)
+            if (gLandPathTraversalDirection & MAP_PATH_VERTICAL_MASK)
                 object->x += (short)(GetRandomNumber() % 97) + 16;
             else
                 object->y += (short)(GetRandomNumber() % 33) + 16;
@@ -361,10 +361,10 @@ short camera, row, column;
         first_column > tile_column + 15 ||
         tile_column > first_column + 45 - 1)
         return;
-    if (gLandPathTraversalDirection & 5) {
+    if (gLandPathTraversalDirection & MAP_PATH_VERTICAL_MASK) {
         for (sweep_step = 0; sweep_step < 8; ++sweep_step) {
             short tile_offset;
-            if (gLandPathTraversalDirection & 1) {
+            if (gLandPathTraversalDirection & MAP_PATH_UP) {
                 tile_offset = 7 - sweep_step;
                 effect_offset = tile_offset - 2;
             } else {
@@ -382,7 +382,7 @@ short camera, row, column;
     } else {
         for (sweep_step = 0; sweep_step < 16; ++sweep_step) {
             short tile_offset;
-            if (gLandPathTraversalDirection & 8) {
+            if (gLandPathTraversalDirection & MAP_PATH_LEFT) {
                 tile_offset = 15 - sweep_step;
                 effect_offset = tile_offset - 2;
             } else {
@@ -461,20 +461,20 @@ short camera, row, column;
          * call. EntityReserveLandPathAnimations reads but does not use either coordinate. */
         EntityReserveLandPathAnimations(camera, current_row, current_column);
         result = 0;
-        while (result != -1) {
+        while (result != MAP_PATH_CELL_UNAVAILABLE) {
             current_row = row;
             current_column = column;
-            gLandPathTraversalDirection = -1;
+            gLandPathTraversalDirection = MAP_PATH_DIRECTION_NONE;
             result = 0;
             while (!result) {
                 result = MapConsumePathCellDirections(camera, current_row, current_column);
-                if (result != -1)
+                if (result != MAP_PATH_CELL_UNAVAILABLE)
                     MapAnimateMetatilePathChange(camera, current_row, current_column);
-                if (gLandPathTraversalDirection == 2)
+                if (gLandPathTraversalDirection == MAP_PATH_RIGHT)
                     ++current_column;
-                else if (gLandPathTraversalDirection == 8)
+                else if (gLandPathTraversalDirection == MAP_PATH_LEFT)
                     --current_column;
-                else if (gLandPathTraversalDirection == 1)
+                else if (gLandPathTraversalDirection == MAP_PATH_UP)
                     --current_row;
                 else
                     ++current_row;
@@ -530,13 +530,13 @@ void ProcessLand()
     struct object_state *player;
 
     if (gPlayerLives[PLAYER_TOEJAM] >= 0 && gPlayerInfo[PLAYER_TOEJAM].height <= 4 &&
-        gPlayerInfo[PLAYER_TOEJAM].level > 1 && !gPlayerElevatorFlags[PLAYER_TOEJAM]) {
+        gPlayerInfo[PLAYER_TOEJAM].level > LEVEL_FIRST && !gPlayerElevatorFlags[PLAYER_TOEJAM]) {
         row = (gPlayerInfo[PLAYER_TOEJAM].y >> 6) - 1;
         column = (gPlayerInfo[PLAYER_TOEJAM].x >> 7) - 1;
         if (row >= 0 && column >= 0 && row < MAP_ROWS && column < MAP_COLUMNS &&
-            (gPlayer1LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(PLAYER_TOEJAM)) {
-            MapAnimateMarkedLandPaths(0, row, column);
-            EarthlingDamageOnHazardTerrain(0, gPlayer1MapLevel);
+            (gPlayer1LevelMap[row][column] & (unsigned long)METATILE_PENDING_PATH_CHANGE) && PlayerIsNearTerrainEdge(PLAYER_TOEJAM)) {
+            MapAnimateMarkedLandPaths(VIEWPORT_PRIMARY, row, column);
+            EarthlingDamageOnHazardTerrain(PLAYER_TOEJAM, gPlayer1MapLevel);
             player = &gPlayerInfo[PLAYER_TOEJAM];
             UpdateLandAroundPlayer(PLAYER_TOEJAM);
             if (gPlayer1TerrainUnderfoot == TERRAIN_VOID && !gPlayerInfo[PLAYER_TOEJAM].height &&
@@ -550,14 +550,14 @@ void ProcessLand()
         }
     }
     if (gPlayerLives[PLAYER_EARL] >= 0 && gPlayerInfo[PLAYER_EARL].height <= 4 &&
-        gPlayerInfo[PLAYER_EARL].level > 1 && !gPlayerElevatorFlags[PLAYER_EARL]) {
+        gPlayerInfo[PLAYER_EARL].level > LEVEL_FIRST && !gPlayerElevatorFlags[PLAYER_EARL]) {
         row = (gPlayerInfo[PLAYER_EARL].y >> 6) - 1;
         column = (gPlayerInfo[PLAYER_EARL].x >> 7) - 1;
         if (row >= 0 && column >= 0 && row < MAP_ROWS && column < MAP_COLUMNS) {
             if (gSplitScreenEnabled) {
-                if ((gPlayer2LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(PLAYER_EARL)) {
-                    MapAnimateMarkedLandPaths(1, row, column);
-                    EarthlingDamageOnHazardTerrain(1, gPlayer2MapLevel);
+                if ((gPlayer2LevelMap[row][column] & (unsigned long)METATILE_PENDING_PATH_CHANGE) && PlayerIsNearTerrainEdge(PLAYER_EARL)) {
+                    MapAnimateMarkedLandPaths(VIEWPORT_SECONDARY, row, column);
+                    EarthlingDamageOnHazardTerrain(PLAYER_EARL, gPlayer2MapLevel);
                     player = &gPlayerInfo[PLAYER_EARL];
                     UpdateLandAroundPlayer(PLAYER_EARL);
                     if (gPlayer2TerrainUnderfoot == TERRAIN_VOID && !gPlayerInfo[PLAYER_EARL].height &&
@@ -570,9 +570,9 @@ void ProcessLand()
                     }
                 }
             } else {
-                if ((gPlayer1LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(PLAYER_EARL)) {
-                    MapAnimateMarkedLandPaths(0, row, column);
-                    EarthlingDamageOnHazardTerrain(0, gPlayer1MapLevel);
+                if ((gPlayer1LevelMap[row][column] & (unsigned long)METATILE_PENDING_PATH_CHANGE) && PlayerIsNearTerrainEdge(PLAYER_EARL)) {
+                    MapAnimateMarkedLandPaths(VIEWPORT_PRIMARY, row, column);
+                    EarthlingDamageOnHazardTerrain(PLAYER_TOEJAM, gPlayer1MapLevel);
                     player = &gPlayerInfo[PLAYER_EARL];
                     UpdateLandAroundPlayer(PLAYER_EARL);
                     if (gPlayer2TerrainUnderfoot == TERRAIN_VOID && !gPlayerInfo[PLAYER_EARL].height &&

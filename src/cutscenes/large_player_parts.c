@@ -76,8 +76,8 @@ short index, x, y;
     entity->frames = Spr_TitleBigPlayers;
     entity->frame_phase = 10;
     entity->frame_duration = 1;
-    entity->frame = -1;
-    AllocateEntityViewportSprites(entity, 0);
+    entity->frame = SPRITE_FRAME_BEFORE_FIRST;
+    AllocateEntityViewportSprites(entity, VIEWPORT_PRIMARY);
     entity->sprite_ready = 0;
 }
 
@@ -93,7 +93,7 @@ char period;
     entity->sequence = sequence;
     entity->frame_phase = period;
     entity->frame_duration = 1;
-    entity->frame = -1;
+    entity->frame = SPRITE_FRAME_BEFORE_FIRST;
 }
 
 /* Release the primary viewport state of an allocated actor. */
@@ -107,7 +107,7 @@ short index;
     entity = &gPlayerInfo[gIntroLargePlayerPartEntities[index]];
     if (!(entity->draw_flags & ENTITY_ACTIVE))
         return;
-    ReleaseEntityViewportSprites(entity, 0);
+    ReleaseEntityViewportSprites(entity, VIEWPORT_PRIMARY);
 }
 
 /* Place the seven visible actors in selector order. */
@@ -203,8 +203,8 @@ short index, x, y;
     entity->frames = Spr_IntroEarlDriving;
     entity->frame_phase = 10;
     entity->frame_duration = 1;
-    entity->frame = -1;
-    AllocateEntityViewportSprites(entity, 0);
+    entity->frame = SPRITE_FRAME_BEFORE_FIRST;
+    AllocateEntityViewportSprites(entity, VIEWPORT_PRIMARY);
     entity->sprite_ready = 0;
 }
 
@@ -220,7 +220,7 @@ char period;
     entity->sequence = sequence;
     entity->frame_phase = period;
     entity->frame_duration = 1;
-    entity->frame = -1;
+    entity->frame = SPRITE_FRAME_BEFORE_FIRST;
 }
 
 /* Release the primary viewport state when either low flag bit is set. */
@@ -234,7 +234,7 @@ short index;
     entity = &gPlayerInfo[gIntroDrivingPartEntities[index]];
     if (!(entity->draw_flags & (ENTITY_ACTIVE | ENTITY_PRIMARY_VIEW)))
         return;
-    ReleaseEntityViewportSprites(entity, 0);
+    ReleaseEntityViewportSprites(entity, VIEWPORT_PRIMARY);
 }
 
 /* Create and initialize the asteroid actor used in the driving scene. */
@@ -254,9 +254,9 @@ void IntroCreateAsteroidEntity()
         entity->sprite_ready = 0;
         entity->sequence = IntroAsteroidLoopAnimation;
         entity->frame_duration = 1;
-        entity->frame = -1;
+        entity->frame = SPRITE_FRAME_BEFORE_FIRST;
         entity->frame_phase = 6;
-        AllocateEntityViewportSprites(entity, 0);
+        AllocateEntityViewportSprites(entity, VIEWPORT_PRIMARY);
     }
 }
 

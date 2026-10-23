@@ -19,7 +19,7 @@ struct earthling_state *earthling;
         (object = &gPlayerInfo[earthling->object],
          collision = EntityFindHorizontalCollisionAtX(object, object->x, object->y, PLAYER_TOEJAM))) {
         PresentRegisterDecoyHit(collision - 1);
-        return -1;
+        return EARTHLING_STATE_UNCHANGED;
     }
     if (earthling->state == 6)
         return 0;

@@ -22,7 +22,7 @@ short restart, scene;
     object = &gPlayerInfo[gIntroFlyingEntities[0]];
     if (restart) {
         if (object->draw_flags & (ENTITY_ACTIVE | ENTITY_PRIMARY_VIEW))
-            ReleaseEntityViewportSprites(object, 0);
+            ReleaseEntityViewportSprites(object, VIEWPORT_PRIMARY);
         if (scene == 1) {
             object->y = 94;
             object->sequence = &IntroHeldFrameStreams[(int)GetRandomNumber(0) % 3].frame;
@@ -35,14 +35,14 @@ short restart, scene;
         object->frames = IntroFlyingEntityFrames;
         object->frame_phase = 6;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->sprite_ready = 0;
         object->x = 96;
-        AllocateEntityViewportSprites(object, 0);
+        AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
     }
     object->x += 10;
     if (object->x > 232 && (object->draw_flags & (ENTITY_ACTIVE | ENTITY_PRIMARY_VIEW)))
-        ReleaseEntityViewportSprites(object, 0);
+        ReleaseEntityViewportSprites(object, VIEWPORT_PRIMARY);
 }
 
 /* Update the four flying-object slots, respawning objects outside the
@@ -57,7 +57,7 @@ short scene;
     case 0:
         for (object_number = 0; object_number < 4; object_number++) {
             if (slot = gIntroFlyingEntities[object_number])
-                ReleaseEntityViewportSprites(&gPlayerInfo[slot], 0);
+                ReleaseEntityViewportSprites(&gPlayerInfo[slot], VIEWPORT_PRIMARY);
         }
         return;
     case 2:
@@ -81,7 +81,7 @@ short scene;
             if (object->x < 50 || object->x > 270 ||
                 object->height > -18 || object->height < -198) {
                 if (object->draw_flags & ENTITY_PRIMARY_VIEW)
-                    ReleaseEntityViewportSprites(object, 0);
+                    ReleaseEntityViewportSprites(object, VIEWPORT_PRIMARY);
                 object->x = spawn_x;
                 object->y = 0;
                 object->height = -100;
@@ -119,7 +119,7 @@ short scene;
                 object->current_frame = object->frames[0];
                 object->frame_phase = 5;
                 object->frame_duration = 1;
-                object->frame = -1;
+                object->frame = SPRITE_FRAME_BEFORE_FIRST;
                 object->sprite_ready = 0;
             } else {
                 object->y++;
@@ -129,7 +129,7 @@ short scene;
             object->height += object->velocity_y;
             object->velocity_height++;
             if (object->velocity_height == 0) {
-                AllocateEntityViewportSprites(object, 0);
+                AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
                 object->sprite_ready = 0;
             }
         }

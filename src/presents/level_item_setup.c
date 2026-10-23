@@ -62,11 +62,11 @@ void SetupInitialInventory()
         gObjectTable[0][slot].kind = ITEM_UNUSED;
         gItemBank2Records[slot].kind = ITEM_UNUSED;
     }
-    gItemBankLevels[0] = -1;
-    gItemBank2Level = -1;
+    gItemBankLevels[0] = LEVEL_UNLOADED;
+    gItemBank2Level = LEVEL_UNLOADED;
     SetupPresentIdentities();
     if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
-        LoadLevelItemBank(1);
+        LoadLevelItemBank(LEVEL_FIRST);
         gPlayerInventory[PLAYER_TOEJAM][0] = PRESENT_BONUS_HITOPS;
         gPlayerInventory[PLAYER_TOEJAM][1] = PRESENT_BONUS_HITOPS;
         if (gPlayer2Lives < 0) {
@@ -75,7 +75,7 @@ void SetupInitialInventory()
         }
     }
     if (gPlayer2Lives >= 0) {
-        LoadLevelItemBank(1);
+        LoadLevelItemBank(LEVEL_FIRST);
         gPlayerInventory[PLAYER_EARL][0] = PRESENT_BONUS_HITOPS;
         gPlayerInventory[PLAYER_EARL][1] = PRESENT_BONUS_HITOPS;
         if (gPlayerLives[PLAYER_TOEJAM] < 0) {
@@ -96,7 +96,7 @@ short level;
         if (gItemBankUsers[bank] && gItemBankLevels[bank] == level) {
             --gItemBankUsers[bank];
             if (!gItemBankUsers[bank]) {
-                gItemBankLevels[bank] = -1;
+                gItemBankLevels[bank] = LEVEL_UNLOADED;
                 for (item_number = 0; item_number < 32; ++item_number) {
                     object = gObjectTable[bank][item_number].object;
                     gObjectTable[bank][item_number].kind = ITEM_UNUSED;
@@ -118,7 +118,7 @@ short world_x, world_y, level;
     short elevator_number, elevator_x, elevator_y;
     char map_x, map_y;
 
-    if (level == 1)
+    if (level == LEVEL_FIRST)
         return 1;
     for (elevator_number = 0; elevator_number < 2; ++elevator_number) {
         map_x = gLevelAnchorPositions[elevator_number].x;
@@ -352,19 +352,19 @@ short level;
     for (slot = 0; slot < count; ++slot) {
         if (!level)
             break;
-        if (level == 1) {
+        if (level == LEVEL_FIRST) {
             if (slot == 12)
                 break;
             position_x = Level1PresentLocations[slot].x;
             position_y = Level1PresentLocations[slot].y;
         } else
             MapFindItemPlacementPosition(&position_x, &position_y, level, 0);
-        if (level == 1)
+        if (level == LEVEL_FIRST)
             goto get_present;
         if (GetRandomNumber() % 100 < 50) {
 get_present:
             kind = SelectRandomPresent();
-            if (level == 1 && slot < 4) {
+            if (level == LEVEL_FIRST && slot < 4) {
                 while (kind == PRESENT_ICARUS_WINGS || kind == PRESENT_INNERTUBE || kind == PRESENT_ROCKET_SKATES || kind == PRESENT_MYSTERY ||
                        kind == PRESENT_RANDOMIZER || kind == PRESENT_TOTAL_BUMMER)
                     kind = SelectRandomPresent();
@@ -388,7 +388,7 @@ get_present:
     if (!level)
         InitializeLevelZeroFixedItems(
             &gObjectTable[bank][28]);
-    else if (level != 1)
+    else if (level != LEVEL_FIRST)
         MapPlaceLargeLevelItems(gObjectTable[bank], level);
     ++gItemBankUsers[bank];
     gItemBankLevels[bank] = level;

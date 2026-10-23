@@ -105,7 +105,7 @@ short IntroPart1()
     gCutsceneMusicActorAnimationEnabled = 1;
     while ((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)
         CutsceneStepFrameAndMusicCadence(0, gCutsceneMusicActorAnimationEnabled);
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
         !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         do {
             CutsceneStepFrameAndMusicCadence(0, gCutsceneMusicActorAnimationEnabled);
@@ -300,14 +300,14 @@ short IntroPart1()
             gCutsceneScriptCountdown = 17;
             break;
         case 39:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
         }
     }
     CutsceneReleaseTextEntities();
     IntroReleaseLargePlayerSpritesAndRefresh();
     IntroReleaseLargePlayerParts();
     CutsceneStepFrameAndMusicCadence(0, 0);
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }
 
 /* Enable background advancement during the final rocketship caption pause. */
@@ -320,7 +320,7 @@ short IntroPart2()
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 17;
     advance_period = 0;
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
         !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         do {
             CutsceneStepFrameAndMusicCadence(advance_period, 0);
@@ -368,7 +368,7 @@ short IntroPart2()
             gCutsceneScriptCountdown = 306;
             break;
         case 10:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             advance_period = 0;
         }
     }
@@ -376,7 +376,7 @@ short IntroPart2()
     IntroReleaseFrameEntitiesAndRefresh();
     CutsceneStepFrameAndMusicCadence(0, 0);
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank2, 2);
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }
 
 /* Return to the two large characters for the problem announcement. */
@@ -390,7 +390,7 @@ short IntroPart3()
     gCutsceneMusicActorAnimationEnabled = 1;
     advance_scene = 0;
     gCutsceneScriptState = 0;
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
         !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         do {
             CutsceneStepFrameAndMusicCadence(0, gCutsceneMusicActorAnimationEnabled);
@@ -438,7 +438,7 @@ short IntroPart3()
             gCutsceneScriptCountdown = 8;
             break;
         case 8:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -448,7 +448,7 @@ short IntroPart3()
     IntroReleaseLargePlayerSpritesAndRefresh();
     IntroReleaseLargePlayerParts();
     CutsceneStepFrameAndMusicCadence(0, 0);
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }
 
 /* Scroll the background while alternating the rocketship exhaust update. */
@@ -470,7 +470,7 @@ short IntroPart4()
     gCutsceneScriptState = 0;
     scroll_position = 0;
     exhaust_phase = 0;
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
         !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         do {
             WaitForNextVBlank(1);
@@ -507,7 +507,7 @@ short IntroPart4()
             CutsceneTextLoad("in the driver's seat . . .", 160, 30);
             break;
         case 5:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -517,7 +517,7 @@ short IntroPart4()
     CutsceneReleaseDriftingEntities();
     CutsceneReleaseRocketshipPair();
     CutsceneStepFrameAndMusicCadence(0, 0);
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }
 
 /* Change Earl's driving poses and move the background in either direction. */
@@ -545,7 +545,7 @@ short IntroPart5()
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
         !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
         IntroUpdateFlyingEntityMotion(driving_pose);
@@ -611,7 +611,7 @@ short IntroPart5()
             break;
         case 11:
             IntroUpdateFlyingEntityMotion(0);
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -621,7 +621,7 @@ short IntroPart5()
     VDP_COMMAND = 0x7c020003;
     VDP_DATA = scroll_position;
     CutsceneStepFrameAndMusicCadence(0, 0);
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }
 
 /* Step through the ship's dodging poses while the background scrolls. */
@@ -641,7 +641,7 @@ short IntroPart6()
     CutsceneSetRocketshipPairPose(0, 104, 151);
     pose_changed = 0;
     driving_pose = 0;
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
         !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         IntroUpdateRightwardFlyingEntity(pose_changed, driving_pose);
         pose_changed = 0;
@@ -694,7 +694,7 @@ short IntroPart6()
             gCutsceneScriptCountdown = 51;
             break;
         case 10:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -704,7 +704,7 @@ short IntroPart6()
     VDP_COMMAND = 0x7c020003;
     VDP_DATA = scroll_position;
     CutsceneStepFrameAndMusicCadence(0, 0);
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }
 
 /* Alternate camera shake during the final driving poses and asteroid entry. */
@@ -727,7 +727,7 @@ short IntroPart7()
     AnimateTitleTransitionBackground(1);
     IntroPositionDrivingPart(0, 104, 151);
     IntroPositionDrivingPart(1, 104, 151);
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
         !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         AnimateTitleTransitionBackground(0);
         if (shake_phase) {
@@ -793,7 +793,7 @@ short IntroPart7()
             PlaySound(PSG_NOISE_FADE_RATE0, 5);
             break;
         case 7:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             shake_phase = 0;
             break;
         }
@@ -812,7 +812,7 @@ short IntroPart7()
     VDP_COMMAND = 0x7c020003;
     VDP_DATA = gCamera1PendingX;
     CutsceneStepFrameAndMusicCadence(0, 0);
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }
 
 /* Load the crash screen, then show and release the collision objects. */
@@ -835,7 +835,7 @@ short IntroPart8()
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
         !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
         if (--gCutsceneScriptCountdown == 0) {
@@ -848,7 +848,7 @@ short IntroPart8()
                 break;
             case 2:
                 IntroReleaseCollisionSceneEntities();
-                gCutsceneScriptState = -1;
+                gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
                 break;
             }
         }
@@ -859,7 +859,7 @@ short IntroPart8()
     gSharedTileSpriteCopiesEnabled = 0;
     DrawStarfieldPlane();
     InitializeTitleTransitionTilemap();
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }
 
 /* Scroll the second background plane through two timed scene states. */
@@ -880,7 +880,7 @@ short IntroPart9()
     WaitForNextVBlank(1);
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
         !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
         VDP_COMMAND = 0x40020010;
@@ -894,7 +894,7 @@ short IntroPart9()
         case 1:
             break;
         case 2:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -905,7 +905,7 @@ short IntroPart9()
     VDP_COMMAND = 0x40020010;
     VDP_DATA = scroll_position;
     CutsceneStepFrameAndMusicCadence(0, 0);
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }
 
 /* Increase a scene Y argument from 20 to 160, then show the driving warning. */
@@ -923,7 +923,7 @@ short IntroPart10()
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptState = 1;
-    while (gCutsceneScriptState != -1 &&
+    while (gCutsceneScriptState != CUTSCENE_SCRIPT_DONE &&
         !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
         switch (gCutsceneScriptState) {
@@ -956,7 +956,7 @@ short IntroPart10()
                 ++gCutsceneScriptState;
             break;
         case 6:
-            gCutsceneScriptState = -1;
+            gCutsceneScriptState = CUTSCENE_SCRIPT_DONE;
             break;
         }
     }
@@ -966,5 +966,5 @@ short IntroPart10()
     CutsceneReleasePlanetEntity();
     IntroReleaseFallingRocketship();
     CutsceneStepFrameAndMusicCadence(0, 0);
-    return gCutsceneScriptState != -1;
+    return gCutsceneScriptState != CUTSCENE_SCRIPT_DONE;
 }

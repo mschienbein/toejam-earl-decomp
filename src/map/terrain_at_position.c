@@ -24,11 +24,11 @@ short player, world_x, world_y;
 
     if (!player) {
         map = gPlayer1LevelMap[0];
-        if (gPlayer1MapLevel == 1 || gPlayer1MapLevel == LEVEL_FINAL)
+        if (gPlayer1MapLevel == LEVEL_FIRST || gPlayer1MapLevel == LEVEL_FINAL)
             special_level = 1;
     } else {
         map = gPlayer2LevelMap[0];
-        if (gPlayer2MapLevel == 1 || gPlayer2MapLevel == LEVEL_FINAL)
+        if (gPlayer2MapLevel == LEVEL_FIRST || gPlayer2MapLevel == LEVEL_FINAL)
             special_level = 1;
     }
     tile_y = (world_y >> 3) & 7;
@@ -93,7 +93,7 @@ short player;
                 map_y = sample_y >> 3;
                 map_cell = sample_x >> 4;
                 if (!map_cell || map_cell > MAP_COLUMNS || !map_y || map_y > MAP_ROWS) {
-                    if (entity->level == 1 || entity->level == LEVEL_FINAL)
+                    if (entity->level == LEVEL_FIRST || entity->level == LEVEL_FINAL)
                         terrain = TERRAIN_WATER;
                     else
                         terrain = TERRAIN_VOID;

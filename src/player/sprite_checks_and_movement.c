@@ -68,8 +68,8 @@ short player_number, input;
         else
             input &= ~INPUT_HORIZONTAL_MASK;
     }
-    if ((gDoorwayPlayerContactFlags[0] == ((player_number + 1) | 4) ||
-         gSecondDoorwayPlayerContactFlags == ((player_number + 1) | 4)) && (input & INPUT_UP))
+    if ((gDoorwayPlayerContactFlags[0] == ((player_number + DOORWAY_CONTACT_PLAYER_BIAS) | DOORWAY_CONTACT_CENTERED) ||
+         gSecondDoorwayPlayerContactFlags == ((player_number + DOORWAY_CONTACT_PLAYER_BIAS) | DOORWAY_CONTACT_CENTERED)) && (input & INPUT_UP))
         input &= ~INPUT_HORIZONTAL_MASK;
     sprite = player->sprite_state;
     if (player->animation_group_mask & (long)PLAYER_GROUP_LEAN) {
@@ -108,7 +108,7 @@ unsigned short land;
     short velocity_x, velocity_y, animation_mode, sprite;
     short speed_x, speed_y, current_sprite;
 
-    sprite = -1;
+    sprite = PLAYER_ANIM_UNCHANGED;
     speed_x = 320;
     speed_y = 240;
     if (land == TERRAIN_FAST_GROUND) {
@@ -151,9 +151,9 @@ unsigned short land;
             (current_sprite == PLAYER_ANIM_JUMP_WINDUP_LEFT && (input & INPUT_LEFT)) ||
             (current_sprite == PLAYER_ANIM_JUMP_WINDUP_RIGHT && (input & INPUT_RIGHT)))
             return;
-        sprite = 0;
+        sprite = PLAYER_MOVEMENT_ACTIVE_PRESENT;
     } else if (!(input & INPUT_DIRECTION_MASK) && (velocity_x || velocity_y)) {
-        sprite = 0;
+        sprite = PLAYER_MOVEMENT_ACTIVE_PRESENT;
         velocity_x = 0;
         velocity_y = 0;
         animation_mode = ANIMATION_MOTION_NONE;
@@ -223,7 +223,7 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
         player->velocity_y = velocity_y;
         player->animation_motion_axes = mode;
     }
-    if (sprite != -1) {
+    if (sprite != PLAYER_ANIM_UNCHANGED) {
         if (!sprite) {
             sprite = GetActivePresentSprite(player);
             frame = -1;
@@ -250,7 +250,7 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
                     player->animation_motion_axes = ANIMATION_MOTION_XY;
             }
         }
-    } else if (sprite == -1) {
+    } else if (sprite == PLAYER_ANIM_UNCHANGED) {
         if (input & INPUT_BUTTON_A) {
             if (player->animation_group_mask & PLAYER_GROUP_WALK) {
                 if (gPlayerPowerups[player_number] == PRESENT_NONE)
@@ -269,7 +269,7 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
             }
         }
     }
-    if (sprite != -1) {
+    if (sprite != PLAYER_ANIM_UNCHANGED) {
         if ((sprite & PLAYER_ANIM_FAMILY_MASK) == (player->sprite_state & PLAYER_ANIM_FAMILY_MASK)) {
             frame_duration = player->frame_duration;
             if (!frame_duration)

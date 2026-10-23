@@ -31,7 +31,7 @@ struct object_state *player;
         }
     } else if (gPlayerPowerups[player_number] == PRESENT_ROCKET_SKATES) {
         OpenRocketSkates(player, player_number, land);
-        sprite = -1;
+        sprite = PLAYER_ANIM_UNCHANGED;
         return sprite;
     } else if (land == TERRAIN_WATER && !player->height)
         sprite = PLAYER_ANIM_SWIM_IDLE;
@@ -39,7 +39,7 @@ struct object_state *player;
         sprite = PLAYER_ANIM_SPRING_SHOES_DOWN;
     else if (!gPlayerPowerups[player_number] && !gPlayerElevatorFlags[player_number]) {
         if ((player->animation_group_mask & PLAYER_GROUP_ICARUS_FLY) && player->height > 0) {
-            sprite = -1;
+            sprite = PLAYER_ANIM_UNCHANGED;
             return sprite;
         } else {
             player->draw_flags |= ENTITY_SHADOW;
@@ -85,9 +85,9 @@ void MapClearTilePriorityNearPlayer()
     bottom_row = center_row + 6;
     first_column = (player_x >> 3) - 4;
     right_column = first_column + 9;
-    viewport = 0;
+    viewport = VIEWPORT_PRIMARY;
     if (gTerrainPriorityUpdatePlayer == PLAYER_EARL && gSplitScreenEnabled)
-        viewport = 1;
+        viewport = VIEWPORT_SECONDARY;
     VDP_CONTROL_WORD = 0x8c81;
     for (column = first_column; column <= right_column; ++column) {
         for (row = top_row; row <= bottom_row; ++row) {
@@ -140,7 +140,7 @@ short player_number;
     short center_tile;
 
     nearby_land = player_number == PLAYER_TOEJAM ? &gPlayer1NearbyTerrain[0][0] : &gPlayer2NearbyTerrain[0][0];
-    gPlayerFallStates[player_number] = 1;
+    gPlayerFallStates[player_number] = PLAYER_FALL_DESCENDING;
     sprite = (player->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_FALL_UP;
     center_tile = 12;
     if (sprite == PLAYER_ANIM_FALL_UP || sprite == PLAYER_ANIM_FALL_DOWN) {
@@ -266,7 +266,7 @@ void CheckPlayerFalling()
     player = &gPlayerInfo[player_number];
     other_number = (unsigned long) (player_number ^ 1);
     other = &gPlayerInfo[other_number];
-    if (gPlayerFallStates[player_number] == 1)
+    if (gPlayerFallStates[player_number] == PLAYER_FALL_DESCENDING)
     {
       if (player->height < (-224))
       {
@@ -282,7 +282,7 @@ void CheckPlayerFalling()
         player->acceleration_height = -128;
     }
     else
-      if (gPlayerFallStates[player_number] == 2)
+      if (gPlayerFallStates[player_number] == PLAYER_FALL_LANDING)
     {
       if (player_number == PLAYER_TOEJAM)
         land = gPlayer1TerrainUnderfoot;
@@ -297,7 +297,7 @@ void CheckPlayerFalling()
           player->velocity_height = 0;
           player->acceleration_height = -128;
         }
-        gPlayerFallStates[player_number] = 0;
+        gPlayerFallStates[player_number] = PLAYER_FALL_NONE;
         continue;
       }
       if (gPlayerJumpCounters[player_number] <= 0)
@@ -305,7 +305,7 @@ void CheckPlayerFalling()
         player->height = 0;
         player->velocity_height = 0;
         player->acceleration_height = 0;
-        gPlayerFallStates[player_number] = 0;
+        gPlayerFallStates[player_number] = PLAYER_FALL_NONE;
         selected_sprite = GetActivePresentSprite(player);
         SetSprite(player, selected_sprite);
       }
@@ -328,7 +328,7 @@ void CheckPlayerFalling()
         player->velocity_height += jump_count << 8;
         --gPlayerJumpCounters[player_number];
       }
-      selected_sprite = -1;
+      selected_sprite = PLAYER_ANIM_UNCHANGED;
       if (((((((other->sprite_state == PLAYER_ANIM_IDLE) ||
         (other->sprite_state == PLAYER_ANIM_ICARUS_IDLE)) ||
         (other->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY))) ||
@@ -351,7 +351,7 @@ void CheckPlayerFalling()
       else
         if (other->sprite_state == PLAYER_ANIM_TOMATO_RAIN)
         selected_sprite = GetActivePresentSprite(other);
-      if (selected_sprite != (-1))
+      if (selected_sprite != (PLAYER_ANIM_UNCHANGED))
       {
         SetSprite(other, selected_sprite);
         other->velocity_x = 0;
@@ -425,7 +425,7 @@ char *falling;
                 MapReleaseLevelItemBank(player->level);
                 if (--player->level < 0)
                     player->level = gHighestLevel;
-                gPlayerFallStates[player_number] = 2;
+                gPlayerFallStates[player_number] = PLAYER_FALL_LANDING;
             }
             if (gPlayerLives[player_number] < 0)
                 ElevatorInvalidateSecondaryRecords();
@@ -448,7 +448,7 @@ char *falling;
         if (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level ||
             gPlayerLives[PLAYER_TOEJAM] < 0 || gPlayer2Lives < 0) {
             if (falling[PLAYER_TOEJAM] && falling[PLAYER_EARL])
-                SetPositionOnNewLevel(2);
+                SetPositionOnNewLevel(PLAYER_BOTH);
             else if (falling[PLAYER_TOEJAM]) {
                 player = &gPlayerInfo[PLAYER_EARL];
                 /* MATCHING QUALIFICATION: the signed-long animation mask
@@ -506,7 +506,7 @@ unsigned short land;
     player_number = player->entity_index;
     if (!player->level || gPlayerPowerups[player_number] == PRESENT_SPRING_SHOES)
         return;
-    sprite = -1;
+    sprite = PLAYER_ANIM_UNCHANGED;
     if (player->animation_group_mask & PLAYER_GROUP_JUMP_WINDUP) {
         if (++gPlayerJumpCounters[player_number] > 9) {
             sprite = player->sprite_state + 4;
@@ -529,11 +529,11 @@ unsigned short land;
             PlaySoundEffect((long)Sfx_Splash, AUDIO_PRIORITY_NORMAL, 0);
         } else {
             gPlayerJumpCounters[player_number] = 1;
-            gPlayerFallStates[player_number] = 2;
+            gPlayerFallStates[player_number] = PLAYER_FALL_LANDING;
             sprite = player->sprite_state + 0xf0;
         }
     }
-    if (sprite != -1)
+    if (sprite != PLAYER_ANIM_UNCHANGED)
         SetSprite(player, sprite);
 }
 
@@ -546,7 +546,7 @@ unsigned short land;
     char sprite;
 
     player_number = player->entity_index;
-    sprite = -1;
+    sprite = PLAYER_ANIM_UNCHANGED;
     if (player->animation_group_mask & PLAYER_GROUP_CLIMB) {
         if (!player->frame_duration)
             sprite = GetActivePresentSprite(player);
@@ -572,7 +572,7 @@ unsigned short land;
             }
         }
     }
-    if (sprite != -1)
+    if (sprite != PLAYER_ANIM_UNCHANGED)
         SetSprite(player, sprite);
 }
 
@@ -707,7 +707,7 @@ unsigned short land;
     if (gPlayerPowerups[player_number] != PRESENT_SPRING_SHOES ||
         gPlayerFallStates[player_number] || gPlayerElevatorFlags[player_number])
         return;
-    sprite = -1;
+    sprite = PLAYER_ANIM_UNCHANGED;
     direction = player->sprite_state & DIRECTION_MASK;
     if (player->animation_group_mask & PLAYER_GROUP_SPRING_SHOES) {
         if ((gPlayerProcessedInput[player_number] & INPUT_BUTTON_A) &&
@@ -742,7 +742,7 @@ unsigned short land;
         }
     } else if (player->animation_group_mask & PLAYER_GROUP_WALK)
         sprite = direction + PLAYER_ANIM_SPRING_SHOES_UP;
-    if (sprite != -1)
+    if (sprite != PLAYER_ANIM_UNCHANGED)
         SetSprite(player, sprite);
 }
 
@@ -758,7 +758,7 @@ unsigned short land;
     if (gPlayerFallStates[player_number])
         return;
     if ((player->animation_group_mask & PLAYER_GROUP_FALL) || (player->animation_group_mask & PLAYER_GROUP_LEAP)) {
-        sprite = -1;
+        sprite = PLAYER_ANIM_UNCHANGED;
         direction = player->sprite_state & DIRECTION_MASK;
         if (land == TERRAIN_VOID)
             player->draw_flags &= ~ENTITY_SHADOW;
@@ -795,14 +795,14 @@ unsigned short land;
             } else {
                 gPlayerJumpCounters[player_number] = gPlayerLandingCounterSeed[player_number];
                 player->acceleration_height = -16;
-                gPlayerFallStates[player_number] = 2;
+                gPlayerFallStates[player_number] = PLAYER_FALL_LANDING;
             }
             if ((sprite & PLAYER_ANIM_FAMILY_MASK) != PLAYER_ANIM_HITOPS_UP) {
                 player->velocity_x = 0;
                 player->velocity_y = 0;
             }
         }
-        if (sprite != -1)
+        if (sprite != PLAYER_ANIM_UNCHANGED)
             SetSprite(player, sprite);
     }
 }
@@ -833,7 +833,7 @@ short player_number;
     SetupElevator(player->level, 0);
     EarthlingRetainLevelBank(player->level);
     LoadLevelItemBank(player->level);
-    if (player->level > 1)
+    if (player->level > LEVEL_FIRST)
         PlayerSetPositionFromSavedMapCell(player);
     else
         SetPositionOnNewLevel(player_number);
@@ -906,7 +906,7 @@ redraw:
         player->draw_flags |= ENTITY_SHADOW;
         terrain = GetMapTerrainAtWorldPosition(PLAYER_TOEJAM, player->x, player->y);
         if (terrain != TERRAIN_VOID && terrain != TERRAIN_WATER) {
-            gPlayerFallStates[player_number] = 2;
+            gPlayerFallStates[player_number] = PLAYER_FALL_LANDING;
             gPlayerJumpCounters[player_number] = 3;
         } else
             player->y += 20;
@@ -969,13 +969,13 @@ short player_number;
     MapReleaseLevelItemBank(player->level);
     gSplitScreenEnabled = 0;
     SelectSpriteChainStart(0);
-    player->level = 99;
+    player->level = PLAYER_LEVEL_ELIMINATED;
     if (player->draw_flags & ENTITY_PRIMARY_VIEW)
-        ReleaseEntityViewportSprites(player, 0);
+        ReleaseEntityViewportSprites(player, VIEWPORT_PRIMARY);
     if (player->draw_flags & ENTITY_SECONDARY_VIEW)
-        ReleaseEntityViewportSprites(player, 1);
+        ReleaseEntityViewportSprites(player, VIEWPORT_SECONDARY);
     player->draw_flags = 0;
-    gPlayerRank[player_number] = 9;
+    gPlayerRank[player_number] = PLAYER_RANK_ELIMINATED;
     HudHidePlayerSprites(player_number);
     player = &gPlayerInfo[player_number ^ 1];
     MapLoadPlayerLevel(PLAYER_TOEJAM, player->level);
@@ -1078,8 +1078,8 @@ void ProcessPlayers()
             ProcessSleep(player);
             PlayerUpdateWhirlwindAndRecovery(player, terrain);
             PlayerUpdateHealthAndLives(player, terrain);
-            if (gPlayerElevatorFlags[player_number] || (gDoorwayPlayerContactFlags[0] & 3) == player_number + 1 ||
-                (gSecondDoorwayPlayerContactFlags & 3) == player_number + 1)
+            if (gPlayerElevatorFlags[player_number] || (gDoorwayPlayerContactFlags[0] & DOORWAY_CONTACT_PLAYER_MASK) == player_number + DOORWAY_CONTACT_PLAYER_BIAS ||
+                (gSecondDoorwayPlayerContactFlags & DOORWAY_CONTACT_PLAYER_MASK) == player_number + DOORWAY_CONTACT_PLAYER_BIAS)
                 player->behavior_flags |= ENTITY_MASK_PIXELS;
             else if (player->sprite_state != PLAYER_ANIM_ITEM_REACTION && player->sprite_state != PLAYER_ANIM_HOT_TUB_EXIT)
                 player->behavior_flags &= ~ENTITY_MASK_PIXELS;
@@ -1089,7 +1089,7 @@ void ProcessPlayers()
         PresentUpdateTerrainEffects(player, terrain);
     }
     CheckPlayerFalling();
-    if (gPlayerSelection == 2)
+    if (gPlayerSelection == PLAYER_BOTH)
         PlayerUpdateHealthSharingClap();
 }
 

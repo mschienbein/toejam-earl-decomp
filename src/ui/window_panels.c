@@ -10,6 +10,7 @@
 #include "ram_ui.h"
 #include "random.h"
 #include "sprite_calls.h"
+#include "ui_calls.h"
 
 /* Release occupied effect-object slots and clear the associated per-player state. */
 void ClearTransientEntities()
@@ -94,7 +95,7 @@ void ClearTransientEntities()
             FreeEntity(gPlayerInteractionChoiceEntities[slot]);
             gPlayerInteractionChoiceEntities[slot] = 0;
             gPlayerInteractionChoiceActive[slot] = 0;
-            gPlayerInteractionResponses[slot] = 0;
+            gPlayerInteractionResponses[slot] = INTERACTION_RESPONSE_NONE;
         }
         gPlayerTomatoRainTicks[slot] = 0;
     }
@@ -184,8 +185,8 @@ void DrawPresentDisplayPanel()
         VDP_COMMAND = 0x60140003L + ((row + 5) << 23);
         for (column = 0; column < 19; ++column) {
             tile = PresentDisplayTilemap[row][column];
-            if (tile & 0x80) {
-                tile &= 0x7f;
+            if (tile & PRESENT_PANEL_HORIZONTAL_FLIP) {
+                tile &= PRESENT_PANEL_TILE_INDEX_MASK;
                 tile |= VDP_TILE_HORIZONTAL_FLIP;
             }
             VDP_DATA = 0xc1d2 + tile;
@@ -208,7 +209,7 @@ short selection;
     for (row = 0; row < 6; ++row) {
         VDP_COMMAND = 0x60200003L + ((row + 11) << 23);
         for (column = 0; column < 8; ++column) {
-            if (selection < 0)
+            if (selection < PAUSE_CHOICE_CONTINUE)
                 VDP_DATA = VDP_TILE_PRIORITY;
             else
                 VDP_DATA = VDP_TILE_PRIORITY + InventoryVDPTilemap[selection][row][column] + tile_base;

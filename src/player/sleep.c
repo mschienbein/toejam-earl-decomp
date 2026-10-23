@@ -34,7 +34,7 @@ struct object_state *state;
 void ProcessSleep(state)
 struct object_state *state;
 {
-    short next_sprite = -1;
+    short next_sprite = PLAYER_ANIM_UNCHANGED;
     short player, effect;
     unsigned char input;
     struct object_state *wake_effect;
@@ -111,6 +111,6 @@ struct object_state *state;
         } else
             gPlayerIdleTicks[player] = 0;
     }
-    if (next_sprite != -1)
+    if (next_sprite != PLAYER_ANIM_UNCHANGED)
         SetSprite(state, next_sprite);
 }

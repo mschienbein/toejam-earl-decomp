@@ -15,7 +15,7 @@
 void EarthlingThinkHorizontalWander(earthling)
 struct earthling_state *earthling;
 {
-    short next_state = -1;
+    short next_state = EARTHLING_STATE_UNCHANGED;
     struct object_state *object;
     struct earthling_definition *definition;
     short previous_velocity_x, previous_velocity_y;
@@ -42,10 +42,10 @@ struct earthling_state *earthling;
                 previous_velocity_y = object->velocity_y;
                 next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance, 0,
                                         earthling->kind);
-                if (next_state != -1) {
+                if (next_state != EARTHLING_STATE_UNCHANGED) {
                     if (earthling->state != 2 && (object->draw_flags & ENTITY_EITHER_VIEW) &&
                         ((earthling->state ^ next_state) & 1)) {
-                        next_state = -1;
+                        next_state = EARTHLING_STATE_UNCHANGED;
                         object->velocity_x = previous_velocity_x;
                         object->velocity_y = previous_velocity_y;
                     }
@@ -56,7 +56,7 @@ struct earthling_state *earthling;
             }
         } else
             --earthling->state_delay;
-        if (next_state == -1 && earthling->state != 2) {
+        if (next_state == EARTHLING_STATE_UNCHANGED && earthling->state != 2) {
             if (!earthling->state) {
                 next_state = (NEXT_RANDOM & 1) + 6;
                 if (next_state == 6)
@@ -74,7 +74,7 @@ struct earthling_state *earthling;
             maximum_time = definition->move_time_max;
             earthling->timer = NEXT_RANDOM % (maximum_time - minimum_time + 1) + minimum_time;
         }
-        if (next_state != -1 && earthling->state != next_state)
+        if (next_state != EARTHLING_STATE_UNCHANGED && earthling->state != next_state)
             SetEarthlingState(earthling, next_state);
         if (earthling->timer <= 0)
             earthling->timer = 1;
@@ -86,7 +86,7 @@ struct earthling_state *earthling;
 void EarthlingAdvanceHorizontalTurnAnimation(earthling)
 struct earthling_state *earthling;
 {
-    short next_state = -1;
+    short next_state = EARTHLING_STATE_UNCHANGED;
     struct object_state *object;
 
     if (!earthling->object)
@@ -117,7 +117,7 @@ struct earthling_state *earthling;
             object->velocity_x = 320;
         }
     }
-    if (next_state != -1 && earthling->state != next_state) {
+    if (next_state != EARTHLING_STATE_UNCHANGED && earthling->state != next_state) {
         SetEarthlingState(earthling, next_state);
         object->frame = -1;
     }
@@ -128,7 +128,7 @@ struct earthling_state *earthling;
 void EarthlingThinkHorizontalReversal(earthling)
 struct earthling_state *earthling;
 {
-    short next_state = -1;
+    short next_state = EARTHLING_STATE_UNCHANGED;
     struct object_state *object;
 
     if (!earthling->object)
@@ -149,7 +149,7 @@ struct earthling_state *earthling;
             object->velocity_x = 320;
         }
     }
-    if (next_state != -1 && earthling->state != next_state) {
+    if (next_state != EARTHLING_STATE_UNCHANGED && earthling->state != next_state) {
         SetEarthlingState(earthling, next_state);
         object->frame = -1;
     }
@@ -178,14 +178,14 @@ struct earthling_state *earthling;
         object->velocity_x = 0;
         object->velocity_y = 0;
         next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance, 0, EARTHLING_WHIRLWIND);
-        if (next_state != -1) {
+        if (next_state != EARTHLING_STATE_UNCHANGED) {
             minimum_time = definition->target_time_min;
             maximum_time = definition->target_time_max;
             earthling->timer = NEXT_RANDOM % (maximum_time - minimum_time + 1) + minimum_time;
         }
         if (earthling->state == 3) {
             if (object->behavior_flags & ENTITY_HIDDEN) {
-                if (next_state != -1) {
+                if (next_state != EARTHLING_STATE_UNCHANGED) {
                     object->frame = -1;
                     object->frame_duration = 1;
                     object->sprite_ready = 0;
@@ -198,7 +198,7 @@ struct earthling_state *earthling;
                 earthling->health_visibility[0] = 7;
             } else
                 earthling->timer = 1;
-        } else if (--earthling->health_visibility[0] < 0 || next_state == -1) {
+        } else if (--earthling->health_visibility[0] < 0 || next_state == EARTHLING_STATE_UNCHANGED) {
             SetEarthlingState(earthling, 2);
             object->frame = -1;
         }

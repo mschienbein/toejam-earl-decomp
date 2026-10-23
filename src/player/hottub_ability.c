@@ -20,7 +20,7 @@ void HottubAbility(player_number, earthling)
 short player_number;
 struct earthling_state *earthling;
 {
-    short sprite = -1;
+    short sprite = PLAYER_ANIM_UNCHANGED;
     struct object_state *player;
 
     player = &gPlayerInfo[player_number];
@@ -111,6 +111,6 @@ struct earthling_state *earthling;
             gPlayerLandingCounterSeed[player_number] = 2;
         }
     }
-    if (sprite != -1)
+    if (sprite != PLAYER_ANIM_UNCHANGED)
         SetSprite(player, sprite);
 }

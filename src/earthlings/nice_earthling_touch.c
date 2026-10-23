@@ -120,7 +120,7 @@ struct earthling_state *earthling;
         mailbox = &gMailboxLevelStates[1];
     player = &gPlayerInfo[player_number];
     object = &gPlayerInfo[earthling->object];
-    if (mailbox->mode != 1) {
+    if (mailbox->mode != MAILBOX_MODE_BITING) {
         if ((!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
              (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
              (player->sprite_state == PLAYER_ANIM_SPRING_SHOES_DOWN && !player->velocity_y)) &&
@@ -128,15 +128,15 @@ struct earthling_state *earthling;
             if (!mailbox->contact[player_number]) {
                 GenerateSpeech(earthling->object, "Mail Order?", 0);
                 PlayerCreateInteractionChoiceDisplay(player_number);
-                mailbox->contact[player_number] = 1;
-            } else if (mailbox->contact[player_number] == 1) {
+                mailbox->contact[player_number] = EARTHLING_INTERACTION_CHOICE_PENDING;
+            } else if (mailbox->contact[player_number] == EARTHLING_INTERACTION_CHOICE_PENDING) {
                 if (gPlayerInteractionResponses[player_number] == 2)
                     InventoryOpenMailOrderMenu(player_number);
-                mailbox->contact[player_number] = 2;
+                mailbox->contact[player_number] = EARTHLING_INTERACTION_COMPLETE;
                 gPlayerInteractionResponses[player_number] = 0;
             }
         } else
-            mailbox->contact[player_number] = 0;
+            mailbox->contact[player_number] = EARTHLING_INTERACTION_IDLE;
         return;
     }
     if ((earthling->state & 252) == 4) {
@@ -178,7 +178,7 @@ void AI_WizardTouch(player_number, earthling)
 short player_number;
 struct earthling_state *earthling;
 {
-    char next_state = -1;
+    char next_state = EARTHLING_STATE_UNCHANGED;
     struct object_state *player, *object;
 
     player = &gPlayerInfo[player_number];
@@ -188,15 +188,15 @@ struct earthling_state *earthling;
            player->sprite_state == PLAYER_ANIM_EXTRA_LIFE ||
            (player->sprite_state == PLAYER_ANIM_SPRING_SHOES_DOWN && !player->velocity_y)) &&
           EntityIsWithinRange(object, player, 35, 15))) {
-        gPlayerWizardInteractionStates[player_number] = 0;
+        gPlayerWizardInteractionStates[player_number] = EARTHLING_INTERACTION_IDLE;
         return;
     }
-    if (gPlayerWizardInteractionStates[player_number] == 2)
+    if (gPlayerWizardInteractionStates[player_number] == EARTHLING_INTERACTION_COMPLETE)
         return;
     earthling->state_delay = 1;
     if (gPlayerInteractionChoiceActive[player_number] ||
         (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level &&
-         gPlayerWizardInteractionStates[player_number ^ 1] && gPlayerWizardInteractionStates[player_number ^ 1] != 2))
+         gPlayerWizardInteractionStates[player_number ^ 1] && gPlayerWizardInteractionStates[player_number ^ 1] != EARTHLING_INTERACTION_COMPLETE))
         return;
     if (!gPlayerWizardInteractionStates[player_number]) {
         if ((earthling->state == 4 || earthling->state == 5) &&
@@ -207,30 +207,30 @@ struct earthling_state *earthling;
         else if (earthling->state <= 1 && object->frame > 4) {
             GenerateSpeech(earthling->object, "Got a buck?", 0);
             PlayerCreateInteractionChoiceDisplay(player_number);
-            gPlayerWizardInteractionStates[player_number] = 1;
+            gPlayerWizardInteractionStates[player_number] = EARTHLING_INTERACTION_CHOICE_PENDING;
         }
     } else if (!object->frame_duration) {
-        if (gPlayerWizardInteractionStates[player_number] == 1) {
+        if (gPlayerWizardInteractionStates[player_number] == EARTHLING_INTERACTION_CHOICE_PENDING) {
             if (gPlayerInteractionResponses[player_number] == 2) {
                 if (gPlayerBucks[player_number] > 0) {
                     next_state = 2;
-                    gPlayerWizardInteractionStates[player_number] = 3;
+                    gPlayerWizardInteractionStates[player_number] = EARTHLING_INTERACTION_ACTIVE;
                     --gPlayerBucks[player_number];
                     SetSprite(player, PLAYER_ANIM_EXTRA_LIFE);
                     PlaySoundEffect((long)Sfx_Hallelujah, 92, 1);
                 } else
                     PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
             } else {
-                gPlayerWizardInteractionStates[player_number] = 2;
+                gPlayerWizardInteractionStates[player_number] = EARTHLING_INTERACTION_COMPLETE;
                 next_state = 5;
                 object->velocity_x = 320;
             }
             gPlayerInteractionResponses[player_number] = 0;
-        } else if (gPlayerWizardInteractionStates[player_number] == 3) {
+        } else if (gPlayerWizardInteractionStates[player_number] == EARTHLING_INTERACTION_ACTIVE) {
             if (gPlayerHealth[player_number] < PlayerGetMaximumHealth(player_number))
                 ++gPlayerHealth[player_number];
             else {
-                gPlayerWizardInteractionStates[player_number] = 2;
+                gPlayerWizardInteractionStates[player_number] = EARTHLING_INTERACTION_COMPLETE;
                 next_state = 3;
                 SetSprite(player, GetActivePresentSprite(player));
             }
@@ -239,7 +239,7 @@ struct earthling_state *earthling;
             object->velocity_x = 320;
         }
     }
-    if (next_state != -1) {
+    if (next_state != EARTHLING_STATE_UNCHANGED) {
         SetEarthlingState(earthling, next_state);
         object->frame = -1;
     }
@@ -250,7 +250,7 @@ void AI_WisemanTouch(player_number, earthling)
 short player_number;
 struct earthling_state *earthling;
 {
-    char next_state = -1;
+    char next_state = EARTHLING_STATE_UNCHANGED;
     struct object_state *player, *object;
 
     player = &gPlayerInfo[player_number];
@@ -259,15 +259,15 @@ struct earthling_state *earthling;
            (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
            (player->sprite_state == PLAYER_ANIM_SPRING_SHOES_DOWN && !player->velocity_y)) &&
           EntityIsWithinRange(object, player, 35, 15))) {
-        gPlayerWisemanInteractionStates[player_number] = 0;
+        gPlayerWisemanInteractionStates[player_number] = EARTHLING_INTERACTION_IDLE;
         return;
     }
-    if (gPlayerWisemanInteractionStates[player_number] == 2)
+    if (gPlayerWisemanInteractionStates[player_number] == EARTHLING_INTERACTION_COMPLETE)
         return;
     earthling->state_delay = 1;
     if (gPlayerInteractionChoiceActive[player_number] ||
         (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level &&
-         gPlayerWisemanInteractionStates[player_number ^ 1] && gPlayerWisemanInteractionStates[player_number ^ 1] != 2))
+         gPlayerWisemanInteractionStates[player_number ^ 1] && gPlayerWisemanInteractionStates[player_number ^ 1] != EARTHLING_INTERACTION_COMPLETE))
         return;
     if (!gPlayerWisemanInteractionStates[player_number]) {
         if (earthling->state >= 2)
@@ -275,21 +275,21 @@ struct earthling_state *earthling;
         else if (earthling->state <= 1) {
             GenerateSpeech(earthling->object, "Got 2 bucks?", 0);
             PlayerCreateInteractionChoiceDisplay(player_number);
-            gPlayerWisemanInteractionStates[player_number] = 1;
+            gPlayerWisemanInteractionStates[player_number] = EARTHLING_INTERACTION_CHOICE_PENDING;
         }
-    } else if (gPlayerWisemanInteractionStates[player_number] == 1) {
+    } else if (gPlayerWisemanInteractionStates[player_number] == EARTHLING_INTERACTION_CHOICE_PENDING) {
         if (gPlayerInteractionResponses[player_number] == 2) {
             PlaySoundEffect((long)Sfx_WisemanThink, 64, 1);
             InventoryOpenIdentificationMenu(player_number);
         }
-        gPlayerWisemanInteractionStates[player_number] = 3;
+        gPlayerWisemanInteractionStates[player_number] = EARTHLING_INTERACTION_ACTIVE;
         gPlayerInteractionResponses[player_number] = 0;
-    } else if (gPlayerWisemanInteractionStates[player_number] == 3 && !gPlayerInventoryOpen[player_number]) {
-        gPlayerWisemanInteractionStates[player_number] = 2;
+    } else if (gPlayerWisemanInteractionStates[player_number] == EARTHLING_INTERACTION_ACTIVE && !gPlayerInventoryOpen[player_number]) {
+        gPlayerWisemanInteractionStates[player_number] = EARTHLING_INTERACTION_COMPLETE;
         next_state = 2;
         object->velocity_x = -320;
     }
-    if (next_state != -1) {
+    if (next_state != EARTHLING_STATE_UNCHANGED) {
         SetEarthlingState(earthling, next_state);
         object->frame = -1;
     }
@@ -300,7 +300,7 @@ void AI_OperaSingerTouch(player_number, earthling)
 short player_number;
 struct earthling_state *earthling;
 {
-    char next_state = -1;
+    char next_state = EARTHLING_STATE_UNCHANGED;
     struct object_state *player, *object;
 
     player = &gPlayerInfo[player_number];
@@ -310,15 +310,15 @@ struct earthling_state *earthling;
            player->sprite_state == PLAYER_ANIM_COVER_EARS ||
            (player->sprite_state == PLAYER_ANIM_SPRING_SHOES_DOWN && !player->velocity_y)) &&
           EntityIsWithinRange(object, player, 35, 15))) {
-        gPlayerOperaSingerInteractionStates[player_number] = 0;
+        gPlayerOperaSingerInteractionStates[player_number] = EARTHLING_INTERACTION_IDLE;
         return;
     }
-    if (gPlayerOperaSingerInteractionStates[player_number] == 2)
+    if (gPlayerOperaSingerInteractionStates[player_number] == EARTHLING_INTERACTION_COMPLETE)
         return;
     earthling->state_delay = 1;
     if (gPlayerInteractionChoiceActive[player_number] ||
         (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level &&
-         gPlayerOperaSingerInteractionStates[player_number ^ 1] && gPlayerOperaSingerInteractionStates[player_number ^ 1] != 2))
+         gPlayerOperaSingerInteractionStates[player_number ^ 1] && gPlayerOperaSingerInteractionStates[player_number ^ 1] != EARTHLING_INTERACTION_COMPLETE))
         return;
     if (!gPlayerOperaSingerInteractionStates[player_number]) {
         if (earthling->state >= 4)
@@ -326,13 +326,13 @@ struct earthling_state *earthling;
         else if (earthling->state <= 1) {
             GenerateSpeech(earthling->object, "Got 3 bucks?", 0);
             PlayerCreateInteractionChoiceDisplay(player_number);
-            gPlayerOperaSingerInteractionStates[player_number] = 1;
+            gPlayerOperaSingerInteractionStates[player_number] = EARTHLING_INTERACTION_CHOICE_PENDING;
         }
-    } else if (gPlayerOperaSingerInteractionStates[player_number] == 1) {
+    } else if (gPlayerOperaSingerInteractionStates[player_number] == EARTHLING_INTERACTION_CHOICE_PENDING) {
         if (gPlayerInteractionResponses[player_number] == 2) {
             if (gPlayerBucks[player_number] >= 3) {
                 next_state = 3;
-                gPlayerOperaSingerInteractionStates[player_number] = 3;
+                gPlayerOperaSingerInteractionStates[player_number] = EARTHLING_INTERACTION_ACTIVE;
                 gPlayerBucks[player_number] -= 3;
                 SetSprite(player, PLAYER_ANIM_COVER_EARS);
                 player_number ^= 1;
@@ -346,14 +346,14 @@ struct earthling_state *earthling;
             } else
                 PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
         } else {
-            gPlayerOperaSingerInteractionStates[player_number] = 2;
+            gPlayerOperaSingerInteractionStates[player_number] = EARTHLING_INTERACTION_COMPLETE;
             next_state = 0;
         }
         /* The index is the other player after a successful paid response. */
         gPlayerInteractionResponses[player_number] = 0;
-    } else if (gPlayerOperaSingerInteractionStates[player_number] == 3) {
+    } else if (gPlayerOperaSingerInteractionStates[player_number] == EARTHLING_INTERACTION_ACTIVE) {
         if (!object->frame_duration) {
-            gPlayerOperaSingerInteractionStates[player_number] = 2;
+            gPlayerOperaSingerInteractionStates[player_number] = EARTHLING_INTERACTION_COMPLETE;
             next_state = 0;
             SetSprite(player, GetActivePresentSprite(player));
             player_number ^= 1;
@@ -364,7 +364,7 @@ struct earthling_state *earthling;
         } else
             DoVikingAbility(player->draw_flags & ENTITY_EITHER_VIEW);
     }
-    if (next_state != -1) {
+    if (next_state != EARTHLING_STATE_UNCHANGED) {
         SetEarthlingState(earthling, next_state);
         object->frame = -1;
     }
@@ -381,7 +381,7 @@ struct earthling_state *earthling;
         if (earthling->state == 2)
             return 1;
     } else if (earthling->kind == EARTHLING_WISEMAN && earthling->state <= 1 &&
-               (gPlayerWisemanInteractionStates[PLAYER_TOEJAM] == 3 || gPlayer2WisemanInteractionState == 3))
+               (gPlayerWisemanInteractionStates[PLAYER_TOEJAM] == EARTHLING_INTERACTION_ACTIVE || gPlayer2WisemanInteractionState == EARTHLING_INTERACTION_ACTIVE))
         return 1;
     return 0;
 }
@@ -444,7 +444,7 @@ short player_number;
         player = &gPlayerInfo[gLifeRequestDisplayEntity];
         player->height += 30;
         SetNextSpeechLifetime(64);
-        if (gPlayerSelection != 2)
+        if (gPlayerSelection != PLAYER_BOTH)
             GenerateSpeech(gLifeRequestDisplayEntity, "Can I play?", 0);
         else
             GenerateSpeech(gLifeRequestDisplayEntity, "Got a life?", 0);
@@ -463,7 +463,7 @@ short player_number;
             DisableBlankingGraphics();
             gMode2RegSoftcopy &= 0x3c;
             VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
-            if (gPlayerSelection == 2) {
+            if (gPlayerSelection == PLAYER_BOTH) {
                 --gPlayerLives[other_player];
                 HudLoadLivesSpriteTiles(other_player);
             }
@@ -476,7 +476,7 @@ short player_number;
             PlayerResetRankAndResources(player_number);
             StopPlayer(player);
             player->animation_motion_axes = ANIMATION_MOTION_NONE;
-            gPlayerSelection = 2;
+            gPlayerSelection = PLAYER_BOTH;
             gSplitScreenEnabled = 1;
             PlayerRelocateToPartnerOrNextLevel(player_number);
         }

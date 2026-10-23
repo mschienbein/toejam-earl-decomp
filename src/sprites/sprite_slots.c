@@ -266,9 +266,9 @@ short entity_number;
     entity = &gPlayerInfo[entity_number];
     if (entity->draw_flags & ENTITY_ACTIVE) {
         if (entity->draw_flags & ENTITY_PRIMARY_VIEW)
-            ReleaseEntityViewportSprites(entity, 0);
+            ReleaseEntityViewportSprites(entity, VIEWPORT_PRIMARY);
         if (entity->draw_flags & ENTITY_SECONDARY_VIEW)
-            ReleaseEntityViewportSprites(entity, 1);
+            ReleaseEntityViewportSprites(entity, VIEWPORT_SECONDARY);
         entity->draw_flags = 0;
         if (entity_number >= DYNAMIC_ENTITY_FIRST_SLOT)
             gDynamicEntitySlotAllocated[entity_number - DYNAMIC_ENTITY_FIRST_SLOT] = 0;

@@ -381,7 +381,7 @@ char animate;
             ;
         DisableBlankingGraphics();
         VDP_CONTROL_WORD = 0x9200;
-        HudHidePlayerSprites(2);
+        HudHidePlayerSprites(PLAYER_BOTH);
         if (animate) {
             AnimateSplitScreenWipe();
             AnimatePlayersIntoSplitViews();
@@ -656,7 +656,7 @@ void FurtherInitialisation()
     CopyPaletteToCRAMSlot(PaletteGameLine4, 3);
     SetupPlayer();
     SetupTheMainGame();
-    SetPositionOnNewLevel(2);
+    SetPositionOnNewLevel(PLAYER_BOTH);
     SetCameraTilePriorityEnabled(1);
     UpdateScreenSplitMode(1);
     StackBasedRandom(GetRandomNumber() | ((long)gFrameCounter << 16));

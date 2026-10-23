@@ -10,6 +10,27 @@ struct timed_animation;
 /* Shared sentinel written by EarthlingApplyNearbySleep and cleared by EarthlingWakeLevel. */
 #define EARTHLING_STATE_SLEEP 99
 
+/* AI schedulers keep the current animation when their next-state result is -1. */
+#define EARTHLING_STATE_UNCHANGED -1
+
+/* LoadInEarthlings sets health_visibility[1] from each camera's level and bounds. */
+#define EARTHLING_PRIMARY_VIEW 2
+#define EARTHLING_SECONDARY_VIEW 4
+#define EARTHLING_EITHER_VIEW 6
+
+/* EarthlingAllocateEntities creates a companion; contact and draw-mask dispatch cancel it. */
+#define EARTHLING_HAS_COMPANION 1
+/* AI_GenericEnemyThink forces a changed movement state onto the other axis. */
+#define EARTHLING_TURN_CHANGE_AXIS 2
+
+/* EarthlingConfigureMailboxLevelBank selects mail order or the biting AI_MailboxTouch path. */
+#define MAILBOX_MODE_MAIL_ORDER 0
+#define MAILBOX_MODE_BITING 1
+/* EarthlingConfigureMailboxLevelBank starts mailboxes at 2 and biting at 4, except level 12. */
+#define MAILBOX_FIRST_LEVEL 2
+#define MAILBOX_FIRST_BITING_LEVEL 4
+#define MAILBOX_ALWAYS_MAIL_ORDER_LEVEL 12
+
 /* Dentist attack-state IDs selected from the player's relative position in Player_Youch. */
 #define EARTHLING_DENTIST_ATTACK_UP 8
 #define EARTHLING_DENTIST_ATTACK_DOWN 9

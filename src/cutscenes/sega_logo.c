@@ -138,9 +138,9 @@ void SegaLogoCreateTrademarkEntity()
         trademark->sprite_ready = 0;
         trademark->sequence = &IntroHeldFrameStreams[0].frame;
         trademark->frame_duration = 1;
-        trademark->frame = -1;
+        trademark->frame = SPRITE_FRAME_BEFORE_FIRST;
         trademark->frame_phase = 6;
-        AllocateEntityViewportSprites(trademark, 0);
+        AllocateEntityViewportSprites(trademark, VIEWPORT_PRIMARY);
     }
 }
 

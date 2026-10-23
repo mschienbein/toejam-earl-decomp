@@ -18,7 +18,7 @@ struct object_state *state;
 short player;
 unsigned short terrain;
 {
-    char sprite = -1;
+    char sprite = PLAYER_ANIM_UNCHANGED;
     short velocity_x = state->velocity_x;
     short velocity_y = state->velocity_y;
     char direction = state->sprite_state & DIRECTION_MASK;
@@ -61,7 +61,7 @@ unsigned short terrain;
          * the observed scratch-register order; a plain int mask keeps the
          * size but swaps scratch registers. Historical spelling is unknown [INFERENCE]. */
         sprite = (state->sprite_state & PLAYER_ANIM_FAMILY_MASK) + direction;
-    if (sprite != -1)
+    if (sprite != PLAYER_ANIM_UNCHANGED)
         SetSprite(state, sprite);
 }
 

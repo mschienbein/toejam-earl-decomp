@@ -29,9 +29,9 @@ short x, y;
         object->sprite_ready = 0;
         object->sequence = IntroFrameIndexLists;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = 6;
-        AllocateEntityViewportSprites(object, 0);
+        AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
     }
 }
 
@@ -60,9 +60,9 @@ short x, y;
         object->sprite_ready = 0;
         object->sequence = &IntroHeldFrameStreams[0].frame;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = 6;
-        AllocateEntityViewportSprites(object, 0);
+        AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
     }
 }
 
@@ -93,9 +93,9 @@ short x, y;
         object->sprite_ready = 0;
         object->sequence = &IntroHeldFrameStreams[0].frame;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = 6;
-        AllocateEntityViewportSprites(object, 0);
+        AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
     }
 }
 

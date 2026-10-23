@@ -48,7 +48,7 @@ short song;
     gCameraTileAttributes = 0;
     JamOutUpdateLayoutsAndScroll(1);
     start_hold = 0;
-    if (song == 7) {
+    if (song == JAM_SONG_RANDOM_SAMPLES) {
         gJamAudioRoute1ButtonASampleIndex = (int)GetRandomNumber() % 42;
         gJamAudioRoute1ButtonBSampleIndex = (int)GetRandomNumber() % 42;
         gJamAudioRoute1ButtonCSampleIndex = (int)GetRandomNumber() % 42;
@@ -245,10 +245,10 @@ void JamOutRandomSampleVBlank()
     }
     if (gJamAudioRoute1PendingInput) {
         if (gJamAudioRoute1PendingInput & INPUT_START) {
-            if (gJamSongCycleIndex == 7) {
+            if (gJamSongCycleIndex == JAM_SONG_CYCLE_RELEASE_CHANNELS) {
                 AudioRequestFmChannelRelease();
                 MusicRequestTrackPointerReset();
-                gJamSongCycleIndex = 0;
+                gJamSongCycleIndex = JAM_SONG_CYCLE_NO_TRACK;
             } else
                 gRequestedMusicSelection = gJamSongCycleIndex++;
         }
@@ -271,14 +271,14 @@ void JamOutRandomSampleVBlank()
     if (gJamAudioRoute2PendingInput) {
         if (gJamAudioRoute2PendingInput & INPUT_START) {
             if (++gJamTemplateBankCycleIndex == 3)
-                gJamTemplateBankCycleIndex = 0;
+                gJamTemplateBankCycleIndex = JAM_TEMPLATE_CHANNELS_RELEASED;
             if (!gJamTemplateBankCycleIndex) {
                 AudioRequestFmChannelRelease();
                 MusicRequestTrackPointerReset();
             } else {
-                if (gJamTemplateBankCycleIndex == 1)
+                if (gJamTemplateBankCycleIndex == JAM_TEMPLATE_NORMAL_BANK)
                     gMusicAlternateTemplateBankEnabled = 0;
-                else if (gJamTemplateBankCycleIndex == 2)
+                else if (gJamTemplateBankCycleIndex == JAM_TEMPLATE_ALTERNATE_BANK)
                     gMusicAlternateTemplateBankEnabled = 1;
                 gRequestedMusicSelection = gCurrentMusicSelection;
                 gCurrentMusicSelection = !gRequestedMusicSelection;
@@ -318,7 +318,7 @@ void JamOutUpdateLeadAnimations()
             } else
                 object->sequence = JamLeadIdleTransitionSequence;
             object->frame_duration = 1;
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
             object->frame_phase = 6;
             gJamToejamAnimationSequence = object->sequence;
         }
@@ -334,7 +334,7 @@ void JamOutUpdateLeadAnimations()
             } else
                 object->sequence = JamLeadIdleTransitionSequence;
             object->frame_duration = 1;
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
             object->frame_phase = 6;
             gJamEarlAnimationSequence = object->sequence;
         }
@@ -351,7 +351,7 @@ void JamOutUpdateLayoutsAndScroll(reset)
 short reset;
 {
     if (reset) {
-        gJamLayoutPhase = 0;
+        gJamLayoutPhase = JAM_LAYOUT_LEAD_PAIR;
         gJamLayoutCountdown = 170;
         gJamHorizontalScroll = 0;
         gJamVerticalScroll = 0;
@@ -376,34 +376,34 @@ short reset;
         if (!--gJamLayoutCountdown) {
             gJamLayoutCountdown = 170;
             if (++gJamLayoutPhase >= 6)
-                gJamLayoutPhase = 0;
+                gJamLayoutPhase = JAM_LAYOUT_LEAD_PAIR;
             gJamToejamAnimationLocked = 0;
             gJamEarlAnimationLocked = 0;
             switch (gJamLayoutPhase) {
-            case 0:
+            case JAM_LAYOUT_LEAD_PAIR:
                 JamOutShowLeadPairLayout();
                 goto stop_scroll;
-            case 1:
+            case JAM_LAYOUT_FOUR_PAIRS:
                 JamOutShowFourPairLayout();
             /* MATCHING QUALIFICATION: the first two layouts share this
              * scroll-reset label. Separate resets reverse MCC68K's tail-sharing order. */
             stop_scroll:
                 gJamScrollStep = 0;
                 break;
-            case 2:
+            case JAM_LAYOUT_NINE_PAIRS:
                 CutsceneReleaseTextEntities();
                 JamOutShowNinePairLayout();
                 gJamLayoutCountdown = 68;
                 break;
-            case 3:
+            case JAM_LAYOUT_SCROLL_STEP_POSITIVE:
                 gJamScrollStep = 1;
                 gJamLayoutCountdown = 68;
                 break;
-            case 4:
+            case JAM_LAYOUT_SCROLL_STEP_NEGATIVE:
                 gJamScrollStep = -1;
                 gJamLayoutCountdown = 68;
                 break;
-            case 5:
+            case JAM_LAYOUT_STOP_SCROLL:
                 gJamScrollStep = 0;
                 gJamLayoutCountdown = 68;
                 break;
@@ -457,11 +457,11 @@ void JamOutCreateCharacterCopies()
             object->sequence = JamLeadIdleLoopSequence;
             object->frame_phase = 6;
             object->frame_duration = 1;
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
             if (slot)
                 object->behavior_flags |= ENTITY_SHARED_TILES;
             object->sprite_ready = 0;
-            AllocateEntityViewportSprites(object, 0);
+            AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
             if (!slot) {
                 lead_tile = object->tile;
                 parent_number = gJamToejamEntities[slot];
@@ -485,11 +485,11 @@ void JamOutCreateCharacterCopies()
             object->sequence = JamLeadIdleLoopSequence;
             object->frame_phase = 6;
             object->frame_duration = 1;
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
             if (slot)
                 object->behavior_flags |= ENTITY_SHARED_TILES;
             object->sprite_ready = 0;
-            AllocateEntityViewportSprites(object, 0);
+            AllocateEntityViewportSprites(object, VIEWPORT_PRIMARY);
             if (!slot) {
                 lead_tile = object->tile;
                 parent_number = gJamEarlEntities[slot];
@@ -579,7 +579,7 @@ short period;
         object = &gPlayerInfo[gJamToejamEntities[0]];
         object->sequence = sequence;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = period;
     }
     gJamToejamAnimationSequence = sequence;
@@ -597,7 +597,7 @@ short period;
         object = &gPlayerInfo[gJamEarlEntities[0]];
         object->sequence = sequence;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_phase = period;
     }
     gJamEarlAnimationSequence = sequence;
@@ -619,11 +619,11 @@ void JamOutShowLeadPairLayout()
         VDP_COMMAND = 0x60120003L + ((row + 6) << 23);
         for (column = 0; column < 22; ++column) {
             tile = CrashPackedTilemapA[row][column];
-            if (tile & 64)
+            if (tile & BYTEMAP_HORIZONTAL_FLIP)
                 tile |= VDP_TILE_HORIZONTAL_FLIP;
-            if (tile & 128)
+            if (tile & BYTEMAP_VERTICAL_FLIP)
                 tile |= VDP_TILE_VERTICAL_FLIP;
-            tile &= 0xff3f;
+            tile &= BYTEMAP_FLIP_CLEAR_MASK;
             VDP_DATA = tile + 0xa233;
         }
     }
@@ -638,11 +638,11 @@ short x, y;
         VDP_COMMAND = (((y + row) << 23) + VDP_WRITE_PLANE_B) + (x << 17);
         for (column = 0; column < 20; ++column) {
             tile = CrashPackedTilemapB[row][column];
-            if (tile & 64)
+            if (tile & BYTEMAP_HORIZONTAL_FLIP)
                 tile |= VDP_TILE_HORIZONTAL_FLIP;
-            if (tile & 128)
+            if (tile & BYTEMAP_VERTICAL_FLIP)
                 tile |= VDP_TILE_VERTICAL_FLIP;
-            tile &= 0xff3f;
+            tile &= BYTEMAP_FLIP_CLEAR_MASK;
             VDP_DATA = tile + 0xa233;
         }
     }

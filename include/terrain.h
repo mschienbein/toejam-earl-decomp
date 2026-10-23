@@ -5,6 +5,12 @@
 #define MAP_ROWS 26
 #define MAP_COLUMNS 19
 #define LEVEL_FINAL 26
+/* Level identities: the hidden level 0, the first level, the last ordinary level (the last that can
+ * hold a ship piece before the final one), and the "no level loaded" sentinel. */
+#define LEVEL_ZERO 0
+#define LEVEL_FIRST 1
+#define LEVEL_LAST_ORDINARY 25
+#define LEVEL_UNLOADED (-1)
 
 /* Tile high-nibble classes and separately named packed-metatile bits; these are not map-generation
  * region labels. */

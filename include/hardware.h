@@ -27,6 +27,11 @@
 #define VDP_TILE_VERTICAL_FLIP 0x1000
 #define VDP_TILE_PRIORITY 0x8000
 #define VDP_TILE_PALETTE_3 0x6000
+/* The game's compact byte tilemaps (font, HUD, panels, Jam Out) keep flips in bits 6-7; their
+ * loaders expand them to the VDP flip bits above and clear them with BYTEMAP_FLIP_CLEAR_MASK. */
+#define BYTEMAP_HORIZONTAL_FLIP 0x40
+#define BYTEMAP_VERTICAL_FLIP 0x80
+#define BYTEMAP_FLIP_CLEAR_MASK 0xff3f
 #define VDP_SPRITE_SIZE_4X1 12
 
 #define Z80_RAM ((char *)0xa00000L)

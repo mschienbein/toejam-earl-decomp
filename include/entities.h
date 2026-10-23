@@ -8,6 +8,9 @@ struct render_frame;
 #define PLAYER_TOEJAM 0
 #define PLAYER_EARL 1
 #define PLAYER_COUNT 2
+/* Player selector meaning both players, taken by the HUD, character-selection and scene APIs;
+ * equal to, but distinct from, the PLAYER_COUNT capacity. */
+#define PLAYER_BOTH 2
 #define DIRECTION_UP 0
 #define DIRECTION_DOWN 1
 #define DIRECTION_LEFT 2
@@ -29,6 +32,9 @@ struct render_frame;
 #define ENTITY_ACTIVE 0x01
 #define ENTITY_PRIMARY_VIEW 0x02
 #define ENTITY_SECONDARY_VIEW 0x04
+/* Split-screen view indices (arrays indexed by view), as opposed to the view bits above. */
+#define VIEWPORT_PRIMARY 0
+#define VIEWPORT_SECONDARY 1
 #define ENTITY_EITHER_VIEW 0x06
 #define ENTITY_SKIP_PHYSICS 0x08
 #define ENTITY_BLOCKED_X 0x10

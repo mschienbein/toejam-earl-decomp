@@ -32,15 +32,16 @@ struct render_frame;
 #define ENTITY_ACTIVE 0x01
 #define ENTITY_PRIMARY_VIEW 0x02
 #define ENTITY_SECONDARY_VIEW 0x04
-/* Split-screen view indices (arrays indexed by view), as opposed to the view bits above. */
-#define VIEWPORT_PRIMARY 0
-#define VIEWPORT_SECONDARY 1
 #define ENTITY_EITHER_VIEW 0x06
 #define ENTITY_SKIP_PHYSICS 0x08
 #define ENTITY_BLOCKED_X 0x10
 #define ENTITY_BLOCKED_Y_OR_HEIGHT 0x20
 #define ENTITY_SHADOW 0x40
 #define ENTITY_DRAW_LATE 0x80
+
+/* Split-screen view indices (arrays indexed by view), as opposed to the view bits above. */
+#define VIEWPORT_PRIMARY 0
+#define VIEWPORT_SECONDARY 1
 
 /* behavior_flags: collision, shared graphics, attachment and pixel policy. */
 #define ENTITY_COLLIDABLE 0x01
@@ -50,6 +51,11 @@ struct render_frame;
 #define ENTITY_MASK_PIXELS 0x20
 #define ENTITY_HIDDEN 0x40
 #define ENTITY_LAST_LIFE_EXIT 0x80
+
+/* owner values that attach an entity to a camera instead of another entity
+ * (UpdateAttachedEntityPosition follows the primary or secondary camera). */
+#define ENTITY_OWNER_PRIMARY_CAMERA (-1)
+#define ENTITY_OWNER_SECONDARY_CAMERA (-2)
 
 /* Shared 128-byte storage, using MCC68K's two-byte record alignment.
  * Declared widths and signedness are part of the ROM interface, not enums.

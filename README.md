@@ -49,6 +49,7 @@ Needs Linux or macOS with a C compiler and make (for binutils and the emu2 DOS e
 uv sync                                   # Python 3.12 + capstone, pyelftools (locked)
 uv run python tools/setup.py              # binutils 2.47 (m68k-elf, z80-elf), emu2, Microtec MCC68K 3.3K
 uv run python tools/rom.py import --rom "ToeJam & Earl (World) (Rev A).zip"   # -> orig/rev02/
+uv run python tools/rom.py import --rom "ToeJam & Earl (World).zip"           # -> orig/rev00/
 uv run python tools/build.py              # -> build/rev02/toejam.bin + receipt.json (PASS)
 uv run python tools/build.py --version rev00
 uv run python -m unittest discover -s tests

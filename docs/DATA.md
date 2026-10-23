@@ -68,7 +68,11 @@ recovered; this rule is inferred from the streams.
 ## Open
 
 - Six `unreferenced` bytes at REV 02 `0x03C34A` / REV 00 `0x03C2DA`: outside the 49 complete
-  38-byte FM patches. No FM-field interpretation or runtime consumer is established.
+  38-byte FM patches. No FM-field interpretation or runtime consumer is established; the reviewed
+  `unreferenced` type closes them (ruling [R012](rulings/R012-closure-interpretations.md)).
+- Forty-three text units (2,330 bytes per revision) are emitted in the build by the matched C
+  functions' own string literals (MCC68K places a function's strings right after it); their
+  extracted assets serve as extraction checks. Source closes those bytes (R012).
 - Runtime use of the two animation-compatible tails remains unestablished; structural typing
   is not proof of reachability. Reference scans exclude direct roots, not arbitrary computed use.
 - PCM playback rate: 8000 Hz is only an audition default; the sample header has no rate.

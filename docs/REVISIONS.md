@@ -15,12 +15,11 @@ to REV 00.
 
 ## What changed in the code
 
-Of 648 paired code entries (645 functions and three fragments), 431 are byte-identical and 209
+Of 648 paired code entries (645 functions and three fragments), 223 are byte-identical and 417
 differ only in addresses, because the code or data they refer to moved (REV 02's changes push
-everything after them by up to 112
-bytes): the pairing verifies this with address-masked instruction signatures, and every matched
-one builds both revisions from one unchanged source. Eight functions differ in their logic; all
-eight read as fixes to REV 00 behaviour:
+everything after them by up to 112 bytes); the pairing verifies this with address-masked
+instruction signatures, and every one of them builds both revisions from one unchanged source.
+Eight functions differ in their logic; all eight read as fixes to REV 00 behaviour:
 
 | Function (file) | REV 02 change |
 |---|---|

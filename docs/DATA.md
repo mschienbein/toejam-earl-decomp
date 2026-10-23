@@ -11,8 +11,9 @@ sizes, layout parameters and provenance.
 Status (2026-10-22): **REV 02: 4,163 units, 867,776 bytes; 867,770 typed, 6 unreferenced, 0 raw.
 REV 00: the same 4,163 units by name, 867,888 bytes; 867,882 typed, 6 unreferenced, 0 raw.**
 Neither revision has anonymous bytes. Every data byte is built from its packed asset, except the
-43 text units (2,330 bytes per revision) that the matched C functions emit from their own string
-literals, which their assets then check (ruling [R012](rulings/R012-closure-interpretations.md)).
+two Z80 units, assembled from `src/z80/` (ruling [R007](rulings/R007-assembly-sources.md)), and
+the 43 text units (2,330 bytes per revision) that the matched C functions emit from their own
+string literals, which their assets then check (ruling [R012](rulings/R012-closure-interpretations.md)).
 Between the revisions, 2,519 units are identical, 1,642 differ only by relocated pointers, the
 cartridge header differs in content, and the final fill is 112 bytes longer in REV 00.
 

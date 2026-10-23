@@ -1,0 +1,175 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "FinalReviewB",
+  "checkpoint": "c038-final",
+  "prepared_commit": "e88f7cc0dfab385b901b0500d1e849d13de07f47",
+  "reviewed_head": "cf21aca7b8d735a695078b417aa72ed46b9b75f8",
+  "prepare_sha256": "83f1949134f0d4e3351975fc69ddac63d41616c0d81f66e307d472aeb6d793c3",
+  "sealed": true,
+  "sealed_utc": "2026-10-23T04:09:02.382308Z",
+  "sealed_before_other_final_review": true,
+  "scope": [
+    "Criterion3 readability",
+    "Criterion5 documentation only"
+  ],
+  "criteria": [
+    {
+      "criterion": "3.1 Evidence-backed names,types and files",
+      "result": "PASS",
+      "detail": "Fresh scans found no address-style identities, numeric OBJ names or anonymous records. The original naming sample carries forward through constant-normalized source changes;50 additional owning constants were checked against current consumers, preserving distinctions between equal-valued domains.",
+      "evidence": [
+        "evidence/delta3/names.json",
+        "evidence/delta3/hunt.json",
+        "evidence/delta3/tokens.json"
+      ]
+    },
+    {
+      "criterion": "3.2 Records,fields and semantic constants",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "detail": "All seven E001 families are resolved with their existing domain constants and original operators. The wider owning-constant pass covers the named protocols without reinstating raw record offsets. Remaining quantities,hardware encodings and kind-private authored table indices were classified rather than given invented content identities; no new concrete blocker was found.",
+      "evidence": [
+        "evidence/delta3/hunt.json",
+        "evidence/delta3/names.json",
+        "evidence/delta3/tokens.json"
+      ]
+    },
+    {
+      "criterion": "3.3 Subsystem guides,readable C and ORIGINAL BUG preservation",
+      "result": "PASS",
+      "detail": "The original30-function/30-guide-claim/12-bug sample remains supported through the inspected deltas. All16 source folders still have their15 owning guides. Present dispatch has a real registered109th C file,readable complete bodies and updated owning guide/revision paths. Current original-bug marker counts agree with the baseline; no behavior-repair claim is implied by naming.",
+      "evidence": [
+        "evidence/delta3/anchor.json",
+        "evidence/delta3/tokens.json",
+        "evidence/delta3/documents.json"
+      ]
+    },
+    {
+      "criterion": "3.4 Compiler-coaxed matches only as locally marked accepted qualifications",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "detail": "The exact98 live markers equal the regenerated98-entry marker index with no missing or stale location. All165 grouped entries retain accepting-review references (144 constraints/source models,21 observation-only). JamOut now explicitly marks both RNG and allocation-result views. Fresh artificial-spelling hunts found no new confirmed undisclosed coaxing. Historical necessity/historical-source limits remain explicit.",
+      "evidence": [
+        "evidence/delta3/ledger.json",
+        "evidence/delta3/hunt.json"
+      ]
+    },
+    {
+      "criterion": "5 STATUS,RESUME,README and ledger/document consistency",
+      "result": "PASS_WITH_QUALIFICATIONS",
+      "detail": "Counts remain598/598 C functions,174344/174232 C bytes,645 functions and three fragments; both revisions have109 prepared C units. R007/R011/R012 producer/classification routes and43 inline strings/2330 bytes/six unreferenced bytes are accurate. All345 inspected local links resolve. C033 citations are truthful current historical provenance; the announced post-finalization citation-only edits have not been pre-certified.",
+      "evidence": [
+        "evidence/delta3/documents.json",
+        "evidence/delta3/anchor.json",
+        "evidence/delta3/ledger.json"
+      ]
+    }
+  ],
+  "resolved_findings": [
+    {
+      "finding": "E001",
+      "result": "RESOLVED",
+      "families": [
+        {
+          "family": "Terrain identities/boundaries",
+          "source": [
+            "src/earthlings/terrain_movement.c",
+            "src/earthlings/spawning_and_banks.c",
+            "src/player/active_present_falling_and_respawn.c",
+            "src/player/earthling_damage_reactions.c",
+            "src/player/entity_motion_terrain.c",
+            "src/presents/projectile_effects.c"
+          ],
+          "observed": "The seven reported VOID/WALKABLE values use TERRAIN_VOID/TERRAIN_WALKABLE_MAX; strict and inclusive operators remain unchanged."
+        },
+        {
+          "family": "Earthling population assignments",
+          "source": [
+            "src/earthlings/spawning_and_banks.c"
+          ],
+          "observed": "MOLE/MAILBOX/SHIP_PIECE/DEVIL assignments are named; the original branch structure is retained."
+        },
+        {
+          "family": "First-level present exclusions",
+          "source": [
+            "src/presents/level_item_setup.c"
+          ],
+          "observed": "All six excluded present identities are named with their owning PRESENT_* constants."
+        },
+        {
+          "family": "Ground item and money",
+          "source": [
+            "src/presents/level_item_setup.c"
+          ],
+          "observed": "Ground-kind construction and buck selection use ITEM_GROUND_BASE and ITEM_BUCK."
+        },
+        {
+          "family": "HUD promotion",
+          "source": [
+            "src/ui/hud.c"
+          ],
+          "observed": "PerformPromotion receives PRESENT_PROMOTION, matching the callee domain."
+        },
+        {
+          "family": "Inventory selected/mystery checks",
+          "source": [
+            "src/ui/inventory.c"
+          ],
+          "observed": "The randomizer and original-slot mystery checks use PRESENT_RANDOMIZER/PRESENT_MYSTERY."
+        },
+        {
+          "family": "Processed-input relatching",
+          "source": [
+            "src/ui/inventory.c",
+            "src/earthlings/nice_earthling_touch.c"
+          ],
+          "observed": "All seven reported logical-input operations use INPUT_BUTTON_A."
+        }
+      ],
+      "corpus_rescan": "The fresh E001-pattern hunt has no residual identity match. Its two remaining hits are loop initializers/counts (six inventory display slots and26 shuffled appearances), not semantic ID tests.",
+      "values_and_operators": "Baseline reconstruction agrees with every corresponding c036 prepared source/header digest. Across the changed C corpus, simple scalar-constant expansion leaves only the explicitly classified expression spellings in tokens.json, plus the independently checked dispatch split."
+    },
+    {
+      "id": "D001/D002 and F001-F004",
+      "result": "CARRY_FORWARD_RESOLVED",
+      "detail": "Earlier raw-record,known-ID,qualification-marker and asset-production documentation fixes remain present; no previously reported family regressed."
+    }
+  ],
+  "findings": [
+    {
+      "id": "Q1",
+      "severity": "info",
+      "blocking": false,
+      "title": "Retained accepted compiler qualifications",
+      "detail": "Discarded sizeof-address observations,self-assignments,unused frame/handle state,result-width/declaration views,bounded frame views and other accepted forms remain deliberate matching constraints. Byte equality does not establish historical spelling or universal uniqueness; this review accepts the disclosed,provenanced forms,not those stronger claims.",
+      "evidence": [
+        "evidence/delta3/ledger.json"
+      ]
+    },
+    {
+      "id": "Q2",
+      "severity": "info",
+      "blocking": false,
+      "title": "Remaining numeric selectors do not invent unestablished content identities",
+      "detail": "Kind-private animation-table indices,metatile/shape/frame ordinals,hardware format values and actual geometric/timing quantities remain numeric where an artwork/content identity is unestablished. Their observed representation is distinguished from known domain IDs,which the sweep names. This is not permission to reintroduce unexplained object offsets or undisclosed compiler-coaxing spells.",
+      "evidence": [
+        "evidence/delta3/hunt.json"
+      ]
+    }
+  ],
+  "blocking_findings": 0,
+  "verification_exercised": [
+    "All251 prepared input digests,including200 source/include files,agree with the current tree; no inspected source/document changed during review.",
+    "Reconstructed112 changed source/header baselines from the diff and verified their digests against c036 preparation. Static token/constant analysis classifies the changed C spellings; the concatenated present-effect/dispatch split has no nontrivial token difference after scalar expansion.",
+    "Fresh source/include hunts for address identities,raw record arithmetic,semantic-ID consumers,artificial expressions and compiler-shape prose;50 additional owning-name consumer checks.",
+    "Exact98-marker/index comparison,165 ledger-row/reference and source-location checks,public historical accepting-review/finalize inspection without opening another final-review artifact.",
+    "Independent counts,registration/orphan checks,inline-text-span aggregation,original-bug marker counts and345 local-link checks."
+  ],
+  "limitations": [
+    "No compiler,matcher,full build,test suite,emulator/gameplay,public-history auditor or CI/ByteMatch job was run by this scoped reviewer. Preparation and author verification were inspected,not presented as independently exercised gates.",
+    "Static scalar-token analysis is a review aid,not a C preprocessor,portable-C proof or proof of emitted-byte identity. Compound masks,word truncation,zero predicates,hardware suffixes and animation-family expressions were separately classified.",
+    "The163 mechanical-site inventory is a ledger report; the reviewer rechecked its exact markers,references and samples rather than rerunning163 compiler controls.",
+    "Original sample counts carry forward only through inspected deltas;finite hunts do not prove the absence of every conceivable alternative spelling or recover unknown historical artwork identities.",
+    "No other final-review artifact was read before sealing. The current ledger contains links and brief historical review summaries; those other final-review records were not opened.",
+    "Main announced post-finalization STATUS/RESUME citation updates. This verdict does not pre-certify future edits or the runtime/CI portions of the final acceptance criteria.",
+    "No tracked file,Git state,acceptance record or peer artifact was modified. New artifacts are confined to this reviewer root and contain no ROM bytes or encoded ROM payloads."
+  ]
+}

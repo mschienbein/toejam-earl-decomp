@@ -39,11 +39,12 @@ how far the counter has advanced when the game begins].
 
 ## What changed in the data
 
-All 4,163 typed data units exist in both revisions with the same sizes. 1,641 of them differ only
-in addresses they contain (pointers to code, animation frames or other data that moved), and one
-(`FunkatronSceneDescriptors`) stores the low words of such addresses. Apart from the cartridge
-header (release month, serial suffix, checksum) and the fill after the last unit (shorter by the
-112 bytes the code grew), no graphics, text, music, sound or level data changed.
+All 4,163 typed data units exist in both revisions under the same names; all but the final fill
+(`ROMTailFill`, 424 bytes in REV 02 and 536 in REV 00, absorbing the 112 bytes the code grew)
+have the same sizes. 2,519 units are identical and 1,642 differ only in addresses they contain
+(pointers to code, animation frames or other data that moved; `FunkatronSceneDescriptors` stores
+the low words of such addresses). Apart from the cartridge header (release month, serial suffix,
+checksum) and that fill, no graphics, text, music, sound or level data changed.
 
 ## How this was established
 

@@ -1,4 +1,5 @@
 #include "fm_effects.h"
+#include "music_ids.h"
 #include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
@@ -136,7 +137,7 @@ short song;
     ClearLowerVramTilemap();
     WaitForNextVBlank(1);
     gCurrentMusicSelection = 1;
-    gRequestedMusicSelection = 0;
+    gRequestedMusicSelection = MUSIC_SCENE_DEFAULT;
     JamOutReleaseCharacterCopies();
     gSharedTileSpriteCopiesEnabled = 0;
     CutsceneReleaseFlaggedEntityRange();

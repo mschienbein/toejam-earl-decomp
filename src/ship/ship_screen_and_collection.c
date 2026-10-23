@@ -518,7 +518,7 @@ short selected_piece, player_number;
                 sprites[sprite_number].x = part->x + 298;
                 sprites[sprite_number].y = part->y + 288;
                 sprites[sprite_number].link = sprite_number + 1;
-                sprites[sprite_number].tile = ((short)(format & 3) << 13) + VDP_TILE_PRIORITY + base_tile + tile_offset;
+                sprites[sprite_number].tile = ((short)(format & SPRITE_FORMAT_PALETTE_MASK) << 13) + VDP_TILE_PRIORITY + base_tile + tile_offset;
                 tile_offset += tiles;
                 ++sprite_number;
             }
@@ -641,7 +641,7 @@ void ShipUpdatePendingPieceIndicator()
             object->sequence = animation->sequence;
             object->frames = animation->frames;
             object->frame_duration = 1;
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
         }
         gShipScreenState.pending_piece_notice_level = 0;
     }

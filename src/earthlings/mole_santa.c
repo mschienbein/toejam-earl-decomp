@@ -58,7 +58,7 @@ struct object_state *mole;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = 6;
-        effect->frame = -1;
+        effect->frame = SPRITE_FRAME_BEFORE_FIRST;
         effect->frame_duration = 1;
         effect->draw_flags |= ENTITY_DRAW_LATE;
     }
@@ -196,7 +196,7 @@ struct earthling_state *earthling;
     }
     if (next_state != EARTHLING_STATE_UNCHANGED) {
         SetEarthlingState(earthling, next_state);
-        santa->frame = -1;
+        santa->frame = SPRITE_FRAME_BEFORE_FIRST;
     }
 }
 
@@ -213,7 +213,7 @@ struct earthling_state *earthling;
 
     if (earthling->state <= 1) {
         SetEarthlingState(earthling, 3);
-        gPlayerInfo[earthling->object].frame = -1;
+        gPlayerInfo[earthling->object].frame = SPRITE_FRAME_BEFORE_FIRST;
         player = &gPlayerInfo[player_number];
         saved_x = player->x;
         saved_y = player->y;

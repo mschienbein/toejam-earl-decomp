@@ -130,7 +130,7 @@ struct earthling_state *earthling;
         projectile->frames = animation->frames;
         projectile->frame_phase = 0;
         projectile->draw_flags |= ENTITY_SHADOW;
-        projectile->sprite_state = -1;
+        projectile->sprite_state = SPRITE_STATE_NO_DESCRIPTOR;
         if (!gPcmEffectCooldownTicks)
             PlaySoundEffect((long)Sfx_ChickenCannonFire, 40, 0);
     }
@@ -176,7 +176,7 @@ void ProcessTomatoRain()
                             projectile->frames = animation->frames;
                             projectile->frame_phase = animation->period;
                             projectile->sprite_state = 0;
-                            projectile->frame = -1;
+                            projectile->frame = SPRITE_FRAME_BEFORE_FIRST;
                             projectile->frame_duration = 1;
                             if (!gFmEffectTemplateStatus)
                                 AudioRequestChannelTemplateEffect(FM_EFFECT_TOMATO_LAND);
@@ -202,7 +202,7 @@ void ProcessTomatoRain()
                         projectile->sequence = animation->sequence;
                         projectile->frames = animation->frames;
                         projectile->frame_phase = animation->period;
-                        projectile->frame = -1;
+                        projectile->frame = SPRITE_FRAME_BEFORE_FIRST;
                         projectile->frame_duration = 1;
                         projectile->sprite_state = 0;
                         AudioRequestChannelTemplateEffect(FM_EFFECT_TOMATO_HIT);
@@ -265,7 +265,7 @@ int player_number;
         projectile->frames = animation->frames;
         projectile->frame_phase = 0;
         projectile->draw_flags |= ENTITY_SHADOW;
-        projectile->sprite_state = -1;
+        projectile->sprite_state = SPRITE_STATE_NO_DESCRIPTOR;
         --gPlayerTomatoRainTicks[player_number];
     }
 }
@@ -326,10 +326,10 @@ struct object_state *source;
         projectile->sequence = animation->sequence;
         projectile->frames = animation->frames;
         projectile->frame_phase = 9;
-        projectile->frame = -1;
+        projectile->frame = SPRITE_FRAME_BEFORE_FIRST;
         projectile->frame_duration = 1;
         projectile->draw_flags |= ENTITY_SHADOW;
-        projectile->sprite_state = -1;
+        projectile->sprite_state = SPRITE_STATE_NO_DESCRIPTOR;
         AudioRequestChannelTemplateEffect(FM_EFFECT_CONTROL_REMAP_SHOT);
     }
 }
@@ -389,7 +389,7 @@ short player_number;
             effect->sequence = animation->sequence;
             effect->frames = animation->frames;
             effect->frame_phase = animation->period;
-            effect->frame = -1;
+            effect->frame = SPRITE_FRAME_BEFORE_FIRST;
             effect->frame_duration = 1;
         }
     }
@@ -504,7 +504,7 @@ short player_number;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = animation->period;
-        effect->frame = -1;
+        effect->frame = SPRITE_FRAME_BEFORE_FIRST;
         effect->frame_duration = 1;
         effect->behavior_flags |= ENTITY_COLLIDABLE;
         AudioRequestChannelTemplateEffect(FM_EFFECT_TERRAIN_GROW);
@@ -529,7 +529,7 @@ short player_number;
     effect->sequence = animation->sequence;
     effect->frames = animation->frames;
     effect->frame_phase = animation->period;
-    effect->frame = -1;
+    effect->frame = SPRITE_FRAME_BEFORE_FIRST;
     effect->frame_duration = 1;
 }
 
@@ -557,7 +557,7 @@ short player_number;
         effect->sequence = animation->sequence;
         effect->frames = animation->frames;
         effect->frame_phase = animation->period;
-        effect->frame = -1;
+        effect->frame = SPRITE_FRAME_BEFORE_FIRST;
         effect->frame_duration = 1;
         effect->behavior_flags |= ENTITY_COLLIDABLE;
         AudioRequestChannelTemplateEffect(FM_EFFECT_TERRAIN_GROW);

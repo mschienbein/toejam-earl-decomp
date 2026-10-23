@@ -7,6 +7,7 @@
 #include "ram_effects.h"
 #include "ram_elevator.h"
 #include "ram_player.h"
+#include "sprite_calls.h"
 
 /* Select the player's idle sprite from the active present and terrain,
  * resetting the animation and horizontal velocity for a new selection. */
@@ -27,7 +28,7 @@ struct object_state *player;
             sprite = PLAYER_ANIM_INNERTUBE_IDLE;
         else {
             sprite = PLAYER_ANIM_IDLE;
-            player->frame = -1;
+            player->frame = SPRITE_FRAME_BEFORE_FIRST;
         }
     } else if (gPlayerPowerups[player_number] == PRESENT_ROCKET_SKATES) {
         OpenRocketSkates(player, player_number, land);
@@ -47,7 +48,7 @@ struct object_state *player;
         }
     } else {
         sprite = PLAYER_ANIM_IDLE;
-        player->frame = -1;
+        player->frame = SPRITE_FRAME_BEFORE_FIRST;
     }
     player->velocity_x = 0;
     player->velocity_y = 0;
@@ -127,7 +128,6 @@ void MapClearTilePriorityNearPlayer()
 #include "ram_speech.h"
 #include "ram_system.h"
 #include "speech.h"
-#include "sprite_calls.h"
 
 /* Start falling in the current facing direction, nudging away from a
  * neighboring supported tile before the vblank terrain-priority update. */
@@ -432,13 +432,13 @@ char *falling;
         }
         if (falling[PLAYER_TOEJAM]) {
             MapLoadPlayerLevel(PLAYER_TOEJAM, gPlayerInfo[PLAYER_TOEJAM].level);
-            SetupElevator(gPlayerInfo[PLAYER_TOEJAM].level, 0);
+            SetupElevator(gPlayerInfo[PLAYER_TOEJAM].level, ELEVATOR_TYPE_DEPARTURE);
             EarthlingRetainLevelBank(gPlayerInfo[PLAYER_TOEJAM].level);
             LoadLevelItemBank(gPlayerInfo[PLAYER_TOEJAM].level);
         }
         if (falling[PLAYER_EARL]) {
             MapLoadPlayerLevel(PLAYER_EARL, gPlayerInfo[PLAYER_EARL].level);
-            SetupElevator(gPlayerInfo[PLAYER_EARL].level, 0);
+            SetupElevator(gPlayerInfo[PLAYER_EARL].level, ELEVATOR_TYPE_DEPARTURE);
             EarthlingRetainLevelBank(gPlayerInfo[PLAYER_EARL].level);
             LoadLevelItemBank(gPlayerInfo[PLAYER_EARL].level);
         }
@@ -830,7 +830,7 @@ short player_number;
     MapReleaseLevelItemBank(player->level);
     ++player->level;
     MapLoadPlayerLevel(PLAYER_TOEJAM, player->level);
-    SetupElevator(player->level, 0);
+    SetupElevator(player->level, ELEVATOR_TYPE_DEPARTURE);
     EarthlingRetainLevelBank(player->level);
     LoadLevelItemBank(player->level);
     if (player->level > LEVEL_FIRST)
@@ -876,12 +876,12 @@ short player_number;
         player->level = other_player->level;
         if (player_number == PLAYER_TOEJAM) {
             MapLoadPlayerLevel(PLAYER_TOEJAM, gPlayerInfo[PLAYER_TOEJAM].level);
-            SetupElevator(gPlayerInfo[PLAYER_TOEJAM].level, 0);
+            SetupElevator(gPlayerInfo[PLAYER_TOEJAM].level, ELEVATOR_TYPE_DEPARTURE);
             EarthlingRetainLevelBank(gPlayerInfo[PLAYER_TOEJAM].level);
             LoadLevelItemBank(gPlayerInfo[PLAYER_TOEJAM].level);
         } else {
             MapLoadPlayerLevel(PLAYER_EARL, gPlayerInfo[PLAYER_EARL].level);
-            SetupElevator(gPlayerInfo[PLAYER_EARL].level, 0);
+            SetupElevator(gPlayerInfo[PLAYER_EARL].level, ELEVATOR_TYPE_DEPARTURE);
             EarthlingRetainLevelBank(gPlayerInfo[PLAYER_EARL].level);
             LoadLevelItemBank(gPlayerInfo[PLAYER_EARL].level);
         }
@@ -1026,7 +1026,7 @@ short terrain;
             if (gPlayerJumpCounters[player_number] > 3)
                 player->frame = 0;
             else
-                player->frame = -1;
+                player->frame = SPRITE_FRAME_BEFORE_FIRST;
             player->sprite_ready = 0;
         } else if ((player->behavior_flags & ENTITY_LAST_LIFE_EXIT) && player->height >= 20) {
             if (player->sprite_state == PLAYER_ANIM_GHOST) {

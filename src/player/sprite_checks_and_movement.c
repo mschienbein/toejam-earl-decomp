@@ -226,7 +226,7 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
     if (sprite != PLAYER_ANIM_UNCHANGED) {
         if (!sprite) {
             sprite = GetActivePresentSprite(player);
-            frame = -1;
+            frame = SPRITE_FRAME_BEFORE_FIRST;
         } else {
             sprite &= DIRECTION_MASK;
             if ((player->animation_group_mask & (long)PLAYER_GROUP_INNERTUBE_MOVE) || player->sprite_state == PLAYER_ANIM_INNERTUBE_WATER_IDLE)
@@ -277,7 +277,7 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
         } else {
             if (!player->sprite_state || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
                 (player->animation_group_mask & (long)(PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE)
-                frame = -1;
+                frame = SPRITE_FRAME_BEFORE_FIRST;
             frame_duration = 1;
         }
         SetSprite(player, sprite);
@@ -285,7 +285,7 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
         player->frame = frame;
         for (sequence_index = 1; sequence_index <= frame + 1; ++sequence_index) {
             if ((player->sequence[sequence_index] & ANIMATION_COMMAND_MASK) == ANIMATION_COMMAND_MASK) {
-                player->frame = -1;
+                player->frame = SPRITE_FRAME_BEFORE_FIRST;
                 break;
             }
         }

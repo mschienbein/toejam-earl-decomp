@@ -12,6 +12,7 @@
 #include "ram_speech.h"
 #include "ram_system.h"
 #include "speech.h"
+#include "sprite_calls.h"
 
 #define NEXT_RANDOM gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
@@ -114,7 +115,7 @@ struct earthling_state *earthling;
                     (NEXT_RANDOM & 1))
                     GenerateSpeech(earthling->object, "shut up!!", 1);
                 if (earthling->state != next_state)
-                    object->frame = -1;
+                    object->frame = SPRITE_FRAME_BEFORE_FIRST;
                 else
                     next_state = EARTHLING_STATE_UNCHANGED;
                 minimum_time = definition->turn_time_min;
@@ -148,7 +149,7 @@ struct earthling_state *earthling;
         if (next_state != EARTHLING_STATE_UNCHANGED && earthling->state != next_state) {
             SetEarthlingState(earthling, next_state);
             if (earthling->kind == EARTHLING_DENTIST || earthling->kind == EARTHLING_DENTIST_VARIANT)
-                object->frame = -1;
+                object->frame = SPRITE_FRAME_BEFORE_FIRST;
             if (earthling->kind == EARTHLING_MOLE) {
                 if (earthling->state > 1)
                     object->draw_flags |= ENTITY_DRAW_LATE;

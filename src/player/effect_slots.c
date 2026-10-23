@@ -52,7 +52,7 @@ short x, y, level;
         effect->frames = animation->frames;
         effect->frame_phase = animation->period;
         effect->frame_duration = 1;
-        effect->frame = -1;
+        effect->frame = SPRITE_FRAME_BEFORE_FIRST;
         PlaySound(PSG_TWO_NOTES, AUDIO_PRIORITY_NORMAL);
         return 0;
     }

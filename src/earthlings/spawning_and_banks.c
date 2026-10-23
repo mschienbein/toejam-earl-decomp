@@ -117,16 +117,16 @@ short level;
     else
         map = gPlayer2LevelMap[0];
     definition = &EarthlingDefinitions[kind];
-    terrain_mask = 3;
+    terrain_mask = TERRAIN_PLACEMENT_GROUND_OR_SINKING;
     if (!kind || kind == EARTHLING_NERD_HERD || kind == EARTHLING_ICE_CREAM_TRUCK || kind == EARTHLING_LAWNMOWER || kind == EARTHLING_MOLE) {
         width = 16;
         height = 8;
     } else if (kind == EARTHLING_WHIRLWIND) {
-        terrain_mask = 2;
+        terrain_mask = TERRAIN_PLACEMENT_SINKING;
         width = 2;
         height = 2;
     } else if (kind == EARTHLING_SHARK) {
-        terrain_mask = 8;
+        terrain_mask = TERRAIN_PLACEMENT_WATER;
         width = 3;
         height = 2;
     } else {
@@ -311,7 +311,7 @@ short state;
         --object->frame;
     for (sequence_index = 0; sequence_index <= object->frame; ++sequence_index)
         if ((object->sequence[sequence_index] & ANIMATION_COMMAND_MASK) == ANIMATION_COMMAND_MASK)
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
     if (state != 2 && earthling->second_object) {
         FreeEntity(earthling->second_object);
         earthling->second_object = 0;
@@ -686,7 +686,7 @@ void EarthlingApplyNearbySleep()
                 object->frames = SleepAnimationDescriptors[earthling->kind].frames;
                 object->frame_phase = 6;
                 object->frame_duration = 1;
-                object->frame = -1;
+                object->frame = SPRITE_FRAME_BEFORE_FIRST;
                 object->sprite_state = EARTHLING_STATE_SLEEP;
                 earthling->state = EARTHLING_STATE_SLEEP;
                 if (earthling->second_object) {

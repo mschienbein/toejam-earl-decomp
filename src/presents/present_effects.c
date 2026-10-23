@@ -62,7 +62,7 @@ char level;
         effect->frames = animation->frames;
         effect->frame_phase = animation->period;
         effect->frame_duration = 1;
-        effect->frame = -1;
+        effect->frame = SPRITE_FRAME_BEFORE_FIRST;
         PlaySound(PSG_SHORT_NOISE_FADE_RATE2, AUDIO_PRIORITY_NORMAL);
         return 0;
     }
@@ -193,7 +193,7 @@ short player_number;
         doorway->frames = animation->frames;
         doorway->frame_phase = animation->period;
         doorway->frame_duration = 1;
-        doorway->frame = -1;
+        doorway->frame = SPRITE_FRAME_BEFORE_FIRST;
         doorway->sprite_state = 0;
         doorway->behavior_flags |= ENTITY_COLLIDABLE;
         if (!PresentStartTransientEffect(player_number, doorway->x, doorway->y + 1, 5, doorway->level))
@@ -241,7 +241,7 @@ struct object_state *player;
     }
     do {
         SetPositionOnNewLevel(player_number);
-    } while (EntityFindNarrowCollisionAtPosition(player, player->x, player->y, 2));
+    } while (EntityFindNarrowCollisionAtPosition(player, player->x, player->y, PLAYER_COUNT));
     if (!gSplitScreenEnabled && player->x > camera_x + 20 &&
         player->x < camera_x + 320 - 20 && player->y > camera_y + 40 &&
         player->y < camera_y + 224 - 40)
@@ -274,8 +274,8 @@ short doorway_owner;
             FreeEntity(object_number);
             gPlayerDoorwayEntities[doorway_owner] = 0;
         } else {
-            if (gDoorwayPlayerContactFlags[doorway_owner] & 4) {
-                object_number = (gDoorwayPlayerContactFlags[doorway_owner] & 3) - 1;
+            if (gDoorwayPlayerContactFlags[doorway_owner] & DOORWAY_CONTACT_CENTERED) {
+                object_number = (gDoorwayPlayerContactFlags[doorway_owner] & DOORWAY_CONTACT_PLAYER_MASK) - DOORWAY_CONTACT_PLAYER_BIAS;
                 player = &gPlayerInfo[object_number];
                 if (player->y < object->y) {
                     PlayerTeleportThroughDoorway(object_number, player);
@@ -289,10 +289,10 @@ short doorway_owner;
                 player = &gPlayerInfo[object_number];
                 if (PresentFindDoorwayOwnerAtTile(player, (short)((long)player->y >> 3),
                                (short)((long)player->x >> 3)) == doorway_owner + 1) {
-                    gDoorwayPlayerContactFlags[doorway_owner] = object_number + 1;
+                    gDoorwayPlayerContactFlags[doorway_owner] = object_number + DOORWAY_CONTACT_PLAYER_BIAS;
                     if (player->x > object->x - 6 && player->x < object->x + 6) {
                         active = 1;
-                        gDoorwayPlayerContactFlags[doorway_owner] |= 4;
+                        gDoorwayPlayerContactFlags[doorway_owner] |= DOORWAY_CONTACT_CENTERED;
                     }
                 }
             }
@@ -302,16 +302,16 @@ short doorway_owner;
                 object->frames = animation->frames;
                 object->frame_phase = animation->period;
                 object->frame_duration = 1;
-                object->frame = -1;
+                object->frame = SPRITE_FRAME_BEFORE_FIRST;
                 object->sprite_state = active;
                 if (active)
                     object->behavior_flags &= ~ENTITY_COLLIDABLE;
                 else {
                     object->behavior_flags |= ENTITY_COLLIDABLE;
                     if (gDoorwayPlayerContactFlags[doorway_owner]) {
-                        object_number = (gDoorwayPlayerContactFlags[doorway_owner] & 3) - 1;
+                        object_number = (gDoorwayPlayerContactFlags[doorway_owner] & DOORWAY_CONTACT_PLAYER_MASK) - DOORWAY_CONTACT_PLAYER_BIAS;
                         player = &gPlayerInfo[object_number];
-                        if ((gDoorwayPlayerContactFlags[doorway_owner] & 3) == object_number + 1 &&
+                        if ((gDoorwayPlayerContactFlags[doorway_owner] & DOORWAY_CONTACT_PLAYER_MASK) == object_number + DOORWAY_CONTACT_PLAYER_BIAS &&
                             player->y - object->y < 8)
                             player->y = object->y + 8;
                     }
@@ -357,7 +357,7 @@ unsigned short terrain;
         display->sequence = animation->sequence;
         display->frames = animation->frames;
         display->frame_phase = animation->period;
-        display->frame = -1;
+        display->frame = SPRITE_FRAME_BEFORE_FIRST;
         display->frame_duration = 1;
         display->sprite_state = promotion;
         if (promotion != PRESENT_PROMOTION && terrain < TERRAIN_WATER && player->height <= 0 &&
@@ -488,7 +488,7 @@ short player_number;
             cloud->sequence = animation->sequence;
             cloud->frames = animation->frames;
             cloud->frame_phase = animation->period;
-            cloud->frame = -1;
+            cloud->frame = SPRITE_FRAME_BEFORE_FIRST;
             cloud->frame_duration = 1;
         }
     }
@@ -545,7 +545,7 @@ short player_number;
         cloud->sequence = animation->sequence;
         cloud->frames = animation->frames;
         cloud->frame_phase = animation->period;
-        cloud->frame = -1;
+        cloud->frame = SPRITE_FRAME_BEFORE_FIRST;
         cloud->frame_duration = 1;
     }
 }
@@ -601,7 +601,7 @@ short player_number;
                 gBoomBoxMusicTemplateHold = 0;
             }
         } else if (gMusicAnimationEvent) {
-            box->frame = -1;
+            box->frame = SPRITE_FRAME_BEFORE_FIRST;
             box->frame_duration = 1;
             gMusicAnimationEvent = 0;
         }

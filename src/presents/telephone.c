@@ -35,7 +35,7 @@ struct telephone_state *telephone;
         object->sequence = SingleFrameHoldAnimation;
         object->frame_phase = 0;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->x = telephone->x;
         object->y = telephone->y;
         object->level = telephone->level;
@@ -61,7 +61,7 @@ struct telephone_state *telephone;
     if (telephone->object) {
         object = &gPlayerInfo[telephone->object];
         object->sequence = TelephoneAnimations[0].sequence;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         object->frame_duration = 1;
         object->frame_phase = 3;
     }

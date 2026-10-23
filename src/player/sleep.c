@@ -76,7 +76,7 @@ struct object_state *state;
                 animation = &PlayerWakeEffectAnimations[player];
                 wake_effect->frames = animation->frames;
                 wake_effect->frame_duration = 1;
-                wake_effect->frame = -1;
+                wake_effect->frame = SPRITE_FRAME_BEFORE_FIRST;
                 if (gPlayerWakeEffectsLeft[player]) {
                     wake_effect->frame_phase = 15;
                     if (gPlayerWakeEffectsLeft[player] & 1)

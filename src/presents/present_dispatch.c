@@ -139,7 +139,7 @@ unsigned short terrain;
     gPlayerPowerups[player_number] = present_number;
     HudLoadActionIconSprite(player_number);
     gPlayerPowerupTimers[player_number] = 1000;
-    sprite = -1;
+    sprite = PLAYER_ANIM_UNCHANGED;
     switch (present_number) {
     case PRESENT_ROCKET_SKATES:
         gPlayerPowerupTimers[player_number] >>= 2;
@@ -172,7 +172,7 @@ unsigned short terrain;
     }
     if (present_number != PRESENT_ROCKET_SKATES)
         sprite = GetActivePresentSprite(player);
-    if (sprite != -1 && !(player->animation_group_mask & PLAYER_GROUP_STATIONARY) &&
+    if (sprite != PLAYER_ANIM_UNCHANGED && !(player->animation_group_mask & PLAYER_GROUP_STATIONARY) &&
         (player->sprite_state == PLAYER_ANIM_IDLE || player->sprite_state == PLAYER_ANIM_ICARUS_IDLE ||
          (player->animation_group_mask & (PLAYER_GROUP_SOCIAL | PLAYER_GROUP_STATIONARY)) || player->sprite_state == PLAYER_ANIM_INNERTUBE_IDLE ||
          player->sprite_state == PLAYER_ANIM_SWIM_IDLE || player->sprite_state == PLAYER_ANIM_SWIM_NEAR_SHORE ||

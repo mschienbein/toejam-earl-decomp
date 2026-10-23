@@ -16,7 +16,7 @@ void SetupPlayer()
     unsigned short tile;
     struct object_state *entity;
 
-    gHardwareSpriteTable[0].link = 11;
+    gHardwareSpriteTable[SPRITE_CHAIN_ROOT_SLOT].link = SPRITE_CHAIN_HUD_HEAD_SLOT;
     for (sprite_number = 0; sprite_number < 10; ++sprite_number) {
         tile = 0x85a9;
         if (sprite_number & 1)
@@ -27,14 +27,14 @@ void SetupPlayer()
         gHardwareSpriteTable[sprite_number + 1].link = sprite_number + 2;
         gHardwareSpriteTable[sprite_number + 1].tile = tile;
     }
-    for (sprite_number = 11; sprite_number < 23; ++sprite_number)
+    for (sprite_number = SPRITE_CHAIN_HUD_HEAD_SLOT; sprite_number < SPRITE_CHAIN_PRIMARY_HEAD_SLOT; ++sprite_number)
         gHardwareSpriteTable[sprite_number].link = sprite_number + 1;
-    gHardwareSpriteTable[sprite_number].link = 23;
-    gHardwareSpriteTable[23].link = 79;
-    gPrimaryViewportUploadedLink = 79;
-    gHardwareSpriteTable[24].link = 79;
-    gSecondaryViewportUploadedLink = 79;
-    gHardwareSpriteTable[79].link = 0;
+    gHardwareSpriteTable[sprite_number].link = SPRITE_CHAIN_PRIMARY_HEAD_SLOT;
+    gHardwareSpriteTable[SPRITE_CHAIN_PRIMARY_HEAD_SLOT].link = SPRITE_CHAIN_TERMINATOR_SLOT;
+    gPrimaryViewportUploadedLink = SPRITE_CHAIN_TERMINATOR_SLOT;
+    gHardwareSpriteTable[SPRITE_CHAIN_SECONDARY_HEAD_SLOT].link = SPRITE_CHAIN_TERMINATOR_SLOT;
+    gSecondaryViewportUploadedLink = SPRITE_CHAIN_TERMINATOR_SLOT;
+    gHardwareSpriteTable[SPRITE_CHAIN_TERMINATOR_SLOT].link = SPRITE_LINK_END;
     entity = &gPlayerInfo[PLAYER_TOEJAM];
     entity->process = Player1ProcessTerrainMotion;
     entity->sequence = PlayerAnimationDescriptors[PLAYER_ANIM_IDLE].sequence;

@@ -96,7 +96,7 @@ short player_number, powerup;
         projectile->frames = animation->frames;
         projectile->frame_phase = 0;
         projectile->draw_flags |= ENTITY_SHADOW;
-        projectile->sprite_state = -1;
+        projectile->sprite_state = SPRITE_STATE_NO_DESCRIPTOR;
     }
 }
 

@@ -10,6 +10,7 @@
 #include "present_calls.h"
 #include "ram_player.h"
 #include "ram_system.h"
+#include "sprite_calls.h"
 
 /* Select the next directional animation for earthling category 19. */
 char EarthlingSelectTerrainAnimationState(earthling, object, next_state)
@@ -40,7 +41,7 @@ short next_state;
             next_state += 4;
     }
     if (animation != (next_state & 252))
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
     return next_state;
 }
 
@@ -73,7 +74,7 @@ struct object_state *object;
     }
     if (next_state >= 0) {
         SetEarthlingState(earthling, next_state);
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         if ((next_state & 252) == 4)
             object->behavior_flags |= ENTITY_COLLIDABLE;
         else

@@ -37,21 +37,21 @@ select_players:
     switch (selection) {
     case MENU_WHO_BOTH:
         gPlayerLives[PLAYER_TOEJAM] = 0;
-        gPlayerRank[PLAYER_TOEJAM] = 0;
+        gPlayerRank[PLAYER_TOEJAM] = PLAYER_RANK_INITIAL;
         gPlayerInfo[PLAYER_TOEJAM].level = LEVEL_ZERO;
         gPlayerLives[PLAYER_EARL] = 0;
-        gPlayerRank[PLAYER_EARL] = 0;
+        gPlayerRank[PLAYER_EARL] = PLAYER_RANK_INITIAL;
         gPlayerInfo[PLAYER_EARL].level = LEVEL_ZERO;
         gPlayerSelection = PLAYER_BOTH;
         gControllerPortsSwapped = 0;
         break;
     case MENU_WHO_TOEJAM:
         gPlayerLives[PLAYER_TOEJAM] = 0;
-        gPlayerRank[PLAYER_TOEJAM] = 0;
+        gPlayerRank[PLAYER_TOEJAM] = PLAYER_RANK_INITIAL;
         gPlayerInfo[PLAYER_TOEJAM].level = LEVEL_ZERO;
         gPlayerLives[PLAYER_EARL] = -1;
-        gPlayerRank[PLAYER_EARL] = 9;
-        gPlayerInfo[PLAYER_EARL].level = 99;
+        gPlayerRank[PLAYER_EARL] = PLAYER_RANK_ELIMINATED;
+        gPlayerInfo[PLAYER_EARL].level = PLAYER_LEVEL_ELIMINATED;
         gPlayerSelection = PLAYER_TOEJAM;
         if (GetCtrl2Input()) {
             gControllerPortsSwapped = 1;
@@ -62,10 +62,10 @@ select_players:
         }
     case MENU_WHO_EARL:
         gPlayerLives[PLAYER_TOEJAM] = -1;
-        gPlayerRank[PLAYER_TOEJAM] = 9;
-        gPlayerInfo[PLAYER_TOEJAM].level = 99;
+        gPlayerRank[PLAYER_TOEJAM] = PLAYER_RANK_ELIMINATED;
+        gPlayerInfo[PLAYER_TOEJAM].level = PLAYER_LEVEL_ELIMINATED;
         gPlayerLives[PLAYER_EARL] = 0;
-        gPlayerRank[PLAYER_EARL] = 0;
+        gPlayerRank[PLAYER_EARL] = PLAYER_RANK_INITIAL;
         gPlayerInfo[PLAYER_EARL].level = LEVEL_ZERO;
         gPlayerSelection = PLAYER_EARL;
         if (GetCtrl1Input()) {
@@ -305,7 +305,7 @@ void CreateMenuCursorEntity()
         cursor->frames = Spr_MenuCursor;
         cursor->frame_phase = 8;
         cursor->frame_duration = 1;
-        cursor->frame = -1;
+        cursor->frame = SPRITE_FRAME_BEFORE_FIRST;
         cursor->sprite_ready = 0;
         AllocateEntityViewportSprites(cursor, VIEWPORT_PRIMARY);
     }
@@ -346,7 +346,7 @@ short header_number;
         header->frames = Spr_MenuHeader;
         header->frame_phase = 8;
         header->frame_duration = 1;
-        header->frame = -1;
+        header->frame = SPRITE_FRAME_BEFORE_FIRST;
         header->sprite_ready = 0;
         AllocateEntityViewportSprites(header, VIEWPORT_PRIMARY);
     }

@@ -27,7 +27,7 @@ extern int EndingGetFirstPlayerAnimationFrame();
 /* Reset both camera scrolls, load the text and level tiles, and play the ending. */
 void PlayEndingSequence()
 {
-    gRequestedMusicSelection = 0;
+    gRequestedMusicSelection = MUSIC_SCENE_DEFAULT;
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 60;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
@@ -224,7 +224,7 @@ short EndingPlayUpwardRocketshipDeparture()
 
     CutsceneDrawRandomizedScreenBorder(1);
     CutsceneAllocateRocketshipPair();
-    gRequestedMusicSelection = 0;
+    gRequestedMusicSelection = MUSIC_SCENE_DEFAULT;
     character_y = 195;
     character_x = 112;
     move_timer = 15;

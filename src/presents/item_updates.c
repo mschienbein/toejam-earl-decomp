@@ -259,7 +259,7 @@ struct level_item *items;
 void PresentTryEndActivePowerup(player)
 short player;
 {
-    char sprite = -1;
+    char sprite = PLAYER_ANIM_UNCHANGED;
     struct object_state *state;
     short terrain;
 
@@ -293,7 +293,7 @@ short player;
             state->draw_flags &= ~ENTITY_SHADOW;
         }
     }
-    if (sprite != -1)
+    if (sprite != PLAYER_ANIM_UNCHANGED)
         SetSprite(state, sprite);
 }
 

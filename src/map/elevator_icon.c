@@ -16,8 +16,8 @@ struct hardware_sprite *sprite;
     short elevator_number, world_x, world_y, tile;
     struct elevator_record *elevator;
 
-    for (elevator_number = 0; elevator_number <= 1; ++elevator_number) {
-        elevator = &gElevatorRecords[elevator_number][0];
+    for (elevator_number = ELEVATOR_BANK_PRIMARY; elevator_number <= ELEVATOR_BANK_SECONDARY; ++elevator_number) {
+        elevator = &gElevatorRecords[elevator_number][ELEVATOR_TYPE_DEPARTURE];
         if (elevator->level != level || elevator->state == ELEVATOR_STATE_BLOCKED_BY_ARRIVAL)
             continue;
         world_x = elevator->x;

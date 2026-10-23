@@ -1,5 +1,6 @@
 #include "hardware.h"
 #include "player_animation.h"
+#include "dialogue_ids.h"
 #include "assets_ui.h"
 #include "ram_sprites.h"
 #include "sprite_calls.h"
@@ -282,7 +283,7 @@ void UpdateSpeechAndDialogue()
     if ((GetRandomNumber() & 0x1fff) == 1) {
         player_number = GetRandomNumber() & 1;
         if (EarthlingResetStateTwoByDrawMask(gPlayerInfo[player_number].draw_flags & ENTITY_EITHER_VIEW)) {
-            slot = StartDialogue(0, player_number);
+            slot = StartDialogue(DIALOGUE_SNEEZE, player_number);
             if (slot != DIALOGUE_SLOT_UNAVAILABLE) {
                 PlaySoundEffect((long)Sfx_Achoo, AUDIO_PRIORITY_NORMAL, 0);
                 if (gSplitScreenEnabled)
@@ -296,11 +297,11 @@ void UpdateSpeechAndDialogue()
         if (gReunionDialoguePending && !gSplitScreenEnabled && distance_x < 260 && distance_y < 174) {
             /* ORIGINAL BUG: These dialogue calls omit their speaker argument. */
             if (PlayerHasOddElevatorState(PLAYER_TOEJAM) && !(GetRandomNumber() & 3))
-                StartDialogue(3);
+                StartDialogue(DIALOGUE_TOEJAM_ELEVATOR_REUNION);
             else if (PlayerHasOddElevatorState(PLAYER_EARL) && !(GetRandomNumber() & 3))
-                StartDialogue(4);
+                StartDialogue(DIALOGUE_EARL_ELEVATOR_REUNION);
             else
-                StartDialogue(1);
+                StartDialogue(DIALOGUE_REUNION);
             gReunionDialoguePending = 0;
         } else if (distance_x > 640 || distance_y > 448)
             gReunionDialoguePending = 1;
@@ -309,9 +310,9 @@ void UpdateSpeechAndDialogue()
             if (gPlayerControlRemapEntities[slot] && distance_x < 30 && distance_y < 20 &&
                 (GetRandomNumber() & 0xff) == 2) {
                 if (!slot)
-                    StartDialogue(22);
+                    StartDialogue(DIALOGUE_TOEJAM_CONTROL_REMAP_CONTACT);
                 else
-                    StartDialogue(23);
+                    StartDialogue(DIALOGUE_EARL_CONTROL_REMAP_CONTACT);
             }
         }
     } else

@@ -5,6 +5,7 @@
 #include "present_types.h"
 #include "entities.h"
 #include "sprites.h"
+#include "sprite_frame_views.h"
 #include "hardware.h"
 #include "assets_palettes.h"
 #include "assets_ui.h"
@@ -122,7 +123,7 @@ short player_number;
         while (gSpriteGraphicsUploadPending)
             ;
     QueueSpritePieceTiles(icon, tile_number);
-    attributes = ((icon->tile_format & 3) << 13) + VDP_TILE_PRIORITY;
+    attributes = ((icon->tile_format & SPRITE_FORMAT_PALETTE_MASK) << 13) + VDP_TILE_PRIORITY;
     gHardwareSpriteTable[sprite_number].size = 5;
     gHardwareSpriteTable[sprite_number].tile = tile_number + attributes;
     gSpriteGraphicsUploadPending = 1;
@@ -585,10 +586,10 @@ short rank;
     short score = 40;
     short prior_rank;
 
-    if (rank >= 8)
+    if (rank >= PLAYER_RANK_MAX)
         score = 0;
     else
-        for (prior_rank = 0; prior_rank < rank; ++prior_rank)
+        for (prior_rank = PLAYER_RANK_INITIAL; prior_rank < rank; ++prior_rank)
             score += (prior_rank + 3) * 20;
     return score;
 }
@@ -602,7 +603,7 @@ short player_number;
     if (gPlayerLives[player_number] < 0)
         return 0;
     rank = gPlayerRank[player_number];
-    if (rank < 8 && gPlayerPoints[player_number] >= GetScoreForPromo(rank)) {
+    if (rank < PLAYER_RANK_MAX && gPlayerPoints[player_number] >= GetScoreForPromo(rank)) {
         ++gPlayerRank[player_number];
         while (gSpriteGraphicsUploadPending)
             ;
@@ -664,7 +665,7 @@ short player_number;
 void PlayerResetRankAndResources(player_number)
 short player_number;
 {
-    gPlayerRank[player_number] = 0;
+    gPlayerRank[player_number] = PLAYER_RANK_INITIAL;
     /* ORIGINAL BUG: no rank-eight stop. Its zero threshold makes this loop
      * endless when points are at least the rank-seven threshold (880). */
     while (gPlayerPoints[player_number] >= GetScoreForPromo(gPlayerRank[player_number]))

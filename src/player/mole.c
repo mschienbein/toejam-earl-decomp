@@ -65,7 +65,7 @@ short player_number;
         present_sprite = gPresentInfo[present_number].appearance;
         present->frames = &PresentSpriteTable[present_sprite];
         present->sequence = SingleFrameHoldAnimation;
-        present->frame = -1;
+        present->frame = SPRITE_FRAME_BEFORE_FIRST;
         present->frame_duration = 1;
         present->draw_flags |= ENTITY_SHADOW;
     }
@@ -111,7 +111,7 @@ struct earthling_state *earthling;
     }
     SetEarthlingState(earthling, 3);
     earthling->timer = 30;
-    mole->frame = -1;
+    mole->frame = SPRITE_FRAME_BEFORE_FIRST;
     mole->behavior_flags |= ENTITY_COLLIDABLE;
     mole->draw_flags |= ENTITY_DRAW_LATE;
     if (player_number == PLAYER_TOEJAM)

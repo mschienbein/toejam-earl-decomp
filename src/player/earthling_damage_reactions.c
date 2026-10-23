@@ -108,7 +108,7 @@ struct earthling_state *earthling;
         player = &gPlayerInfo[earthling->object];
         player->velocity_x = 0;
         player->velocity_y = 0;
-        player->frame = -1;
+        player->frame = SPRITE_FRAME_BEFORE_FIRST;
         earthling->saved_x_or_status = 1;
     }
     GenerateSpeech(player_number, "Youch!", 1);
@@ -234,7 +234,7 @@ struct object_state *target;
     if (abs(delta_x) > 65) {
         SetEarthlingState(earthling, (short)(delta_x > 0 ? 11 : 10));
         object = &gPlayerInfo[earthling->object];
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         return 1;
     }
     return 0;
@@ -270,7 +270,7 @@ struct earthling_state *earthling;
         if (abs(delta_x) < 25) {
             SetEarthlingState(earthling, 3);
             player = &gPlayerInfo[earthling->object];
-            player->frame = -1;
+            player->frame = SPRITE_FRAME_BEFORE_FIRST;
             player->acceleration_height = -32;
             player->velocity_height = -512;
             player->behavior_flags &= ~ENTITY_COLLIDABLE;

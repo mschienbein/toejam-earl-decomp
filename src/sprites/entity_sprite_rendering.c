@@ -30,10 +30,10 @@ struct object_state *entity;
             entity->tile |= VDP_TILE_PRIORITY;
         else
             entity->tile &= ~VDP_TILE_PRIORITY;
-    } else if (entity->owner == -1) {
+    } else if (entity->owner == ENTITY_OWNER_PRIMARY_CAMERA) {
         entity->x = gCamera1PendingX + (unsigned char)entity->attachment_x_or_latch;
         entity->y = gCamera1PendingY + (unsigned char)entity->attachment_y_or_latch;
-    } else if (entity->owner == -2) {
+    } else if (entity->owner == ENTITY_OWNER_SECONDARY_CAMERA) {
         entity->x = gCamera2PendingX + (unsigned char)entity->attachment_x_or_latch;
         entity->y = gCamera2PendingY + (unsigned char)entity->attachment_y_or_latch;
     }

@@ -55,7 +55,7 @@ char state;
     entity->frames = animation->frames;
     entity->frame_phase = animation->period;
     entity->frame_duration = 1;
-    entity->frame = -1;
+    entity->frame = SPRITE_FRAME_BEFORE_FIRST;
     entity->sprite_state = state;
     x = entity->x;
     y = entity->y;
@@ -67,7 +67,7 @@ char state;
     entity->y = animation->y_offset + y;
     entity->x = x;
     entity->frame_duration = 1;
-    entity->frame = -1;
+    entity->frame = SPRITE_FRAME_BEFORE_FIRST;
     entity->sprite_state = state;
 }
 
@@ -403,7 +403,7 @@ void MapEnterFinalLevel()
         player = &gPlayerInfo[PLAYER_TOEJAM];
         gPlayerInfo[PLAYER_TOEJAM].height = 0;
         StopPlayer(player);
-        gPlayerFallStates[PLAYER_TOEJAM] = 0;
+        gPlayerFallStates[PLAYER_TOEJAM] = PLAYER_FALL_NONE;
         SetSprite(player, PLAYER_ANIM_IDLE);
         player->behavior_flags &= ~(ENTITY_PLAYER_SUPPRESSED | ENTITY_HIDDEN);
         player->tile &= ~VDP_TILE_PRIORITY;
@@ -414,7 +414,7 @@ void MapEnterFinalLevel()
         player = &gPlayerInfo[PLAYER_EARL];
         gPlayerInfo[PLAYER_EARL].height = 0;
         StopPlayer(player);
-        gPlayer2FallState = 0;
+        gPlayer2FallState = PLAYER_FALL_NONE;
         SetSprite(player, PLAYER_ANIM_IDLE);
         player->behavior_flags &= ~(ENTITY_PLAYER_SUPPRESSED | ENTITY_HIDDEN);
         player->tile &= ~VDP_TILE_PRIORITY;

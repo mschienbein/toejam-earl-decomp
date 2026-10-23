@@ -1,5 +1,6 @@
 #include "player_animation.h"
 #include "player_animation_groups.h"
+#include "music_ids.h"
 #include "entities.h"
 #include "hardware.h"
 #include "assets_map.h"
@@ -637,7 +638,7 @@ void FurtherInitialisation()
     SetRAMIndexes();
     SEGAAndIntroVideoRoutine();
     NewGameMainMenu();
-    gRequestedMusicSelection = 0;
+    gRequestedMusicSelection = MUSIC_SCENE_DEFAULT;
     VDP_COMMAND = VDP_WRITE_VRAM_BASE;
     MoveDataToVRAM(LevelTiles, LevelTilesSize << 4);
     VDP_COMMAND = 0x46600001;

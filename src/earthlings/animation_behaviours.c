@@ -7,6 +7,7 @@
 #include "ram_player.h"
 #include "ram_system.h"
 #include "ram_ui.h"
+#include "sprite_calls.h"
 
 #define NEXT_RANDOM gCachedRandomValues[gRandomCacheIndex == 58 ? (gRandomCacheIndex = 0) : ++gRandomCacheIndex]
 
@@ -119,7 +120,7 @@ struct earthling_state *earthling;
     }
     if (next_state != EARTHLING_STATE_UNCHANGED && earthling->state != next_state) {
         SetEarthlingState(earthling, next_state);
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
     }
 }
 
@@ -140,7 +141,7 @@ struct earthling_state *earthling;
     object = &gPlayerInfo[earthling->object];
     if (!object->sprite_state && earthling->state >= 2)
         next_state = EarthlingSelectTurnState(earthling);
-    else if (earthling->state <= 1 && gPlayerInventoryOpen[PLAYER_TOEJAM] != 3 && gPlayer2InventoryOpen != 3) {
+    else if (earthling->state <= 1 && gPlayerInventoryOpen[PLAYER_TOEJAM] != INVENTORY_IDENTIFY && gPlayer2InventoryOpen != INVENTORY_IDENTIFY) {
         if (object->velocity_x > 0) {
             next_state = 2;
             object->velocity_x = -320;
@@ -151,7 +152,7 @@ struct earthling_state *earthling;
     }
     if (next_state != EARTHLING_STATE_UNCHANGED && earthling->state != next_state) {
         SetEarthlingState(earthling, next_state);
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
     }
 }
 
@@ -186,7 +187,7 @@ struct earthling_state *earthling;
         if (earthling->state == 3) {
             if (object->behavior_flags & ENTITY_HIDDEN) {
                 if (next_state != EARTHLING_STATE_UNCHANGED) {
-                    object->frame = -1;
+                    object->frame = SPRITE_FRAME_BEFORE_FIRST;
                     object->frame_duration = 1;
                     object->sprite_ready = 0;
                     object->behavior_flags &= ~ENTITY_HIDDEN;
@@ -200,7 +201,7 @@ struct earthling_state *earthling;
                 earthling->timer = 1;
         } else if (--earthling->health_visibility[0] < 0 || next_state == EARTHLING_STATE_UNCHANGED) {
             SetEarthlingState(earthling, 2);
-            object->frame = -1;
+            object->frame = SPRITE_FRAME_BEFORE_FIRST;
         }
     }
 }

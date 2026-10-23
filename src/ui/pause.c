@@ -102,7 +102,7 @@ short player_number;
         object->sequence = animation->sequence;
         object->frames = animation->frames;
         object->frame_duration = 1;
-        object->frame = -1;
+        object->frame = SPRITE_FRAME_BEFORE_FIRST;
         AllocateEntityViewportSprites(object, viewport);
         while (!(object->draw_flags & viewport_mask)) {
             EntityReleaseOneByPriority();

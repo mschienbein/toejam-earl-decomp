@@ -2,6 +2,7 @@
 #include "player_animation_groups.h"
 #include "present_types.h"
 #include "terrain.h"
+#include "map.h"
 #include "ram_system.h"
 
 #include "entities.h"
@@ -176,12 +177,12 @@ short level, large;
         random = GetRandomNumber();
         column = random % MAP_COLUMNS;
         metatile = map[row * MAP_COLUMNS + column];
-        if ((metatile & 0x2000) || (large && MapIsLargePlacementTerrainExcluded(metatile))) {
+        if ((metatile & METATILE_ITEM_PLACEMENT_INHIBITED) || (large && MapIsLargePlacementTerrainExcluded(metatile))) {
             /* ORIGINAL BUG: rejected marked tiles do not consume an attempt. */
             --search_counter;
             continue;
         }
-        if (TerrainValidation(metatile, width, height, &position_x, &position_y, 3)) {
+        if (TerrainValidation(metatile, width, height, &position_x, &position_y, TERRAIN_PLACEMENT_GROUND_OR_SINKING)) {
             position_y += (row + 1) * 64;
             position_x += (column + 1) * 128;
             if (ElevatorAllowsWorldPlacement(position_x, position_y, level)) {
@@ -200,11 +201,11 @@ short level, large;
         column = start_column;
         do {
             metatile = map[row * MAP_COLUMNS + column];
-            if ((metatile & 0x2000) || (large && MapIsLargePlacementTerrainExcluded(metatile))) {
+            if ((metatile & METATILE_ITEM_PLACEMENT_INHIBITED) || (large && MapIsLargePlacementTerrainExcluded(metatile))) {
                 column = (column + 1) % MAP_COLUMNS;
                 continue;
             }
-            if (TerrainValidation(metatile, width, height, &position_x, &position_y, 3)) {
+            if (TerrainValidation(metatile, width, height, &position_x, &position_y, TERRAIN_PLACEMENT_GROUND_OR_SINKING)) {
                 position_y += (row + 1) * 64;
                 position_x += (column + 1) * 128;
                 if (ElevatorAllowsWorldPlacement(position_x, position_y, level)) {

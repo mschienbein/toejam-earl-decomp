@@ -27,7 +27,7 @@ int IntroVideo()
 {
     short interrupted;
 
-    gRequestedMusicSelection = 0;
+    gRequestedMusicSelection = MUSIC_SCENE_DEFAULT;
     WaitForNextVBlank(1);
     gMode2RegSoftcopy &= 0x3c;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
@@ -385,7 +385,7 @@ short IntroPart3()
     short advance_scene;
 
     IntroBeginLargePlayerScene(7);
-    gRequestedMusicSelection = 0;
+    gRequestedMusicSelection = MUSIC_SCENE_DEFAULT;
     gCutsceneScriptCountdown = 17;
     gCutsceneMusicActorAnimationEnabled = 1;
     advance_scene = 0;

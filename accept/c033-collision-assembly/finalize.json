@@ -1,0 +1,38 @@
+{
+ "added": [],
+ "checkpoint": "c033-collision-assembly",
+ "final_images": {
+  "rev00": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+  "rev02": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163"
+ },
+ "finalized_utc": "2026-10-23T00:29:50Z",
+ "moved": [],
+ "note": "Five collision queries as assembly source under R011; classification not_reproducible_c; denominator r12; 598/598 C, no generated assembly",
+ "prepare_sha256": "4d1f2ea65a65f44466b85a1ed5888e6dd434b3eff3fe70cc35768e697e58cb31",
+ "progress": {
+  "bytes": 174344,
+  "checkpoint": "c033-collision-assembly",
+  "functions": 598,
+  "utc": "2026-10-23T00:29:50Z",
+  "versions": {
+   "rev00": {
+    "bytes": 174232,
+    "functions": 598
+   },
+   "rev02": {
+    "bytes": 174344,
+    "functions": 598
+   }
+  }
+ },
+ "reviews": [
+  {
+   "reviewer": "C033Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  },
+  {
+   "reviewer": "C033Review",
+   "verdict": "PASS_WITH_QUALIFICATIONS"
+  }
+ ]
+}

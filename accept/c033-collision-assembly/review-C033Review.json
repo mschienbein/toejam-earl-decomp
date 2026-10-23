@@ -1,0 +1,10 @@
+{
+ "checkpoint": "c033-collision-assembly",
+ "prepare_sha256": "4d1f2ea65a65f44466b85a1ed5888e6dd434b3eff3fe70cc35768e697e58cb31",
+ "prepared_result": "PASS",
+ "recorded_utc": "2026-10-23T00:29:10Z",
+ "review_file": "review.json",
+ "review_sha256": "305985ceb3d006b8a8659afe9e8ebe5f482579bbd5afea1941d314b3b365e8be",
+ "reviewer": "C033Review",
+ "verdict": "PASS_WITH_QUALIFICATIONS"
+}

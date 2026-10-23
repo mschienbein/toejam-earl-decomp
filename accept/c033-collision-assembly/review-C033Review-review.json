@@ -1,0 +1,99 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C033Review",
+  "checkpoint": "c033-collision-assembly",
+  "sealed": true,
+  "reviewed_commit": "f51a0d052fd24916252d795afdb5f1100231b5ec",
+  "prepare_sha256": "4d1f2ea65a65f44466b85a1ed5888e6dd434b3eff3fe70cc35768e697e58cb31",
+  "independence": "Independent read-only checkpoint review. No other c033 review was read before sealing. ClassReview3 was consulted solely as an explicitly assigned historical evidentiary input to R011. No nested agents, tracked edits, repository git-state changes, push, or acceptance review/finalize command were used. All new files and test/build outputs are confined to this reviewer's scratch root.",
+  "checks": [
+    {
+      "id": "assembly-both-revisions",
+      "status": "PASS",
+      "observed": "Fresh tools/match.py runs report MATCH for all five functions in both revisions, 1068 bytes in total. Independent decoding finds 340 instructions and twelve SUB.W/BPL/NEG.W triplets in each revision, distributed 3/3/2/2/2; the function hashes agree between revisions.",
+      "evidence": ["evidence/match-rev02.json", "evidence/match-rev00.json", "evidence/source.json"]
+    },
+    {
+      "id": "readable-source-no-blobs",
+      "status": "PASS",
+      "observed": "Reviewed every instruction and comment. The file contains 340 instruction statements, meaningful local labels, 21 equates, and only .text/.equ/.globl/.type/.size directives. No byte/word blobs, incbin, generated listing, or instruction substitution is present. All ten object-field equates agree with include/entities.h.",
+      "evidence": ["evidence/source.json"]
+    },
+    {
+      "id": "query-comments-and-arithmetic",
+      "status": "PASS",
+      "observed": "Comments correctly describe current-Y broad-phase filtering, first-hit return, self/minimum-index and menu gates, strict X/Y versus inclusive elevation comparisons, signed volume height extents, zero-extended volume Y with long comparison, projectile owner-only exclusion and asymmetric vertical padding, mixed word/long return increments, and horizontal's unused Y load. The N-only versus signed-overflow branch distinction is correctly identified.",
+      "evidence": ["evidence/source.json", "evidence/research.json"]
+    },
+    {
+      "id": "header-r011-scope",
+      "status": "PASS_WITH_QUALIFICATIONS",
+      "observed": "The header names R011, limits the reconstruction claim to plain C, states that the mechanism is unresolved, and explicitly denies matching-C credit. The isolated phrase 'tests never occur in the compiler's output' is broader than the finite corpus/probe evidence; see F1.",
+      "evidence": ["evidence/research.json"]
+    },
+    {
+      "id": "classification-policy-and-evidence",
+      "status": "PASS",
+      "observed": "Exactly the five collision entries are not_reproducible_c/high. Their evidence text agrees with R011 and the assigned reports: twelve original sign triplets, zero in the frozen 51419-instruction matched-C corpus or 438 fresh plain-C 3.3K probe instances over six profiles, positive alternate-compiler/inline-assembly motif controls but no whole-query match, and unresolved historical mechanism. The superseded unavailable-compiler attribution is not asserted.",
+      "interpretation": "[INFERENCE] High-confidence classification is justified under R011's practical evidence-based reproduction policy, not as a universal proof about all possible C source/options or a historical compiler identification.",
+      "evidence": ["evidence/classification.json", "evidence/research.json"]
+    },
+    {
+      "id": "classification-summary",
+      "status": "PASS",
+      "observed": "Independent aggregation exactly matches the recorded summary: 598 compiled_c functions/174344 extent bytes/173870 instruction bytes; 36 handwritten_asm/4980/4980; 5 not_reproducible_c/1068/1068; 6 runtime_helper/342/342. Total: 645 functions and 180734 extent bytes.",
+      "evidence": ["evidence/classification.json"]
+    },
+    {
+      "id": "reporting-and-correspondence",
+      "status": "PASS",
+      "observed": "The entire ci/progress_report.py commit diff changes only NON_C, adding not_reproducible_c and its ruling comment. Existing high-confidence filtering and correspondence logic are unchanged. REV00 has no independent classification and correctly excludes all five mapped addresses. Fresh reports show REV02 598/598 functions, 174344/174344 C bytes, and REV00 598/598 functions, 174232/174232 C bytes, each 100.000%.",
+      "evidence": ["evidence/prepare.json", "evidence/classification.json", "evidence/progress-rev02.json", "evidence/progress-rev00.json"]
+    },
+    {
+      "id": "denominator-r12",
+      "status": "PASS",
+      "observed": "tools/denominator.py verify exits zero: denominator r12 OK. The twelve-entry hash chain and current denominator-file hashes validate; r12 explicitly records R011, the five functions, assembly-source delivery, and the 598-function C denominator.",
+      "evidence": ["evidence/denominator.json", "evidence/classification.json"]
+    },
+    {
+      "id": "fresh-full-builds",
+      "status": "PASS",
+      "observed": "Fresh full production build operations for both revisions produce pinned byte-identical images, identical prepared source-unit records, 598 C functions, zero generated instructions, zero generated function/fragment units, and zero raw words. collision.s is a 1068-byte asm unit, not C credit. REV02 SHA256 65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163; REV00 SHA256 2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228.",
+      "qualification": "To obey the reviewer write boundary, the suite's two build.build calls were redirected to an equivalent wrapper using the same production ROM/catalogue check, prepare_data, z80_sources, build_image, names/TU/revision mapping, and receipt binding, with only the output directories changed to reviewer scratch. No test or production source was edited.",
+      "evidence": ["evidence/build-rev02-1.json", "evidence/build-rev00-1.json", "evidence/end.json"]
+    },
+    {
+      "id": "full-suite",
+      "status": "PASS",
+      "observed": "All 191 discovered unittest tests pass: zero failures, zero errors, zero skips. Real-ROM catalogue-freshness and full-build tests for both revisions ran. Temporary and asset-test outputs were confined to reviewer scratch.",
+      "evidence": ["evidence/suite.json", "evidence/suite.log"]
+    },
+    {
+      "id": "public-audit-with-roms",
+      "status": "PASS",
+      "observed": "tools/audit_public.py --history exits zero and reports PASS: 1611 unique Git blobs, 151 trees, 408 tracked worktree files, two ROMs indexed, zero findings. --no-rom was not used.",
+      "evidence": ["evidence/audit.json"]
+    },
+    {
+      "id": "prepare-record-binding",
+      "status": "PASS",
+      "observed": "Prepare is PASS at the reviewed code commit with recorded clean input paths. All 248 input hashes and both source digests agree with the current tree, including after all checks; no orphan C source exists. All four retained preparation receipts match their canonical receipt hashes and source-unit records, and the actual retained images match both prepared image hashes and pinned originals. Each revision's two prepared images are identical; recorded suite is OK.",
+      "evidence": ["evidence/prepare.json", "evidence/end.json"]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "low",
+      "blocking": false,
+      "location": "src/asm/collision.s:1-5",
+      "finding": "Bound the header's 'never occur in the compiler's output' phrase to the observed plain-C corpus/probes.",
+      "observed": "The immediately preceding line says plain C and the following lines explicitly allow inline assembly as an unresolved mechanism, so the intended R011 scope is clear. Taken literally in isolation, however, 'never occur' exceeds the finite measurements; the assigned ClassReview3 inline control and HardCases6 macro experiments positively emit the motif through the available 3.3K compiler's documented asm extension.",
+      "recommendation": "Prefer: 'their twelve SUB.W/BPL/NEG.W sign tests were not observed in the reviewed matched-C corpus or tested plain-C MCC68K 3.3K probes; the mechanism remains unresolved.' This is a wording qualification, not an objection to R011, byte identity, or denominator treatment.",
+      "evidence": ["evidence/research.json"]
+    }
+  ],
+  "blocking_findings": 0,
+  "verification_scope": "Fresh both-revision assembly matching, private-ROM decoding, full suite including both full builds, public history audit with both ROMs, report generation, denominator verification, and preparation-manifest/receipt/image binding. Prior finite compiler-search failures were inspected, not rerun. No universal compiler impossibility or historical-origin claim is made."
+}

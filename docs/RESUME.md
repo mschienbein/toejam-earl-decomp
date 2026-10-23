@@ -3,8 +3,10 @@
 Matching/source completion is finalized through checkpoint c033. Both revisions have
 **598 of 598 C functions matched (100%)**: REV 02 is 174,344 of 174,344 C bytes;
 REV 00 is 174,232 of 174,232 C bytes. Every other routine is readable assembly,
-there is zero generated assembly, and all data comes from typed assets. Six bytes
-without a known reader remain explicitly typed `unreferenced`, not raw data.
+there is zero generated assembly, and data comes from typed assets, except the Z80
+driver (Z80 source, R007) and 43 strings that the matched C emits from its own string
+literals. Six bytes without a known reader are explicitly typed `unreferenced`, not raw
+data; ruling [R012](rulings/R012-closure-interpretations.md) closes both cases.
 
 ## Build from a fresh checkout
 

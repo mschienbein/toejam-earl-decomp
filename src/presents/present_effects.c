@@ -440,7 +440,7 @@ unsigned short terrain;
         FreeEntity(gPlayerPromotionDisplayEntities[player_number]);
         gPlayerPromotionDisplayEntities[player_number] = 0;
         if (promotion_complete && (gPlayerRank[player_number] - 2) % 3 == 0)
-            PerformPromotion(player_number, 17, terrain);
+            PerformPromotion(player_number, PRESENT_EXTRA_LIFE, terrain);
     }
 }
 

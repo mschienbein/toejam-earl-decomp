@@ -200,6 +200,8 @@ terrain/height-dependent direction family, and clears previous directional input
 random alternatives after collisions. `PlayerApplyRocketSkatesInput` converts
 reversals into turns, accelerates on one axis, and clamps speed;
 `PlayerUpdateRocketSkatesSprite` handles charged jump/release, water, and landing.
+Both skates routines use the shared `DIRECTION_UP`/`DOWN`/`LEFT`/`RIGHT` facing
+identities, separate from controller direction bits and packed map-path directions.
 
 `PlayerUpdatePresentShooting` launches on specific animation frames and then restores
 the active pose. Held direction+action outside elevators selects firing sprites for
@@ -299,7 +301,8 @@ object; inventory loss precedes allocation, so allocation failure does not undo 
 `HottubAbility` advances entry jumps, bathing/healing, randomized chat, directional
 exit, and landing. `LemonadeAbility` completes drinking/burp animations and opens
 `PRESENT_EXTRA_LIFE` after audio cooldown. Level-zero item/Earthling coordinates are fixed
-helpers in `ability_helpers.c`, not generated map content.
+helpers in `ability_helpers.c`, not generated map content; the Earthling-position switch
+selects `EARTHLING_LEMONADE_STAND`, `EARTHLING_HOT_TUB`, and `EARTHLING_HULA_DANCER`.
 
 `PlayerUpdateHealthSharingClap` requires the same level, aligns complementary
 facing players into `PLAYER_ANIM_HIGH_FIVE_LEFT`/`PLAYER_ANIM_HIGH_FIVE_RIGHT`, plays the clap, and redistributes health

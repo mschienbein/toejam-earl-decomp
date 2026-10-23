@@ -24,14 +24,14 @@ unsigned short terrain;
     char direction = state->sprite_state & DIRECTION_MASK;
     char jump;
 
-    if (velocity_x > 0 && direction != 3)
-        direction = 3;
-    else if (velocity_x < 0 && direction != 2)
-        direction = 2;
-    else if (velocity_y > 0 && direction != 1)
-        direction = 1;
-    else if (velocity_y < 0 && direction != 0)
-        direction = 0;
+    if (velocity_x > 0 && direction != DIRECTION_RIGHT)
+        direction = DIRECTION_RIGHT;
+    else if (velocity_x < 0 && direction != DIRECTION_LEFT)
+        direction = DIRECTION_LEFT;
+    else if (velocity_y > 0 && direction != DIRECTION_DOWN)
+        direction = DIRECTION_DOWN;
+    else if (velocity_y < 0 && direction != DIRECTION_UP)
+        direction = DIRECTION_UP;
     jump = gPlayerProcessedInput[player] & INPUT_BUTTON_A;
     if (jump && terrain <= TERRAIN_WALKABLE_MAX && (state->animation_group_mask & PLAYER_GROUP_SKATES))
         sprite = direction + PLAYER_ANIM_SKATES_CROUCH_UP;
@@ -89,40 +89,40 @@ unsigned char input;
             (down && right) || (down && left)) {
             if (!changed_direction)
                 goto clamp_speed;
-            if (up && direction == 0)
+            if (up && direction == DIRECTION_UP)
                 up = 0;
-            else if (down && direction == 1)
+            else if (down && direction == DIRECTION_DOWN)
                 down = 0;
-            else if (left && direction == 2)
+            else if (left && direction == DIRECTION_LEFT)
                 left = 0;
-            else if (right && direction == 3)
+            else if (right && direction == DIRECTION_RIGHT)
                 right = 0;
         }
         if (!(input & INPUT_DIRECTION_MASK)) {
-            if (direction == 0)
+            if (direction == DIRECTION_UP)
                 up = 1;
-            else if (direction == 1)
+            else if (direction == DIRECTION_DOWN)
                 down = 1;
-            else if (direction == 2)
+            else if (direction == DIRECTION_LEFT)
                 left = 1;
-            else if (direction == 3)
+            else if (direction == DIRECTION_RIGHT)
                 right = 1;
-        } else if (up && direction == 1) {
+        } else if (up && direction == DIRECTION_DOWN) {
             up = 0;
             gPlayerRocketTurnDelay[player] = 3;
             if (!(left | right))
                 right = 1;
-        } else if (down && direction == 0) {
+        } else if (down && direction == DIRECTION_UP) {
             down = 0;
             gPlayerRocketTurnDelay[player] = 3;
             if (!(left | right))
                 left = 1;
-        } else if (left && direction == 3) {
+        } else if (left && direction == DIRECTION_RIGHT) {
             left = 0;
             gPlayerRocketTurnDelay[player] = 3;
             if (!(up | down))
                 up = 1;
-        } else if (right && direction == 2) {
+        } else if (right && direction == DIRECTION_LEFT) {
             right = 0;
             gPlayerRocketTurnDelay[player] = 3;
             if (!(up | down))

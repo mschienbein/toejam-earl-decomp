@@ -167,7 +167,7 @@ void ProcessTomatoRain()
                             projectile->height = 0;
                             projectile->velocity_height = 0;
                             projectile->acceleration_height = 0;
-                            if (object_number != 128)
+                            if (object_number != TERRAIN_WATER)
                                 animation = &TomatoGroundImpactAnimation;
                             else
                                 animation = &TomatoTerrain128ImpactAnimation;

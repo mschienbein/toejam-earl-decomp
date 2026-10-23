@@ -99,9 +99,9 @@ void ProcessElevatorStep1()
             if (elevator->entity && !gPlayerInfo[elevator->entity].frame_duration) {
                 if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM]) {
                     next_state = ELEVATOR_STATE_CLOSED_READY;
-                    gPlayerInfo[PLAYER_TOEJAM].behavior_flags &= ~64;
+                    gPlayerInfo[PLAYER_TOEJAM].behavior_flags &= ~ENTITY_HIDDEN;
                 } else if (flag == gPlayerElevatorFlags[PLAYER_EARL]) {
-                    gPlayerInfo[PLAYER_EARL].behavior_flags &= ~64;
+                    gPlayerInfo[PLAYER_EARL].behavior_flags &= ~ENTITY_HIDDEN;
                     next_state = ELEVATOR_STATE_CLOSED_READY;
                 } else
                     next_state = ELEVATOR_STATE_CLOSED_EMPTY;
@@ -208,11 +208,11 @@ void ProcessElevatorStep2()
                 next_state = ELEVATOR_STATE_CLOSED_READY;
                 entity = 0;
                 if (flag == gPlayerElevatorFlags[PLAYER_TOEJAM])
-                    gPlayerInfo[PLAYER_TOEJAM].behavior_flags &= ~64;
+                    gPlayerInfo[PLAYER_TOEJAM].behavior_flags &= ~ENTITY_HIDDEN;
                 else if (gPlayerInfo[PLAYER_TOEJAM].level == elevator->level)
                     entity = &gPlayerInfo[PLAYER_TOEJAM];
                 if (flag == gPlayerElevatorFlags[PLAYER_EARL])
-                    gPlayerInfo[PLAYER_EARL].behavior_flags &= ~64;
+                    gPlayerInfo[PLAYER_EARL].behavior_flags &= ~ENTITY_HIDDEN;
                 else if (gPlayerInfo[PLAYER_EARL].level == elevator->level)
                     entity = &gPlayerInfo[PLAYER_EARL];
                 if (entity) {

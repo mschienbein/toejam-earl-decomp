@@ -1,4 +1,5 @@
 #include "player_animation.h"
+#include "terrain.h"
 #include "entities.h"
 #include "assets_audio.h"
 #include "audio_calls.h"
@@ -34,7 +35,7 @@ short next_x, next_y;
     cell_y -= state->y >> 3;
     cell_y += 2;
     tile = nearby_land[cell_y * 5 + cell_x];
-    if (tile >= 0x80) {
+    if (tile >= TERRAIN_WATER) {
         state->velocity_height = 512;
         state->acceleration_height = -37;
         state->draw_flags |= ENTITY_SHADOW;

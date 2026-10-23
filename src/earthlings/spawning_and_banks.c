@@ -498,8 +498,8 @@ short terrain;
         else
             terrain_player = 1;
         selection = GetMapTerrainAtWorldPosition(terrain_player, x, y);
-        if ((terrain == TERRAIN_WATER && selection == 0x80) ||
-            (terrain != TERRAIN_WATER && selection != 0x80))
+        if ((terrain == TERRAIN_WATER && selection == TERRAIN_WATER) ||
+            (terrain != TERRAIN_WATER && selection != TERRAIN_WATER))
             break;
     }
     terrain = selection;
@@ -783,7 +783,7 @@ struct earthling_state *earthling;
 {
     if (earthling && earthling->kind > 0) {
         if (!EarthlingIsMailOrderMailbox(earthling) && earthling->kind != EARTHLING_SANTA &&
-            earthling->kind < 23 && --earthling->health_visibility[0] <= 0) {
+            earthling->kind < EARTHLING_LEMONADE_STAND && --earthling->health_visibility[0] <= 0) {
             if (earthling->kind == EARTHLING_OPERA_SINGER || earthling->kind == EARTHLING_WIZARD ||
                 earthling->kind == EARTHLING_WISEMAN) {
                 if (NiceEarthlingCheck(earthling)) {

@@ -13,7 +13,7 @@ struct object_state *state;
 short player;
 unsigned short terrain;
 {
-    char sprite = 1;
+    char sprite = DIRECTION_DOWN;
 
     StopPlayer(state);
     if (state->height > 0)

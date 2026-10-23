@@ -809,11 +809,11 @@ short player_number;
     if (!exhausted) {
         selector->x = gPlayerInventorySelectionColumn[player_number] * 160 + 7;
         selector->y = gPlayerInventorySelectionRow[player_number] * 16 + 63;
-        selector->behavior_flags &= ~64;
+        selector->behavior_flags &= ~ENTITY_HIDDEN;
         if (player_number == PLAYER_EARL)
             selector->y += 104;
     } else
-        selector->behavior_flags |= 64;
+        selector->behavior_flags |= ENTITY_HIDDEN;
 }
 
 /* Activate seven inventory objects, waiting for their selected draw flag. */

@@ -564,7 +564,7 @@ unsigned short land;
         for (row = 0; row < 5; ++row) {
             for (column = 0; column < 5; ++column) {
                 if ((short)(player_number == PLAYER_TOEJAM ? gPlayer1NearbyTerrain[row][column] :
-                            gPlayer2NearbyTerrain[row][column]) != 0x80) {
+                            gPlayer2NearbyTerrain[row][column]) != TERRAIN_WATER) {
                     sprite = PLAYER_ANIM_SWIM_NEAR_SHORE;
                     row = 4;
                     break;
@@ -659,7 +659,7 @@ unsigned short land;
             player->acceleration_height = -32;
             gPlayerLandingCounterSeed[player_number] = 2;
             if (player->sprite_state == PLAYER_ANIM_ZAPPED)
-                direction = 1;
+                direction = DIRECTION_DOWN;
             SetSprite(player, direction + PLAYER_ANIM_FALL_UP);
         } else if (nearby_land[12] < TERRAIN_WATER)
             SetSprite(player, GetActivePresentSprite(player));
@@ -670,7 +670,7 @@ unsigned short land;
                 player->x -= 16;
             if (nearby_land[12] == TERRAIN_WATER) {
                 if (player->sprite_state == PLAYER_ANIM_ZAPPED)
-                    direction = 1;
+                    direction = DIRECTION_DOWN;
                 else if (direction & 2)
                     direction ^= 1;
                 SetSprite(player, direction + PLAYER_ANIM_FALL_SPLASH_UP);

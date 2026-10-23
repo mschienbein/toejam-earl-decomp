@@ -1,5 +1,6 @@
 #include "player_animation.h"
 #include "present_types.h"
+#include "earthling_types.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "presents.h"
@@ -40,22 +41,22 @@ short kind;
 short *x, *y;
 {
     switch (kind) {
-    case 23:
+    case EARTHLING_LEMONADE_STAND:
         *x = 1536;
         *y = 1024;
         break;
-    case 24:
+    case EARTHLING_HOT_TUB:
         *x = 1398;
         *y = 980;
         break;
-    case 5:
+    case EARTHLING_HULA_DANCER:
         *x = 1536;
         *y = 944;
         break;
     }
 }
 
-/* Finish the lemonade animation, burp, and open present 17 after speech ends. */
+/* Finish the lemonade animation, burp, and grant an extra life after speech ends. */
 void LemonadeAbility(player_number, earthling)
 short player_number;
 struct earthling_state *earthling;
@@ -67,7 +68,7 @@ struct earthling_state *earthling;
         !gPlayerInfo[earthling->object].frame_duration)
         SetEarthlingState(earthling, 0);
     if (gPlayerLemonadeRewardStates[player_number] == 1 && !gPcmEffectCooldownTicks) {
-        OpenSelectedPresent(player_number, 17);
+        OpenSelectedPresent(player_number, PRESENT_EXTRA_LIFE);
         gPlayerLemonadeRewardStates[player_number] = 2;
     }
     if (player->sprite_state == PLAYER_ANIM_DRINK_LEMONADE && !player->frame_duration) {

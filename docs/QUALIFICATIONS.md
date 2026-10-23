@@ -188,7 +188,7 @@ A hint can change the allocator’s coalescing and scratch choices. Only these t
 | ID / function | Current source location(s) | Retained form and purpose | Accepting checkpoint / reviewer |
 | --- | --- | --- | --- |
 | Q097<br> `UpdateLandAroundPlayer` | [`src/map/terrain_at_position.c:64, 65, 68`](../src/map/terrain_at_position.c#L64) | register short map_cell, tile_y, tile_x; register unsigned short tile_number; register unsigned char terrain;<br> The selected hints plus shared column/cell and overlay/base/final-byte lifetimes keep the original register ownership; removing hints and separate-lifetime forms differ. | [c019][review-c019] · C017Review<br> Controls/source decision: [c017][review-c017] (failed precursor only). |
-| Q098<br> `PlayerCheckTerrainEdgeHop` | [`src/player/edge_hop_and_clap.c:23`](../src/player/edge_hop_and_clap.c#L23) | register short cell_x;<br> The X-cell hint permits input-register reuse; seventeen no-hint/declaration/arithmetic/type alternatives differ in both revisions. | [c023][review-c023] · C023Review<br> Controls/source decision: [c020][review-c020] (failed precursor only). |
+| Q098<br> `PlayerCheckTerrainEdgeHop` | [`src/player/edge_hop_and_clap.c:24`](../src/player/edge_hop_and_clap.c#L24) | register short cell_x;<br> The X-cell hint permits input-register reuse; seventeen no-hint/declaration/arithmetic/type alternatives differ in both revisions. | [c023][review-c023] · C023Review<br> Controls/source decision: [c020][review-c020] (failed precursor only). |
 
 ## Self-assignments
 

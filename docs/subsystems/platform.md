@@ -1,11 +1,13 @@
-# Platform: the hand-written 68000 replacement surface
+# Platform: 68000 assembly services and collision queries
 
 ## Purpose and evidence
 
 This document identifies the low-level services a native Windows/Mac/web port
 must replace rather than transliterate as game logic: reset/interrupt control,
 VDP memory operations and DMA, controllers, chip audio coordination, sprite
-unpacking, and compiler arithmetic helpers.
+unpacking, and compiler arithmetic helpers. It also covers the collision queries
+retained as readable assembly under R011; their query behavior is gameplay logic,
+not a hardware service to discard during a port.
 
 Evidence is `src/asm/*.s`, `src/z80/*.s`, `include/hardware.inc`,
 `include/sound.inc`, and hardware/call headers at repository-root paths.
@@ -22,6 +24,9 @@ Orchestration is in `docs/subsystems/core.md` and `docs/subsystems/audio.md`.
 - `controllers.s`: `GetCtrl1Input` and `GetCtrl2Input`, three-button TH multiplexing.
 - `rle.s`: raw, contiguous RLE, and four-lane interleaved sprite unpackers.
 - `runtime.s`: stock Microtec long multiply/divide/remainder and absolute value.
+- `src/asm/collision.s`: five gameplay collision queries under
+  [R011](../rulings/R011-unreproducible-functions.md), excluded from C progress.
+- `include/collision_calls.h`: their shared K&R call interfaces.
 - `z80bus.s`: sound-driver upload, bounded bus polling, reset pulse.
 - `sound.s`: FM register writes and 68000 sequencer.
 - `sound_init.s`, `sound_clear.s`, `sound_channels.s`, `sound_schedule.s`:
@@ -158,6 +163,33 @@ actual bit-test branches; the assembly comments explicitly explain this.
 Decoded quotas are reduced by run lengths; no per-source extent or destination
 capacity parameter is supplied. [INFERENCE] An external-asset loader needs a
 validated codec boundary rather than trusting arbitrary modded data as ROM data.
+
+## Collision queries and R011
+
+`src/asm/collision.s` supplies the five functions classified `not_reproducible_c`
+by [R011](../rulings/R011-unreproducible-functions.md). The reviewed plain-C
+reproduction attempts with the pinned compiler did not reproduce their instruction
+patterns. This is an evidence-based delivery classification, not a universal proof
+about every possible C spelling or an attribution to a known original compiler,
+inline-assembly macro, or hand-edited output. The historical mechanism remains
+unresolved; source delivery is complete and no generated assembly is used.
+
+- `EntityFindNarrowCollisionAtPosition`: proposed X/Y, self/minimum-index and
+  active/collidable/same-level gates, narrow width/Y bounds, and current elevation.
+- `EntityFindMenuAwareCollisionAtPosition`: narrow bounds with its distinct player
+  gate; indices zero/one participate only when their inventory-open byte is nonzero.
+- `EntityFindVolumeCollisionAtPosition`: proposed X/Y/elevation and asymmetric
+  height-interval overlap, retaining the signed sprite-height view.
+- `ProjectileFindCollisionExcludingOwner`: owner exclusion, target-width reach,
+  and projectile-specific asymmetric height bounds.
+- `EntityFindHorizontalCollisionAtX`: proposed X with current-Y filtering, no
+  narrow width inset, current elevation, and a retained unused Y argument.
+
+All five walk `gEntityDrawListHead` and return the first matching entity index plus
+one, or zero. Their broad phase uses the querying entity's current Y even when
+proposed Y is supplied. Word wrap and the original N-only sign tests matter at
+arithmetic boundaries; replacing them with a different signed comparison would
+change that behavior. These are readable assembly-source matches, not C credit.
 
 ## Arithmetic runtime
 

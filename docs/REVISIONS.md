@@ -2,7 +2,8 @@
 
 Both retail revisions build from the same sources: `tools/mcc.py` generates the per-build revision
 header (`REVISION` 0 or 2), and `#if REVISION` blocks hold the few real differences.
-Checkpoint c030 matches 597 of 603 C functions in each revision. Names, addresses
+Checkpoint c033 matches all 598 of 598 C functions (100%) in each revision
+under denominator r12; the five R011 collision queries are readable assembly source. Names, addresses
 spelled in the source and all documents refer to REV 02; `tools/revmap.py` maps REV 02 addresses
 to REV 00.
 
@@ -14,9 +15,9 @@ to REV 00.
 
 ## What changed in the code
 
-Of 648 paired code entries (645 functions and three fragments), 431 are byte-identical and 210
-differ only in addresses, because the
-code or data they refer to moved (REV 02's changes push everything after them by up to 112
+Of 648 paired code entries (645 functions and three fragments), 431 are byte-identical and 209
+differ only in addresses, because the code or data they refer to moved (REV 02's changes push
+everything after them by up to 112
 bytes): the pairing verifies this with address-masked instruction signatures, and every matched
 one builds both revisions from one unchanged source. Eight functions differ in their logic; all
 eight read as fixes to REV 00 behaviour:

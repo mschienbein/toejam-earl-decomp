@@ -11,7 +11,7 @@ tables that could become data, and what a wider camera would change).
 | Document | Folder | Covers |
 | --- | --- | --- |
 | [core.md](core.md) | `src/core/`, `src/asm/startup.s`, `src/asm/interrupts.s` | reset, interrupts, main loop and game scheduler |
-| [platform.md](platform.md) | `src/asm/` | the hand-written 68000 layer: VDP/DMA, decompressors, controllers, runtime helpers |
+| [platform.md](platform.md) | `src/asm/` | 68000 assembly: VDP/DMA, decompressors, controllers, runtime helpers, collision queries |
 | [camera.md](camera.md) | `src/camera/` | camera following, streamed tile rows/columns, split screen |
 | [sprites.md](sprites.md) | `src/sprites/` | entities, sprite slots and tiles, drawing order, visibility |
 | [map.md](map.md) | `src/map/` | world generation, terrain, level changes, random numbers |

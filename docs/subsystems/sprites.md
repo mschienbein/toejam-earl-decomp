@@ -199,6 +199,8 @@ Core calls this controller in its odd iteration and uses VBlank for loading.
 ## Interactions
 
 - Player and earthling movement share the object record with rendering state.
+- The assembly [collision queries](platform.md#collision-queries-and-r011) traverse
+  `gEntityDrawListHead`, so its ordering also determines their first-hit selection.
 - Speech creates custom tile/frame data and bypasses normal visibility allocation.
 - Inventory adds a separate late hardware-link list, not a separate renderer.
 - Camera transitions may evict lower-priority entities to guarantee player slots.

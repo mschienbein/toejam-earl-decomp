@@ -1,5 +1,43 @@
 # Status (current entry first)
 
+## Completion — checkpoint c033: 598 of 598 C functions matched
+
+**Achieved.** Both retail revisions rebuild byte-identically from the repository's
+readable source and assets extracted from the owner's ROM. There is no generated
+assembly left in either build.
+
+- **C complete:** 598 of 598 functions in each revision; REV 02 is 174,344 of
+  174,344 C bytes and REV 00 is 174,232 of 174,232 C bytes (**100% each**).
+  `PlayerProcessTerrainMotion`, matched in c032, completes the seven-function
+  `src/player/entity_motion_terrain.c` translation unit.
+- **Every other routine is source:** 36 hand-written functions, six runtime helpers,
+  five collision queries, and three fragments are readable 68000 assembly; the Z80
+  driver and bootstrap are readable Z80 assembly. The collision queries are in
+  `src/asm/collision.s` under [R011](rulings/R011-unreproducible-functions.md), not C credit.
+- **Denominator r12:** 645 functions = 598 C + 36 hand-written + six runtime helpers
+  + five classified `not_reproducible_c`. R011 records the reviewed reproduction
+  evidence without claiming an established historical compiler/source mechanism.
+- **All data typed:** no raw data bytes remain; six bytes without a known reader are
+  explicitly typed `unreferenced` ([data accounting](DATA.md)).
+- **Readable and disclosed:** canonical function/global/field names, shared records and
+  constants, bounded variable-frame views, [subsystem guides](subsystems/README.md),
+  and a [qualification ledger](QUALIFICATIONS.md) accompany the matching source.
+  Both revisions share the source; REV 02 has [eight logic fixes](REVISIONS.md).
+
+**Recorded verification.** The [c033 preparation](../accept/c033-collision-assembly/prepare.json)
+is PASS with the suite OK and the two fresh builds per revision bound into the accepted
+record. The [independent review](../accept/c033-collision-assembly/review-C033Review-review.json)
+records byte-identical builds, zero generated instructions/function/fragment units,
+191 passing tests with no failures, errors, or skips, denominator verification, and
+a public-history audit. Its verdict is pass with disclosed qualifications, including
+the finite scope of the collision compiler evidence. The
+[c033 finalization](../accept/c033-collision-assembly/finalize.json) binds the final
+images for both revisions to the reviewed inputs. The gates are described in
+[ACCEPTANCE](ACCEPTANCE.md).
+
+Required matching/source/data work is complete. [RESUME](RESUME.md) now describes how
+to rebuild and verify the result; further readability polish is optional.
+
 ## 2026-10-22 (evening) — 597 of 603 C functions matched; hand-written code and data from source
 
 **Result.**

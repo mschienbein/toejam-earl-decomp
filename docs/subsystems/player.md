@@ -14,19 +14,21 @@ owns edge hops and health sharing. Targeting/steering live in `src/earthlings`,
 and camera positioning/split-view animation live in `src/camera`; those are not
 counted as player implementation here. Identifiers match the repository headers.
 
-`PlayerProcessTerrainMotion` remains the unmatched terrain-motion body behind the
-installed player callbacks. `SpriteChecks` and `Player_Youch` now have matched
-implementations in the complete movement and Earthling-damage units below. Shared
-collision queries remain separate classification decisions (`docs/RESUME.md`);
-this document does not invent their missing internals.
+`PlayerProcessTerrainMotion` is matched in the complete seven-function
+`src/player/entity_motion_terrain.c` TU, including the proximity predicates and
+installed player callbacks. The shared collision queries are readable assembly in
+`src/asm/collision.s` under [R011](../rulings/R011-unreproducible-functions.md),
+with their behavior described in the [platform guide](platform.md). There are no
+player functions without matched C definitions.
 
 ## Files and roles
 
 - `setup_player.c`: player objects, hardware sprite links, inventory-object chains.
 - `sprite_checks_and_movement.c`: input/state/bounds filtering, directional
   speed/animation selection, and phase preservation.
-- `entity_motion_terrain.c`: proposed-position terrain resolution, `StopPlayer`,
-  and the two installed player terrain callbacks.
+- `entity_motion_terrain.c`: seven functions covering same-level proximity/range,
+  proposed terrain motion and destination resolution, `StopPlayer`, and the two
+  installed player terrain callbacks.
 - `process_movement.c`: fixed-point integration of all linked active entities,
   with additional player bounds and collision handling.
 - `active_present_falling_and_respawn.c`: active-power poses, ordered player updates,
@@ -38,7 +40,6 @@ this document does not invent their missing internals.
 - `projectiles.c`: player firing poses and launch into the shared projectile pool.
 - `sleep.c`: schoolbook, idle sleep, wake effects, and wake-input checks.
 - `edge_hop_and_clap.c`: automatic terrain-edge hop and two-player health sharing.
-- `entity_motion_proximity.c`: same-level proximity/range predicates.
 - `earthling_damage_reactions.c`: common allowed-player-state predicate, hurt
   eligibility/knockback/damage initiation, squish, Hula, Cupid, chicken/boogie,
   whirlwind, bouncing damage, and decoy attack-range behavior.
@@ -111,7 +112,7 @@ players whose menus are closed. Its map entry is a blocking call (`startup_and_m
 has its own countdown/return-to-idle branch. It applies directional remapping,
 world bounds, elevator/doorway input gates, and leaning-state restrictions before
 calling `PlayerChooseDirectionalMovement`. Thus this input filter is separate
-from the still-unmatched terrain-motion callback and from fixed-point integration.
+from the terrain-motion callback and from ordinary fixed-point integration.
 
 For each active, menu-closed player, `ProcessPlayers` runs this exact ordered chain:
 teetering; hurt/idle; spring shoes; descending terrain; phased jump; skates;
@@ -136,6 +137,19 @@ appropriate directional family for active abilities/terrain/action input, and
 preserves animation frame/duration when changing within the same family. Sequence
 control bytes can invalidate a preserved frame. Directional animation and movement
 mode therefore jointly control motion (`sprite_checks_and_movement.c`).
+
+`PlayerProcessTerrainMotion` skips absent/menu-open players, skip-physics records,
+paused animation groups, and ghost states. For animation-controlled axes it forms
+a proposed 24.8 position from velocity times the frame-motion byte; other axes keep
+the current coordinate/fraction and center cache index. It clears blocked-axis
+flags, then tests new partner, narrow-entity, and elevator crossings axis by axis,
+restoring blocked coordinates, fractions, and cache indices. Whirlwind motion has
+its own map-border/position path; whirlwind recovery bypasses ordinary terrain
+application. Other eligible states call `PlayerApplyTerrainDestination`.
+
+REV 02 adds `PLAYER_GROUP_LEAN` to `TERRAIN_MOTION_PAUSED_GROUPS`, the eighth
+revision logic fix. Compiler-coaxing frame/index spellings remain disclosed matching
+qualifications, not a remaining implementation gap (`docs/QUALIFICATIONS.md`).
 
 `PlayerApplyTerrainDestination` reads the proposed tile in the local cache. Ground
 properties through `TERRAIN_WALKABLE_MAX` or positive elevation allow the proposed
@@ -307,9 +321,6 @@ Matching qualifications and uncertain historical spellings are not extra bug cla
 
 ## Open questions
 
-- The missing `PlayerProcessTerrainMotion` body leaves the complete frame-motion
-  callback-to-destination dispatch open; input filtering and hurt initiation now
-  have matched implementations.
 - `animation_group_mask` is derived from `sprite_state`; named group constants
   describe individual families, but composite eligibility masks still require all consumers.
 - `PlayerAdvanceToNextLevel` and relocation use some explicit map-zero queries even

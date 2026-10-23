@@ -1,8 +1,9 @@
 | Collision queries that the pinned MCC68K 3.3K cannot reproduce from plain C
 | (ruling R011): they are compiler-shaped, but their twelve SUB.W/BPL/NEG.W sign
-| tests never occur in the compiler's output; whether another compiler release,
-| inline assembly or hand editing produced them is unresolved. Kept as readable
-| 68000 source; not credited as matching C.
+| tests appear nowhere in the matched C corpus or in the plain-C probes reviewed
+| for R011; whether another compiler release, inline assembly or hand editing
+| produced them is unresolved. Kept as readable 68000 source; not credited as
+| matching C.
 | All five walk gEntityDrawListHead, apply their own eligibility/bounds tests,
 | and return the first matching entity index plus one, or zero for no match.
 | The broad phase uses the querying entity's current Y, including when a

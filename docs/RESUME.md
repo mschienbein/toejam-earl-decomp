@@ -1,64 +1,80 @@
 # Resume
 
-State as of 2026-10-22, evening (newest first in `docs/STATUS.md`), through checkpoint c030.
-Goal: 100% matching, readable C. Both revisions have 597 of 603 C functions matched:
-173,328 of 175,412 bytes in REV 02 and 173,216 of 175,300 bytes in REV 00 (98.8% each).
+Matching/source completion is finalized through checkpoint c033. Both revisions have
+**598 of 598 C functions matched (100%)**: REV 02 is 174,344 of 174,344 C bytes;
+REV 00 is 174,232 of 174,232 C bytes. Every other routine is readable assembly,
+there is zero generated assembly, and all data comes from typed assets. Six bytes
+without a known reader remain explicitly typed `unreferenced`, not raw data.
 
-## Machine setup from scratch
+## Build from a fresh checkout
 
 ```sh
-git clone git@github.com:mschienbein/toejam-earl-decomp.git && cd toejam-earl-decomp
+git clone https://github.com/mschienbein/toejam-earl-decomp.git
+cd toejam-earl-decomp
 uv sync
-uv run python tools/setup.py        # binutils 2.47 (m68k-elf, z80-elf), emu2, Microtec MCC68K 3.3K
+uv run python tools/setup.py
 uv run python tools/rom.py import --rom "<path>/ToeJam & Earl (World) (Rev A).zip"
 uv run python tools/rom.py import --rom "<path>/ToeJam & Earl (World).zip"
-uv run python tools/build.py && uv run python tools/build.py --version rev00
-uv run python -m unittest discover -s tests
+uv run python tools/build.py
+uv run python tools/build.py --version rev00
 ```
 
-The Microtec archive (archive.org, ruling R006) and emu2 are pinned in
-`toolchain.lock.json`; ROMs and extracted inputs remain private and uncommitted.
+The setup pins binutils 2.47, emu2, and Microtec MCC68K 3.3K through
+`toolchain.lock.json`. Supply your own legally obtained dumps; ROMs, extracted
+assets, and build outputs remain private and uncommitted. PASS means the complete
+image equals the revision's original hash in `config/title.json`, not merely that
+individual source functions compile.
 
-## Author loop
+## Verify the result
 
-1. Pick a function (or a whole span from `config/rev02/tus.json`). Run
-   `uv run python tools/packet.py` with its canonical name to produce a private packet
-   containing named assembly, callers, and callees.
-2. Write K&R C with the canonical names (`config/rev02/names.json`), the shared types and
-   constants from `include/`, following `docs/AUTHORING.md` and `docs/COMPILER.md`.
-3. Run `uv run python tools/match.py src/core/error_trap.c`, replacing the existing example
-   source path with your candidate, and repeat for REV 00 using the version option until
-   every function reports MATCH. Any compiler-coaxing spelling needs a
-   `MATCHING QUALIFICATION:` comment.
-4. Main adds the file to `config/sources.json`, then uses `tools/accept.py` for prepare,
-   an independent review, review recording, and finalize. Push only after
-   `tools/audit_public.py --history` passes.
+```sh
+uv run python tools/setup.py --check
+uv run python tools/analyze.py --check
+uv run python tools/analyze.py --version rev00 --check
+uv run python tools/denominator.py verify
+uv run python -m unittest discover -s tests
+uv run python tools/audit_public.py --history
+```
+
+Importing both dumps enables the real-ROM tests as well as the synthetic tests.
+The accepted c033 records establish byte-identical builds of both revisions with
+zero generated instructions/function/fragment units and no raw data bytes. The
+[independent review](../accept/c033-collision-assembly/review-C033Review-review.json)
+records all 191 tests passing, with no failures, errors, or skips; it also records
+the denominator and public-history checks. The
+[preparation](../accept/c033-collision-assembly/prepare.json) and
+[finalization](../accept/c033-collision-assembly/finalize.json) bind the accepted
+source inputs and images. See [ACCEPTANCE](ACCEPTANCE.md) for the gates and
+[QUALIFICATIONS](QUALIFICATIONS.md) for the disclosed source/ABI spellings.
 
 ## Where things are
 
-- Sources: `src/` has one folder per C subsystem, plus `src/asm/` (hand-written 68000)
-  and `src/z80/` (Z80 driver); headers are in `include/`. Subsystem descriptions and
-  native-port notes are in `docs/subsystems/`.
-- Catalogues: `config/rev02/catalogue.json` and `config/rev00/catalogue.json`; canonical
-  identities: `config/rev02/names.json`; classification: `config/rev02/classification.json`.
-  The other per-revision configuration files hold data units, TU spans, seeds, and
-  correspondence. Denominator history is `docs/denominator-history.jsonl` (r11),
-  accepted matches are in `config/matches.json`, and checkpoint records are in `accept/`.
-- Current complete units include `src/camera/camera_tiles_and_scroll.c`,
-  `src/map/random_regions_and_cleanup.c`, `src/map/level_generation_and_changes.c`,
-  `src/map/map_drawing_and_controller.c`, `src/player/active_present_falling_and_respawn.c`,
-  `src/player/sprite_checks_and_movement.c`, `src/player/earthling_damage_reactions.c`,
-  `src/sprites/entity_sprite_rendering.c`, `src/speech/speech_and_dialogue.c`,
-  `src/ship/ship_screen_and_collection.c`, and `src/ui/hud.c`. Bounded variable-frame
-  access views are declared separately in `include/sprite_frame_views.h`.
+- `src/` contains the subsystem C sources; `src/asm/` contains readable 68000
+  assembly, and `src/z80/` contains the sound driver and bootstrap.
+- `src/player/entity_motion_terrain.c` is the completed seven-function terrain
+  motion/proximity TU, including `PlayerProcessTerrainMotion` and both installed
+  player callbacks. All C functions are matched.
+- `src/asm/collision.s` contains the five queries classified `not_reproducible_c`
+  under [R011](rulings/R011-unreproducible-functions.md). They are excluded from C
+  progress under denominator r12, built from readable assembly, and not attributed
+  to an established historical compiler or source mechanism.
+- `include/` contains shared K&R interfaces, record layouts, RAM aliases, and named
+  constants. `include/sprite_frame_views.h` contains bounded variable-frame access
+  views, not fixed ROM-frame allocations or stride types.
+- `config/rev02/catalogue.json` and `config/rev00/catalogue.json` hold the code maps;
+  `config/rev02/names.json` holds canonical identities, and
+  `config/rev02/classification.json` records the classification evidence. Per-revision
+  configuration also describes typed data, seeds, TU spans, and correspondence.
+- `config/matches.json` records accepted C matches; `docs/denominator-history.jsonl`
+  records r12 and its predecessors; `accept/` holds immutable checkpoint records.
+- [Subsystem guides](subsystems/README.md) describe data, flow, preserved original
+  bugs, and native-port considerations. [REVISIONS](REVISIONS.md) records the eight
+  REV 02 logic fixes; [DATA](DATA.md) explains asset typing and the six unreferenced
+  bytes; [STATUS](STATUS.md) retains the completion evidence and earlier history.
 
-## Open
+## Optional future readability
 
-6 C functions remain unmatched (`ci/progress_report.py` lists them):
-
-- `PlayerProcessTerrainMotion` is the remaining player terrain-motion body to match.
-- Five collision queries await a user decision on classification:
-  `EntityFindNarrowCollisionAtPosition`, `EntityFindMenuAwareCollisionAtPosition`,
-  `EntityFindVolumeCollisionAtPosition`, `ProjectileFindCollisionExcludingOwner`,
-  and `EntityFindHorizontalCollisionAtX`. They remain in the C denominator unless
-  that decision changes their classification.
+No matching, assembly-source, or data-typing work remains. Further semantic naming
+or explanatory polish is optional, not an unfinished implementation checklist.
+Future edits must preserve byte identity and retain the reviewed qualifications
+and explicitly documented original behavior.

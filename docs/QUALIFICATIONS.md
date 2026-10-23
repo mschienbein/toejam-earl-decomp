@@ -1,15 +1,34 @@
 # Matching qualifications
 
-This ledger describes the **finalized c030 source profile, pinned to `5cea56c`**: 109 C source files, 597 represented and credited C functions per revision. All paths, function names and source lines below refer to that tree, including the merged translation units and the adopted disclosure fixes. It records spellings retained for byte matching that should not be mistaken for uniquely recovered historical style, plus closely related compiler-sensitive source models.
+This ledger describes the **finalized c033 profile, pinned to `2f0f248`: 598/598 C functions matched and credited in both revisions**, from 108 C source files. All paths, function names and source lines below refer to that tree, including the c032 terrain-motion reduction. It records spellings retained for byte matching that should not be mistaken for uniquely recovered historical style, plus closely related compiler-sensitive source models. The five R011 collision queries are assembly, not matching-C qualifications; they are noted separately below.
 
 ## Coverage and evidence
 
-- **37 explicit markers:** 36 `MATCHING QUALIFICATION:` comments in `src/` and the centralized bounded-view comment in `include/sprite_frame_views.h`. Older compiler-shape/qualification wording is also included.
+- **38 explicit markers:** 37 `MATCHING QUALIFICATION:` comments in the C sources and the centralized bounded-view comment in `include/sprite_frame_views.h`. Older compiler-shape/qualification wording is also included.
 - **16 source-local extern exceptions:** 11 caller result-width views and five compatible incomplete arrays, in 13 files. Expression-level bounded frame views are separate from that total.
-- **162 grouped ledger entries:** 141 disclosed constraints/source models and 21 observation-only entries. The independently extracted 162 mechanical expression/declaration sites are a different count: several sites can share one row, and some rows describe a non-mechanical control-flow or lifetime form.
+- **165 grouped ledger entries:** 144 disclosed constraints/source models and 21 observation-only entries. The independently extracted 163 mechanical expression/declaration sites are a different count: several sites can share one row, and some rows describe a non-mechanical control-flow or lifetime form.
 - Every explicit marker, older disclosed source shape and mechanically detected site has an inventory cross-reference. **No open accepting-review or disclosure flag remains.** Ordinary-era hints and unproved redundant-looking casts are not promoted into necessity claims.
-- The current source profile is accepted by [c030 / C030Review][review-c030]. Each row names the review accepting its particular qualification or inherited source model. A source-profile acceptance is not silently treated as a fresh natural-alternative experiment for every expression.
-- Compiler-internal ownership/coalescing explanations and historical spellings remain **[INFERENCE]** unless directly established. Finite failed alternatives do not prove global uniqueness. This regeneration reads source and public receipts; it runs no compiler, matcher, full build, test suite, linter, formatter or gameplay check.
+- The completed source profile and R011 classification are accepted by [c033 / C033Review][review-c033]; the last C-function qualifications are accepted by [c032 / C031Review][review-c032]. Each row names the accepting review for its particular qualification or inherited source model, not an invented new necessity experiment.
+- Compiler-internal ownership/coalescing explanations and historical spellings remain **[INFERENCE]** unless directly established. Finite failed alternatives do not prove global uniqueness. This regeneration reads source/public receipts and performs the requested standalone publication-content check; it runs no compiler, matcher, full build, test suite, linter, formatter or gameplay check.
+
+## Completion through c032 and c033
+
+### Last matching C function: terrain motion
+
+Finalized [c032 / C031Review][review-c032] accepts the reduced `PlayerProcessTerrainMotion` source and the narrowed `PlayerApplyTerrainDestination` disclosure. Only the following four constraints survive:
+
+| Function | Surviving constraint | Ledger entry |
+| --- | --- | --- |
+| `PlayerProcessTerrainMotion` | Shared signed 32-bit cell stage followed by word normalization; no register hint or inner-scope requirement. | Q163 |
+| `PlayerProcessTerrainMotion` | Y fraction captured through an int at its actual byte store; the 0..255 values are preserved. | Q164 |
+| `PlayerProcessTerrainMotion` | Unused long[1] retaining the observed untouched four-byte frame slot. | Q165 |
+| `PlayerApplyTerrainDestination` | The field-side signed-long animation-mask view only. | Q055 |
+
+The c031 precision failure is resolved: ordinary addition association, function-scope staging without hints, and removal of the mask-side cast jointly match. Those discarded scopes, hints, step-first arithmetic and mask-side cast are **not** retained as necessary qualifications. The four surviving constraints were challenged again on the adopted reduction; historical intent and exact compiler-internal causes remain [INFERENCE].
+
+### Non-C collision queries under R011
+
+`EntityFindNarrowCollisionAtPosition`, `EntityFindMenuAwareCollisionAtPosition`, `EntityFindVolumeCollisionAtPosition`, `ProjectileFindCollisionExcludingOwner` and `EntityFindHorizontalCollisionAtX` now live in [collision.s](../src/asm/collision.s), accepted by [c033 / C033Review][review-c033] under [R011](../docs/rulings/R011-unreproducible-functions.md). They are classified `not_reproducible_c`, excluded from the C denominator, and are **not C qualifications or C credit**. The historical mechanism remains unresolved; this evidence-bounded plain-C reproduction policy is not a universal compiler-impossibility claim.
 
 ## What changed through c029 and c030
 
@@ -43,6 +62,8 @@ The old `AnimateShipScreenPalette` redundant-int qualification was likewise remo
 - c026 / C026Review explicitly accepts the six qualification-bearing functions previously marked pending in the first inventory.
 - c029 / C027Review carries the accepted c027/c028 source decisions forward after the ship reduction and public-audit fixes. Neither failed precursor is substituted for its finalized accepting verdict.
 - c030 / C030Review accepts the readability sweep, centralized access views and added unused-read disclosure. Its meaning checks are a documented source sample; individual necessity controls are not invented for unchanged expressions.
+- c032 / C031Review accepts only the surviving terrain-motion constraints after removing avoidable c031 spellings. The failed c031 review is supporting evidence, never the accepting verdict.
+- c033 / C033Review accepts the collision assembly cutover and R011 denominator treatment; these five queries are not added as qualification rows.
 
 The historical c016 count of 27 local extern exceptions is not current. The later migration removed unnecessary local declarations where the shared provider plus an ordinary scalar value conversion matched, leaving the independently challenged **16** live exceptions below.
 
@@ -60,7 +81,7 @@ These unevaluated, discarded expressions do no gameplay work. In the accepted so
 
 ## Unused locals, reads and assignment-only values
 
-MCC68K’s default optimizer does not make all discarded-result spellings interchangeable. A named otherwise-unused result can retain a load or word normalization, or change when outgoing argument cleanup occurs. A used zero-valued short can select a move rather than a clear. These are output constraints, not claims that the game needs dead state or that a hardware rationale was the original author’s intent.
+MCC68K’s default optimizer does not make all discarded-result spellings interchangeable. A named otherwise-unused result can retain a load or word normalization, or change when outgoing argument cleanup occurs. A used zero-valued short can select a move rather than a clear. These are output constraints, not claims that the game needs dead state or that a hardware rationale was the original author’s intent. The separate unused long[1] frame object is likewise disclosed as a frame-reservation qualification, not initialized or necessary gameplay state.
 
 | ID / function | Current source location(s) | Retained form and purpose | Accepting checkpoint / reviewer |
 | --- | --- | --- | --- |
@@ -72,6 +93,8 @@ MCC68K’s default optimizer does not make all discarded-result spellings interc
 | Q011<br> `MapDrawBackgroundAndTerrain` | [`src/map/map_drawing_and_controller.c:66, 72, 75`](../src/map/map_drawing_and_controller.c#L66) | Load the selected player level into an otherwise-unused short.<br> Removing the level reads changes the full drawing function in both revisions, as recorded by C009Review. | [c009][review-c009] · C009Review |
 | Q012<br> `PlayerUpdateTerrainSinking` | [`src/player/active_present_falling_and_respawn.c:604`](../src/player/active_present_falling_and_respawn.c#L604) | Assign the frame counter to otherwise-unused int timer inside the unsigned-long mask test.<br> Retains copy-then-mask scheduling. Direct masks and a separate assignment do not reproduce it; the missing disclosure was fixed before c019 acceptance. | [c019][review-c019] · C017Review<br> Controls/source decision: [c017][review-c017] (failed precursor only). |
 | Q013<br> `PlayerUpdateDeathAnimation` | [`src/player/active_present_falling_and_respawn.c:1019`](../src/player/active_present_falling_and_respawn.c#L1019) | Assign GetActivePresentSprite to assignment-only active_sprite inside the SetSprite argument.<br> Retains the result-register copy; a direct call or separate assignment omits it. A matching identity int cast is also coaxing, not an unqualified replacement. | [c019][review-c019] · C017Review<br> Controls/source decision: [c017][review-c017] (failed precursor only). |
+| Q164<br> `PlayerProcessTerrainMotion` | [`src/player/entity_motion_terrain.c:74, 112`](../src/player/entity_motion_terrain.c#L74) | Capture the Y fraction through int fraction_output inside the real destination.fraction_y byte store.<br> The masked fraction is 0..255, so the int capture is lossless, but replacing it with a plain byte store gives strict differences in both revisions on the adopted reduced candidate. The broader finite controls also reject entry/separate capture and alternate fraction forms; no step-first arithmetic claim or added game state is implied. | [c032][review-c032] · C031Review<br> Controls/source decision: [c031][review-c031] (failed precursor only). |
+| Q165<br> `PlayerProcessTerrainMotion` | [`src/player/entity_motion_terrain.c:75`](../src/player/entity_motion_terrain.c#L75) | Declare unused long unused_motion[1] solely to retain an untouched four-byte frame slot.<br> Removing the array from the reduced candidate changes the frame from 16 to 12 bytes and gives strict differences in both revisions. The twelve-byte destination and separate untouched four-byte slot are observed; no initialized game state is invented. The historical purpose of the unused slot is unknown [INFERENCE]. | [c032][review-c032] · C031Review<br> Controls/source decision: [c031][review-c031] (failed precursor only). |
 | Q014<br> `ShipPieceAbility` | [`src/ship/ship_screen_and_collection.c:588, 596`](../src/ship/ship_screen_and_collection.c#L588) | Copy ship_piece->object to an otherwise-unused byte local before a second read for release.<br> The handle is assigned but has no later C consumer, retaining an observed otherwise-unused object read before the later release lookup. C030Review explicitly accepts its unchanged spelling and new disclosure; historical source spelling remains [INFERENCE]. | [c030][review-c030] · C030Review |
 | Q015<br> `HudLoadLivesSpriteTiles` | [`src/ui/hud.c:395, 414`](../src/ui/hud.c#L395) | Assign only the unoffset icon base inside the outgoing call argument.<br> Retains pointer/offset arithmetic and argument scheduling; assigning the completed pointer adds an instruction, while a standalone base assignment changes scheduling. | [c023][review-c023] · C023Review<br> Controls/source decision: [c020][review-c020] (failed precursor only). |
 | Q016<br> `ForceTextBackgroundColorToBlack` | [`src/ui/inventory.c:33, 40`](../src/ui/inventory.c#L33) | Materialize zero in a named short black instead of using a literal zero store.<br> Natural literal/shared-local alternatives differ in both revisions. Avoiding a VDP clear access is a possible hardware rationale [INFERENCE], not established intent. | [c009][review-c009] · C009Review |
@@ -120,7 +143,8 @@ Expression width, signedness, explicit conversions, value-neutral arithmetic, el
 | Q052<br> `PlayerUpdateTerrainSinking` | [`src/player/active_present_falling_and_respawn.c:617`](../src/player/active_present_falling_and_respawn.c#L617) | Store literal 256 into a byte, deliberately truncating it to zero.<br> Selects the observed byte move rather than the natural-zero clear. It is an artificial literal qualification, not a claimed cooldown or original bug. | [c019][review-c019] · C017Review |
 | Q053<br> `EarthlingUpdateBouncingDamageState` | [`src/player/earthling_damage_reactions.c:307`](../src/player/earthling_damage_reactions.c#L307) | Explicit `(unsigned short)GetMapTerrainAtWorldPosition()` result view.<br> Preserves observed call-result expression width with the canonical shared return declaration; no new ABI or caller-local declaration is invented. | [c019][review-c019] · C017Review |
 | Q054<br> `EntitySpawnTimedEffect` | [`src/player/effect_slots.c:39`](../src/player/effect_slots.c#L39) | Explicit `(int)AllocateEntity()` result view.<br> Preserves observed call-result expression width with the canonical shared return declaration; no new ABI or caller-local declaration is invented. | [c019][review-c019] · C017Review |
-| Q055<br> `PlayerApplyTerrainDestination` | [`src/player/entity_motion_terrain.c:59`](../src/player/entity_motion_terrain.c#L59) | Read the shared unsigned-long animation_group_mask through signed-long scalar views at the listed tests.<br> The named mask tests use signed-long scalar views while shared storage remains unsigned long. The direct shared-value family control fails both revisions by strict difference or changed-layout refusal. [INFERENCE] Internal mask-lowering/ownership explains the sensitivity; each individual cast was not separately challenged. | [c029][review-c029] · C027Review<br> Controls/source decision: [c028][review-c028] (failed precursor only). |
+| Q163<br> `PlayerProcessTerrainMotion` | [`src/player/entity_motion_terrain.c:80, 100, 101, 102, 115, 116, 117`](../src/player/entity_motion_terrain.c#L80) | Use a shared function-scope signed 32-bit shifted_cell stage, followed by a word coordinate conversion, for both cell calculations.<br> The signed width/normalization stage survives the natural reductions; its particular inner scope or register hints do not. On the adopted candidate, changing shifted_cell to short changes scratch ownership, adds a copy per axis and grows the target from 1016 to 1020 bytes in both revisions. Direct-expression controls also fail. Exact historical spelling and compiler-internal causes remain [INFERENCE]. | [c032][review-c032] · C031Review<br> Controls/source decision: [c031][review-c031] (failed precursor only). |
+| Q055<br> `PlayerApplyTerrainDestination` | [`src/player/entity_motion_terrain.c:225`](../src/player/entity_motion_terrain.c#L225) | Read the shared unsigned-long animation_group_mask through a field-side signed-long scalar cast for the swimming/innertube test; no mask-side cast remains.<br> Removing the surviving field cast from the adopted reduced candidate shrinks PlayerApplyTerrainDestination from 616 to 612 bytes in both revisions and is refused by strict contiguous-TU placement. The common field remains unsigned long. The separately redundant mask-side cast was removed before acceptance, and is not qualified as necessary. | [c032][review-c032] · C031Review<br> Controls/source decision: [c031][review-c031] (failed precursor only). |
 | Q056<br> `DoMoleAbility` | [`src/player/mole.c:48`](../src/player/mole.c#L48) | Explicit `(int)AllocateEntity()` result view.<br> Preserves observed call-result expression width with the canonical shared return declaration; no new ABI or caller-local declaration is invented. | [c019][review-c019] · C017Review |
 | Q057<br> `ProcessMovement` | [`src/player/process_movement.c:69, 77, 97`](../src/player/process_movement.c#L69) | Read the shared unsigned-long animation_group_mask through signed-long scalar views at the listed tests.<br> The named mask tests use signed-long scalar views while shared storage remains unsigned long. The direct shared-value family control fails both revisions by strict difference or changed-layout refusal. [INFERENCE] Internal mask-lowering/ownership explains the sensitivity; each individual cast was not separately challenged. | [c029][review-c029] · C027Review<br> Controls/source decision: [c028][review-c028] (failed precursor only). |
 | Q058<br> `PlayerLaunchPresentProjectile` | [`src/player/projectiles.c:41`](../src/player/projectiles.c#L41) | Explicit `(int)AllocateEntity()` result view.<br> Preserves observed call-result expression width with the canonical shared return declaration; no new ABI or caller-local declaration is invented. | [c019][review-c019] · C017Review |
@@ -159,7 +183,7 @@ Expression width, signedness, explicit conversions, value-neutral arithmetic, el
 
 ## Register hints
 
-A hint can change the allocator’s coalescing and scratch choices. Only these two rows have a specific source qualification and reviewed necessity controls. `register` itself was ordinary K&R-era programming: the other thirteen declarations are listed as observations, not automatically labeled artificial. [AUTHORING.md](../docs/AUTHORING.md#idioms-observed-so-far) specifically advises trying without hints first.
+A hint can change the allocator’s coalescing and scratch choices. Only these two rows have a specific source qualification and reviewed necessity controls. `register` itself was ordinary K&R-era programming: the other thirteen declarations are listed as observations, not automatically labeled artificial. [AUTHORING.md](../docs/AUTHORING.md) specifically advises trying without hints first.
 
 | ID / function | Current source location(s) | Retained form and purpose | Accepting checkpoint / reviewer |
 | --- | --- | --- | --- |
@@ -176,7 +200,7 @@ These assignments preserve initialized values and emit no instructions, yet thei
 
 ## Scope, declaration order and lifetime boundaries
 
-Declaration/initializer order and local lifetimes affect frame-slot placement, allocation and scheduling. [AUTHORING.md](../docs/AUTHORING.md#idioms-observed-so-far) records initializer-versus-assignment and operand-order sensitivity; [COMPILER.md](../docs/COMPILER.md#evidence-that-the-game-is-compiled-c) describes the observed frame policy. The reviews distinguish meaningful consumed intermediates from dummy state. Reverse declaration order, shared scalar roles, redundant post-selection copies and comparison-ownership boundaries are made explicit rather than hidden in fake fields or padding.
+Declaration/initializer order and local lifetimes affect frame-slot placement, allocation and scheduling. [AUTHORING.md](../docs/AUTHORING.md) records initializer-versus-assignment and operand-order sensitivity; [COMPILER.md](../docs/COMPILER.md) describes the observed frame policy. The reviews distinguish meaningful consumed intermediates from dummy state. Reverse declaration order, shared scalar roles, redundant post-selection copies and comparison-ownership boundaries are made explicit rather than hidden in fake fields or padding.
 
 | ID / function | Current source location(s) | Retained form and purpose | Accepting checkpoint / reviewer |
 | --- | --- | --- | --- |
@@ -269,7 +293,7 @@ These two explicitly reviewed source models are accepted with limitations becaus
 
 ## Disclosure audit
 
-No source qualification in this pinned inventory lacks an accepting review, and no inspected disclosure is left unidentified or unexplained. The earlier flags are resolved as follows:
+No C source qualification in this pinned inventory lacks an accepting review, and no inspected C disclosure is left unidentified or unexplained. The c032 review narrows the terrain constraints rather than reviving its removed hints, scopes or mask-side cast. The earlier flags are resolved as follows:
 
 | Earlier flag | Current disposition | Public acceptance |
 | --- | --- | --- |
@@ -326,8 +350,10 @@ Links below point only to public checkpoint records. Current source paths and li
 | `c026-seven-matches-readability` | C026Review | [review](../accept/c026-seven-matches-readability/review-C026Review-review.json) · [finalize](../accept/c026-seven-matches-readability/finalize.json) |
 | `c029-matches-disclosures-r2` | C027Review | [review](../accept/c029-matches-disclosures-r2/review-C027Review-delta2-review.json) · [finalize](../accept/c029-matches-disclosures-r2/finalize.json) |
 | `c030-readability-sweep` | C030Review | [review](../accept/c030-readability-sweep/review-C030Review-review.json) · [finalize](../accept/c030-readability-sweep/finalize.json) |
+| `c032-last-c-function-r2` | C031Review | [review](../accept/c032-last-c-function-r2/review-C031Review-delta-review.json) · [finalize](../accept/c032-last-c-function-r2/finalize.json) |
+| `c033-collision-assembly` | C033Review | [review](../accept/c033-collision-assembly/review-C033Review-review.json) · [finalize](../accept/c033-collision-assembly/finalize.json) |
 
-Supporting source/control decisions in failed checkpoints: [c017 / C017Review][review-c017], [c020 / C020Review][review-c020], [c024 / C024Review][review-c024], [c027 / C027Review][review-c027], [c028 / C027Review][review-c028]. These are not replacements for the accepting reviews above.
+Supporting source/control decisions in failed checkpoints: [c017 / C017Review][review-c017], [c020 / C020Review][review-c020], [c024 / C024Review][review-c024], [c027 / C027Review][review-c027], [c028 / C027Review][review-c028]. [c031 / C031Review][review-c031] supplies the superseded terrain-motion precision finding. These are not replacements for the accepting reviews above.
 
 [review-c002]: ../accept/c002-first-matches/review-C001Review-review-c002.json
 [review-c006]: ../accept/c006-waves-02-03/review-C006Review-review.json
@@ -346,3 +372,6 @@ Supporting source/control decisions in failed checkpoints: [c017 / C017Review][r
 [review-c024]: ../accept/c024-structs-layout-permuter/review-C024Review-review.json
 [review-c027]: ../accept/c027-eight-matches/review-C027Review-review.json
 [review-c028]: ../accept/c028-matches-disclosures/review-C027Review-delta-review.json
+[review-c031]: ../accept/c031-last-c-function/review-C031Review-review.json
+[review-c032]: ../accept/c032-last-c-function-r2/review-C031Review-delta-review.json
+[review-c033]: ../accept/c033-collision-assembly/review-C033Review-review.json

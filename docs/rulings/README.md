@@ -14,3 +14,4 @@ User decisions, one file each, never edited after the fact (a later ruling super
 | [R008](R008-subagent-cap-8.md) | 2026-10-22 | Sub-agent cap raised to eight at once (supersedes R005's four) |
 | [R009](R009-unavailable-compiler-functions.md) | 2026-10-22 | Functions shown (reviewed evidence) to come from an unavailable compiler release are classified as such and committed as readable assembly source, like R007 |
 | [R010](R010-subagent-cap-16.md) | 2026-10-22 | Sub-agent cap raised to sixteen; while the user is away, decisions are queued, not asked (supersedes R008) |
+| [R011](R011-unreproducible-functions.md) | 2026-10-22 | Functions shown (reviewed evidence) not reproducible from plain C by the pinned compiler, mechanism unresolved, are classified as such and committed as assembly source (supersedes R009's attribution) |

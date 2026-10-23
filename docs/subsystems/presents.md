@@ -27,7 +27,10 @@ and entity policy/state names from `include/entities.h` and the player-animation
 - `item_updates.c`: item display entities/visibility, food/pickup/hazard effects,
   powerup expiration/HUD blink, and the item/present update entry point.
 - `present_effects.c`: transient reveal effects, decoys, doorways, promotions,
-  burps, rain clouds, boom boxes, effect dispatch, and active-power setup.
+  burps, rain clouds and boom boxes.
+- `present_dispatch.c`: the per-frame effect dispatch (`ProcessPresents`), opening the
+  selected present (`OpenSelectedPresent`) and active-power setup (`SetupSelectedPresent`);
+  split from `present_effects.c` so that each unit stays inside MCC68K's DOS heap.
 - `projectile_effects.c`: Earthling aiming, twelve shared tomato slots, tomato rain,
   four control-remap projectile slots, remapped input, terrain/rosebush effects,
   and animation-frame-triggered Earthling firing.
@@ -88,7 +91,7 @@ supplies wrapping. Identification is global per ID, not private per inventory.
 invalidates loaded-level views, shuffles identities, and retains/populates level one
 for each active player. Each gets two `PRESENT_BONUS_HITOPS`, or four when alone.
 `OpenSelectedPresent` maps that bonus identity to `PRESENT_SUPER_HITOPS` rather than
-treating it as an independent timed ability (`level_item_setup.c`, `present_effects.c`).
+treating it as an independent timed ability (`level_item_setup.c`, `present_dispatch.c`).
 
 `SelectRandomPresent` sums all 27 byte weights, draws modulo total+1 until nonzero,
 then chooses the first cumulative bucket containing the draw. It does not draw
@@ -204,7 +207,7 @@ return after that. Earlier active-power IDs install the action icon and a base
 timer of 1000: `PRESENT_ICARUS_WINGS` halves it, `PRESENT_ROCKET_SKATES` quarters it,
 and `PRESENT_SUPER_HITOPS` uses 750. Setup initializes ability motion/dialogue and eligible poses.
 REV 02 adds a fall-state guard when opening skates and broadens one eligible sprite
-flag mask; the revision branches remain explicit (`present_effects.c`).
+flag mask; the revision branches remain explicit (`present_dispatch.c`).
 
 `ReducePresentTimer` skips absent/dead/menu-open players and does not decrease the
 timer in an elevator. Near expiry it blinks the action icon with timer masks.

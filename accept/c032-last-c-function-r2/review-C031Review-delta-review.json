@@ -1,0 +1,104 @@
+{
+  "verdict": "PASS_WITH_QUALIFICATIONS",
+  "reviewer": "C031Review",
+  "checkpoint": "c032-last-c-function-r2",
+  "reviewed_commit": "7c07423167979297f1d41202e59692588f329c40",
+  "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+  "prepare_sha256": "ef38faeb6b4f0abb37ce6831ea2a0cb72b084410919e58240f03a7aeea15ab6f",
+  "summary": "The c031 blocking finding is resolved. The prepared file is exactly the reviewer's jointly matching minimal-cells control after removing comments; only the two qualification comments differ. Those comments now identify the surviving constraints without attributing necessity to removed hints, scopes, step-first arithmetic spelling or the mask-side cast. Both revisions strictly match; independent full builds, complete suite and ROM-backed history audit pass.",
+  "qualifications": [
+    {
+      "item": "Signed 32-bit cell stage",
+      "decision": "ACCEPTED_WITH_QUALIFICATION",
+      "location": "src/player/entity_motion_terrain.c:63-66,80,100-102,115-117",
+      "detail": "The shared function-scope signed-int stage followed by the word coordinate conversion is accurately disclosed. No register hint or inner scope remains. On this exact reduced candidate, changing shifted_cell to short changes scratch ownership, introduces an extra register copy for each axis, and grows the target from 1016 to 1020 bytes in both revisions. Earlier direct-expression controls also failed. The wording describes observed output sensitivity, not a uniquely recovered historical spelling.",
+      "evidence": ["evidence/delta/controls.json", "evidence/natural-controls.json"]
+    },
+    {
+      "item": "Y fractional output int capture",
+      "decision": "ACCEPTED_WITH_QUALIFICATION",
+      "location": "src/player/entity_motion_terrain.c:64-66,74,112",
+      "detail": "The int assignment is at the real fractional byte store and is now precisely identified without a step-association claim. Values are 0..255, so the scalar capture is lossless. Replacing the captured store with a plain byte store gives strict DIFF in both revisions on this candidate. The broader failed natural controls from c031 remain supporting evidence, not a claim of global uniqueness or proof of compiler internals.",
+      "evidence": ["evidence/delta/controls.json", "evidence/delta/semantic/proof.json", "evidence/reductions.json"]
+    },
+    {
+      "item": "Unused long[1] frame reservation",
+      "decision": "ACCEPTED_WITH_QUALIFICATION",
+      "location": "src/player/entity_motion_terrain.c:66-68,75",
+      "detail": "The comment explicitly discloses a non-gameplay array retaining the observed untouched four-byte frame slot and labels its unknown historical purpose [INFERENCE]. Removing it from the reduced candidate changes the frame from 16 to 12 bytes and gives strict DIFF in both revisions. The unchanged packet and matching target establish a twelve-byte destination at -16(A6), with no direct access overlapping -4..-1(A6); no initialized state is invented.",
+      "evidence": ["evidence/delta/controls.json", "evidence/packet-facts.json"]
+    },
+    {
+      "item": "Field-side signed-long animation-mask view",
+      "decision": "ACCEPTED_WITH_QUALIFICATION",
+      "location": "src/player/entity_motion_terrain.c:190-193,225",
+      "detail": "The qualification now names only the field-side signed-long view. The redundant mask-side cast is gone. Removing the surviving field cast on this reduced candidate shrinks PlayerApplyTerrainDestination from 616 to 612 bytes in both revisions and is refused by strict contiguous-TU placement. Shared storage remains unsigned long. Historical spelling is correctly labeled unknown [INFERENCE].",
+      "evidence": ["evidence/delta/controls.json"]
+    }
+  ],
+  "checks": [
+    {
+      "name": "Delta identity and c031 finding resolution",
+      "result": "PASS",
+      "detail": "Only src/player/entity_motion_terrain.c differs between the c031 and c032 prepared build-input manifests. The canonical file and controls/minimal-cells/entity_motion_terrain.c are exactly equal after removing comments, and all noncomment tokens agree. Exactly two block comments changed. All hints, inner cell scopes, step-first sums and the mask-side cast identified by c031 F1 are removed; neither new comment revives their necessity claims.",
+      "control_sha256": "bacd28bd8b0673bbe899878e89b99b9e37bc1527721ae9c5b9c17272d203e53c",
+      "evidence": ["evidence/delta/binding.json"]
+    },
+    {
+      "name": "Fresh prepare binding",
+      "result": "PASS",
+      "detail": "Prepare is PASS and all 247 current build-input hashes agree. Each of the four prepared a/b receipts was read and its normalized hash recomputed against prepare. All four receipts PASS with actual equal to expected, matching source hash and complete seven-function terrain-unit records. The obsolete proximity source remains absent and only the terrain unit is registered for both revisions.",
+      "evidence": ["evidence/delta/binding.json"]
+    },
+    {
+      "name": "Strict matching of the reduced canonical source",
+      "result": "PASS",
+      "detail": "Unchanged tools/match.py function with default options and canonical headers reports seven MATCH rows in REV 02 and seven in REV 00. Complete TU size is 1888 bytes in each revision; PlayerProcessTerrainMotion is 1016 bytes at 0x00dd82 and 0x00dd62 respectively, with a 16-byte frame.",
+      "evidence": ["evidence/delta/matches.json"]
+    },
+    {
+      "name": "Fresh necessity controls on the adopted reduction",
+      "result": "PASS",
+      "detail": "Four natural controls were compiled in each revision. Removing the array gives a twelve-byte frame and strict DIFF. A plain Y fractional byte store gives strict DIFF. A short cell stage grows the target to 1020 bytes and is refused. An unsigned direct mask field shrinks the consumer to 612 bytes and is refused. The two corrected qualification comments accurately describe these observations and contain the surviving artificial/source-shape disclosures.",
+      "boundary": "Finite failed controls, not proof that every possible natural spelling fails. Exact compiler-internal causes and historical author intent remain [INFERENCE].",
+      "evidence": ["evidence/delta/controls.json"]
+    },
+    {
+      "name": "Source semantics after reduction",
+      "result": "PASS",
+      "detail": "Independently reran the Solo20 addition canonicalization and Solo19 target-arithmetic reducer against the current canonical source. All four ordered axis write traces and the non-axis/control AST agree with the packet reconstruction in both revisions. Real word product and pixel barriers remain; all addition partial sums are signed-32-safe. The c031 packet control-flow, call-order, fraction/bounds and REV 00/02 lean-mask conclusions carry forward because this is the exact tested reduction and both linked functions match their originals.",
+      "boundary": "Target arithmetic/source correspondence, not a gameplay or emulator run or a portable ISO-C proof of left-shifting negative signed pixels.",
+      "evidence": ["evidence/delta/semantic/proof.json", "evidence/packet-facts.json"]
+    },
+    {
+      "name": "Independent full-ROM builds",
+      "result": "PASS",
+      "detail": "Actual build.py data preparation, Z80 assembly and complete build_image pipelines pass both revisions with reviewer-local output paths and zero generated raw words. Both actual image hashes equal their pinned expected hashes.",
+      "rev02_image_sha256": "65ea2386f5f4eda45335d8298ab30bc19d38b9bd5483ffa592818b645c14c163",
+      "rev00_image_sha256": "2bdfb89bcc8483cf69285c1bca7afa7a41cda59d36da0f068e8f60a923043228",
+      "evidence": ["evidence/delta/builds.json"]
+    },
+    {
+      "name": "Complete suite on c032 inputs",
+      "result": "PASS",
+      "detail": "191 tests pass with zero failures, errors or skips, including both real-ROM builds. Test discovery and test bodies are unchanged. A receipt-equivalent build-output wrapper, TMPDIR and the asset-test temporary-directory setting confine writes to reviewer scratch.",
+      "evidence": ["evidence/delta/suite.json", "evidence/delta/suite.log"]
+    },
+    {
+      "name": "ROM-backed public-history audit",
+      "result": "PASS",
+      "detail": "tools/audit_public.py --history returns zero: 1597 unique Git blobs, 147 trees, 402 tracked worktree files, both private ROMs indexed, zero findings.",
+      "evidence": ["evidence/delta/audit.json"]
+    }
+  ],
+  "resolved_findings": [
+    {
+      "checkpoint": "c031-last-c-function",
+      "id": "F1",
+      "status": "RESOLVED",
+      "detail": "The jointly matching natural reduction is adopted, and the disclosures are narrowed to the four surviving constraints. The original c031 FAIL remains immutable and is not represented as an accepting verdict."
+    }
+  ],
+  "findings": [],
+  "independence": "Delta verdict sealed before consulting any other independent c032 review. Only this reviewer directory was written deliberately; no tracked source or canonical Git state changed, and no acceptance review/finalize command, push or nested agent was used."
+}

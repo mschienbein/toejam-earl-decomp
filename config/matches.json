@@ -1762,18 +1762,27 @@
    "address": "0x00dca2",
    "name": "EntityIsNearPosition",
    "size": 92,
-   "source": "src/player/entity_motion_proximity.c",
-   "source_sha256": "c4ffecfd6fbeb218782a728605bc2dd6e8c13fd5c0c0282ae2420e1ef4b4ce21",
-   "checkpoint": "c023-names-hardcases-data-r4"
+   "source": "src/player/entity_motion_terrain.c",
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev00",
    "address": "0x00dcfe",
    "name": "EntityIsWithinRange",
    "size": 100,
-   "source": "src/player/entity_motion_proximity.c",
-   "source_sha256": "c4ffecfd6fbeb218782a728605bc2dd6e8c13fd5c0c0282ae2420e1ef4b4ce21",
-   "checkpoint": "c023-names-hardcases-data-r4"
+   "source": "src/player/entity_motion_terrain.c",
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
+  },
+  {
+   "version": "rev00",
+   "address": "0x00dd62",
+   "name": "PlayerProcessTerrainMotion",
+   "size": 1016,
+   "source": "src/player/entity_motion_terrain.c",
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev00",
@@ -1781,8 +1790,8 @@
    "name": "PlayerApplyTerrainDestination",
    "size": 616,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "5edfc6dc275a4239c14fa4810dd7be6ff3d784398924ea792a3190273f033b9a",
-   "checkpoint": "c030-readability-sweep"
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev00",
@@ -1790,8 +1799,8 @@
    "name": "StopPlayer",
    "size": 30,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "5edfc6dc275a4239c14fa4810dd7be6ff3d784398924ea792a3190273f033b9a",
-   "checkpoint": "c030-readability-sweep"
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev00",
@@ -1799,8 +1808,8 @@
    "name": "Player1ProcessTerrainMotion",
    "size": 16,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "5edfc6dc275a4239c14fa4810dd7be6ff3d784398924ea792a3190273f033b9a",
-   "checkpoint": "c030-readability-sweep"
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev00",
@@ -1808,8 +1817,8 @@
    "name": "Player2ProcessTerrainMotion",
    "size": 18,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "5edfc6dc275a4239c14fa4810dd7be6ff3d784398924ea792a3190273f033b9a",
-   "checkpoint": "c030-readability-sweep"
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev00",
@@ -7135,18 +7144,27 @@
    "address": "0x00dcc2",
    "name": "EntityIsNearPosition",
    "size": 92,
-   "source": "src/player/entity_motion_proximity.c",
-   "source_sha256": "c4ffecfd6fbeb218782a728605bc2dd6e8c13fd5c0c0282ae2420e1ef4b4ce21",
-   "checkpoint": "c023-names-hardcases-data-r4"
+   "source": "src/player/entity_motion_terrain.c",
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev02",
    "address": "0x00dd1e",
    "name": "EntityIsWithinRange",
    "size": 100,
-   "source": "src/player/entity_motion_proximity.c",
-   "source_sha256": "c4ffecfd6fbeb218782a728605bc2dd6e8c13fd5c0c0282ae2420e1ef4b4ce21",
-   "checkpoint": "c023-names-hardcases-data-r4"
+   "source": "src/player/entity_motion_terrain.c",
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
+  },
+  {
+   "version": "rev02",
+   "address": "0x00dd82",
+   "name": "PlayerProcessTerrainMotion",
+   "size": 1016,
+   "source": "src/player/entity_motion_terrain.c",
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev02",
@@ -7154,8 +7172,8 @@
    "name": "PlayerApplyTerrainDestination",
    "size": 616,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "5edfc6dc275a4239c14fa4810dd7be6ff3d784398924ea792a3190273f033b9a",
-   "checkpoint": "c030-readability-sweep"
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev02",
@@ -7163,8 +7181,8 @@
    "name": "StopPlayer",
    "size": 30,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "5edfc6dc275a4239c14fa4810dd7be6ff3d784398924ea792a3190273f033b9a",
-   "checkpoint": "c030-readability-sweep"
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev02",
@@ -7172,8 +7190,8 @@
    "name": "Player1ProcessTerrainMotion",
    "size": 16,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "5edfc6dc275a4239c14fa4810dd7be6ff3d784398924ea792a3190273f033b9a",
-   "checkpoint": "c030-readability-sweep"
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev02",
@@ -7181,8 +7199,8 @@
    "name": "Player2ProcessTerrainMotion",
    "size": 18,
    "source": "src/player/entity_motion_terrain.c",
-   "source_sha256": "5edfc6dc275a4239c14fa4810dd7be6ff3d784398924ea792a3190273f033b9a",
-   "checkpoint": "c030-readability-sweep"
+   "source_sha256": "3ab2d6f3418958878eeb1ec5c3de58803f8db741fd51188a823f40866d344076",
+   "checkpoint": "c032-last-c-function-r2"
   },
   {
    "version": "rev02",

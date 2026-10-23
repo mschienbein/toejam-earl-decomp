@@ -61,17 +61,17 @@ int entity_number;
         } else if (entity->draw_flags & ENTITY_SECONDARY_VIEW)
             ReleaseEntityViewportSprites(entity, 1);
         if (add_primary) {
-            if (entity_number == 0 && (entity->draw_flags & ENTITY_SECONDARY_VIEW))
+            if (entity_number == PLAYER_TOEJAM && (entity->draw_flags & ENTITY_SECONDARY_VIEW))
                 ReleaseEntityViewportSprites(entity, 1);
-            if (entity_number != 1 || !(entity->draw_flags & ENTITY_SECONDARY_VIEW)) {
+            if (entity_number != PLAYER_EARL || !(entity->draw_flags & ENTITY_SECONDARY_VIEW)) {
                 entity->sprite_ready = 0;
                 AllocateEntityViewportSprites(entity, 0);
             }
         }
         if (add_secondary) {
-            if (entity_number == 1 && (entity->draw_flags & ENTITY_PRIMARY_VIEW))
+            if (entity_number == PLAYER_EARL && (entity->draw_flags & ENTITY_PRIMARY_VIEW))
                 ReleaseEntityViewportSprites(entity, 0);
-            if (entity_number != 0 || !(entity->draw_flags & ENTITY_PRIMARY_VIEW)) {
+            if (entity_number != PLAYER_TOEJAM || !(entity->draw_flags & ENTITY_PRIMARY_VIEW)) {
                 entity->sprite_ready = 0;
                 AllocateEntityViewportSprites(entity, 1);
             }

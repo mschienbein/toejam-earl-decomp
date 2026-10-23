@@ -1,4 +1,5 @@
 #include "hardware.h"
+#include "player_animation.h"
 #include "entities.h"
 #include "sprites.h"
 #include "assets_presents.h"
@@ -19,10 +20,10 @@ void SetupPlayer()
     for (sprite_number = 0; sprite_number < 10; ++sprite_number) {
         tile = 0x85a9;
         if (sprite_number & 1)
-            tile |= 0x1800;
+            tile |= (VDP_TILE_HORIZONTAL_FLIP | VDP_TILE_VERTICAL_FLIP);
         gHardwareSpriteTable[sprite_number + 1].x = (sprite_number << 5) + 128;
         gHardwareSpriteTable[sprite_number + 1].y = 236;
-        gHardwareSpriteTable[sprite_number + 1].size = 12;
+        gHardwareSpriteTable[sprite_number + 1].size = VDP_SPRITE_SIZE_4X1;
         gHardwareSpriteTable[sprite_number + 1].link = sprite_number + 2;
         gHardwareSpriteTable[sprite_number + 1].tile = tile;
     }
@@ -36,8 +37,8 @@ void SetupPlayer()
     gHardwareSpriteTable[79].link = 0;
     entity = &gPlayerInfo[PLAYER_TOEJAM];
     entity->process = Player1ProcessTerrainMotion;
-    entity->sequence = PlayerAnimationDescriptors[0].sequence;
-    entity->frames = PlayerAnimationDescriptors[0].frames;
+    entity->sequence = PlayerAnimationDescriptors[PLAYER_ANIM_IDLE].sequence;
+    entity->frames = PlayerAnimationDescriptors[PLAYER_ANIM_IDLE].frames;
     entity->frame_phase = 10;
     entity->frame_duration = 1;
     entity->width = 24;
@@ -49,8 +50,8 @@ void SetupPlayer()
     entity->behavior_flags = ENTITY_COLLIDABLE;
     entity = &gPlayerInfo[PLAYER_EARL];
     entity->process = Player2ProcessTerrainMotion;
-    entity->sequence = Player2AnimationDescriptors[0].sequence;
-    entity->frames = Player2AnimationDescriptors[0].frames;
+    entity->sequence = Player2AnimationDescriptors[PLAYER_ANIM_IDLE].sequence;
+    entity->frames = Player2AnimationDescriptors[PLAYER_ANIM_IDLE].frames;
     entity->frame_phase = 10;
     entity->frame_duration = 1;
     entity->width = 30;
@@ -60,7 +61,7 @@ void SetupPlayer()
     entity->tile = VDP_TILE_PRIORITY;
     entity->draw_flags = ENTITY_ACTIVE;
     entity->behavior_flags = ENTITY_COLLIDABLE;
-    entity = &gPlayerInfo[26];
+    entity = &gPlayerInfo[GAMEPLAY_ENTITY_SLOT_COUNT];
     gInventoryDrawListHead = entity;
     for (sprite_number = 0; sprite_number < 2; ++sprite_number) {
         entity->frames = Spr_PresentSelector;

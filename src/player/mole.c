@@ -29,7 +29,7 @@ short player_number;
 
     inventory_count = 0;
     do {
-        if (gPlayerInventory[player_number][inventory_count] < 0)
+        if (gPlayerInventory[player_number][inventory_count] < PRESENT_ICARUS_WINGS)
             break;
         ++inventory_count;
     } while (inventory_count < 16);

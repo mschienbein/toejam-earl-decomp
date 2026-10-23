@@ -279,7 +279,7 @@ struct earthling_state *earthling;
 }
 
 /* Bounce a falling earthling at ground level, or damage it after its animation
- * ends or its terrain query exceeds 0x50. */
+ * ends or its terrain query exceeds TERRAIN_WALKABLE_MAX. */
 void EarthlingUpdateBouncingDamageState(earthling)
 struct earthling_state *earthling;
 {
@@ -302,10 +302,10 @@ struct earthling_state *earthling;
         /* ORIGINAL BUG: map_number is unset if neither loaded map has
          * the object's level. The original code makes no fallback choice. */
         if (object->level == gPlayer1MapLevel)
-            map_number = 0;
+            map_number = PLAYER_TOEJAM;
         else if (object->level == gPlayer2MapLevel)
-            map_number = 1;
-        if ((unsigned short)GetMapTerrainAtWorldPosition(map_number, object->x, object->y) > 0x50)
+            map_number = PLAYER_EARL;
+        if ((unsigned short)GetMapTerrainAtWorldPosition(map_number, object->x, object->y) > TERRAIN_WALKABLE_MAX)
             DamageEarthling(earthling);
     }
 }
@@ -358,14 +358,14 @@ unsigned short terrain;
             if (gPlayerPowerups[player_number] == PRESENT_ROCKET_SKATES)
                 sprite_or_direction = GetActivePresentSprite(player);
             else if (!gPlayerPowerups[player_number]) {
-                sprite_or_direction = 61;
+                sprite_or_direction = PLAYER_ANIM_ICARUS_FLY_DOWN;
                 player->velocity_height = -1;
                 player->animation_motion_axes = ANIMATION_MOTION_NONE;
             } else if (terrain >= TERRAIN_WATER) {
                 if (terrain == TERRAIN_VOID)
                     PlayerStartFalling(player, player_number);
                 else
-                    sprite_or_direction = 65;
+                    sprite_or_direction = PLAYER_ANIM_FALL_SPLASH_UP + DIRECTION_DOWN;
             } else {
                 sprite_or_direction = GetActivePresentSprite(player);
                 player->animation_motion_axes = ANIMATION_MOTION_XY;

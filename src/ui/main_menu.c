@@ -52,7 +52,7 @@ select_players:
         gPlayerLives[PLAYER_EARL] = -1;
         gPlayerRank[PLAYER_EARL] = 9;
         gPlayerInfo[PLAYER_EARL].level = 99;
-        gPlayerSelection = 0;
+        gPlayerSelection = PLAYER_TOEJAM;
         if (GetCtrl2Input()) {
             gControllerPortsSwapped = 1;
             break;
@@ -67,7 +67,7 @@ select_players:
         gPlayerLives[PLAYER_EARL] = 0;
         gPlayerRank[PLAYER_EARL] = 0;
         gPlayerInfo[PLAYER_EARL].level = 0;
-        gPlayerSelection = 1;
+        gPlayerSelection = PLAYER_EARL;
         if (GetCtrl1Input()) {
             gControllerPortsSwapped = 1;
             break;
@@ -113,7 +113,7 @@ void ShowGameOverAndReset()
             WaitForNextVBlank(1);
             TextAnimateFontBanks(8);
         } while (gFrameCounter <= 600 &&
-            !((ReadMappedPlayerInput(0) | ReadMappedPlayerInput(1)) & 0xf0));
+            !((ReadMappedPlayerInput(PLAYER_TOEJAM) | ReadMappedPlayerInput(PLAYER_EARL)) & INPUT_BUTTON_MASK));
         PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
         PlaySound(PSG_SILENCE, 98);
         AudioRequestFmChannelRelease();
@@ -230,7 +230,7 @@ register struct menu_item *items;
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     EnableTextFontAnimation();
-    while ((GetCtrl1Input() | GetCtrl2Input()) & 0xf0) {
+    while ((GetCtrl1Input() | GetCtrl2Input()) & INPUT_BUTTON_MASK) {
         WaitForNextVBlank(1);
         TextAnimateFontBanks(8);
     }

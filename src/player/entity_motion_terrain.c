@@ -10,6 +10,7 @@
 #include "ram_effects.h"
 #include "ram_map.h"
 #include "ram_player.h"
+#include "ram_sprites.h"
 #include "sprite_calls.h"
 #include "ram_ui.h"
 #include "ram_elevator.h"
@@ -141,14 +142,14 @@ struct render_frame *frame;
         }
     }
     /* Narrow entity collisions block each axis separately. */
-    if (!EntityFindNarrowCollisionAtPosition(entity, entity->x, entity->y, 6)) {
-        if (EntityFindNarrowCollisionAtPosition(entity, destination.x, entity->y, 6)) {
+    if (!EntityFindNarrowCollisionAtPosition(entity, entity->x, entity->y, DYNAMIC_ENTITY_FIRST_SLOT)) {
+        if (EntityFindNarrowCollisionAtPosition(entity, destination.x, entity->y, DYNAMIC_ENTITY_FIRST_SLOT)) {
             destination.x = entity->x;
             destination.fraction_x = entity->fraction_x;
             destination.tile_x = 2;
             entity->draw_flags |= ENTITY_BLOCKED_X;
         }
-        if (EntityFindNarrowCollisionAtPosition(entity, destination.x, destination.y, 6)) {
+        if (EntityFindNarrowCollisionAtPosition(entity, destination.x, destination.y, DYNAMIC_ENTITY_FIRST_SLOT)) {
             destination.y = entity->y;
             destination.fraction_y = entity->fraction_y;
             destination.tile_y = 2;
@@ -186,7 +187,7 @@ struct render_frame *frame;
 }
 
 /* Apply the nearby terrain grid to a proposed 24.8 position. Properties at
- * least 0x80 also adjust edge cells and select collision-facing sprites.
+ * least TERRAIN_WATER also adjust edge cells and select collision-facing sprites.
  *
  * MATCHING QUALIFICATION: swimming and innertube movement are tested through
  * a signed-long view of animation_group_mask; reading the shared unsigned-long
@@ -241,7 +242,7 @@ struct movement_destination *destination;
             entity->velocity_y = 0;
             entity->animation_motion_axes = ANIMATION_MOTION_NONE;
         }
-        property = 0x50;
+        property = TERRAIN_WALKABLE_MAX;
     }
     if (property <= TERRAIN_WALKABLE_MAX || entity->height > 0) {
         entity->x = destination->x;
@@ -282,7 +283,7 @@ struct movement_destination *destination;
             sprite = PLAYER_ANIM_LEAN_UP;
         if (sprite != -1) {
             if (alternate || gPlayerPowerups[player] == PRESENT_SPRING_SHOES) {
-                sprite += 12;
+                sprite += PLAYER_ANIM_JUMP_WINDUP_UP - PLAYER_ANIM_LEAN_UP;
                 if (gPlayerPowerups[player] != PRESENT_SPRING_SHOES) {
                     if (sprite & 2)
                         entity->velocity_y = 0;
@@ -314,12 +315,12 @@ struct object_state *state;
 void Player1ProcessTerrainMotion(frame)
 struct render_frame *frame;
 {
-    PlayerProcessTerrainMotion(0, frame);
+    PlayerProcessTerrainMotion(PLAYER_TOEJAM, frame);
 }
 
 /* Apply the second player's terrain motion using the rendered frame's multipliers. */
 void Player2ProcessTerrainMotion(frame)
 struct render_frame *frame;
 {
-    PlayerProcessTerrainMotion(1, frame);
+    PlayerProcessTerrainMotion(PLAYER_EARL, frame);
 }

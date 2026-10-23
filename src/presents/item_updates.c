@@ -6,6 +6,7 @@
 #include "hardware.h"
 #include "entities.h"
 #include "earthlings.h"
+#include "earthling_types.h"
 #include "presents.h"
 #include "sprites.h"
 #include "assets_audio.h"
@@ -191,7 +192,7 @@ char record_pickup;
                 } else {
                     collected = 1;
                     food = item->kind;
-                    food -= 64;
+                    food -= ITEM_GROUND_BASE;
                     if (item->kind == ITEM_BUCK) {
                         gPlayerBucks[player]++;
                         PlaySoundEffect((long)Sfx_Money, AUDIO_PRIORITY_NORMAL, 0);
@@ -243,7 +244,7 @@ struct level_item *items;
             abs(item->x - state->x) < 24 &&
             abs(item->y - state->y) < 12) {
             /* The accepted reserved byte supplies the hurt-source kind. */
-            source.kind = 1;
+            source.kind = EARTHLING_DEVIL;
             source.x = item->x;
             source.y = item->y;
             source.object = item->object;
@@ -262,7 +263,7 @@ short player;
     short terrain;
 
     state = &gPlayerInfo[player];
-    terrain = (player == 0 ? gPlayer1TerrainUnderfoot : gPlayer2TerrainUnderfoot) & 0xf0;
+    terrain = (player == PLAYER_TOEJAM ? gPlayer1TerrainUnderfoot : gPlayer2TerrainUnderfoot) & TERRAIN_CLASS_MASK;
     if (gPlayerPowerups[player] == PRESENT_ROCKET_SKATES)
         PlaySound(PSG_STOP_BACKGROUND_NOISE, 99);
     if (state->height > 0 && (state->animation_group_mask & (long)(PLAYER_GROUP_ICARUS_FLY | PLAYER_GROUP_SKATES_AIR))) {
@@ -304,19 +305,19 @@ void ReducePresentTimer()
 {
     short player, show;
 
-    for (player = 0; player <= PLAYER_EARL; player++) {
-        if (gPlayerPowerups[player] >= 0 && gPlayerLives[player] >= 0 &&
+    for (player = PLAYER_TOEJAM; player <= PLAYER_EARL; player++) {
+        if (gPlayerPowerups[player] >= PRESENT_ICARUS_WINGS && gPlayerLives[player] >= 0 &&
             (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_GHOST &&
             (&gPlayerInfo[player])->sprite_state != PLAYER_ANIM_LAST_LIFE_GHOST && !gPlayerInventoryOpen[player]) {
             if (gPlayerElevatorFlags[player]) {
-                if ((player == 0 && gHardwareSpriteTable[21].y == 1) ||
-                    (player == 1 && gHardwareSpriteTable[22].y == 1))
+                if ((player == PLAYER_TOEJAM && gHardwareSpriteTable[21].y == 1) ||
+                    (player == PLAYER_EARL && gHardwareSpriteTable[22].y == 1))
                     HudPositionActionIconSprite(player);
             } else {
                 show = 0;
                 if (!gPlayerPowerupTimers[player]) {
                     PresentTryEndActivePowerup(player);
-                    if (gPlayerPowerups[player] < 0)
+                    if (gPlayerPowerups[player] < PRESENT_ICARUS_WINGS)
                         show = 1;
                 } else if (--gPlayerPowerupTimers[player] > 300)
                     show = 1;
@@ -327,7 +328,7 @@ void ReducePresentTimer()
                     show = 1;
                 if (show)
                     HudPositionActionIconSprite(player);
-                else if (player == 0)
+                else if (player == PLAYER_TOEJAM)
                     gHardwareSpriteTable[21].y = 1;
                 else
                     gHardwareSpriteTable[22].y = 1;
@@ -372,7 +373,7 @@ void MapUpdateItemsAndPresents()
     if (gItemBank2Users)
         EntityUpdateLevelItemVisibility(gObjectTable[1], 32);
     EntityUpdateLevelItemVisibility(gDroppedPresentTable, 32);
-    for (player = 0; player <= PLAYER_EARL; player++) {
+    for (player = PLAYER_TOEJAM; player <= PLAYER_EARL; player++) {
         if (gPlayerLives[player] >= 0 && !gPlayerInventoryOpen[player]) {
             for (bank = 0; bank < 2; bank++) {
                 if (gItemBankUsers[bank] &&

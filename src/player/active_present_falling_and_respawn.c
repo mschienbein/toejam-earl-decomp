@@ -86,7 +86,7 @@ void MapClearTilePriorityNearPlayer()
     first_column = (player_x >> 3) - 4;
     right_column = first_column + 9;
     viewport = 0;
-    if (gTerrainPriorityUpdatePlayer == 1 && gSplitScreenEnabled)
+    if (gTerrainPriorityUpdatePlayer == PLAYER_EARL && gSplitScreenEnabled)
         viewport = 1;
     VDP_CONTROL_WORD = 0x8c81;
     for (column = first_column; column <= right_column; ++column) {
@@ -99,13 +99,13 @@ void MapClearTilePriorityNearPlayer()
                 VDP_COMMAND = ((wrapped_row << 23) + 3L) + (wrapped_column << 17);
             tile = VDP_DATA;
             if (row > center_row) {
-                property = PlayerTilePropertyLookup[tile & 0x7ff];
-                if (property < 0x90)
+                property = PlayerTilePropertyLookup[tile & VDP_TILE_INDEX_MASK];
+                if (property < TERRAIN_VOID)
                     break;
             }
-            tile &= 0x7fff;
+            tile &= ~VDP_TILE_PRIORITY;
             if (!viewport)
-                VDP_COMMAND = ((wrapped_row << 23) + 0x60000002L) + (wrapped_column << 17);
+                VDP_COMMAND = ((wrapped_row << 23) + VDP_WRITE_PLANE_A) + (wrapped_column << 17);
             else
                 VDP_COMMAND = ((wrapped_row << 23) + 0x40000003L) + (wrapped_column << 17);
             VDP_DATA = tile;
@@ -257,9 +257,9 @@ void CheckPlayerFalling()
   unsigned short land;
   char direction;
   char selected_sprite;
-  falling[0] = 0;
-  falling[1] = 0;
-  for (player_number = 0; player_number <= PLAYER_EARL; ++player_number)
+  falling[PLAYER_TOEJAM] = 0;
+  falling[PLAYER_EARL] = 0;
+  for (player_number = PLAYER_TOEJAM; player_number <= PLAYER_EARL; ++player_number)
   {
     if (gPlayerLives[player_number] < 0)
       continue;
@@ -284,7 +284,7 @@ void CheckPlayerFalling()
     else
       if (gPlayerFallStates[player_number] == 2)
     {
-      if (player_number == 0)
+      if (player_number == PLAYER_TOEJAM)
         land = gPlayer1TerrainUnderfoot;
       else
         land = gPlayer2TerrainUnderfoot;
@@ -410,9 +410,9 @@ char *falling;
     short player_number;
     struct object_state *player;
 
-    if ((falling[0] && falling[1]) ||
-        (falling[0] && !gPlayerFallStates[PLAYER_EARL]) ||
-        (falling[1] && !gPlayerFallStates[PLAYER_TOEJAM])) {
+    if ((falling[PLAYER_TOEJAM] && falling[PLAYER_EARL]) ||
+        (falling[PLAYER_TOEJAM] && !gPlayerFallStates[PLAYER_EARL]) ||
+        (falling[PLAYER_EARL] && !gPlayerFallStates[PLAYER_TOEJAM])) {
         for (player_number = PLAYER_TOEJAM; player_number <= PLAYER_EARL; ++player_number) {
             player = &gPlayerInfo[player_number];
             if (falling[player_number]) {
@@ -430,14 +430,14 @@ char *falling;
             if (gPlayerLives[player_number] < 0)
                 ElevatorInvalidateSecondaryRecords();
         }
-        if (falling[0]) {
-            MapLoadPlayerLevel(0, gPlayerInfo[PLAYER_TOEJAM].level);
+        if (falling[PLAYER_TOEJAM]) {
+            MapLoadPlayerLevel(PLAYER_TOEJAM, gPlayerInfo[PLAYER_TOEJAM].level);
             SetupElevator(gPlayerInfo[PLAYER_TOEJAM].level, 0);
             EarthlingRetainLevelBank(gPlayerInfo[PLAYER_TOEJAM].level);
             LoadLevelItemBank(gPlayerInfo[PLAYER_TOEJAM].level);
         }
-        if (falling[1]) {
-            MapLoadPlayerLevel(1, gPlayerInfo[PLAYER_EARL].level);
+        if (falling[PLAYER_EARL]) {
+            MapLoadPlayerLevel(PLAYER_EARL, gPlayerInfo[PLAYER_EARL].level);
             SetupElevator(gPlayerInfo[PLAYER_EARL].level, 0);
             EarthlingRetainLevelBank(gPlayerInfo[PLAYER_EARL].level);
             LoadLevelItemBank(gPlayerInfo[PLAYER_EARL].level);
@@ -447,9 +447,9 @@ char *falling;
         VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
         if (gPlayerInfo[PLAYER_TOEJAM].level == gPlayerInfo[PLAYER_EARL].level ||
             gPlayerLives[PLAYER_TOEJAM] < 0 || gPlayer2Lives < 0) {
-            if (falling[0] && falling[1])
+            if (falling[PLAYER_TOEJAM] && falling[PLAYER_EARL])
                 SetPositionOnNewLevel(2);
-            else if (falling[0]) {
+            else if (falling[PLAYER_TOEJAM]) {
                 player = &gPlayerInfo[PLAYER_EARL];
                 /* MATCHING QUALIFICATION: the signed-long animation mask
                  * views retain D0 mask allocation in both partner tests below.
@@ -457,7 +457,7 @@ char *falling;
                 if (gPlayer2TerrainUnderfoot >= TERRAIN_WATER ||
                     ((long)player->animation_group_mask & (long)PLAYER_GROUP_STATIONARY) || player->sprite_state == PLAYER_ANIM_GHOST ||
                     player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST || gPlayer2Lives < 0)
-                    SetPositionOnNewLevel(0);
+                    SetPositionOnNewLevel(PLAYER_TOEJAM);
                 else {
                     gPlayerInfo[PLAYER_TOEJAM].x = gPlayerInfo[PLAYER_EARL].x;
                     gPlayerInfo[PLAYER_TOEJAM].y = gPlayerInfo[PLAYER_EARL].y;
@@ -469,7 +469,7 @@ char *falling;
                 if (gPlayer1TerrainUnderfoot >= TERRAIN_WATER ||
                     ((long)player->animation_group_mask & (long)PLAYER_GROUP_STATIONARY) || player->sprite_state == PLAYER_ANIM_GHOST ||
                     player->sprite_state == PLAYER_ANIM_LAST_LIFE_GHOST || gPlayerLives[PLAYER_TOEJAM] < 0)
-                    SetPositionOnNewLevel(1);
+                    SetPositionOnNewLevel(PLAYER_EARL);
                 else {
                     gPlayerInfo[PLAYER_EARL].x = gPlayerInfo[PLAYER_TOEJAM].x;
                     gPlayerInfo[PLAYER_EARL].y = gPlayerInfo[PLAYER_TOEJAM].y;
@@ -478,16 +478,16 @@ char *falling;
                 }
             }
         } else {
-            if (falling[0])
-                SetPositionOnNewLevel(0);
-            if (falling[1])
-                SetPositionOnNewLevel(1);
+            if (falling[PLAYER_TOEJAM])
+                SetPositionOnNewLevel(PLAYER_TOEJAM);
+            if (falling[PLAYER_EARL])
+                SetPositionOnNewLevel(PLAYER_EARL);
         }
         UpdateScreenSplitMode(1);
-        HudLoadLevelNumberSprites(0);
-        HudPositionLevelNumberSprites(0);
-        HudLoadLevelNumberSprites(1);
-        HudPositionLevelNumberSprites(1);
+        HudLoadLevelNumberSprites(PLAYER_TOEJAM);
+        HudPositionLevelNumberSprites(PLAYER_TOEJAM);
+        HudLoadLevelNumberSprites(PLAYER_EARL);
+        HudPositionLevelNumberSprites(PLAYER_EARL);
         VDP_CONTROL_WORD = 0x8c89;
         gMode2RegSoftcopy |= 0x40;
         VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
@@ -797,7 +797,7 @@ unsigned short land;
                 player->acceleration_height = -16;
                 gPlayerFallStates[player_number] = 2;
             }
-            if ((sprite & 0xfc) != 108) {
+            if ((sprite & PLAYER_ANIM_FAMILY_MASK) != PLAYER_ANIM_HITOPS_UP) {
                 player->velocity_x = 0;
                 player->velocity_y = 0;
             }
@@ -829,7 +829,7 @@ short player_number;
     EarthlingReleaseLevelBank(player->level);
     MapReleaseLevelItemBank(player->level);
     ++player->level;
-    MapLoadPlayerLevel(0, player->level);
+    MapLoadPlayerLevel(PLAYER_TOEJAM, player->level);
     SetupElevator(player->level, 0);
     EarthlingRetainLevelBank(player->level);
     LoadLevelItemBank(player->level);
@@ -875,12 +875,12 @@ short player_number;
         MapReleaseLevelItemBank(player->level);
         player->level = other_player->level;
         if (player_number == PLAYER_TOEJAM) {
-            MapLoadPlayerLevel(0, gPlayerInfo[PLAYER_TOEJAM].level);
+            MapLoadPlayerLevel(PLAYER_TOEJAM, gPlayerInfo[PLAYER_TOEJAM].level);
             SetupElevator(gPlayerInfo[PLAYER_TOEJAM].level, 0);
             EarthlingRetainLevelBank(gPlayerInfo[PLAYER_TOEJAM].level);
             LoadLevelItemBank(gPlayerInfo[PLAYER_TOEJAM].level);
         } else {
-            MapLoadPlayerLevel(1, gPlayerInfo[PLAYER_EARL].level);
+            MapLoadPlayerLevel(PLAYER_EARL, gPlayerInfo[PLAYER_EARL].level);
             SetupElevator(gPlayerInfo[PLAYER_EARL].level, 0);
             EarthlingRetainLevelBank(gPlayerInfo[PLAYER_EARL].level);
             LoadLevelItemBank(gPlayerInfo[PLAYER_EARL].level);
@@ -904,7 +904,7 @@ redraw:
         player->velocity_height = -128;
         player->acceleration_height = -16;
         player->draw_flags |= ENTITY_SHADOW;
-        terrain = GetMapTerrainAtWorldPosition(0, player->x, player->y);
+        terrain = GetMapTerrainAtWorldPosition(PLAYER_TOEJAM, player->x, player->y);
         if (terrain != TERRAIN_VOID && terrain != TERRAIN_WATER) {
             gPlayerFallStates[player_number] = 2;
             gPlayerJumpCounters[player_number] = 3;
@@ -978,7 +978,7 @@ short player_number;
     gPlayerRank[player_number] = 9;
     HudHidePlayerSprites(player_number);
     player = &gPlayerInfo[player_number ^ 1];
-    MapLoadPlayerLevel(0, player->level);
+    MapLoadPlayerLevel(PLAYER_TOEJAM, player->level);
     UpdateScreenSplitMode(1);
     DrawHUD();
     gMode2RegSoftcopy |= 64;
@@ -1009,7 +1009,7 @@ short terrain;
             }
             player->height = 0;
             player->behavior_flags |= ENTITY_COLLIDABLE;
-            if (gPlayerPreDeathSpriteState[player_number] == 2) {
+            if (gPlayerPreDeathSpriteState[player_number] == PLAYER_ANIM_FLATTENED) {
                 player->behavior_flags |= ENTITY_PLAYER_SUPPRESSED;
                 gPlayerRespawnSuppressionTicks[player_number] = 20;
             }
@@ -1034,9 +1034,9 @@ short terrain;
                 player->velocity_height = 0;
                 gPlayerJumpCounters[player_number] = 30;
                 if (!player_number)
-                    GenerateSpeech(1, "Bye Toejam", 1);
+                    GenerateSpeech(PLAYER_EARL, "Bye Toejam", 1);
                 else
-                    GenerateSpeech(0, "Bye Earl", 1);
+                    GenerateSpeech(PLAYER_TOEJAM, "Bye Earl", 1);
             } else if (!player->velocity_height && --gPlayerJumpCounters[player_number] <= 0) {
                 SetSprite(player, PLAYER_ANIM_GHOST);
                 player->sprite_state = PLAYER_ANIM_LAST_LIFE_GHOST;

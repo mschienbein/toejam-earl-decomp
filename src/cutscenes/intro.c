@@ -1,5 +1,6 @@
 #include "psg_effects.h"
 #include "music_ids.h"
+#include "entities.h"
 #include "hardware.h"
 #include "assets_audio.h"
 #include "assets_intro.h"
@@ -42,7 +43,7 @@ int IntroVideo()
     VDP_COMMAND = 0x7c020003;
     VDP_DATA = gCamera1PendingX;
     ClearUpperVramTilemap();
-    gCameraTileAttributes = 0x8000;
+    gCameraTileAttributes = VDP_TILE_PRIORITY;
     VDP_COMMAND = 0x70000002;
     MoveDataToVRAM(ImageTextBase, FontDataSize << 4);
     CopyPaletteToCRAMSlot(PaletteTitleScreen_bank0, 0);
@@ -102,13 +103,13 @@ short IntroPart1()
     gCutsceneScriptState = 0;
     gCutsceneScriptCountdown = 51;
     gCutsceneMusicActorAnimationEnabled = 1;
-    while ((GetCtrl1Input() | GetCtrl2Input()) & 0x80)
+    while ((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)
         CutsceneStepFrameAndMusicCadence(0, gCutsceneMusicActorAnimationEnabled);
     while (gCutsceneScriptState != -1 &&
-        !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
+        !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         do {
             CutsceneStepFrameAndMusicCadence(0, gCutsceneMusicActorAnimationEnabled);
-            if (gCutsceneAdvanceButtonMask = (GetCtrl1Input() | GetCtrl2Input()) & 0x70)
+            if (gCutsceneAdvanceButtonMask = (GetCtrl1Input() | GetCtrl2Input()) & INPUT_ACTION_MASK)
                 advance_scene = 1;
         } while (gCutsceneAdvanceButtonMask);
         if (!advance_scene && --gCutsceneScriptCountdown > 0)
@@ -320,10 +321,10 @@ short IntroPart2()
     gCutsceneScriptCountdown = 17;
     advance_period = 0;
     while (gCutsceneScriptState != -1 &&
-        !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
+        !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         do {
             CutsceneStepFrameAndMusicCadence(advance_period, 0);
-            if (gCutsceneAdvanceButtonMask = (GetCtrl1Input() | GetCtrl2Input()) & 0x70)
+            if (gCutsceneAdvanceButtonMask = (GetCtrl1Input() | GetCtrl2Input()) & INPUT_ACTION_MASK)
                 gCutsceneScriptCountdown = 0;
         } while (gCutsceneAdvanceButtonMask);
         if (--gCutsceneScriptCountdown > 0)
@@ -390,10 +391,10 @@ short IntroPart3()
     advance_scene = 0;
     gCutsceneScriptState = 0;
     while (gCutsceneScriptState != -1 &&
-        !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
+        !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         do {
             CutsceneStepFrameAndMusicCadence(0, gCutsceneMusicActorAnimationEnabled);
-            if (gCutsceneAdvanceButtonMask = (GetCtrl1Input() | GetCtrl2Input()) & 0x70)
+            if (gCutsceneAdvanceButtonMask = (GetCtrl1Input() | GetCtrl2Input()) & INPUT_ACTION_MASK)
                 advance_scene = 1;
         } while (gCutsceneAdvanceButtonMask);
         if (!advance_scene && --gCutsceneScriptCountdown > 0)
@@ -470,20 +471,20 @@ short IntroPart4()
     scroll_position = 0;
     exhaust_phase = 0;
     while (gCutsceneScriptState != -1 &&
-        !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
+        !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         do {
             WaitForNextVBlank(1);
             VDP_COMMAND = 0x7c020003;
             VDP_DATA = scroll_position / 4;
             UploadQueuedSpriteGraphics(0, 0);
-            SelectViewportSpriteChain(0);
+            SelectViewportSpriteChain(PLAYER_TOEJAM);
             WaitForNextVBlank(1);
             CutsceneUpdateDriftingEntities(scroll_position);
             if (exhaust_phase ^= 1)
                 CutsceneMoveRocketshipPairLeft(exhaust_phase);
             UpdateAndQueueEntitySprites();
             ++scroll_position;
-            if (gCutsceneAdvanceButtonMask = (GetCtrl1Input() | GetCtrl2Input()) & 0x70)
+            if (gCutsceneAdvanceButtonMask = (GetCtrl1Input() | GetCtrl2Input()) & INPUT_ACTION_MASK)
                 gCutsceneScriptCountdown = 0;
         } while (gCutsceneAdvanceButtonMask);
         if (--gCutsceneScriptCountdown > 0)
@@ -545,7 +546,7 @@ short IntroPart5()
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     while (gCutsceneScriptState != -1 &&
-        !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
+        !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
         IntroUpdateFlyingEntityMotion(driving_pose);
         if (scroll_direction) {
@@ -641,7 +642,7 @@ short IntroPart6()
     pose_changed = 0;
     driving_pose = 0;
     while (gCutsceneScriptState != -1 &&
-        !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
+        !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         IntroUpdateRightwardFlyingEntity(pose_changed, driving_pose);
         pose_changed = 0;
         CutsceneStepFrameAndMusicCadence(0, 0);
@@ -727,7 +728,7 @@ short IntroPart7()
     IntroPositionDrivingPart(0, 104, 151);
     IntroPositionDrivingPart(1, 104, 151);
     while (gCutsceneScriptState != -1 &&
-        !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
+        !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         AnimateTitleTransitionBackground(0);
         if (shake_phase) {
             if (shake_phase == 1) {
@@ -750,7 +751,7 @@ short IntroPart7()
             VDP_DATA = -gCamera1PendingX;
         }
         UploadQueuedSpriteGraphics(0, 0);
-        SelectViewportSpriteChain(0);
+        SelectViewportSpriteChain(PLAYER_TOEJAM);
         IntroUpdateFlyingEntityMotion(driving_pose);
         if (scroll_direction) {
             VDP_COMMAND = 0x7c020003;
@@ -835,7 +836,7 @@ short IntroPart8()
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     while (gCutsceneScriptState != -1 &&
-        !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
+        !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
         if (--gCutsceneScriptCountdown == 0) {
             ++gCutsceneScriptState;
@@ -880,7 +881,7 @@ short IntroPart9()
     gMode2RegSoftcopy |= 0x40;
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     while (gCutsceneScriptState != -1 &&
-        !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
+        !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
         VDP_COMMAND = 0x40020010;
         VDP_DATA = scroll_position;
@@ -923,7 +924,7 @@ short IntroPart10()
     VDP_CONTROL_WORD = gMode2RegSoftcopy | VDP_MODE2_REGISTER;
     gCutsceneScriptState = 1;
     while (gCutsceneScriptState != -1 &&
-        !((GetCtrl1Input() | GetCtrl2Input()) & 0x80)) {
+        !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         CutsceneStepFrameAndMusicCadence(0, 0);
         switch (gCutsceneScriptState) {
         case 1:

@@ -419,7 +419,7 @@ void GenerateLevelSeeds()
 {
     short level;
 
-    for (level = 0; level < 26; ++level)
+    for (level = 0; level < LEVEL_FINAL; ++level)
         if (gWorldType)
             gLevelSeeds[level] = FixedWorldSeeds[level];
         else
@@ -550,15 +550,15 @@ short player;
         else {
             if (gPlayer2MapLevel == gRequestedMapLevel) {
                 if (gPlayer1MapLevel)
-                    MapSwapPlayerWithSavedBank(0);
-                CopyLevelBetweenPlayers(1);
+                    MapSwapPlayerWithSavedBank(PLAYER_TOEJAM);
+                CopyLevelBetweenPlayers(PLAYER_EARL);
                 loaded = 1;
             } else if (gSavedMapLevel == gRequestedMapLevel) {
-                MapSwapPlayerWithSavedBank(0);
+                MapSwapPlayerWithSavedBank(PLAYER_TOEJAM);
                 loaded = 1;
             } else {
                 if (gPlayer1MapLevel > 1)
-                    MapSwapPlayerWithSavedBank(0);
+                    MapSwapPlayerWithSavedBank(PLAYER_TOEJAM);
             }
             gPlayer1MapLevel = gRequestedMapLevel;
         }
@@ -568,15 +568,15 @@ short player;
         else {
             if (gPlayer1MapLevel == gRequestedMapLevel) {
                 if (gPlayer1MapLevel)
-                    MapSwapPlayerWithSavedBank(1);
-                CopyLevelBetweenPlayers(0);
+                    MapSwapPlayerWithSavedBank(PLAYER_EARL);
+                CopyLevelBetweenPlayers(PLAYER_TOEJAM);
                 loaded = 1;
             } else if (gSavedMapLevel == gRequestedMapLevel) {
-                MapSwapPlayerWithSavedBank(1);
+                MapSwapPlayerWithSavedBank(PLAYER_EARL);
                 loaded = 1;
             } else {
                 if (gPlayer2MapLevel > 1)
-                    MapSwapPlayerWithSavedBank(1);
+                    MapSwapPlayerWithSavedBank(PLAYER_EARL);
                 MapSwapPlayerBanks();
             }
             gPlayer2MapLevel = gRequestedMapLevel;
@@ -595,7 +595,7 @@ short player;
                 for (column = 0; column < MAP_COLUMNS; ++column)
                     gPlayer1LevelMap[row][column] = Level1MapData[row][column];
         }
-        if (player == 1)
+        if (player == PLAYER_EARL)
             MapSwapPlayerBanks();
         loaded = 1;
     }
@@ -629,7 +629,7 @@ short player;
     MapScatterTerrainFeatures();
     MapAssignTransitionChain();
     MapChooseMetatileAlternatives();
-    if (player == 1)
+    if (player == PLAYER_EARL)
         MapSwapPlayerBanks();
     StackBasedRandom(saved_random);
     return 0;
@@ -656,13 +656,13 @@ short level;
 void MapLoadPlayerLevel(player, level)
 short player, level;
 {
-    if (level >= 26) {
+    if (level >= LEVEL_FINAL) {
         if (gPlayer1MapLevel != level)
             LoadFinalLevel(level);
         return;
     }
     if (gPlayerLives[PLAYER_TOEJAM] < 0)
-        player = 0;
+        player = PLAYER_TOEJAM;
     gRequestedMapLevel = level;
     while (ChangeLevel(player)) {
         gLevelSeeds[level] = GetRandomNumber();

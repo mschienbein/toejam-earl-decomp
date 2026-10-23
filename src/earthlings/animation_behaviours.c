@@ -155,7 +155,7 @@ struct earthling_state *earthling;
     }
 }
 
-/* Acquire target mode 8 at timer expiry. State 3 waits for animation and
+/* Acquire the whirlwind target mode at timer expiry. State 3 waits for animation and
  * status-bit transitions; other states expire a signed byte phase timer. */
 void EarthlingThinkTargetedResetCycle(earthling)
 struct earthling_state *earthling;
@@ -177,7 +177,7 @@ struct earthling_state *earthling;
     if (--earthling->timer < 0) {
         object->velocity_x = 0;
         object->velocity_y = 0;
-        next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance, 0, 8);
+        next_state = EarthlingSteerTowardNearestTarget(object, definition->target_distance, 0, EARTHLING_WHIRLWIND);
         if (next_state != -1) {
             minimum_time = definition->target_time_min;
             maximum_time = definition->target_time_max;

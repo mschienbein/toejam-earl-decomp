@@ -64,9 +64,9 @@ void FunkatronUpdateSceneEntities()
         }
         if (gFunkatronUpdatePhase != (descriptor_number & 3))
             continue;
-        if (descriptor_number == 28 && gPlayerSelection != 1)
+        if (descriptor_number == 28 && gPlayerSelection != PLAYER_EARL)
             continue;
-        if (descriptor_number == 29 && gPlayerSelection != 0)
+        if (descriptor_number == 29 && gPlayerSelection != PLAYER_TOEJAM)
             continue;
         half_width = descriptor->width / 2;
         half_width += 5;
@@ -97,7 +97,7 @@ void FunkatronUpdateSceneEntities()
                         (interaction = FunkatronScenePlacements[placement_number].interaction)) {
                         if (EntityIsWithinRange(object, &gPlayerInfo[PLAYER_TOEJAM], 30, 20) ||
                             (EntityIsWithinRange(object, &gPlayerInfo[PLAYER_EARL], 30, 20) &&
-                             (player_number = 1))) {
+                             (player_number = PLAYER_EARL))) {
                             if (!((interaction == 31 && player_number == PLAYER_TOEJAM) ||
                                   (interaction == 53 && player_number == PLAYER_TOEJAM) ||
                                   (interaction == 54 && player_number == PLAYER_EARL))) {

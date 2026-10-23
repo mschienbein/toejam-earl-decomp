@@ -40,13 +40,13 @@ short player_number;
     tens_digit = level_number / 10;
     VDP_COMMAND = VRAM_WRITE(tile_number << 5);
     MoveDataToVRAM(ImageLevelNumbers[units_digit], 64);
-    attributes = (LevelNumberPalettes[units_digit] << 13) + 0x8000;
+    attributes = (LevelNumberPalettes[units_digit] << 13) + VDP_TILE_PRIORITY;
     gHardwareSpriteTable[sprite_number].size = 5;
     gHardwareSpriteTable[sprite_number].tile = tile_number + attributes;
     tile_number += 4;
     VDP_COMMAND = VRAM_WRITE(tile_number << 5);
     MoveDataToVRAM(ImageLevelNumbers[tens_digit], 64);
-    attributes = (LevelNumberPalettes[tens_digit] << 13) + 0x8000;
+    attributes = (LevelNumberPalettes[tens_digit] << 13) + VDP_TILE_PRIORITY;
     gHardwareSpriteTable[sprite_number + 1].size = 5;
     gHardwareSpriteTable[sprite_number + 1].tile = tile_number + attributes;
 }
@@ -114,7 +114,7 @@ short player_number;
         tile_number = 0x7f5;
     }
     powerup = gPlayerPowerups[player_number];
-    if (powerup != -1)
+    if (powerup != PRESENT_NONE)
         icon = Spr_ActionIcons[powerup + 2];
     else
         icon = Spr_ActionIcons[player_number];
@@ -122,7 +122,7 @@ short player_number;
         while (gSpriteGraphicsUploadPending)
             ;
     QueueSpritePieceTiles(icon, tile_number);
-    attributes = ((icon->tile_format & 3) << 13) + 0x8000;
+    attributes = ((icon->tile_format & 3) << 13) + VDP_TILE_PRIORITY;
     gHardwareSpriteTable[sprite_number].size = 5;
     gHardwareSpriteTable[sprite_number].tile = tile_number + attributes;
     gSpriteGraphicsUploadPending = 1;
@@ -396,7 +396,7 @@ short player;
 
     if (gPlayerLives[player] < 0)
         return;
-    if (player == 0) {
+    if (player == PLAYER_TOEJAM) {
         tile = 0x7bc;
         sprite_number = 19;
         icons = IconTilesA;
@@ -407,7 +407,7 @@ short player;
     }
     lives = gPlayerLives[player];
     gHardwareSpriteTable[sprite_number].size = VDP_SPRITE_SIZE_4X1;
-    gHardwareSpriteTable[sprite_number].tile = (unsigned short)tile + 0xe000;
+    gHardwareSpriteTable[sprite_number].tile = (unsigned short)tile + (VDP_TILE_PRIORITY | VDP_TILE_PALETTE_3);
     if (lives > 4) {
         for (remaining = lives - 4; remaining > 0; remaining--) {
             VDP_COMMAND = VRAM_WRITE(tile << 5);
@@ -466,7 +466,7 @@ short player;
 {
     short sprite_number, y, lives, x;
 
-    if (player == 0) {
+    if (player == PLAYER_TOEJAM) {
         sprite_number = 19;
         y = 226;
     } else {
@@ -480,7 +480,7 @@ short player;
         /* MATCHING QUALIFICATION: the redundant default-only switch keeps
          * the observed TST/BNE.S/BRA.W join. This is compiler coaxing, not
          * evidence that the historical source used this control structure. */
-        if (player == 0) {
+        if (player == PLAYER_TOEJAM) {
             switch (player) {
             default:
                 x = 138;
@@ -490,7 +490,7 @@ short player;
             x = 138;
         y = 5;
     } else {
-        if (player == 0)
+        if (player == PLAYER_TOEJAM)
             x = 228;
         else
             x = 398;
@@ -512,7 +512,7 @@ void HudDrawRankLabels()
         TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_TOEJAM]]);
         VDP_COMMAND = 0x5c400003;
         TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_EARL]]);
-    } else if (gPlayerSelection == 0) {
+    } else if (gPlayerSelection == PLAYER_TOEJAM) {
         VDP_COMMAND = 0x5c160003;
         TextWriteStringTiles(RankCharsTable[gPlayerRank[PLAYER_TOEJAM]]);
         VDP_COMMAND = 0x5c3c0003;
@@ -547,9 +547,9 @@ void DrawHUD()
                 for (column = 0; column < 40; column++) {
                     tile = CombinedHudBackgroundByteMap[row][column];
                     if (tile & 0x40)
-                        tile |= 0x800;
+                        tile |= VDP_TILE_HORIZONTAL_FLIP;
                     if (tile & 0x80)
-                        tile |= 0x1000;
+                        tile |= VDP_TILE_VERTICAL_FLIP;
                     tile &= 0xff3f;
                     VDP_DATA = tile + 0x8580;
                 }
@@ -562,18 +562,18 @@ void DrawHUD()
     } else {
         if (!gPlayerInventoryOpen[PLAYER_TOEJAM] && !gPlayerInventoryOpen[PLAYER_EARL])
             VDP_CONTROL_WORD = 0x9200;
-        HudPositionLevelNumberSprites(1);
+        HudPositionLevelNumberSprites(PLAYER_EARL);
     }
     if (gPlayerLives[PLAYER_TOEJAM] >= 0)
-        HudPositionLevelNumberSprites(0);
+        HudPositionLevelNumberSprites(PLAYER_TOEJAM);
     else
-        HudPositionLevelNumberSprites(1);
-    HudPositionActionIconSprite(0);
-    HudPositionActionIconSprite(1);
-    HudPositionHealthBarSprites(0);
-    HudPositionHealthBarSprites(1);
-    HudPositionLivesSprite(0);
-    HudPositionLivesSprite(1);
+        HudPositionLevelNumberSprites(PLAYER_EARL);
+    HudPositionActionIconSprite(PLAYER_TOEJAM);
+    HudPositionActionIconSprite(PLAYER_EARL);
+    HudPositionHealthBarSprites(PLAYER_TOEJAM);
+    HudPositionHealthBarSprites(PLAYER_EARL);
+    HudPositionLivesSprite(PLAYER_TOEJAM);
+    HudPositionLivesSprite(PLAYER_EARL);
     DmaCopyWordsToVram(gHudHardwareSpriteBytes, 0xf858, 48);
     gHudRedrawPending = 0;
 }
@@ -689,13 +689,13 @@ void SetupTheMainGame()
 {
     if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
         gToejamLevel = 1;
-        gPlayerHealth[PLAYER_TOEJAM] = 23;
+        gPlayerHealth[PLAYER_TOEJAM] = PLAYER_TOEJAM_BASE_HEALTH;
         gPlayerLives[PLAYER_TOEJAM] = 3;
         gPlayerBucks[PLAYER_TOEJAM] = 3;
     }
     if (gPlayerLives[PLAYER_EARL] >= 0) {
         gEarlLevel = 1;
-        gPlayer2Health = 31;
+        gPlayer2Health = PLAYER_EARL_BASE_HEALTH;
         gPlayerLives[PLAYER_EARL] = 3;
         gPlayer2Bucks = 3;
     }
@@ -703,14 +703,14 @@ void SetupTheMainGame()
     gPlayerHealthBeforeSwimming[PLAYER_TOEJAM] = -1;
     gPlayerPowerups[PLAYER_TOEJAM] = PRESENT_NONE;
     gPlayer2Powerup = PRESENT_NONE;
-    HudInitializeHealthBar(0, 1);
-    HudInitializeHealthBar(1, 1);
-    HudLoadLevelNumberSprites(0);
-    HudLoadLevelNumberSprites(1);
-    HudLoadActionIconSprite(0);
-    HudLoadActionIconSprite(1);
-    HudLoadLivesSpriteTiles(0);
-    HudLoadLivesSpriteTiles(1);
+    HudInitializeHealthBar(PLAYER_TOEJAM, 1);
+    HudInitializeHealthBar(PLAYER_EARL, 1);
+    HudLoadLevelNumberSprites(PLAYER_TOEJAM);
+    HudLoadLevelNumberSprites(PLAYER_EARL);
+    HudLoadActionIconSprite(PLAYER_TOEJAM);
+    HudLoadActionIconSprite(PLAYER_EARL);
+    HudLoadLivesSpriteTiles(PLAYER_TOEJAM);
+    HudLoadLivesSpriteTiles(PLAYER_EARL);
 }
 
 /* MATCHING QUALIFICATION: PlayerUpdateHealthAndLives reads the shared
@@ -756,6 +756,6 @@ unsigned short terrain_class;
     if ((entity->draw_flags & ENTITY_DRAW_LATE) && entity->sprite_state != PLAYER_ANIM_FLATTENED)
         entity->draw_flags &= ~ENTITY_DRAW_LATE;
     if (CheckPromotionScore(player_number))
-        PerformPromotion(player_number, 11, terrain_class);
+        PerformPromotion(player_number, PRESENT_PROMOTION, terrain_class);
 }
 

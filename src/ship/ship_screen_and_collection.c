@@ -197,8 +197,8 @@ short player_number;
                 tile = GetRandomNumber() & 3;
                 tile += 41;
                 if (GetRandomNumber() & 1) {
-                    tile |= 0x800;
-                    tile |= 0x1000;
+                    tile |= VDP_TILE_HORIZONTAL_FLIP;
+                    tile |= VDP_TILE_VERTICAL_FLIP;
                 }
                 VDP_COMMAND = (VDP_WRITE_WINDOW + (row << 23)) + (column << 17);
                 VDP_DATA = tile + 0x8580L;
@@ -284,8 +284,8 @@ void InitializeShipScreenTilemapAndPalettes()
                 tile = GetRandomNumber() & 3;
                 tile += 41;
                 if (GetRandomNumber() & 1) {
-                    tile |= 0x800;
-                    tile |= 0x1000;
+                    tile |= VDP_TILE_HORIZONTAL_FLIP;
+                    tile |= VDP_TILE_VERTICAL_FLIP;
                 }
                 VDP_COMMAND = (VDP_WRITE_WINDOW + (row << 23)) + (column << 17);
                 VDP_DATA = tile + 0x8580L;
@@ -428,19 +428,19 @@ short player_number;
     gFrameCounter = 0;
     while (gFrameCounter < 240) {
         if (player_number == PLAYER_TOEJAM || player_number == 2) {
-            pressed_buttons = ReadMappedPlayerInput(0);
-            pressed_buttons &= 0x70;
+            pressed_buttons = ReadMappedPlayerInput(PLAYER_TOEJAM);
+            pressed_buttons &= INPUT_ACTION_MASK;
             if (pressed_buttons) {
-                while (ReadMappedPlayerInput(0) & INPUT_ACTION_MASK & pressed_buttons)
+                while (ReadMappedPlayerInput(PLAYER_TOEJAM) & INPUT_ACTION_MASK & pressed_buttons)
                     AnimateShipScreenBackground(0);
                 break;
             }
         }
         if (player_number == PLAYER_EARL || player_number == 2) {
-            pressed_buttons = ReadMappedPlayerInput(1);
-            pressed_buttons &= 0x70;
+            pressed_buttons = ReadMappedPlayerInput(PLAYER_EARL);
+            pressed_buttons &= INPUT_ACTION_MASK;
             if (pressed_buttons) {
-                while (ReadMappedPlayerInput(1) & INPUT_ACTION_MASK & pressed_buttons)
+                while (ReadMappedPlayerInput(PLAYER_EARL) & INPUT_ACTION_MASK & pressed_buttons)
                     AnimateShipScreenBackground(0);
                 break;
             }
@@ -545,10 +545,10 @@ short selected_piece, player_number;
         gMode2RegSoftcopy &= 0x3c;
         VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
         RestoreGameplayGraphics();
-        if (gPlayerInventoryOpen[0])
-            InventoryRedrawSynchronously(0);
+        if (gPlayerInventoryOpen[PLAYER_TOEJAM])
+            InventoryRedrawSynchronously(PLAYER_TOEJAM);
         if (gPlayer2InventoryOpen)
-            InventoryRedrawSynchronously(1);
+            InventoryRedrawSynchronously(PLAYER_EARL);
         if (selected_piece >= 0) {
             gMode2RegSoftcopy |= 0x40;
             VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
@@ -605,7 +605,7 @@ struct earthling_state *ship_piece;
     if (player_number == PLAYER_TOEJAM || !gSplitScreenEnabled)
         StartDialogue(2);
     else
-        GenerateSpeech(1, "Jammin", 1);
+        GenerateSpeech(PLAYER_EARL, "Jammin", 1);
 }
 
 /* Create the pending camera-relative indicator only outside split-screen.

@@ -1,4 +1,5 @@
 #include "terrain.h"
+#include "hardware.h"
 #include "entities.h"
 #include "assets_map.h"
 #include "elevator_calls.h"
@@ -49,7 +50,7 @@ unsigned char flags;
             for (row = origin_y; row < origin_y + height; ++row) {
                 for (column = origin_x; column < origin_x + width; ++column) {
                     tile_word = LevelMetatileMaps[metatile][row][column];
-                    property = PlayerTilePropertyLookup[tile_word & 0x7ff];
+                    property = PlayerTilePropertyLookup[tile_word & VDP_TILE_INDEX_MASK];
                     if (!(((flags & 1) && property == TERRAIN_GROUND) ||
                           ((flags & 2) && property == TERRAIN_SINKING) ||
                           ((flags & 8) && property == TERRAIN_WATER))) {
@@ -88,9 +89,9 @@ register int player;
     char level;
 
     if (gPlayerLives[PLAYER_TOEJAM] < 0)
-        player = 1;
+        player = PLAYER_EARL;
     else if (gPlayer2Lives < 0)
-        player = 0;
+        player = PLAYER_TOEJAM;
     if (player == 2) {
         width = 12;
         level = gPlayerInfo[PLAYER_TOEJAM].level;
@@ -102,7 +103,7 @@ register int player;
         width = 16;
         height = 8;
     }
-    if (player == 1 && gPlayerLives[PLAYER_TOEJAM] >= 0)
+    if (player == PLAYER_EARL && gPlayerLives[PLAYER_TOEJAM] >= 0)
         map = gPlayer2LevelMap[0];
     else
         map = gPlayer1LevelMap[0];
@@ -156,11 +157,11 @@ set_position:
     /* ORIGINAL BUG: If the exhaustive scan finds no valid position, its last
      * output coordinates are still used. The random loop also does not count
      * marked metatiles, so an entirely marked map never reaches the scan. */
-    if (player == 0 || player == 2) {
+    if (player == PLAYER_TOEJAM || player == 2) {
         gPlayerInfo[PLAYER_TOEJAM].y = position_y;
         gPlayerInfo[PLAYER_TOEJAM].x = position_x;
     }
-    if (player == 1 || player == 2) {
+    if (player == PLAYER_EARL || player == 2) {
         gPlayerInfo[PLAYER_EARL].y = position_y;
         gPlayerInfo[PLAYER_EARL].x = position_x;
         if (player == 2)

@@ -133,7 +133,7 @@ char level, elevator_type;
     if (level == 1) {
         map_x = 9;
         map_y = 10;
-    } else if (level == 26) {
+    } else if (level == LEVEL_FINAL) {
         map_x = 2;
         map_y = 21;
     } else {
@@ -398,8 +398,8 @@ void MapEnterFinalLevel()
     struct object_state *player;
 
     if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
-        gPlayerInfo[PLAYER_TOEJAM].level = 26;
-        MapLoadPlayerLevel(0, gPlayerInfo[PLAYER_TOEJAM].level);
+        gPlayerInfo[PLAYER_TOEJAM].level = LEVEL_FINAL;
+        MapLoadPlayerLevel(PLAYER_TOEJAM, gPlayerInfo[PLAYER_TOEJAM].level);
         player = &gPlayerInfo[PLAYER_TOEJAM];
         gPlayerInfo[PLAYER_TOEJAM].height = 0;
         StopPlayer(player);
@@ -409,8 +409,8 @@ void MapEnterFinalLevel()
         player->tile &= ~VDP_TILE_PRIORITY;
     }
     if (gPlayer2Lives >= 0) {
-        gPlayerInfo[PLAYER_EARL].level = 26;
-        MapLoadPlayerLevel(1, gPlayerInfo[PLAYER_EARL].level);
+        gPlayerInfo[PLAYER_EARL].level = LEVEL_FINAL;
+        MapLoadPlayerLevel(PLAYER_EARL, gPlayerInfo[PLAYER_EARL].level);
         player = &gPlayerInfo[PLAYER_EARL];
         gPlayerInfo[PLAYER_EARL].height = 0;
         StopPlayer(player);
@@ -609,7 +609,7 @@ struct elevator_record *elevator;
                 for (column = 0; column < 8; ++column) {
                     tile = TransitionBackgroundTileOffsets[row][column] + 0x2001;
                     if (SpritePriorityLookup[gPlayer1MapLevel])
-                        tile |= 0x8000;
+                        tile |= VDP_TILE_PRIORITY;
                     VDP_DATA = tile;
                 }
         }
@@ -676,12 +676,12 @@ char elevator_number;
         ElevatorBeginRideScene(elevator);
     }
     if (first_rides) {
-        MapLoadPlayerLevel(0, gPlayerInfo[PLAYER_TOEJAM].level);
+        MapLoadPlayerLevel(PLAYER_TOEJAM, gPlayerInfo[PLAYER_TOEJAM].level);
         EarthlingRetainLevelBank(gPlayerInfo[PLAYER_TOEJAM].level);
         LoadLevelItemBank(gPlayerInfo[PLAYER_TOEJAM].level);
     }
     if (second_rides) {
-        MapLoadPlayerLevel(1, gPlayerInfo[PLAYER_EARL].level);
+        MapLoadPlayerLevel(PLAYER_EARL, gPlayerInfo[PLAYER_EARL].level);
         EarthlingRetainLevelBank(gPlayerInfo[PLAYER_EARL].level);
         LoadLevelItemBank(gPlayerInfo[PLAYER_EARL].level);
     }
@@ -701,20 +701,20 @@ char elevator_number;
     if (second_rides) {
         gPlayerInfo[PLAYER_EARL].y = destination_y;
         gPlayerInfo[PLAYER_EARL].x = destination_x;
-        HudLoadLevelNumberSprites(1);
+        HudLoadLevelNumberSprites(PLAYER_EARL);
         gPlayer2ElevatorId = elevator_number;
-        if (destination_level < 26)
-            TelephonePlaceOutsidePlayerViews(1);
+        if (destination_level < LEVEL_FINAL)
+            TelephonePlaceOutsidePlayerViews(PLAYER_EARL);
     }
     if (first_rides) {
         gPlayerInfo[PLAYER_TOEJAM].y = destination_y;
         gPlayerInfo[PLAYER_TOEJAM].x = destination_x;
-        HudLoadLevelNumberSprites(0);
+        HudLoadLevelNumberSprites(PLAYER_TOEJAM);
         gPlayerElevatorFlags[PLAYER_TOEJAM] = elevator_number;
-        if (destination_level < 26)
-            TelephonePlaceOutsidePlayerViews(0);
+        if (destination_level < LEVEL_FINAL)
+            TelephonePlaceOutsidePlayerViews(PLAYER_TOEJAM);
     }
-    if (destination_level == 26)
+    if (destination_level == LEVEL_FINAL)
         LoadFinalLevelMap();
     gElevatorDepartureInProgress = 0;
     UpdateScreenSplitMode(1);

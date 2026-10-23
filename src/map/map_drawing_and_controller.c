@@ -83,9 +83,9 @@ short player;
             else
                 left_tile = FontBackgroundByteMap[row - 1][column];
             if (left_tile & 0x40)
-                left_tile |= 0x800;
+                left_tile |= VDP_TILE_HORIZONTAL_FLIP;
             if (left_tile & 0x80)
-                left_tile |= 0x1000;
+                left_tile |= VDP_TILE_VERTICAL_FLIP;
             left_tile &= 0xff3f;
             VDP_DATA = left_tile + 0x4580;
         }
@@ -97,7 +97,7 @@ short player;
             map_cell = map[row * MAP_COLUMNS + column];
             map_cell &= 0xff;
             if (map_cell != 34) {
-                tile_number = map_cell & 0x7f;
+                tile_number = map_cell & METATILE_BASE_MASK;
                 left_tile = tile_number * 2 + 1;
                 right_tile = tile_number * 2 + 2;
                 palette = 0;
@@ -109,9 +109,9 @@ short player;
                     palette = 3;
                 left_tile |= palette << 13;
                 right_tile |= palette << 13;
-                if (map_cell & 0x80) {
-                    VDP_DATA = right_tile | 0x800;
-                    VDP_DATA = left_tile | 0x800;
+                if (map_cell & METATILE_MIRROR_X) {
+                    VDP_DATA = right_tile | VDP_TILE_HORIZONTAL_FLIP;
+                    VDP_DATA = left_tile | VDP_TILE_HORIZONTAL_FLIP;
                 } else {
                     VDP_DATA = left_tile;
                     VDP_DATA = right_tile;
@@ -122,7 +122,7 @@ short player;
                     if (!random_tile)
                         VDP_DATA = 0x2045;
                     else {
-                        random_flips = GetRandomNumber() & 0x1800;
+                        random_flips = GetRandomNumber() & (VDP_TILE_HORIZONTAL_FLIP | VDP_TILE_VERTICAL_FLIP);
                         VDP_DATA = random_flips + 0x422b + random_tile - 1;
                     }
                 }
@@ -146,7 +146,7 @@ int cover_row, cover_column;
                 row = cover_row + row_offset;
                 column = (cover_column + column_offset) / 2;
                 if (row >= 0 && row < MAP_ROWS && column >= 0 && column < MAP_COLUMNS &&
-                        (map[row * MAP_COLUMNS + column] & 0x7f) != 34)
+                        (map[row * MAP_COLUMNS + column] & METATILE_BASE_MASK) != 34)
                     return 1;
             }
         }
@@ -229,33 +229,33 @@ struct hardware_sprite *sprites;
     }
     VDP_COMMAND = VDP_WRITE_WINDOW;
     for (column = 0; column < 40; ++column)
-        VDP_DATA = 0x8000;
+        VDP_DATA = VDP_TILE_PRIORITY;
     for (row = 0; row < MAP_ROWS; ++row) {
         VDP_COMMAND = VDP_WRITE_WINDOW + ((row + 1) << 23);
-        VDP_DATA = 0x8000;
+        VDP_DATA = VDP_TILE_PRIORITY;
         for (column = 0; column < MAP_COLUMNS; ++column) {
-            overlay = (map[row * MAP_COLUMNS + column] & 0x1f00) >> 8;
+            overlay = (map[row * MAP_COLUMNS + column] & METATILE_OVERLAY_MASK) >> 8;
             if (overlay) {
                 overlay_number = overlay & 15;
                 left_tile = (overlay_number + 121) * 2 + 1;
                 right_tile = (overlay_number + 121) * 2 + 2;
                 if (overlay & 16) {
-                    VDP_DATA = right_tile | 0x8800;
-                    VDP_DATA = left_tile | 0x8800;
+                    VDP_DATA = right_tile | (VDP_TILE_PRIORITY | VDP_TILE_HORIZONTAL_FLIP);
+                    VDP_DATA = left_tile | (VDP_TILE_PRIORITY | VDP_TILE_HORIZONTAL_FLIP);
                 } else {
-                    VDP_DATA = left_tile | 0x8000;
-                    VDP_DATA = right_tile | 0x8000;
+                    VDP_DATA = left_tile | VDP_TILE_PRIORITY;
+                    VDP_DATA = right_tile | VDP_TILE_PRIORITY;
                 }
             } else {
-                VDP_DATA = 0x8000;
-                VDP_DATA = 0x8000;
+                VDP_DATA = VDP_TILE_PRIORITY;
+                VDP_DATA = VDP_TILE_PRIORITY;
             }
         }
-        VDP_DATA = 0x8000;
+        VDP_DATA = VDP_TILE_PRIORITY;
     }
     VDP_COMMAND = 0x5d800003;
     for (column = 0; column < 40; ++column)
-        VDP_DATA = 0x8000;
+        VDP_DATA = VDP_TILE_PRIORITY;
     DisplayMap(map, sprites, level);
 }
 
@@ -353,15 +353,15 @@ struct hardware_sprite *sprites;
     short player, tile;
     struct object_state *position;
 
-    for (player = 0; player <= PLAYER_EARL; ++player) {
+    for (player = PLAYER_TOEJAM; player <= PLAYER_EARL; ++player) {
         position = &gPlayerInfo[player];
         if (!PlayerHasOddElevatorState(player) && position->level == level) {
             tile = sprites[player].tile;
             if (!player) {
-                VDP_COMMAND = 0x40000000 + (((tile << 5) & 0x3fff) << 16) + (((tile << 5) & 0xc000) >> 14);
+                VDP_COMMAND = VDP_WRITE_VRAM_BASE + (((tile << 5) & 0x3fff) << 16) + (((tile << 5) & 0xc000) >> 14);
                 MoveDataToVRAM(ToejamMapIcon, 16);
             } else {
-                VDP_COMMAND = 0x40000000 + (((tile << 5) & 0x3fff) << 16) + (((tile << 5) & 0xc000) >> 14);
+                VDP_COMMAND = VDP_WRITE_VRAM_BASE + (((tile << 5) & 0x3fff) << 16) + (((tile << 5) & 0xc000) >> 14);
                 MoveDataToVRAM(EarlMapIcon, 16);
             }
             sprites[player].tile |= 0xe000;
@@ -382,16 +382,16 @@ struct hardware_sprite *sprites;
     for (bank = 0; bank < 2; ++bank) {
         if (!gEarthlingBankUsers[bank] || gEarthlingBankLevels[bank] != level)
             continue;
-        if (!gEarthlingBanks[bank][0].kind)
+        if (gEarthlingBanks[bank][0].kind == EARTHLING_SHIP_PIECE)
             piece = 0;
-        else if (!gEarthlingBanks[bank][1].kind)
+        else if (gEarthlingBanks[bank][1].kind == EARTHLING_SHIP_PIECE)
             piece = 1;
         else
             continue;
         world_x = gEarthlingBanks[bank][piece].x;
         world_y = gEarthlingBanks[bank][piece].y;
         tile = sprites[0].tile & VDP_TILE_INDEX_MASK;
-        VDP_COMMAND = 0x40000000 + (((tile << 5) & 0x3fff) << 16) + (((tile << 5) & 0xc000) >> 14);
+        VDP_COMMAND = VDP_WRITE_VRAM_BASE + (((tile << 5) & 0x3fff) << 16) + (((tile << 5) & 0xc000) >> 14);
         MoveDataToVRAM(ShipPieceMapIcon, 64);
         world_x = (world_x - 128) / 8 + 128 - 2;
         world_y = (world_y - 64) / 8 + 128;
@@ -505,7 +505,7 @@ short player;
     short map_number, buttons;
 
     map_number = 0;
-    if (player == 1 && gSplitScreenEnabled)
+    if (player == PLAYER_EARL && gSplitScreenEnabled)
         map_number = 1;
 #if REVISION >= 2
     /* REV 02 resets the opening player's idle counter; REV 00 does not. */
@@ -550,7 +550,7 @@ short player;
     PreGenerateRandoms();
     while (ReadMappedPlayerInput(player) & INPUT_BUTTON_C)
         WaitForNextVBlank(1);
-    while (!((buttons = ReadMappedPlayerInput(player)) & 0x70))
+    while (!((buttons = ReadMappedPlayerInput(player)) & INPUT_ACTION_MASK))
         DrawMapCharacters(sprites);
     buttons &= INPUT_ACTION_MASK;
     while (ReadMappedPlayerInput(player) & buttons)

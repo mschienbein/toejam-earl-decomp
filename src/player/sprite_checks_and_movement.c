@@ -128,7 +128,7 @@ unsigned short land;
     }
     if (gPlayerElevatorApproachInputGate[player_number]) {
         if (input & INPUT_UP)
-            input = 1;
+            input = INPUT_UP;
         else
             gPlayerElevatorApproachInputGate[player_number] = 0;
     }
@@ -156,7 +156,7 @@ unsigned short land;
         sprite = 0;
         velocity_x = 0;
         velocity_y = 0;
-        animation_mode = 0;
+        animation_mode = ANIMATION_MOTION_NONE;
     } else if (input & INPUT_HORIZONTAL_MASK) {
         if (((input & INPUT_LEFT) && velocity_x >= 0) ||
             ((input & INPUT_RIGHT) && velocity_x <= 0)) {
@@ -165,7 +165,7 @@ unsigned short land;
             else
                 sprite = PLAYER_ANIM_WALK_RIGHT;
             velocity_y = 0;
-            animation_mode = 3;
+            animation_mode = ANIMATION_MOTION_XY;
         }
         if (input & INPUT_VERTICAL_MASK) {
             if (input & INPUT_UP)
@@ -190,7 +190,7 @@ unsigned short land;
                 sprite = PLAYER_ANIM_WALK_UP;
             else
                 sprite = PLAYER_ANIM_WALK_DOWN;
-            animation_mode = 2;
+            animation_mode = ANIMATION_MOTION_Y;
             velocity_x = 0;
         }
         if (input & INPUT_UP)
@@ -254,7 +254,7 @@ short player_number, input, sprite, velocity_x, velocity_y, mode;
         if (input & INPUT_BUTTON_A) {
             if (player->animation_group_mask & PLAYER_GROUP_WALK) {
                 if (gPlayerPowerups[player_number] == PRESENT_NONE)
-                    sprite = player->sprite_state + 4;
+                    sprite = player->sprite_state + (PLAYER_ANIM_SNEAK_UP - PLAYER_ANIM_WALK_UP);
                 else if (gPlayerPowerups[player_number] == PRESENT_SUPER_HITOPS && !gPlayerElevatorFlags[player_number]) {
                     sprite = (player->sprite_state & DIRECTION_MASK) + PLAYER_ANIM_HITOPS_UP;
                     PlaySoundEffect((long)Sfx_Running, AUDIO_PRIORITY_NORMAL, 0);

@@ -1,3 +1,4 @@
+#include "entities.h"
 #include "audio_calls.h"
 #include "core_calls.h"
 #include "hardware_calls.h"
@@ -15,7 +16,7 @@ void SegaLogoVBlank()
     }
     if (gSegaVBlankSpriteUpdatesEnabled) {
         UploadQueuedSpriteGraphics(0, 0);
-        SelectViewportSpriteChain(0);
+        SelectViewportSpriteChain(PLAYER_TOEJAM);
     }
     MusicUpdateSequencer();
     ++gFrameCounter;

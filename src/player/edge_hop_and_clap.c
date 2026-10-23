@@ -80,12 +80,12 @@ void PlayerUpdateHealthSharingClap()
             average_health = (gPlayerHealth[PLAYER_TOEJAM] + gPlayerHealth[PLAYER_EARL] + 1) >> 1;
             /* ORIGINAL BUG: These branches do not cap the compared player's
              * health to PlayerGetMaximumHealth's result ([INFERENCE] its health limit). */
-            if (average_health > PlayerGetMaximumHealth(0)) {
+            if (average_health > PlayerGetMaximumHealth(PLAYER_TOEJAM)) {
                 gPlayerHealth[PLAYER_TOEJAM] = average_health;
-                gPlayerHealth[PLAYER_EARL] = (average_health << 1) - PlayerGetMaximumHealth(0);
-            } else if (average_health > PlayerGetMaximumHealth(1)) {
+                gPlayerHealth[PLAYER_EARL] = (average_health << 1) - PlayerGetMaximumHealth(PLAYER_TOEJAM);
+            } else if (average_health > PlayerGetMaximumHealth(PLAYER_EARL)) {
                 gPlayerHealth[PLAYER_EARL] = average_health;
-                gPlayerHealth[PLAYER_TOEJAM] = (average_health << 1) - PlayerGetMaximumHealth(1);
+                gPlayerHealth[PLAYER_TOEJAM] = (average_health << 1) - PlayerGetMaximumHealth(PLAYER_EARL);
             } else {
                 gPlayerHealth[PLAYER_TOEJAM] = average_health;
                 gPlayerHealth[PLAYER_EARL] = average_health;

@@ -32,7 +32,7 @@ void SetupPresentIdentities()
 {
     short present_number, identity;
 
-    for (present_number = 0; present_number < 27; ++present_number) {
+    for (present_number = PRESENT_ICARUS_WINGS; present_number < PRESENT_BONUS_HITOPS; ++present_number) {
         gPresentInfo[present_number].appearance = -1;
         gPresentInfo[present_number].identified = 0;
     }
@@ -172,10 +172,10 @@ short level, large;
     }
     for (search_counter = 0; search_counter < 10; ++search_counter) {
         random = GetRandomNumber();
-        row = random % 26;
+        row = random % MAP_ROWS;
         random = GetRandomNumber();
-        column = random % 19;
-        metatile = map[row * 19 + column];
+        column = random % MAP_COLUMNS;
+        metatile = map[row * MAP_COLUMNS + column];
         if ((metatile & 0x2000) || (large && MapIsLargePlacementTerrainExcluded(metatile))) {
             /* ORIGINAL BUG: rejected marked tiles do not consume an attempt. */
             --search_counter;
@@ -192,16 +192,16 @@ short level, large;
         }
     }
     random = GetRandomNumber();
-    search_counter = random % 26;
+    search_counter = random % MAP_ROWS;
     random = GetRandomNumber();
-    start_column = random % 19;
+    start_column = random % MAP_COLUMNS;
     row = search_counter;
     do {
         column = start_column;
         do {
-            metatile = map[row * 19 + column];
+            metatile = map[row * MAP_COLUMNS + column];
             if ((metatile & 0x2000) || (large && MapIsLargePlacementTerrainExcluded(metatile))) {
-                column = (column + 1) % 19;
+                column = (column + 1) % MAP_COLUMNS;
                 continue;
             }
             if (TerrainValidation(metatile, width, height, &position_x, &position_y, 3)) {
@@ -213,9 +213,9 @@ short level, large;
                     return;
                 }
             }
-            column = (column + 1) % 19;
+            column = (column + 1) % MAP_COLUMNS;
         } while (column != start_column);
-        row = (row + 1) % 26;
+        row = (row + 1) % MAP_ROWS;
     } while (row != search_counter);
 }
 
@@ -249,7 +249,7 @@ short level;
             if (blocked)
                 continue;
             for (item_number = 0; item_number < 28; ++item_number) {
-                if (items[item_number].kind != -1) {
+                if (items[item_number].kind != ITEM_UNUSED) {
                     current_x = items[item_number].x;
                     current_y = items[item_number].y;
                     if (abs(position_x - current_x) < 16 &&
@@ -305,14 +305,14 @@ int SelectRandomPresent()
     register unsigned short random;
 
     total = 0;
-    for (present = 0; present < 27; ++present)
+    for (present = PRESENT_ICARUS_WINGS; present < PRESENT_BONUS_HITOPS; ++present)
         total += PresentWeightTable[present];
     do {
         random = GetRandomNumber();
         selected = random % (total + 1);
     } while (!selected);
     total = 0;
-    for (present = 0; present < 27; ++present) {
+    for (present = PRESENT_ICARUS_WINGS; present < PRESENT_BONUS_HITOPS; ++present) {
         total += PresentWeightTable[present];
         if (selected <= total)
             return present;
@@ -329,7 +329,7 @@ short level;
     char kind;
     long saved_seed;
 
-    if (level >= 26)
+    if (level >= LEVEL_FINAL)
         return;
     for (bank = 0; bank < 2; ++bank) {
         if (gItemBankUsers[bank] && gItemBankLevels[bank] == level) {
@@ -365,16 +365,16 @@ short level;
 get_present:
             kind = SelectRandomPresent();
             if (level == 1 && slot < 4) {
-                while (kind == 0 || kind == 2 || kind == 5 || kind == 26 ||
-                       kind == 18 || kind == 16)
+                while (kind == PRESENT_ICARUS_WINGS || kind == PRESENT_INNERTUBE || kind == PRESENT_ROCKET_SKATES || kind == PRESENT_MYSTERY ||
+                       kind == PRESENT_RANDOMIZER || kind == PRESENT_TOTAL_BUMMER)
                     kind = SelectRandomPresent();
             }
         } else {
             if (GetRandomNumber() % 100 < 75) {
                 kind = GetRandomNumber() % 16;
-                kind += 64;
+                kind += ITEM_GROUND_BASE;
             } else
-                kind = 80;
+                kind = ITEM_BUCK;
         }
         if (!(gCollectedLevelItemBits[level] & ((unsigned long)0x80000000 >> slot))) {
             gObjectTable[bank][slot].kind = kind;

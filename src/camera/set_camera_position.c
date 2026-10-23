@@ -10,9 +10,9 @@ int player;
 long position_x, position_y;
 {
     if (gPlayerLives[PLAYER_TOEJAM] < 0)
-        player = 0;
+        player = PLAYER_TOEJAM;
     SetCameraViewOrigin(player, position_x, position_y);
-    if (player == 0) {
+    if (player == PLAYER_TOEJAM) {
         gCamera1FollowXFixed = (long)gCamera1PendingX << 8;
         gCamera1FollowYFixed = (long)gCamera1PendingY << 8;
     } else {

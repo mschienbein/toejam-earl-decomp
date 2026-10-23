@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "entities.h"
 #include "sprites.h"
 #include "assets_sprites.h"
@@ -13,7 +14,7 @@ struct object_state *entity;
     unsigned char depth;
     short viewport;
 
-    viewport_bit = 2;
+    viewport_bit = ENTITY_PRIMARY_VIEW;
     sprite_number = entity->primary_shadow;
     viewport = 0;
     do {
@@ -33,7 +34,7 @@ struct object_state *entity;
             }
             if (sprite_number) {
                 if (entity->height < 0 && entity->sprite_state != -1) {
-                    gHardwareSpriteTable[sprite_number].size = 12;
+                    gHardwareSpriteTable[sprite_number].size = VDP_SPRITE_SIZE_4X1;
                     gHardwareSpriteTable[sprite_number].tile = 0x87f9;
                 } else {
                     unsigned char old_depth = gHardwareSpriteTable[sprite_number].size & 0x70;
@@ -52,7 +53,7 @@ struct object_state *entity;
                 }
             }
         }
-        viewport_bit = 4;
+        viewport_bit = ENTITY_SECONDARY_VIEW;
         sprite_number = entity->secondary_shadow;
         ++viewport;
     } while (viewport <= 1);

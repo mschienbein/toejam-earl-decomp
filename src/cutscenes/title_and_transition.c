@@ -91,7 +91,7 @@ void ClearUpperVramTilemap()
     for (row = 0; row < 32; ++row) {
         VDP_COMMAND = VDP_WRITE_PLANE_B + (row << 23);
         for (column = 0; column < 64; ++column)
-            VDP_DATA = 0x8000;
+            VDP_DATA = VDP_TILE_PRIORITY;
     }
 }
 
@@ -103,7 +103,7 @@ void ClearLowerVramTilemap()
     for (row = 0; row < 32; ++row) {
         VDP_COMMAND = VDP_WRITE_PLANE_A + (row << 23);
         for (column = 0; column < 64; ++column)
-            VDP_DATA = 0x8000;
+            VDP_DATA = VDP_TILE_PRIORITY;
     }
 }
 
@@ -152,12 +152,12 @@ short clear_interior;
                 if (row == 0 || row == 27 || column == 0 || column == 39) {
                     tile = (GetRandomNumber() & 3) + 41;
                     if ((int)GetRandomNumber() & 1) {
-                        tile |= 0x800;
-                        tile |= 0x1000;
+                        tile |= VDP_TILE_HORIZONTAL_FLIP;
+                        tile |= VDP_TILE_VERTICAL_FLIP;
                     }
                     VDP_DATA = 0x8580 + tile;
                 } else
-                    VDP_DATA = 0x8000;
+                    VDP_DATA = VDP_TILE_PRIORITY;
         }
     } else {
         for (row = 0; row < 28; ++row)
@@ -166,8 +166,8 @@ short clear_interior;
                     tile = (GetRandomNumber() & 3) + 41;
                     VDP_COMMAND = VDP_WRITE_PLANE_A + (row << 23) + (column << 17);
                     if ((int)GetRandomNumber() & 1) {
-                        tile |= 0x800;
-                        tile |= 0x1000;
+                        tile |= VDP_TILE_HORIZONTAL_FLIP;
+                        tile |= VDP_TILE_VERTICAL_FLIP;
                     }
                     VDP_DATA = 0x8580 + tile;
                 }
@@ -187,8 +187,8 @@ short left, top, right, bottom;
             if (row == top || row == bottom || column == left || column == right) {
                 tile = (GetRandomNumber() & 3) + 41;
                 if ((int)GetRandomNumber() & 1) {
-                    tile |= 0x800;
-                    tile |= 0x1000;
+                    tile |= VDP_TILE_HORIZONTAL_FLIP;
+                    tile |= VDP_TILE_VERTICAL_FLIP;
                 }
                 VDP_DATA = 0x8580 + tile;
             } else
@@ -204,7 +204,7 @@ short metatile, left, top;
     for (row = 0; row < 8; ++row) {
         VDP_COMMAND = VDP_WRITE_PLANE_A + ((top + row) << 23) + (left << 17);
         for (column = 0; column < 16; ++column)
-            VDP_DATA = 0x8000 + GetLevelMetatileTile(metatile, row, column);
+            VDP_DATA = VDP_TILE_PRIORITY + GetLevelMetatileTile(metatile, row, column);
     }
 }
 
@@ -251,7 +251,7 @@ short animate_objects;
     UpdateAndQueueEntitySprites();
     WaitForNextVBlank(1);
     UploadQueuedSpriteGraphics(0, 0);
-    SelectViewportSpriteChain(0);
+    SelectViewportSpriteChain(PLAYER_TOEJAM);
     ++gSceneUpdateCounter;
     if (!gMusicAnimationEvent)
         return 1;

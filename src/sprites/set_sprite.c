@@ -12,7 +12,7 @@ char sprite_state;
 
     if (sprite_state < 0)
         return;
-    if (!entity->entity_index)
+    if (entity->entity_index == PLAYER_TOEJAM)
         definitions = PlayerAnimationDescriptors;
     else
         definitions = Player2AnimationDescriptors;

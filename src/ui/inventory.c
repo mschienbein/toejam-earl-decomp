@@ -106,11 +106,11 @@ long viewport;
     while (gSpriteGraphicsUploadPending)
         ;
     if (viewport == 0)
-        viewport_mask = 2;
+        viewport_mask = ENTITY_PRIMARY_VIEW;
     else
-        viewport_mask = 4;
+        viewport_mask = ENTITY_SECONDARY_VIEW;
     object = gPlayerInfo;
-    for (object_number = 0; object_number < 26; object_number++, object++) {
+    for (object_number = 0; object_number < GAMEPLAY_ENTITY_SLOT_COUNT; object_number++, object++) {
         if ((object->draw_flags & ENTITY_ACTIVE) && (object->draw_flags & viewport_mask))
             ReleaseEntityViewportSprites(object, viewport);
     }
@@ -149,9 +149,9 @@ void InventoryServiceRedrawPhase()
             for (column = 0; column < 40; column++) {
                 tile = FontBackgroundByteMap[row][column];
                 if (tile & 0x40)
-                    tile |= 0x800;
+                    tile |= VDP_TILE_HORIZONTAL_FLIP;
                 if (tile & 0x80)
-                    tile |= 0x1000;
+                    tile |= VDP_TILE_VERTICAL_FLIP;
                 tile &= 0xff3f;
                 VDP_DATA = tile + 0x8580;
             }
@@ -328,12 +328,12 @@ short *opening;
 {
     short present, player_number;
 
-    if (!opening[0] && !opening[1])
+    if (!opening[PLAYER_TOEJAM] && !opening[PLAYER_EARL])
         return;
-    if (opening[0])
+    if (opening[PLAYER_TOEJAM])
         player_number = PLAYER_TOEJAM;
     else
-        player_number = 1;
+        player_number = PLAYER_EARL;
     present = OpenPresent(player_number);
     if (present && gPlayerLives[player_number ^ 1] >= 0) {
         if (!PlayersRequireSeparateViews()) {
@@ -379,8 +379,8 @@ int player_number;
         } else
             InventoryRefreshContentsAndWait(player_number ^ 1);
     }
-    gPlayer1InventorySelectorFlags |= 64;
-    gPlayer2InventorySelectorFlags |= 64;
+    gPlayer1InventorySelectorFlags |= ENTITY_HIDDEN;
+    gPlayer2InventorySelectorFlags |= ENTITY_HIDDEN;
     gInventoryLabelsSuppressed = 1;
     PlaySoundEffect((long)Sfx_Randomize, 96, 1);
     for (frame = 0; frame < 60; ++frame) {
@@ -405,8 +405,8 @@ void ProcessInventory()
     short player_number;
     struct object_state *object;
 
-    opening[0] = 0;
-    opening[1] = 0;
+    opening[PLAYER_TOEJAM] = 0;
+    opening[PLAYER_EARL] = 0;
     for (player_number = PLAYER_TOEJAM; player_number <= PLAYER_EARL; ++player_number) {
         object = &gPlayerInfo[player_number];
         if (gPlayerLives[player_number] < 0 || object->sprite_state == PLAYER_ANIM_GHOST ||
@@ -439,8 +439,8 @@ void ProcessInventory()
                     InventoryDropSelectedPresent(player_number);
                     InventoryRefreshContentsAndWait(player_number);
                 } else {
-                    gPlayerPreviousProcessedInput[player_number] |= 64;
-                    if (InventoryGetSelectedPresent(player_number) == 18)
+                    gPlayerPreviousProcessedInput[player_number] |= INPUT_BUTTON_A;
+                    if (InventoryGetSelectedPresent(player_number) == PRESENT_RANDOMIZER)
                         RandomizePresents(player_number);
                     else {
                         ToggleInventory(player_number);
@@ -510,8 +510,8 @@ void InventoryOpenMailOrderMenu(player_number)
 short player_number;
 {
     DrawInventory(player_number, 2);
-    gPlayerProcessedInput[player_number] = 64;
-    gPlayerPreviousProcessedInput[player_number] = 64;
+    gPlayerProcessedInput[player_number] = INPUT_BUTTON_A;
+    gPlayerPreviousProcessedInput[player_number] = INPUT_BUTTON_A;
     CheckBButton();
 }
 
@@ -521,8 +521,8 @@ void InventoryOpenIdentificationMenu(player)
 short player;
 {
     DrawInventory(player, 3);
-    gPlayerProcessedInput[player] = 64;
-    gPlayerPreviousProcessedInput[player] = 64;
+    gPlayerProcessedInput[player] = INPUT_BUTTON_A;
+    gPlayerPreviousProcessedInput[player] = INPUT_BUTTON_A;
     CheckBButton();
 }
 
@@ -552,7 +552,7 @@ short player;
         PlaySound(PSG_PERIODIC_TONE2_NOISE, AUDIO_PRIORITY_NORMAL);
         return 0;
     }
-    if (gPlayerInventory[player][slot] != 26)
+    if (gPlayerInventory[player][slot] != PRESENT_MYSTERY)
         gPresentInfo[present].identified = 1;
     while (slot < 15 && gPlayerInventory[player][slot + 1] != PRESENT_NONE) {
         gPlayerInventory[player][slot] = gPlayerInventory[player][slot + 1];
@@ -828,12 +828,12 @@ short player_number;
     gPlayerInventorySelectionColumn[player_number] = 0;
     gPlayerInventoryScrollRow[player_number] = 0;
     group = 1;
-    ready_mask = 4;
+    ready_mask = ENTITY_SECONDARY_VIEW;
     if (player_number == PLAYER_TOEJAM) {
         first_object = 26;
         if (gSplitScreenEnabled) {
             group = 0;
-            ready_mask = 2;
+            ready_mask = ENTITY_PRIMARY_VIEW;
         }
     } else
         first_object = 33;
@@ -991,7 +991,7 @@ short player_number, menu, already_blanked;
             for (character = 0; character < 13; ++character) {
                 tile = InventoryCompactMapA[row][character];
                 if (tile & 64)
-                    tile |= 0x800;
+                    tile |= VDP_TILE_HORIZONTAL_FLIP;
                 tile &= ~0xc0;
                 VDP_DATA = 0x8233 + tile;
             }
@@ -1003,7 +1003,7 @@ short player_number, menu, already_blanked;
             for (character = 0; character < 13; ++character) {
                 tile = InventoryCompactMapB[row][character];
                 if (tile & 64)
-                    tile |= 0x800;
+                    tile |= VDP_TILE_HORIZONTAL_FLIP;
                 tile &= ~0xc0;
                 VDP_DATA = 0xe24e + tile;
             }
@@ -1015,7 +1015,7 @@ short player_number, menu, already_blanked;
             for (character = 0; character < 11; ++character) {
                 tile = InventoryCompactMapC[row][character];
                 if (tile & 64)
-                    tile |= 0x800;
+                    tile |= VDP_TILE_HORIZONTAL_FLIP;
                 tile &= ~0xc0;
                 VDP_DATA = 0x8267 + tile;
             }
@@ -1027,7 +1027,7 @@ short player_number, menu, already_blanked;
             for (character = 0; character < 22; ++character) {
                 tile = InventoryCompactMapD[row][character];
                 if (tile & 64)
-                    tile |= 0x800;
+                    tile |= VDP_TILE_HORIZONTAL_FLIP;
                 tile &= ~0xc0;
                 VDP_DATA = 0xc1cd + tile;
             }

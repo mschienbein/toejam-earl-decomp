@@ -48,7 +48,7 @@ struct object_state *object;
     if (object->level == gPlayer1MapLevel)
         player_number = PLAYER_TOEJAM;
     else if (object->level == gPlayer2MapLevel)
-        player_number = 1;
+        player_number = PLAYER_EARL;
     else
         return;
     if (object->animation_motion_axes & ANIMATION_MOTION_X) {
@@ -75,8 +75,8 @@ struct object_state *object;
         return;
     if (earthling->kind == EARTHLING_HULA_DANCER || earthling->kind == EARTHLING_WIZARD ||
         earthling->kind == EARTHLING_WISEMAN || earthling->kind == EARTHLING_OPERA_SINGER) {
-        if (!EntityFindNarrowCollisionAtPosition(object, object->x, object->y, 0) &&
-            EntityFindNarrowCollisionAtPosition(object, next_x, next_y, 0)) {
+        if (!EntityFindNarrowCollisionAtPosition(object, object->x, object->y, PLAYER_TOEJAM) &&
+            EntityFindNarrowCollisionAtPosition(object, next_x, next_y, PLAYER_TOEJAM)) {
             object->sprite_state = 0;
             return;
         }
@@ -95,7 +95,7 @@ struct object_state *object;
     if ((earthling->kind == EARTHLING_LAWNMOWER && terrain == TERRAIN_GROUND) ||
         (earthling->kind == EARTHLING_SHARK && terrain == TERRAIN_WATER) ||
         (earthling->kind != EARTHLING_LAWNMOWER && earthling->kind != EARTHLING_SHARK &&
-         (unsigned short)terrain < 80)) {
+         (unsigned short)terrain < TERRAIN_WALKABLE_MAX)) {
         object->x = next_x;
         object->fraction_x = fraction_x;
         object->y = next_y;
@@ -127,10 +127,10 @@ struct object_state *object;
     if (object->level == gPlayer1MapLevel)
         player_number = PLAYER_TOEJAM;
     else if (object->level == gPlayer2MapLevel)
-        player_number = 1;
+        player_number = PLAYER_EARL;
     else
         return;
-    if (GetMapTerrainAtWorldPosition(player_number, object->x, object->y) == 144)
+    if (GetMapTerrainAtWorldPosition(player_number, object->x, object->y) == TERRAIN_VOID)
         object->draw_flags &= ~ENTITY_SHADOW;
     else
         object->draw_flags |= ENTITY_SHADOW;
@@ -155,7 +155,7 @@ struct object_state *object;
     if (object->level == gPlayer1MapLevel)
         player_number = PLAYER_TOEJAM;
     else if (object->level == gPlayer2MapLevel)
-        player_number = 1;
+        player_number = PLAYER_EARL;
     else
         return;
     if (object->animation_motion_axes & ANIMATION_MOTION_X) {
@@ -190,7 +190,7 @@ struct object_state *object;
     }
     terrain = GetMapTerrainAtWorldPosition(player_number, next_x, next_y);
     if (earthling->kind == EARTHLING_ICE_CREAM_TRUCK) {
-        if ((gTerrainQueryMetatileWord & 127) == 34)
+        if ((gTerrainQueryMetatileWord & METATILE_BASE_MASK) == 34)
             return;
         earthling->saved_x_or_status = terrain;
     } else if (terrain == TERRAIN_VOID) {

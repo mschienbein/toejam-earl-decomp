@@ -25,10 +25,10 @@ struct hardware_sprite *sprite;
         world_y = elevator->y;
         world_y -= 64;
         tile = sprite->tile & VDP_TILE_INDEX_MASK;
-        VDP_COMMAND = 0x40000000 + (((tile << 5) & 0x3fff) << 16) +
+        VDP_COMMAND = VDP_WRITE_VRAM_BASE + (((tile << 5) & 0x3fff) << 16) +
                       (((tile << 5) & 0xc000) >> 14);
         MoveDataToVRAM(ElevatorMapIcon, 16);
-        sprite->tile |= 0x6000;
+        sprite->tile |= VDP_TILE_PALETTE_3;
         sprite->x = world_x / 8 + 130;
         sprite->y = world_y / 8 + 128;
         return;

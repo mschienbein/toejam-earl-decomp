@@ -26,96 +26,96 @@ char mode;
     unsigned short selected_player;
     struct object_state *target;
 
-    distance[0] = 0x7fff;
-    distance[1] = 0x7fff;
+    distance[PLAYER_TOEJAM] = 0x7fff;
+    distance[PLAYER_EARL] = 0x7fff;
     separation >>= 2;
     if (state->sprite_state == 2)
         maximum_distance = 0x400;
     else
         maximum_distance <<= 8;
-    if (gPlayerDecoyEntities[0]) {
-        target = &gPlayerInfo[gPlayerDecoyEntities[0]];
+    if (gPlayerDecoyEntities[PLAYER_TOEJAM]) {
+        target = &gPlayerInfo[gPlayerDecoyEntities[PLAYER_TOEJAM]];
         if (state->level == target->level) {
-            delta_x[0] = (target->x - state->x) >> 2;
+            delta_x[PLAYER_TOEJAM] = (target->x - state->x) >> 2;
             if (state->x < target->x)
-                delta_x[0] -= separation;
+                delta_x[PLAYER_TOEJAM] -= separation;
             else
-                delta_x[0] += separation;
-            delta_y[0] = (target->y - state->y) >> 2;
-            if (abs(delta_x[0]) < 160 && abs(delta_y[0]) < 112)
-                distance[0] = delta_x[0] * delta_x[0] + delta_y[0] * delta_y[0];
+                delta_x[PLAYER_TOEJAM] += separation;
+            delta_y[PLAYER_TOEJAM] = (target->y - state->y) >> 2;
+            if (abs(delta_x[PLAYER_TOEJAM]) < 160 && abs(delta_y[PLAYER_TOEJAM]) < 112)
+                distance[PLAYER_TOEJAM] = delta_x[PLAYER_TOEJAM] * delta_x[PLAYER_TOEJAM] + delta_y[PLAYER_TOEJAM] * delta_y[PLAYER_TOEJAM];
         }
-        if (distance[0] > 0x1800)
-            distance[0] = 0x7fff;
+        if (distance[PLAYER_TOEJAM] > 0x1800)
+            distance[PLAYER_TOEJAM] = 0x7fff;
         else
-            maximum_distance = distance[0];
+            maximum_distance = distance[PLAYER_TOEJAM];
     }
-    if (gPlayerDecoyEntities[1]) {
-        target = &gPlayerInfo[gPlayerDecoyEntities[1]];
+    if (gPlayerDecoyEntities[PLAYER_EARL]) {
+        target = &gPlayerInfo[gPlayerDecoyEntities[PLAYER_EARL]];
         if (state->level == target->level) {
-            delta_x[1] = (target->x - state->x) >> 2;
+            delta_x[PLAYER_EARL] = (target->x - state->x) >> 2;
             if (state->x < target->x)
-                delta_x[1] -= separation;
+                delta_x[PLAYER_EARL] -= separation;
             else
-                delta_x[1] += separation;
-            delta_y[1] = (target->y - state->y) >> 2;
-            if (abs(delta_x[1]) < 160 && abs(delta_y[1]) < 112)
-                distance[1] = delta_x[1] * delta_x[1] + delta_y[1] * delta_y[1];
+                delta_x[PLAYER_EARL] += separation;
+            delta_y[PLAYER_EARL] = (target->y - state->y) >> 2;
+            if (abs(delta_x[PLAYER_EARL]) < 160 && abs(delta_y[PLAYER_EARL]) < 112)
+                distance[PLAYER_EARL] = delta_x[PLAYER_EARL] * delta_x[PLAYER_EARL] + delta_y[PLAYER_EARL] * delta_y[PLAYER_EARL];
         }
-        if (distance[1] > 0x1800)
-            distance[1] = 0x7fff;
+        if (distance[PLAYER_EARL] > 0x1800)
+            distance[PLAYER_EARL] = 0x7fff;
         else
-            maximum_distance = distance[1];
+            maximum_distance = distance[PLAYER_EARL];
     }
-    if (distance[0] == 0x7fff && distance[1] == 0x7fff) {
+    if (distance[PLAYER_TOEJAM] == 0x7fff && distance[PLAYER_EARL] == 0x7fff) {
         special_target = 0;
         if (state->level == gPlayerInfo[PLAYER_TOEJAM].level && !gPlayerElevatorFlags[PLAYER_TOEJAM] &&
-            (mode != 7 || !gPlayerControlRemapEntities[0])) {
+            (mode != EARTHLING_CUPID || !gPlayerControlRemapEntities[PLAYER_TOEJAM])) {
             target = &gPlayerInfo[PLAYER_TOEJAM];
             if ((mode != EARTHLING_MOLE || (gPlayerInventory[PLAYER_TOEJAM][0] != PRESENT_NONE && !state->attachment_x_or_latch)) &&
                 EarthlingCanTargetPlayerState(state, target)) {
-                delta_x[0] = (target->x - state->x) >> 2;
+                delta_x[PLAYER_TOEJAM] = (target->x - state->x) >> 2;
                 if (state->x < target->x)
-                    delta_x[0] -= separation;
+                    delta_x[PLAYER_TOEJAM] -= separation;
                 else
-                    delta_x[0] += separation;
-                delta_y[0] = (target->y - state->y) >> 2;
-                if (abs(delta_x[0]) < 160 && abs(delta_y[0]) < 112)
-                    distance[0] = delta_x[0] * delta_x[0] + delta_y[0] * delta_y[0];
+                    delta_x[PLAYER_TOEJAM] += separation;
+                delta_y[PLAYER_TOEJAM] = (target->y - state->y) >> 2;
+                if (abs(delta_x[PLAYER_TOEJAM]) < 160 && abs(delta_y[PLAYER_TOEJAM]) < 112)
+                    distance[PLAYER_TOEJAM] = delta_x[PLAYER_TOEJAM] * delta_x[PLAYER_TOEJAM] + delta_y[PLAYER_TOEJAM] * delta_y[PLAYER_TOEJAM];
             }
         }
         if (state->level == gPlayerInfo[PLAYER_EARL].level && !gPlayerElevatorFlags[PLAYER_EARL] &&
-            (mode != 7 || !gPlayerControlRemapEntities[1])) {
+            (mode != EARTHLING_CUPID || !gPlayerControlRemapEntities[PLAYER_EARL])) {
             target = &gPlayerInfo[PLAYER_EARL];
             if ((mode != EARTHLING_MOLE || (gPlayerInventory[PLAYER_EARL][0] != PRESENT_NONE && !state->attachment_y_or_latch)) &&
                 EarthlingCanTargetPlayerState(state, target)) {
-                delta_x[1] = (target->x - state->x) >> 2;
+                delta_x[PLAYER_EARL] = (target->x - state->x) >> 2;
                 if (state->x < target->x)
-                    delta_x[1] -= separation;
+                    delta_x[PLAYER_EARL] -= separation;
                 else
-                    delta_x[1] += separation;
-                delta_y[1] = (target->y - state->y) >> 2;
-                if (abs(delta_x[1]) < 160 && abs(delta_y[1]) < 112)
-                    distance[1] = delta_x[1] * delta_x[1] + delta_y[1] * delta_y[1];
+                    delta_x[PLAYER_EARL] += separation;
+                delta_y[PLAYER_EARL] = (target->y - state->y) >> 2;
+                if (abs(delta_x[PLAYER_EARL]) < 160 && abs(delta_y[PLAYER_EARL]) < 112)
+                    distance[PLAYER_EARL] = delta_x[PLAYER_EARL] * delta_x[PLAYER_EARL] + delta_y[PLAYER_EARL] * delta_y[PLAYER_EARL];
             }
         }
     }
-    if (maximum_distance < distance[0] && maximum_distance < distance[1])
+    if (maximum_distance < distance[PLAYER_TOEJAM] && maximum_distance < distance[PLAYER_EARL])
         return -1;
-    if (distance[0] < distance[1])
-        selected_player = 0;
+    if (distance[PLAYER_TOEJAM] < distance[PLAYER_EARL])
+        selected_player = PLAYER_TOEJAM;
     else
-        selected_player = 1;
-    if (mode == 12)
+        selected_player = PLAYER_EARL;
+    if (mode == EARTHLING_NERD_HERD)
         return EntitySteerWithVerticalDeadZone(state, delta_x[selected_player], delta_y[selected_player]);
-    if (mode == 7) {
+    if (mode == EARTHLING_CUPID) {
         if (special_target)
             target = &gPlayerInfo[gPlayerDecoyEntities[selected_player]];
         else
             target = &gPlayerInfo[selected_player];
         return EntitySteerWithHorizontalDrift(state, target, delta_x[selected_player], delta_y[selected_player]);
     }
-    if (mode == 14 && !special_target)
+    if (mode == EARTHLING_SHARK && !special_target)
         EntityTriggerTargetStatusEventOnce(state, target);
     return EntitySetVelocityTowardDelta(state, delta_x[selected_player], delta_y[selected_player]);
 }

@@ -1,4 +1,5 @@
 #include "earthling_types.h"
+#include "terrain.h"
 #include "entities.h"
 #include "earthlings.h"
 #include "assets_audio.h"
@@ -20,18 +21,18 @@ short next_state;
 
     animation = earthling->state & 252;
     if (animation == 4) {
-        if (earthling->saved_x_or_status >= 128)
+        if (earthling->saved_x_or_status >= TERRAIN_WATER)
             next_state += 4;
     } else if (animation == 8) {
         if (!object->frame_duration) {
-            if (earthling->saved_x_or_status >= 128)
+            if (earthling->saved_x_or_status >= TERRAIN_WATER)
                 next_state += 8;
             else
                 PlaySoundEffect((long)Sfx_IceCreamHonk, AUDIO_PRIORITY_NORMAL, 0);
         } else
             next_state += 4;
     } else if (animation == 12) {
-        if (earthling->saved_x_or_status >= 80 ||
+        if (earthling->saved_x_or_status >= TERRAIN_WALKABLE_MAX ||
             EntityIsWithinRange(object, &gPlayerInfo[PLAYER_TOEJAM], 96, 48) ||
             EntityIsWithinRange(object, &gPlayer2Entity, 96, 48))
             next_state += 8;
@@ -53,11 +54,11 @@ struct object_state *object;
 
     animation = earthling->state & 252;
     if (animation == 4) {
-        if (earthling->saved_x_or_status >= 128)
+        if (earthling->saved_x_or_status >= TERRAIN_WATER)
             next_state = earthling->state + 4;
     } else if (animation == 8) {
         if (!object->frame_duration) {
-            if (earthling->saved_x_or_status >= 128)
+            if (earthling->saved_x_or_status >= TERRAIN_WATER)
                 next_state = earthling->state + 4;
             else {
                 next_state = earthling->state - 4;
@@ -65,7 +66,7 @@ struct object_state *object;
             }
         }
     } else if (animation == 12) {
-        if (earthling->saved_x_or_status < 80 &&
+        if (earthling->saved_x_or_status < TERRAIN_WALKABLE_MAX &&
             !EntityIsWithinRange(object, &gPlayerInfo[PLAYER_TOEJAM], 128, 64) &&
             !EntityIsWithinRange(object, &gPlayer2Entity, 128, 64))
             next_state = earthling->state - 4;

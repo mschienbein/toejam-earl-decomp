@@ -195,7 +195,7 @@ short level;
     char special, kind;
     long saved_random;
 
-    if (level >= 26)
+    if (level >= LEVEL_FINAL)
         return;
     for (bank = 0; bank < EARTHLING_BANK_COUNT; ++bank) {
         if (gEarthlingBankUsers[bank] && gEarthlingBankLevels[bank] == level) {
@@ -222,12 +222,12 @@ short level;
             }
             if (!record_number)
                 break;
-            kind = 18;
+            kind = EARTHLING_MOLE;
         } else if (special) {
-            kind = 9;
+            kind = EARTHLING_MAILBOX;
             special = 0;
         } else if (ship_piece) {
-            kind = 0;
+            kind = EARTHLING_SHIP_PIECE;
             MapGetShipPieceWorldPosition(&position_x, &position_y);
             ship_piece = 0;
             if (gHighestLevel == level)
@@ -239,15 +239,15 @@ short level;
             }
             kind = LevelEarthlingChoices[level][record_number];
             if (kind == EARTHLING_SANTA && gHighestLevel > level)
-                kind = 1;
+                kind = EARTHLING_DEVIL;
         }
-        if (kind > 0) {
+        if (kind > EARTHLING_SHIP_PIECE) {
             if (!level)
                 GetLevelZeroEarthlingPosition(kind, &position_x, &position_y);
             else if (FindSpawnLocationForEarthling(kind, bank, &position_x, &position_y, level))
                 gEarthlingSpawnFailureMasks[level] |= (unsigned long)0x80000000 >> record_number;
         }
-        if (!kind || (kind >= 0 && !(gEarthlingSpawnFailureMasks[level] & ((unsigned long)0x80000000 >> record_number)))) {
+        if (!kind || (kind >= EARTHLING_SHIP_PIECE && !(gEarthlingSpawnFailureMasks[level] & ((unsigned long)0x80000000 >> record_number)))) {
             gEarthlingBanks[bank][record_number].kind = kind;
             gEarthlingBanks[bank][record_number].level = level;
             gEarthlingBanks[bank][record_number].x = position_x;
@@ -310,7 +310,7 @@ short state;
     if (object->frame >= 0)
         --object->frame;
     for (sequence_index = 0; sequence_index <= object->frame; ++sequence_index)
-        if ((object->sequence[sequence_index] & 0xf0) == 0xf0)
+        if ((object->sequence[sequence_index] & ANIMATION_COMMAND_MASK) == ANIMATION_COMMAND_MASK)
             object->frame = -1;
     if (state != 2 && earthling->second_object) {
         FreeEntity(earthling->second_object);
@@ -494,9 +494,9 @@ short terrain;
         else
             y -= 25;
         if (player->draw_flags & ENTITY_PRIMARY_VIEW)
-            terrain_player = 0;
+            terrain_player = PLAYER_TOEJAM;
         else
-            terrain_player = 1;
+            terrain_player = PLAYER_EARL;
         selection = GetMapTerrainAtWorldPosition(terrain_player, x, y);
         if ((terrain == TERRAIN_WATER && selection == TERRAIN_WATER) ||
             (terrain != TERRAIN_WATER && selection != TERRAIN_WATER))
@@ -528,7 +528,7 @@ short terrain;
     else {
         selection = 0;
         while (!selection) {
-            earthling->kind = (random = GetRandomNumber()) % 22 + 1;
+            earthling->kind = (random = GetRandomNumber()) % 22 + EARTHLING_DEVIL;
             if (earthling->kind == EARTHLING_OPERA_SINGER || earthling->kind == EARTHLING_SANTA ||
                 earthling->kind == EARTHLING_WISEMAN || earthling->kind == EARTHLING_WIZARD ||
                 earthling->kind == EARTHLING_MAILBOX) {
@@ -647,7 +647,7 @@ void EarthlingApplyNearbySleep()
     struct earthling_state *earthling;
     struct object_state *source_object, *object;
 
-    for (source = 0; source <= 1; ++source) {
+    for (source = PLAYER_TOEJAM; source <= PLAYER_EARL; ++source) {
         if (gPlayerBoomBoxEntities[source]) {
             source_object = &gPlayerInfo[gPlayerBoomBoxEntities[source]];
             if (gEarthlingBankUsers[0] &&
@@ -781,7 +781,7 @@ struct earthling_state *earthling;
 void DamageEarthling(earthling)
 struct earthling_state *earthling;
 {
-    if (earthling && earthling->kind > 0) {
+    if (earthling && earthling->kind > EARTHLING_SHIP_PIECE) {
         if (!EarthlingIsMailOrderMailbox(earthling) && earthling->kind != EARTHLING_SANTA &&
             earthling->kind < EARTHLING_LEMONADE_STAND && --earthling->health_visibility[0] <= 0) {
             if (earthling->kind == EARTHLING_OPERA_SINGER || earthling->kind == EARTHLING_WIZARD ||
@@ -800,7 +800,7 @@ struct earthling_state *earthling;
     }
 }
 
-/* Remove eligible earthlings whose saved coordinates now lie on terrain 0x90. */
+/* Remove eligible earthlings whose saved coordinates now lie on void terrain. */
 void EarthlingDamageOnHazardTerrain(player_number, level)
 short player_number, level;
 {
@@ -813,11 +813,11 @@ short player_number, level;
         buffer = 1;
     earthling = gEarthlingBanks[buffer];
     for (slot = 0; slot < EARTHLINGS_PER_BANK; ++slot, ++earthling) {
-        if (earthling->kind > 0 && earthling->object &&
+        if (earthling->kind > EARTHLING_SHIP_PIECE && earthling->object &&
             earthling->kind != EARTHLING_BEES && earthling->kind != EARTHLING_BEES_VARIANT &&
             earthling->kind != EARTHLING_CUPID && earthling->kind != EARTHLING_SANTA &&
             earthling->kind != EARTHLING_WHIRLWIND && earthling->kind != EARTHLING_ICE_CREAM_TRUCK &&
-            GetMapTerrainAtWorldPosition(player_number, earthling->x, earthling->y) == 0x90) {
+            GetMapTerrainAtWorldPosition(player_number, earthling->x, earthling->y) == TERRAIN_VOID) {
             earthling->health_visibility[0] = 0;
             DamageEarthling(earthling);
         }

@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "core_calls.h"
 #include "ram_camera.h"
 
@@ -6,7 +7,7 @@ void SetCameraTilePriorityEnabled(enabled)
 short enabled;
 {
     if (enabled)
-        gCameraTileAttributes = 0x8000;
+        gCameraTileAttributes = VDP_TILE_PRIORITY;
     else
         gCameraTileAttributes = 0;
 }

@@ -74,7 +74,7 @@ short song;
         CutsceneStepFrameAndMusicCadence(3, 0);
         JamOutUpdateLayoutsAndScroll(0);
         JamOutUpdateLeadAnimations();
-        if ((GetCtrl1Input() | GetCtrl2Input()) & 128)
+        if ((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)
             ++start_hold;
         else
             start_hold = 0;
@@ -166,7 +166,7 @@ void JamOutVBlank()
             gJamPlayer2PreviousInput = gPlayerProcessedInput[PLAYER_EARL];
         }
     }
-    if (gPlayerSelection == 1) {
+    if (gPlayerSelection == PLAYER_EARL) {
         saved_input = gJamAudioRoute1PendingInput;
         gJamAudioRoute1PendingInput = gJamAudioRoute2PendingInput;
         gJamAudioRoute2PendingInput = saved_input;
@@ -213,7 +213,7 @@ void JamOutVBlank()
             gJamAudioRoute2PendingInput = 0;
         }
     }
-    if (gPlayerSelection == 1)
+    if (gPlayerSelection == PLAYER_EARL)
         --gFrameCounter;
 }
 
@@ -237,7 +237,7 @@ void JamOutRandomSampleVBlank()
         gJamAudioRoute2PendingInput = gJamPlayer2PendingAnimationInput = gPlayerProcessedInput[PLAYER_EARL];
         gJamPlayer2PreviousInput = gPlayerProcessedInput[PLAYER_EARL];
     }
-    if (gPlayerSelection == 1) {
+    if (gPlayerSelection == PLAYER_EARL) {
         saved_input = gJamAudioRoute1PendingInput;
         gJamAudioRoute1PendingInput = gJamAudioRoute2PendingInput;
         gJamAudioRoute2PendingInput = saved_input;
@@ -300,7 +300,7 @@ void JamOutRandomSampleVBlank()
         }
         gJamAudioRoute2PendingInput = 0;
     }
-    if (gPlayerSelection == 1)
+    if (gPlayerSelection == PLAYER_EARL)
         --gFrameCounter;
 }
 
@@ -620,9 +620,9 @@ void JamOutShowLeadPairLayout()
         for (column = 0; column < 22; ++column) {
             tile = CrashPackedTilemapA[row][column];
             if (tile & 64)
-                tile |= 0x800;
+                tile |= VDP_TILE_HORIZONTAL_FLIP;
             if (tile & 128)
-                tile |= 0x1000;
+                tile |= VDP_TILE_VERTICAL_FLIP;
             tile &= 0xff3f;
             VDP_DATA = tile + 0xa233;
         }
@@ -639,9 +639,9 @@ short x, y;
         for (column = 0; column < 20; ++column) {
             tile = CrashPackedTilemapB[row][column];
             if (tile & 64)
-                tile |= 0x800;
+                tile |= VDP_TILE_HORIZONTAL_FLIP;
             if (tile & 128)
-                tile |= 0x1000;
+                tile |= VDP_TILE_VERTICAL_FLIP;
             tile &= 0xff3f;
             VDP_DATA = tile + 0xa233;
         }

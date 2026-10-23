@@ -60,7 +60,7 @@ void ProcessMovement()
                 next_z = entity->height;
                 fraction_z = entity->fraction_height;
             }
-            if (entity->entity_index <= 1) {
+            if (entity->entity_index <= PLAYER_EARL) {
                 if (next_x - entity->width <= 8 ||
                     entity->width + next_x >= 2652)
                     next_x = entity->x;
@@ -72,25 +72,25 @@ void ProcessMovement()
                 } else if (next_y >= 1736)
                     next_y = 1735;
             }
-            if (entity->entity_index <= 1 && !entity->animation_motion_axes) {
-                if (!EntityFindVolumeCollisionAtPosition(entity, entity->x, entity->y, entity->height, 0)) {
+            if (entity->entity_index <= PLAYER_EARL && !entity->animation_motion_axes) {
+                if (!EntityFindVolumeCollisionAtPosition(entity, entity->x, entity->y, entity->height, PLAYER_TOEJAM)) {
                     if (((long)entity->animation_group_mask & PLAYER_GROUP_HITOPS) &&
                         PlayerCheckTerrainEdgeHop(entity, next_x, next_y))
                         next_z = 10;
                     if (next_x != entity->x &&
-                        EntityFindVolumeCollisionAtPosition(entity, next_x, entity->y, entity->height, 0)) {
+                        EntityFindVolumeCollisionAtPosition(entity, next_x, entity->y, entity->height, PLAYER_TOEJAM)) {
                         next_x = entity->x;
                         fraction_x = entity->fraction_x;
                         entity->draw_flags |= ENTITY_BLOCKED_X;
                     }
                     if (next_y != entity->y &&
-                        EntityFindVolumeCollisionAtPosition(entity, next_x, next_y, entity->height, 0)) {
+                        EntityFindVolumeCollisionAtPosition(entity, next_x, next_y, entity->height, PLAYER_TOEJAM)) {
                         next_y = entity->y;
                         fraction_y = entity->fraction_y;
                         entity->draw_flags |= ENTITY_BLOCKED_Y_OR_HEIGHT;
                     }
                     if (next_z < entity->height &&
-                        EntityFindVolumeCollisionAtPosition(entity, next_x, next_y, next_z, 2)) {
+                        EntityFindVolumeCollisionAtPosition(entity, next_x, next_y, next_z, PLAYER_COUNT)) {
                         next_z = entity->height;
                         fraction_z = entity->fraction_height;
                         entity->draw_flags |= ENTITY_BLOCKED_Y_OR_HEIGHT;

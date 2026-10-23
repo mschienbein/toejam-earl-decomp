@@ -1,4 +1,5 @@
 #include "earthling_types.h"
+#include "entities.h"
 #include "earthlings.h"
 #include "ram_earthlings.h"
 #include "random.h"
@@ -31,8 +32,8 @@ short bank, level;
             gMailboxLevelStates[bank].mode = 1;
         else {
             gMailboxLevelStates[bank].mode = 0;
-            gMailboxLevelStates[bank].contact[0] = 0;
-            gMailboxLevelStates[bank].contact[1] = 0;
+            gMailboxLevelStates[bank].contact[PLAYER_TOEJAM] = 0;
+            gMailboxLevelStates[bank].contact[PLAYER_EARL] = 0;
         }
         return 1;
     }

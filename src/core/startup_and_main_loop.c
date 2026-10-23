@@ -65,7 +65,7 @@ long ReadMappedPlayerInput(player)
 short player;
 {
     long input, mapped;
-    if (player == 0) {
+    if (player == PLAYER_TOEJAM) {
         if (!gControllerPortsSwapped) input = gController1RawInput;
         else input = gController2RawInput;
     } else {
@@ -157,14 +157,14 @@ void SelectViewportSpriteChain(player)
 short player;
 {
     if (gSplitScreenEnabled) {
-        if (player == 0)
+        if (player == PLAYER_TOEJAM)
             SelectPrimaryViewportSprites();
         else
             SelectSecondaryViewportSprites();
-    } else if ((player == 0 && gPlayerInventoryOpen[PLAYER_TOEJAM]) ||
-               (player == 1 && gPlayerInventoryOpen[PLAYER_EARL]))
+    } else if ((player == PLAYER_TOEJAM && gPlayerInventoryOpen[PLAYER_TOEJAM]) ||
+               (player == PLAYER_EARL && gPlayerInventoryOpen[PLAYER_EARL]))
         SelectSecondaryViewportSprites();
-    else if (player == 0 || gPlayerInventoryOpen[PLAYER_TOEJAM])
+    else if (player == PLAYER_TOEJAM || gPlayerInventoryOpen[PLAYER_TOEJAM])
         SelectPrimaryViewportSprites();
     else
         TerminatePrimarySpriteChain();
@@ -206,7 +206,7 @@ void HandleVBlank()
                     VDP_DATA = -gCamera1CommittedX / 2;
                 }
             }
-            SelectViewportSpriteChain(0);
+            SelectViewportSpriteChain(PLAYER_TOEJAM);
             if (gTerrainPriorityUpdatePending) {
                 MapClearTilePriorityNearPlayer();
                 /* MATCHING QUALIFICATION: jump to the shared frame increment;
@@ -217,23 +217,23 @@ void HandleVBlank()
                     InventoryServiceRedrawPhase();
                 else if (gSpriteGraphicsUploadPending) {
                     UploadQueuedSpriteGraphics(0, 0);
-                    SelectViewportSpriteChain(0);
+                    SelectViewportSpriteChain(PLAYER_TOEJAM);
                 } else if (gHudRedrawPending) {
-                    HudLoadLivesSpriteTiles(0);
-                    HudLoadLivesSpriteTiles(1);
+                    HudLoadLivesSpriteTiles(PLAYER_TOEJAM);
+                    HudLoadLivesSpriteTiles(PLAYER_EARL);
                     DrawHUD();
                 } else {
                     if (!TextAnimateFontBanks(4)) {
                         DrawLevelGraphics();
                         UpdateCameraY();
                         UpdateCameraX();
-                        HudAnimateHealthBar(0);
-                        HudAnimateHealthBar(1);
+                        HudAnimateHealthBar(PLAYER_TOEJAM);
+                        HudAnimateHealthBar(PLAYER_EARL);
                     }
                     if (++gVBlankPlayerUpdateParity & 1)
-                        HideFlaggedPlayerSprites(0);
+                        HideFlaggedPlayerSprites(PLAYER_TOEJAM);
                     else
-                        HideFlaggedPlayerSprites(1);
+                        HideFlaggedPlayerSprites(PLAYER_EARL);
                 }
             }
         }
@@ -257,7 +257,7 @@ end_frame:
 void HandleHBlank()
 {
     if (gHBlankGraphicsEnabled && gPlayer1MapLevel < LEVEL_FINAL) {
-        SelectViewportSpriteChain(1);
+        SelectViewportSpriteChain(PLAYER_EARL);
         if (gSplitScreenEnabled || gPlayer2InventoryOpen) {
             if (gPlayer2InventoryOpen)
                 VDP_CONTROL_WORD = 0x928e;
@@ -283,7 +283,7 @@ void GetPlayerInput()
     short player;
     struct object_state *entity;
     entity = gPlayerInfo;
-    for (player = 0; player <= PLAYER_EARL; ++player) {
+    for (player = PLAYER_TOEJAM; player <= PLAYER_EARL; ++player) {
         gPlayerPreviousProcessedInput[player] = gPlayerProcessedInput[player];
         if (gPlayerLives[player] >= 0) {
             gPlayerProcessedInput[player] = ReadMappedPlayerInput(player);
@@ -308,9 +308,9 @@ int CheckStartButton()
     if ((gPlayerProcessedInput[PLAYER_TOEJAM] | gPlayerProcessedInput[PLAYER_EARL]) & INPUT_START) {
         if (gPlayerProcessedInput[PLAYER_TOEJAM] & INPUT_START) {
             if (!(gPlayerPreviousProcessedInput[PLAYER_TOEJAM] & INPUT_START))
-                GamePaused(0);
+                GamePaused(PLAYER_TOEJAM);
         } else if (!(gPlayer2PreviousProcessedInput & INPUT_START))
-            GamePaused(1);
+            GamePaused(PLAYER_EARL);
         return 1;
     }
     return 0;
@@ -334,16 +334,16 @@ void ProcessInput()
         if ((input1 | input2) & INPUT_BUTTON_C) {
             if (input1 & INPUT_BUTTON_C) {
                 if (!gPlayerInventoryOpen[PLAYER_TOEJAM]) {
-                    DrawGameMap(0);
+                    DrawGameMap(PLAYER_TOEJAM);
                     return;
                 }
             } else if (!gPlayerInventoryOpen[PLAYER_EARL]) {
-                DrawGameMap(1);
+                DrawGameMap(PLAYER_EARL);
                 return;
             }
         }
     }
-    for (player = 0; player <= PLAYER_EARL; ++player) {
+    for (player = PLAYER_TOEJAM; player <= PLAYER_EARL; ++player) {
         if (gPlayerLives[player] >= 0 && !gPlayerInventoryOpen[player]) {
             SpriteChecks(player, gPlayerProcessedInput[player]);
             entity = &gPlayerInfo[player];
@@ -366,9 +366,9 @@ void ProcessInput()
 /* Reload the pending primary camera position and any active secondary view. */
 void ReloadActiveCameraViews()
 {
-    SetCameraPosition(0, gCamera1PendingX, gCamera1PendingY);
+    SetCameraPosition(PLAYER_TOEJAM, gCamera1PendingX, gCamera1PendingY);
     if (gSplitScreenEnabled)
-        SetCameraPosition(1, gCamera2PendingX, gCamera2PendingY);
+        SetCameraPosition(PLAYER_EARL, gCamera2PendingX, gCamera2PendingY);
 }
 
 /* Enter split-screen mode, optionally animating the transition, and recenter both views. */
@@ -392,13 +392,13 @@ char animate;
         y = gPlayerInfo[PLAYER_TOEJAM].y - gPlayerInfo[PLAYER_TOEJAM].height_pixels / 2 - 56;
         if (gPlayerInfo[PLAYER_TOEJAM].height > 0 && ((long)gPlayerInfo[PLAYER_TOEJAM].animation_group_mask & (PLAYER_GROUP_ICARUS_FLY | PLAYER_GROUP_SKATES_AIR)))
             y -= gPlayerInfo[PLAYER_TOEJAM].height / 2;
-        SetCameraPosition(0, gPlayerInfo[PLAYER_TOEJAM].x - 160, y);
+        SetCameraPosition(PLAYER_TOEJAM, gPlayerInfo[PLAYER_TOEJAM].x - 160, y);
     }
     if (!gPlayer2InventoryOpen) {
         y = gPlayerInfo[PLAYER_EARL].y - gPlayerInfo[PLAYER_EARL].height_pixels / 2 - 56;
         if (gPlayerInfo[PLAYER_EARL].height > 0 && ((long)gPlayerInfo[PLAYER_EARL].animation_group_mask & (PLAYER_GROUP_ICARUS_FLY | PLAYER_GROUP_SKATES_AIR)))
             y -= gPlayerInfo[PLAYER_EARL].height / 2;
-        SetCameraPosition(1, gPlayerInfo[PLAYER_EARL].x - 160, y);
+        SetCameraPosition(PLAYER_EARL, gPlayerInfo[PLAYER_EARL].x - 160, y);
         gCamera2CommittedX = gCamera2PendingX;
         gCamera2CommittedY = gCamera2PendingY;
     }
@@ -439,7 +439,7 @@ short distance_y, distance_x;
         VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     }
     gSplitScreenEnabled = 0;
-    SetCameraPosition(0, x, y);
+    SetCameraPosition(PLAYER_TOEJAM, x, y);
     gCamera2PendingX = gCamera1PendingX;
     gCamera2PendingY = gCamera1PendingY;
     DrawHUD();
@@ -473,7 +473,7 @@ short player;
         gMode2RegSoftcopy &= 0x3c;
         VDP_CONTROL_WORD = VDP_MODE2_REGISTER | gMode2RegSoftcopy;
     }
-    SetCameraPosition(0, entity->x - 160, y);
+    SetCameraPosition(PLAYER_TOEJAM, entity->x - 160, y);
     if (display_enabled) {
         ForceTextBackgroundColorToBlack(0);
         gHudRedrawPending = 1;
@@ -517,9 +517,9 @@ char force;
     if (force) {
         handled = 1;
         if (gPlayerLives[PLAYER_TOEJAM] < 0)
-            CenterSharedCameraOnPlayer(1);
+            CenterSharedCameraOnPlayer(PLAYER_EARL);
         else if (gPlayer2Lives < 0)
-            CenterSharedCameraOnPlayer(0);
+            CenterSharedCameraOnPlayer(PLAYER_TOEJAM);
         else if (gPlayerInfo[PLAYER_TOEJAM].level != gPlayerInfo[PLAYER_EARL].level)
             EnterSplitScreen(0);
         else
@@ -689,8 +689,8 @@ void FurtherInitialisation()
                 MapUpdateItemsAndPresents();
                 ProcessTomatoRain();
             } else {
-                UpdateLandAroundPlayer(0);
-                UpdateLandAroundPlayer(1);
+                UpdateLandAroundPlayer(PLAYER_TOEJAM);
+                UpdateLandAroundPlayer(PLAYER_EARL);
                 ProcessInput();
                 ProcessPlayers();
                 UpdateAllEntityShadows();

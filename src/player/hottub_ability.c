@@ -35,7 +35,7 @@ struct earthling_state *earthling;
         } else if (player->animation_group_mask & PLAYER_GROUP_JUMP_WINDUP) {
             if (++gPlayerJumpCounters[player_number] > 4) {
                 sprite = player->sprite_state + 4;
-                gPlayerInfo[earthling->object].behavior_flags &= ~1;
+                gPlayerInfo[earthling->object].behavior_flags &= ~ENTITY_COLLIDABLE;
                 player->height = 1;
             }
         } else if (player->animation_group_mask & PLAYER_GROUP_JUMP_TAKEOFF) {
@@ -69,13 +69,13 @@ struct earthling_state *earthling;
                     player->behavior_flags |= ENTITY_MASK_PIXELS;
                 } else if (!(GetRandomNumber() & 31)) {
                     player->x -= 20;
-                    GenerateSpeech(0, "chat", 0);
+                    GenerateSpeech(PLAYER_TOEJAM, "chat", 0);
                     player->x += 20;
                 } else if (!(GetRandomNumber() & 31)) {
                     if (NEXT_RANDOM & 1)
-                        GenerateSpeech(0, "giggle", 1);
+                        GenerateSpeech(PLAYER_TOEJAM, "giggle", 1);
                     else
-                        GenerateSpeech(0, "titter", 1);
+                        GenerateSpeech(PLAYER_TOEJAM, "titter", 1);
                 }
             } else if (player_number == PLAYER_EARL) {
                 if (gPlayerProcessedInput[PLAYER_EARL] & INPUT_RIGHT) {
@@ -83,14 +83,14 @@ struct earthling_state *earthling;
                     player->behavior_flags |= ENTITY_MASK_PIXELS;
                 } else if (!(GetRandomNumber() & 31)) {
                     player->x += 20;
-                    GenerateSpeech(1, "chat", 0);
+                    GenerateSpeech(PLAYER_EARL, "chat", 0);
                     player->x -= 20;
                 } else if (gPlayerInfo[PLAYER_TOEJAM].sprite_state != PLAYER_ANIM_HOT_TUB &&
                            !(GetRandomNumber() & 31)) {
                     if (NEXT_RANDOM & 1)
-                        GenerateSpeech(1, "giggle", 1);
+                        GenerateSpeech(PLAYER_EARL, "giggle", 1);
                     else
-                        GenerateSpeech(1, "titter", 1);
+                        GenerateSpeech(PLAYER_EARL, "titter", 1);
                 }
             }
             if (++gPlayerJumpCounters[player_number] > 5)

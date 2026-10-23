@@ -9,6 +9,7 @@
 
 #include "entities.h"
 #include "earthlings.h"
+#include "earthling_types.h"
 #include "sprites.h"
 #include "assets_audio.h"
 #include "assets_earthlings.h"
@@ -153,11 +154,11 @@ void ProcessTomatoRain()
                 if (projectile->height <= 0) {
                     if (projectile->tile & VDP_TILE_PRIORITY) {
                         projectile->draw_flags &= ~ENTITY_SHADOW;
-                        object_number = 0;
+                        object_number = PLAYER_TOEJAM;
                         if (projectile->draw_flags & ENTITY_SECONDARY_VIEW)
-                            object_number = 1;
+                            object_number = PLAYER_EARL;
                         object_number = GetMapTerrainAtWorldPosition(object_number, projectile->x, projectile->y);
-                        if (object_number == 144) {
+                        if (object_number == TERRAIN_VOID) {
                             projectile->tile &= ~VDP_TILE_PRIORITY;
                             projectile->sprite_ready = 0;
                             projectile->sprite_state = 21;
@@ -184,9 +185,9 @@ void ProcessTomatoRain()
                 } else if (projectile->height <= 25) {
                     object_number = ProjectileFindCollisionExcludingOwner(projectile, gSharedProjectileOwners[slot]);
                     if (object_number) {
-                        if (--object_number <= 1 && !gPlayerElevatorFlags[object_number] &&
+                        if (--object_number <= PLAYER_EARL && !gPlayerElevatorFlags[object_number] &&
                             !gPlayerInventoryOpen[object_number] && !gPlayerInteractionChoiceActive[object_number]) {
-                            if (gSharedProjectileOwners[slot] <= 1)
+                            if (gSharedProjectileOwners[slot] <= PLAYER_EARL)
                                 gPlayerHealth[object_number] -= 4;
                             else
                                 gPlayerHealth[object_number] -= 6;
@@ -342,7 +343,7 @@ struct object_state *projectile;
 
     target = gPlayerInfo;
     for (pass = 0; pass < 2; ++pass) {
-        for (index = 0; index <= 1; ++index, ++target) {
+        for (index = PLAYER_TOEJAM; index <= PLAYER_EARL; ++index, ++target) {
             if (pass) {
                 if (!gPlayerDecoyEntities[index])
                     continue;
@@ -452,12 +453,12 @@ void EarthlingUpdateControlRemapProjectiles()
                 if (projectile->height <= 0) {
                     if (projectile->tile & VDP_TILE_PRIORITY) {
                         projectile->draw_flags &= ~ENTITY_SHADOW;
-                        hit = 0;
+                        hit = PLAYER_TOEJAM;
                         if (projectile->draw_flags & ENTITY_SECONDARY_VIEW)
-                            hit = 1;
+                            hit = PLAYER_EARL;
                         hit = GetMapTerrainAtWorldPosition(hit, projectile->x, projectile->y);
-                        if (hit == 0x90) {
-                            projectile->tile &= ~0x8000;
+                        if (hit == TERRAIN_VOID) {
+                            projectile->tile &= ~VDP_TILE_PRIORITY;
                             projectile->sprite_ready = 0;
                         } else {
                             FreeEntity(object_number);
@@ -466,7 +467,7 @@ void EarthlingUpdateControlRemapProjectiles()
                     }
                 } else if (projectile->height <= 25) {
                     if (hit = EntityFindProjectileTargetHit(projectile)) {
-                        if (--hit <= 1 && !gPlayerElevatorFlags[hit] && !gPlayerInventoryOpen[hit])
+                        if (--hit <= PLAYER_EARL && !gPlayerElevatorFlags[hit] && !gPlayerInventoryOpen[hit])
                             PlayerApplyControlRemapEffect(hit);
                         else
                             PresentRegisterDecoyHit(hit);
@@ -590,7 +591,7 @@ unsigned short terrain;
     } else if (object_number = gPlayerActiveTerrainEffectEntities[player_number]) {
         effect = &gPlayerInfo[object_number];
         if (!effect->frame_duration && (effect->draw_flags & ENTITY_EITHER_VIEW)) {
-            source.kind = 1;
+            source.kind = EARTHLING_DEVIL;
             source.x = effect->x;
             source.y = effect->y;
             source.object = object_number;

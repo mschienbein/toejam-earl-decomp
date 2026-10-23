@@ -44,7 +44,7 @@ void PlayEndingSequence()
     VDP_COMMAND = 0x7c020003L;
     VDP_DATA = gCamera1PendingX;
     ClearUpperVramTilemap();
-    gCameraTileAttributes = 0x8000;
+    gCameraTileAttributes = VDP_TILE_PRIORITY;
     VDP_COMMAND = 0x70000002L;
     MoveDataToVRAM(ImageTextBase, FontDataSize << 4);
     VDP_COMMAND = VDP_WRITE_VRAM_BASE;
@@ -95,7 +95,7 @@ short EndingPlayDialogueAndDeparture()
     while (gCutsceneScriptState != -1) {
         WaitForNextVBlank(1);
         UploadQueuedSpriteGraphics(0, 0);
-        SelectViewportSpriteChain(0);
+        SelectViewportSpriteChain(PLAYER_TOEJAM);
         WaitForNextVBlank(1);
         UpdateAndQueueEntitySprites();
         switch (gCutsceneScriptState) {
@@ -307,7 +307,7 @@ short EndingPlayScrollingCredits()
         VDP_COMMAND = 0x7c020003L;
         VDP_DATA = scroll / 4;
         UploadQueuedSpriteGraphics(0, 0);
-        SelectViewportSpriteChain(0);
+        SelectViewportSpriteChain(PLAYER_TOEJAM);
         WaitForNextVBlank(1);
         CutsceneUpdateDriftingEntities(scroll);
         if (!(animation_phase = (animation_phase + 1) % 3))
@@ -497,7 +497,7 @@ short EndingPlayBouncingRocketshipScene()
         UploadQueuedSpriteGraphics(0, 0);
         VDP_COMMAND = 0x7c000003L;
         VDP_DATA = scroll;
-        SelectViewportSpriteChain(0);
+        SelectViewportSpriteChain(PLAYER_TOEJAM);
         scroll += 5;
         if (++gCutsceneScriptState & 1)
             --character_x;

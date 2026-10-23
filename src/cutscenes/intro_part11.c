@@ -32,10 +32,10 @@ short IntroPart11()
     gCutsceneScriptCountdown = 51;
     gCutsceneMusicActorAnimationEnabled = 1;
     while (gCutsceneScriptState != -1 &&
-           !((GetCtrl1Input() | GetCtrl2Input()) & 128)) {
+           !((GetCtrl1Input() | GetCtrl2Input()) & INPUT_START)) {
         do {
             CutsceneStepFrameAndMusicCadence(0, gCutsceneMusicActorAnimationEnabled);
-            if (gCutsceneAdvanceButtonMask = (GetCtrl1Input() | GetCtrl2Input()) & 112)
+            if (gCutsceneAdvanceButtonMask = (GetCtrl1Input() | GetCtrl2Input()) & INPUT_ACTION_MASK)
                 advance_pressed = 1;
         } while (gCutsceneAdvanceButtonMask);
         if (!advance_pressed && --gCutsceneScriptCountdown > 0)

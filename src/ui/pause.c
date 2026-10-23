@@ -81,7 +81,7 @@ short player_number;
         object->y = gCamera1PendingY + 225;
         object->level = gPlayer1MapLevel;
         viewport = 0;
-        viewport_mask = 2;
+        viewport_mask = ENTITY_PRIMARY_VIEW;
         if (gSplitScreenEnabled) {
             if (player_number == PLAYER_TOEJAM)
                 object->height = 168;
@@ -91,7 +91,7 @@ short player_number;
                 object->x = gCamera2PendingX + 160;
                 object->y = gCamera2PendingY + 225;
                 viewport = 1;
-                viewport_mask = 4;
+                viewport_mask = ENTITY_SECONDARY_VIEW;
             }
         } else
             object->height = 112;
@@ -117,28 +117,28 @@ short player_number;
         AudioRequestChannelTemplateEffect(FM_EFFECT_CLEAR);
         AudioRequestFmChannelRelease();
         MusicRequestTrackPointerReset();
-        while ((ReadMappedPlayerInput(0) | ReadMappedPlayerInput(1)) & 128)
+        while ((ReadMappedPlayerInput(PLAYER_TOEJAM) | ReadMappedPlayerInput(PLAYER_EARL)) & INPUT_START)
             ;
         for (;;) {
-            first_input = ReadMappedPlayerInput(0);
-            second_input = ReadMappedPlayerInput(1);
-            if ((first_input | second_input) & 128)
+            first_input = ReadMappedPlayerInput(PLAYER_TOEJAM);
+            second_input = ReadMappedPlayerInput(PLAYER_EARL);
+            if ((first_input | second_input) & INPUT_START)
                 break;
             switch (input_stage) {
             case 0:
-                if (first_input == 113 || second_input == 113)
+                if (first_input == (INPUT_ACTION_MASK | INPUT_UP) || second_input == (INPUT_ACTION_MASK | INPUT_UP))
                     ++input_stage;
                 continue;
             case 1:
-                if (first_input == 72 || second_input == 72)
+                if (first_input == (INPUT_BUTTON_A | INPUT_RIGHT) || second_input == (INPUT_BUTTON_A | INPUT_RIGHT))
                     ++input_stage;
                 continue;
             case 2:
-                if (first_input == 18 || second_input == 18)
+                if (first_input == (INPUT_BUTTON_B | INPUT_DOWN) || second_input == (INPUT_BUTTON_B | INPUT_DOWN))
                     ++input_stage;
                 continue;
             case 3:
-                if (first_input == 36 || second_input == 36) {
+                if (first_input == (INPUT_BUTTON_C | INPUT_LEFT) || second_input == (INPUT_BUTTON_C | INPUT_LEFT)) {
                     entry_number = 0;
                     do {
                         if (gShipPieceLevelAssignments[entry_number])
@@ -166,7 +166,7 @@ short player_number;
         }
         gCurrentMusicSelection = MUSIC_SELECTION_INVALID;
         FreeEntity(object_number);
-        while ((ReadMappedPlayerInput(0) | ReadMappedPlayerInput(1)) & 128)
+        while ((ReadMappedPlayerInput(PLAYER_TOEJAM) | ReadMappedPlayerInput(PLAYER_EARL)) & INPUT_START)
             ;
     }
 }

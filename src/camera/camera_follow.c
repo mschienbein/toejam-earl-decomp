@@ -30,7 +30,7 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
         *delta_y = 0;
         return;
     }
-    if (player == 0) {
+    if (player == PLAYER_TOEJAM) {
         entity = gPlayerInfo;
         camera_x = gCamera1PendingX;
         camera_y = gCamera1PendingY;
@@ -42,7 +42,7 @@ short player, *delta_x, *delta_y, screen_x, screen_y;
     if (entity->frame_phase && (entity->animation_motion_axes & ANIMATION_MOTION_XY)) {
         for (frame_count = 0; ; frame_count++) {
             sequence_byte = entity->sequence[frame_count];
-            if ((sequence_byte & ANIMATION_COMMAND_MASK) == 0xf0)
+            if ((sequence_byte & ANIMATION_COMMAND_MASK) == ANIMATION_COMMAND_MASK)
                 break;
             frame = entity->frames[sequence_byte & ANIMATION_FRAME_MASK];
             velocity_x += frame->motion_x;
@@ -120,31 +120,31 @@ void UpdateCameraFollowing()
         else if (gPlayerInfo[PLAYER_EARL].y < gPlayerInfo[PLAYER_TOEJAM].y)
             secondary_y -= gPlayerInfo[PLAYER_EARL].height;
     }
-    GetPlayerCameraVelocity(0, &velocity_x[0], &velocity_y[0], primary_x, primary_y);
-    GetPlayerCameraVelocity(1, &velocity_x[1], &velocity_y[1], secondary_x, secondary_y);
+    GetPlayerCameraVelocity(PLAYER_TOEJAM, &velocity_x[PLAYER_TOEJAM], &velocity_y[PLAYER_TOEJAM], primary_x, primary_y);
+    GetPlayerCameraVelocity(PLAYER_EARL, &velocity_x[PLAYER_EARL], &velocity_y[PLAYER_EARL], secondary_x, secondary_y);
     if (!gSplitScreenEnabled && !gPlayerInventoryOpen[PLAYER_TOEJAM] && !gPlayer2InventoryOpen &&
             gPlayerLives[PLAYER_TOEJAM] >= 0 && gPlayerLives[PLAYER_EARL] >= 0) {
-        if (velocity_x[0] || velocity_x[1]) {
+        if (velocity_x[PLAYER_TOEJAM] || velocity_x[PLAYER_EARL]) {
             combined_velocity = 0;
-            if (velocity_x[0] < 0 && velocity_x[1] < 0) {
-                if (velocity_x[0] < velocity_x[1] && secondary_x < 270)
-                    combined_velocity = velocity_x[0];
+            if (velocity_x[PLAYER_TOEJAM] < 0 && velocity_x[PLAYER_EARL] < 0) {
+                if (velocity_x[PLAYER_TOEJAM] < velocity_x[PLAYER_EARL] && secondary_x < 270)
+                    combined_velocity = velocity_x[PLAYER_TOEJAM];
                 else if (primary_x < 270)
-                    combined_velocity = velocity_x[1];
-            } else if (velocity_x[0] > 0 && velocity_x[1] > 0) {
-                if (velocity_x[0] > velocity_x[1] && secondary_x > 50)
-                    combined_velocity = velocity_x[0];
+                    combined_velocity = velocity_x[PLAYER_EARL];
+            } else if (velocity_x[PLAYER_TOEJAM] > 0 && velocity_x[PLAYER_EARL] > 0) {
+                if (velocity_x[PLAYER_TOEJAM] > velocity_x[PLAYER_EARL] && secondary_x > 50)
+                    combined_velocity = velocity_x[PLAYER_TOEJAM];
                 else if (primary_x > 50)
-                    combined_velocity = velocity_x[1];
+                    combined_velocity = velocity_x[PLAYER_EARL];
             } else {
-                if (velocity_x[0] < 0 && secondary_x < 270)
-                    combined_velocity = velocity_x[0];
-                else if (velocity_x[1] < 0 && primary_x < 270)
-                    combined_velocity = velocity_x[1];
-                if (velocity_x[0] > 0 && secondary_x > 50)
-                    combined_velocity += velocity_x[0];
-                else if (velocity_x[1] > 0 && primary_x > 50)
-                    combined_velocity += velocity_x[1];
+                if (velocity_x[PLAYER_TOEJAM] < 0 && secondary_x < 270)
+                    combined_velocity = velocity_x[PLAYER_TOEJAM];
+                else if (velocity_x[PLAYER_EARL] < 0 && primary_x < 270)
+                    combined_velocity = velocity_x[PLAYER_EARL];
+                if (velocity_x[PLAYER_TOEJAM] > 0 && secondary_x > 50)
+                    combined_velocity += velocity_x[PLAYER_TOEJAM];
+                else if (velocity_x[PLAYER_EARL] > 0 && primary_x > 50)
+                    combined_velocity += velocity_x[PLAYER_EARL];
             }
             gCamera1FollowXFixed += combined_velocity;
             target = gCamera1FollowXFixed >> 8;
@@ -159,27 +159,27 @@ void UpdateCameraFollowing()
                 blocked = 0;
             }
         }
-        if (velocity_y[0] || velocity_y[1]) {
+        if (velocity_y[PLAYER_TOEJAM] || velocity_y[PLAYER_EARL]) {
             combined_velocity = 0;
-            if (velocity_y[0] < 0 && velocity_y[1] < 0) {
-                if (velocity_y[0] < velocity_y[1] && secondary_y < 158)
-                    combined_velocity = velocity_y[0];
+            if (velocity_y[PLAYER_TOEJAM] < 0 && velocity_y[PLAYER_EARL] < 0) {
+                if (velocity_y[PLAYER_TOEJAM] < velocity_y[PLAYER_EARL] && secondary_y < 158)
+                    combined_velocity = velocity_y[PLAYER_TOEJAM];
                 else if (primary_y < 158)
-                    combined_velocity = velocity_y[1];
-            } else if (velocity_y[0] > 0 && velocity_y[1] > 0) {
-                if (velocity_y[0] > velocity_y[1] && secondary_y > 40)
-                    combined_velocity = velocity_y[0];
+                    combined_velocity = velocity_y[PLAYER_EARL];
+            } else if (velocity_y[PLAYER_TOEJAM] > 0 && velocity_y[PLAYER_EARL] > 0) {
+                if (velocity_y[PLAYER_TOEJAM] > velocity_y[PLAYER_EARL] && secondary_y > 40)
+                    combined_velocity = velocity_y[PLAYER_TOEJAM];
                 else if (primary_y > 40)
-                    combined_velocity = velocity_y[1];
+                    combined_velocity = velocity_y[PLAYER_EARL];
             } else {
-                if (velocity_y[0] < 0 && secondary_y < 158)
-                    combined_velocity = velocity_y[0];
-                else if (velocity_y[1] < 0 && primary_y < 158)
-                    combined_velocity = velocity_y[1];
-                if (velocity_y[0] > 0 && secondary_y > 40)
-                    combined_velocity += velocity_y[0];
-                else if (velocity_y[1] > 0 && primary_y > 40)
-                    combined_velocity += velocity_y[1];
+                if (velocity_y[PLAYER_TOEJAM] < 0 && secondary_y < 158)
+                    combined_velocity = velocity_y[PLAYER_TOEJAM];
+                else if (velocity_y[PLAYER_EARL] < 0 && primary_y < 158)
+                    combined_velocity = velocity_y[PLAYER_EARL];
+                if (velocity_y[PLAYER_TOEJAM] > 0 && secondary_y > 40)
+                    combined_velocity += velocity_y[PLAYER_TOEJAM];
+                else if (velocity_y[PLAYER_EARL] > 0 && primary_y > 40)
+                    combined_velocity += velocity_y[PLAYER_EARL];
             }
             gCamera1FollowYFixed += combined_velocity;
             target = gCamera1FollowYFixed >> 8;
@@ -195,8 +195,8 @@ void UpdateCameraFollowing()
         gCamera2PendingX = *camera_x;
         gCamera2PendingY = *camera_y;
     } else if (gPlayerLives[PLAYER_TOEJAM] >= 0) {
-        if (velocity_x[0]) {
-            gCamera1FollowXFixed += velocity_x[0];
+        if (velocity_x[PLAYER_TOEJAM]) {
+            gCamera1FollowXFixed += velocity_x[PLAYER_TOEJAM];
             target = gCamera1FollowXFixed >> 8;
             while (target > *camera_x)
                 if (blocked = MoveCameraRight(0))
@@ -209,8 +209,8 @@ void UpdateCameraFollowing()
                 blocked = 0;
             }
         }
-        if (velocity_y[0]) {
-            gCamera1FollowYFixed += velocity_y[0];
+        if (velocity_y[PLAYER_TOEJAM]) {
+            gCamera1FollowYFixed += velocity_y[PLAYER_TOEJAM];
             target = gCamera1FollowYFixed >> 8;
             while (target > *camera_y)
                 if (blocked = MoveCameraDown(0))
@@ -223,8 +223,8 @@ void UpdateCameraFollowing()
                 blocked = 0;
             }
         }
-        if (velocity_x[1]) {
-            gCamera2FollowXFixed += velocity_x[1];
+        if (velocity_x[PLAYER_EARL]) {
+            gCamera2FollowXFixed += velocity_x[PLAYER_EARL];
             target = gCamera2FollowXFixed >> 8;
             while (target > gCamera2PendingX)
                 if (blocked = MoveCameraRight(1))
@@ -237,8 +237,8 @@ void UpdateCameraFollowing()
                 blocked = 0;
             }
         }
-        if (velocity_y[1]) {
-            gCamera2FollowYFixed += velocity_y[1];
+        if (velocity_y[PLAYER_EARL]) {
+            gCamera2FollowYFixed += velocity_y[PLAYER_EARL];
             target = gCamera2FollowYFixed >> 8;
             while (target > gCamera2PendingY)
                 if (blocked = MoveCameraDown(1))
@@ -250,8 +250,8 @@ void UpdateCameraFollowing()
                 gCamera2FollowYFixed = gCamera2PendingY << 8;
         }
     } else {
-        if (velocity_x[1]) {
-            gCamera1FollowXFixed += velocity_x[1];
+        if (velocity_x[PLAYER_EARL]) {
+            gCamera1FollowXFixed += velocity_x[PLAYER_EARL];
             target = gCamera1FollowXFixed >> 8;
             while (target > *camera_x)
                 if (blocked = MoveCameraRight(0))
@@ -264,8 +264,8 @@ void UpdateCameraFollowing()
                 blocked = 0;
             }
         }
-        if (velocity_y[1]) {
-            gCamera1FollowYFixed += velocity_y[1];
+        if (velocity_y[PLAYER_EARL]) {
+            gCamera1FollowYFixed += velocity_y[PLAYER_EARL];
             target = gCamera1FollowYFixed >> 8;
             while (target > *camera_y)
                 if (blocked = MoveCameraDown(0))

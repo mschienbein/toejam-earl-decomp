@@ -5,8 +5,6 @@
 #include "psg_effects.h"
 #include "fm_effects.h"
 #include "music_ids.h"
-#include "entities.h"
-#include "sprites.h"
 #include "hardware.h"
 #include "revision.h"
 #include "assets_audio.h"
@@ -286,7 +284,7 @@ short doorway_owner;
             }
             active = 0;
             gDoorwayPlayerContactFlags[doorway_owner] = 0;
-            for (object_number = 0; object_number <= 1; ++object_number) {
+            for (object_number = PLAYER_TOEJAM; object_number <= PLAYER_EARL; ++object_number) {
                 player = &gPlayerInfo[object_number];
                 if (PresentFindDoorwayOwnerAtTile(player, (short)((long)player->y >> 3),
                                (short)((long)player->x >> 3)) == doorway_owner + 1) {
@@ -711,7 +709,7 @@ unsigned short terrain;
 {
     char sprite;
 
-    if (present_number < 8 && present_number != PRESENT_ROCKET_SKATES && player->height > 0) {
+    if (present_number < PRESENT_DOORWAY && present_number != PRESENT_ROCKET_SKATES && player->height > 0) {
         if (!gPlayerPowerups[player_number] && (player->animation_group_mask & PLAYER_GROUP_ICARUS_FLY) &&
             present_number != PRESENT_ICARUS_WINGS)
             PresentTryEndActivePowerup(player_number);
@@ -724,7 +722,7 @@ unsigned short terrain;
         }
     }
     gPlayerPoints[player_number] += 2;
-    if (present_number >= 8)
+    if (present_number >= PRESENT_DOORWAY)
         return;
     gPlayerPowerups[player_number] = present_number;
     HudLoadActionIconSprite(player_number);

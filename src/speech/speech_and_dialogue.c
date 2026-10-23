@@ -295,9 +295,9 @@ void UpdateSpeechAndDialogue()
         distance_y = abs(gPlayerInfo[PLAYER_TOEJAM].y - gPlayerInfo[PLAYER_EARL].y);
         if (gReunionDialoguePending && !gSplitScreenEnabled && distance_x < 260 && distance_y < 174) {
             /* ORIGINAL BUG: These dialogue calls omit their speaker argument. */
-            if (PlayerHasOddElevatorState(0) && !(GetRandomNumber() & 3))
+            if (PlayerHasOddElevatorState(PLAYER_TOEJAM) && !(GetRandomNumber() & 3))
                 StartDialogue(3);
-            else if (PlayerHasOddElevatorState(1) && !(GetRandomNumber() & 3))
+            else if (PlayerHasOddElevatorState(PLAYER_EARL) && !(GetRandomNumber() & 3))
                 StartDialogue(4);
             else
                 StartDialogue(1);

@@ -27,7 +27,7 @@ char flag;
     int occupied = 0;
     struct object_state *entity;
 
-    for (player = 0; player <= PLAYER_EARL; ++player) {
+    for (player = PLAYER_TOEJAM; player <= PLAYER_EARL; ++player) {
         entity = &gPlayerInfo[player];
         if (entity->level == elevator->level) {
             if (flag == gPlayerElevatorFlags[player]) {
@@ -172,7 +172,7 @@ void ProcessElevatorStep1()
             next_state = ELEVATOR_STATE_CLOSING;
             PlaySound(PSG_NOISE_ACCENT, 30);
         }
-        for (player = 0; player <= PLAYER_EARL; ++player) {
+        for (player = PLAYER_TOEJAM; player <= PLAYER_EARL; ++player) {
             if (flag == gPlayerElevatorFlags[player]) {
                 entity = &gPlayerInfo[player];
                 if (!entity->sprite_state && entity->frame == 1)
@@ -253,7 +253,7 @@ void ProcessElevatorStep2()
             next_state = ELEVATOR_STATE_CLOSING;
             PlaySound(PSG_NOISE_ACCENT, 30);
         }
-        for (player = 0; player <= PLAYER_EARL; ++player) {
+        for (player = PLAYER_TOEJAM; player <= PLAYER_EARL; ++player) {
             if (flag == gPlayerElevatorFlags[player]) {
                 entity = &gPlayerInfo[player];
                 if (!entity->sprite_state && entity->frame == 1)

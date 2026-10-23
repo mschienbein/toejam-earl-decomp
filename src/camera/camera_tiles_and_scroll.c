@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "assets_map.h"
 #include "graphics_calls.h"
 #include "ram_camera.h"
@@ -23,9 +24,9 @@ unsigned short metatile, row, column;
 {
     short tile;
 
-    if (metatile & 0x80) {
-        metatile &= 0x7f;
-        tile = LevelMetatileMaps[metatile][row][15 - column] ^ 0x800;
+    if (metatile & METATILE_MIRROR_X) {
+        metatile &= METATILE_BASE_MASK;
+        tile = LevelMetatileMaps[metatile][row][15 - column] ^ VDP_TILE_HORIZONTAL_FLIP;
     } else
         tile = LevelMetatileMaps[metatile][row][column];
     return tile;
@@ -42,7 +43,7 @@ unsigned short metatile, row, column;
         metatile--;
         tile = OverlayMetatileMaps[metatile][row][15 - column];
         if (tile)
-            tile ^= 0x800;
+            tile ^= VDP_TILE_HORIZONTAL_FLIP;
     } else {
         metatile--;
         tile = OverlayMetatileMaps[metatile][row][column];
@@ -180,7 +181,7 @@ short camera;
     {
       map_x--;
       map_cell = map[(map_row * 19) + map_x];
-      metatile = (unsigned char) ((map_cell & 0x1f00) >> 8);
+      metatile = (unsigned char) ((map_cell & METATILE_OVERLAY_MASK) >> 8);
       if (metatile)
         tile = GetOverlayMetatileTile(metatile, tile_row, tile_column);
       if (!tile)
@@ -379,7 +380,7 @@ short camera;
     {
       map_row--;
       map_cell = map[(map_row * 19) + map_x];
-      metatile = (unsigned char) ((map_cell & 0x1f00) >> 8);
+      metatile = (unsigned char) ((map_cell & METATILE_OVERLAY_MASK) >> 8);
       if (metatile)
         tile = GetOverlayMetatileTile(metatile, tile_row, tile_column);
       if (!tile)

@@ -85,8 +85,8 @@ void CheckAButton()
                 FreeEntity(gPlayerInteractionChoiceEntities[player_number]);
                 gPlayerInteractionChoiceEntities[player_number] = 0;
                 gPlayerInteractionChoiceActive[player_number] = 0;
-                gPlayerPreviousProcessedInput[player_number] = 64;
-                gPlayerProcessedInput[player_number] = 64;
+                gPlayerPreviousProcessedInput[player_number] = INPUT_BUTTON_A;
+                gPlayerProcessedInput[player_number] = INPUT_BUTTON_A;
                 gPlayerChoiceActionReleaseLatches[player_number] = 1;
             } else {
                 if (gPlayerProcessedInput[player_number] & INPUT_UP)
@@ -381,7 +381,7 @@ struct earthling_state *earthling;
         if (earthling->state == 2)
             return 1;
     } else if (earthling->kind == EARTHLING_WISEMAN && earthling->state <= 1 &&
-               (gPlayerWisemanInteractionStates[0] == 3 || gPlayer2WisemanInteractionState == 3))
+               (gPlayerWisemanInteractionStates[PLAYER_TOEJAM] == 3 || gPlayer2WisemanInteractionState == 3))
         return 1;
     return 0;
 }
@@ -405,9 +405,9 @@ short player_number;
         object->tile_count = 40;
         object->tile |= VDP_TILE_PRIORITY;
         if (!player_number)
-            animation = &PlayerAnimationDescriptors[5];
+            animation = &PlayerAnimationDescriptors[PLAYER_ANIM_GHOST];
         else
-            animation = &Player2AnimationDescriptors[5];
+            animation = &Player2AnimationDescriptors[PLAYER_ANIM_GHOST];
         object->sequence = animation->sequence;
         object->frames = animation->frames;
         object->frame_phase = animation->period;
@@ -467,7 +467,7 @@ short player_number;
                 --gPlayerLives[other_player];
                 HudLoadLivesSpriteTiles(other_player);
             }
-            CopyLevelBetweenPlayers(0);
+            CopyLevelBetweenPlayers(PLAYER_TOEJAM);
             gPlayer2MapLevel = gPlayer1MapLevel;
             player = &gPlayerInfo[player_number];
             player->draw_flags = ENTITY_ACTIVE;

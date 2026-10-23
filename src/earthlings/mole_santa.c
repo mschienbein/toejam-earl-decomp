@@ -76,7 +76,7 @@ void ReleaseFinishedMoleEffectsAndStolenPresents()
             gMoleEffectEntities[slot] = 0;
         }
     }
-    for (slot = 0; slot <= 1; ++slot) {
+    for (slot = PLAYER_TOEJAM; slot <= PLAYER_EARL; ++slot) {
         if ((object_number = gPlayerStolenPresentEntities[slot]) &&
             gPlayerInfo[object_number].height <= 0) {
             FreeEntity(object_number);
@@ -148,7 +148,7 @@ struct earthling_state *earthling;
              * These are compiler-sensitive spellings, not recovered
              * historical expressions [INFERENCE]. */
             int flags;
-            if (!((flags = santa->draw_flags) & (unsigned long)6)) {
+            if (!((flags = santa->draw_flags) & (unsigned long)ENTITY_EITHER_VIEW)) {
                 do {
                     EarthlingRelocateRecord(earthling);
                     santa->x = earthling->x;
@@ -172,7 +172,7 @@ struct earthling_state *earthling;
             next_state = 0;
     } else if (!earthling->state) {
         if (EntityIsWithinRange(santa, toejam, 125, 75)) {
-            if (gPlayerBurpsLeft[0])
+            if (gPlayerBurpsLeft[PLAYER_TOEJAM])
                 next_state = 2;
             else if (toejam->animation_group_mask & PLAYER_GROUP_SNEAK) {
                 if (GetRandomNumber() % 100 < 10)

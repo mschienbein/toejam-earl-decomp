@@ -77,7 +77,7 @@ short release_first;
                     return (short)AllocateEntity();
                 }
             for (entry = 0; entry < 20; ++entry)
-                if (gEarthlingBanks[bank][entry].kind &&
+                if (gEarthlingBanks[bank][entry].kind != EARTHLING_SHIP_PIECE &&
                     (object_number = gEarthlingBanks[bank][entry].object)) {
                     FreeEntity(object_number);
                     gEarthlingBanks[bank][entry].object = 0;
@@ -261,13 +261,13 @@ short cell, row, column, local_row, camera, first_column;
         if (column + local_column > first_column + 45 - 1)
             break;
         tile = 0;
-        if (cell & 0x1f00)
-            tile = GetOverlayMetatileTile((cell & 0x1f00) >> 8, local_row, local_column);
+        if (cell & METATILE_OVERLAY_MASK)
+            tile = GetOverlayMetatileTile((cell & METATILE_OVERLAY_MASK) >> 8, local_row, local_column);
         if (!tile)
             tile = GetLevelMetatileTile(cell & 0xff, local_row, local_column);
         if (!count)
             gCameraRowUploadStartColumn[camera] = (column + local_column) & 63;
-        gCameraRowUploadWords[camera][count++] = tile | 0x8000;
+        gCameraRowUploadWords[camera][count++] = tile | VDP_TILE_PRIORITY;
     }
     gCameraRowUploadVramRow[camera] = row & 31;
     gCameraRowUploadWordCount[camera] = count;
@@ -291,13 +291,13 @@ short cell, row, column, local_column, camera, first_row;
         if (row + local_row > first_row + gCameraColumnUploadHeight - 1)
             break;
         tile = 0;
-        if (cell & 0x1f00)
-            tile = GetOverlayMetatileTile((cell & 0x1f00) >> 8, local_row, local_column);
+        if (cell & METATILE_OVERLAY_MASK)
+            tile = GetOverlayMetatileTile((cell & METATILE_OVERLAY_MASK) >> 8, local_row, local_column);
         if (!tile)
             tile = GetLevelMetatileTile(cell & 0xff, local_row, local_column);
         if (!count)
             gCameraColumnUploadStartRow[camera] = (row + local_row) & 31;
-        gCameraColumnUploadWords[camera][count++] = tile | 0x8000;
+        gCameraColumnUploadWords[camera][count++] = tile | VDP_TILE_PRIORITY;
     }
     gCameraColumnUploadVramColumn[camera] = column & 63;
     gCameraColumnUploadWordCount[camera] = count;
@@ -505,7 +505,7 @@ short camera, row, column;
 }
 
 /* Either player is near an edge when one of the four adjacent terrain cells
- * has property 0x50 or greater. The historical name mentions only ToeJam. */
+ * has property TERRAIN_WALKABLE_MAX or greater. The historical name mentions only ToeJam. */
 int PlayerIsNearTerrainEdge(player)
 short player;
 {
@@ -515,8 +515,8 @@ short player;
         terrain = gPlayer1NearbyTerrain[0];
     else
         terrain = gPlayer2NearbyTerrain[0];
-    if (terrain[7] >= 0x50 || terrain[11] >= 0x50 ||
-        terrain[13] >= 0x50 || terrain[17] >= 0x50)
+    if (terrain[7] >= TERRAIN_WALKABLE_MAX || terrain[11] >= TERRAIN_WALKABLE_MAX ||
+        terrain[13] >= TERRAIN_WALKABLE_MAX || terrain[17] >= TERRAIN_WALKABLE_MAX)
         return 1;
     else
         return 0;
@@ -534,18 +534,18 @@ void ProcessLand()
         row = (gPlayerInfo[PLAYER_TOEJAM].y >> 6) - 1;
         column = (gPlayerInfo[PLAYER_TOEJAM].x >> 7) - 1;
         if (row >= 0 && column >= 0 && row < MAP_ROWS && column < MAP_COLUMNS &&
-            (gPlayer1LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(0)) {
+            (gPlayer1LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(PLAYER_TOEJAM)) {
             MapAnimateMarkedLandPaths(0, row, column);
             EarthlingDamageOnHazardTerrain(0, gPlayer1MapLevel);
             player = &gPlayerInfo[PLAYER_TOEJAM];
-            UpdateLandAroundPlayer(0);
+            UpdateLandAroundPlayer(PLAYER_TOEJAM);
             if (gPlayer1TerrainUnderfoot == TERRAIN_VOID && !gPlayerInfo[PLAYER_TOEJAM].height &&
 #if REVISION >= 2
                 player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
 #endif
                 !(player->animation_group_mask & (PLAYER_GROUP_FALL | PLAYER_GROUP_ICARUS_FLY))) {
                 StopPlayer(player);
-                PlayerStartFalling(player, 0);
+                PlayerStartFalling(player, PLAYER_TOEJAM);
             }
         }
     }
@@ -555,33 +555,33 @@ void ProcessLand()
         column = (gPlayerInfo[PLAYER_EARL].x >> 7) - 1;
         if (row >= 0 && column >= 0 && row < MAP_ROWS && column < MAP_COLUMNS) {
             if (gSplitScreenEnabled) {
-                if ((gPlayer2LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(1)) {
+                if ((gPlayer2LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(PLAYER_EARL)) {
                     MapAnimateMarkedLandPaths(1, row, column);
                     EarthlingDamageOnHazardTerrain(1, gPlayer2MapLevel);
                     player = &gPlayerInfo[PLAYER_EARL];
-                    UpdateLandAroundPlayer(1);
+                    UpdateLandAroundPlayer(PLAYER_EARL);
                     if (gPlayer2TerrainUnderfoot == TERRAIN_VOID && !gPlayerInfo[PLAYER_EARL].height &&
 #if REVISION >= 2
                         player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
 #endif
                         !(gPlayerInfo[PLAYER_EARL].animation_group_mask & (PLAYER_GROUP_FALL | PLAYER_GROUP_ICARUS_FLY))) {
                         StopPlayer(player);
-                        PlayerStartFalling(player, 1);
+                        PlayerStartFalling(player, PLAYER_EARL);
                     }
                 }
             } else {
-                if ((gPlayer1LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(1)) {
+                if ((gPlayer1LevelMap[row][column] & (unsigned long)0x4000) && PlayerIsNearTerrainEdge(PLAYER_EARL)) {
                     MapAnimateMarkedLandPaths(0, row, column);
                     EarthlingDamageOnHazardTerrain(0, gPlayer1MapLevel);
                     player = &gPlayerInfo[PLAYER_EARL];
-                    UpdateLandAroundPlayer(1);
+                    UpdateLandAroundPlayer(PLAYER_EARL);
                     if (gPlayer2TerrainUnderfoot == TERRAIN_VOID && !gPlayerInfo[PLAYER_EARL].height &&
 #if REVISION >= 2
                         player->sprite_state != PLAYER_ANIM_WHIRLWIND_RECOVERY && player->sprite_state != PLAYER_ANIM_WHIRLWIND &&
 #endif
                         !(player->animation_group_mask & (PLAYER_GROUP_FALL | PLAYER_GROUP_ICARUS_FLY))) {
                         StopPlayer(player);
-                        PlayerStartFalling(player, 1);
+                        PlayerStartFalling(player, PLAYER_EARL);
                     }
                 }
             }

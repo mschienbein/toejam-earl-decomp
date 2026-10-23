@@ -45,7 +45,7 @@ void ClearTransientEntities()
         gLifeRequestDisplayEntity = 0;
         gLifeRequestPending = 0;
     }
-    for (slot = 0; slot <= 1; ++slot) {
+    for (slot = PLAYER_TOEJAM; slot <= PLAYER_EARL; ++slot) {
         if (gPlayerActiveTerrainEffectEntities[slot]) {
             FreeEntity(gPlayerActiveTerrainEffectEntities[slot]);
             gPlayerActiveTerrainEffectEntities[slot] = 0;
@@ -116,14 +116,14 @@ short filled;
                 tile = GetRandomNumber() & 3;
                 tile += 41;
                 if (GetRandomNumber() & 1) {
-                    tile |= 0x800;
-                    tile |= 0x1000;
+                    tile |= VDP_TILE_HORIZONTAL_FLIP;
+                    tile |= VDP_TILE_VERTICAL_FLIP;
                 }
                 VDP_DATA = 0x8580 + tile;
             } else if (filled)
                 VDP_DATA = 0x85b4;
             else
-                VDP_DATA = 0x8000;
+                VDP_DATA = VDP_TILE_PRIORITY;
         }
     }
     VDP_CONTROL_WORD = 0x911e;
@@ -151,11 +151,11 @@ void DrawNestedWindowFrame()
             else if ((column == 2 || column == 37) && row > 2 && row < 25) {
                 tile = 0xe1ce;
                 if (column != 2)
-                    tile |= 0x800;
+                    tile |= VDP_TILE_HORIZONTAL_FLIP;
             } else if ((row == 2 || row == 25) && column > 2 && column < 37) {
                 tile = 0xe1cf;
                 if (row != 2)
-                    tile |= 0x1000;
+                    tile |= VDP_TILE_VERTICAL_FLIP;
             } else if (row == 2 && column == 2)
                 tile = 0xe1d0;
             else if (row == 25 && column == 2)
@@ -165,7 +165,7 @@ void DrawNestedWindowFrame()
             else if (row == 25 && column == 37)
                 tile = 0xf9d0;
             else
-                tile = 0x8000;
+                tile = VDP_TILE_PRIORITY;
             VDP_DATA = tile;
         }
     }
@@ -186,7 +186,7 @@ void DrawPresentDisplayPanel()
             tile = PresentDisplayTilemap[row][column];
             if (tile & 0x80) {
                 tile &= 0x7f;
-                tile |= 0x800;
+                tile |= VDP_TILE_HORIZONTAL_FLIP;
             }
             VDP_DATA = 0xc1d2 + tile;
         }
@@ -209,9 +209,9 @@ short selection;
         VDP_COMMAND = 0x60200003L + ((row + 11) << 23);
         for (column = 0; column < 8; ++column) {
             if (selection < 0)
-                VDP_DATA = 0x8000;
+                VDP_DATA = VDP_TILE_PRIORITY;
             else
-                VDP_DATA = 0x8000 + InventoryVDPTilemap[selection][row][column] + tile_base;
+                VDP_DATA = VDP_TILE_PRIORITY + InventoryVDPTilemap[selection][row][column] + tile_base;
         }
     }
     EnableBlankingGraphics();

@@ -5935,56 +5935,56 @@
     {
       "address": "0x025BCE",
       "name": "EntityFindNarrowCollisionAtPosition",
-      "class": "compiled_c",
+      "class": "not_reproducible_c",
       "confidence": "high",
       "size": 214,
       "instruction_bytes": 214,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; 4 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "Ruling R011: not reproducible from plain C by the pinned MCC68K 3.3K. Twelve SUB.W/BPL/NEG.W sign tests (N-only branches) occur in these five functions and nowhere in the 51,419 instructions of the matched C or in 438 fresh 3.3K probe functions over six profiles (HardCases6, ClassReview3); MCC68K 4.3D/4.4 and an inline-assembly ABS macro reproduce the sign tests but not the surrounding code (CompilerHunter2, HardCases6). Mechanism unresolved: another compiler release, inline assembly or hand editing. Built from src/asm/collision.s."
       ]
     },
     {
       "address": "0x025CA4",
       "name": "EntityFindMenuAwareCollisionAtPosition",
-      "class": "compiled_c",
+      "class": "not_reproducible_c",
       "confidence": "high",
       "size": 220,
       "instruction_bytes": 220,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; 3 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "Ruling R011: not reproducible from plain C by the pinned MCC68K 3.3K. Twelve SUB.W/BPL/NEG.W sign tests (N-only branches) occur in these five functions and nowhere in the 51,419 instructions of the matched C or in 438 fresh 3.3K probe functions over six profiles (HardCases6, ClassReview3); MCC68K 4.3D/4.4 and an inline-assembly ABS macro reproduce the sign tests but not the surrounding code (CompilerHunter2, HardCases6). Mechanism unresolved: another compiler release, inline assembly or hand editing. Built from src/asm/collision.s."
       ]
     },
     {
       "address": "0x025D80",
       "name": "EntityFindVolumeCollisionAtPosition",
-      "class": "compiled_c",
+      "class": "not_reproducible_c",
       "confidence": "high",
       "size": 242,
       "instruction_bytes": 242,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; 6 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "Ruling R011: not reproducible from plain C by the pinned MCC68K 3.3K. Twelve SUB.W/BPL/NEG.W sign tests (N-only branches) occur in these five functions and nowhere in the 51,419 instructions of the matched C or in 438 fresh 3.3K probe functions over six profiles (HardCases6, ClassReview3); MCC68K 4.3D/4.4 and an inline-assembly ABS macro reproduce the sign tests but not the surrounding code (CompilerHunter2, HardCases6). Mechanism unresolved: another compiler release, inline assembly or hand editing. Built from src/asm/collision.s."
       ]
     },
     {
       "address": "0x025E72",
       "name": "ProjectileFindCollisionExcludingOwner",
-      "class": "compiled_c",
+      "class": "not_reproducible_c",
       "confidence": "high",
       "size": 208,
       "instruction_bytes": 208,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; 2 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "Ruling R011: not reproducible from plain C by the pinned MCC68K 3.3K. Twelve SUB.W/BPL/NEG.W sign tests (N-only branches) occur in these five functions and nowhere in the 51,419 instructions of the matched C or in 438 fresh 3.3K probe functions over six profiles (HardCases6, ClassReview3); MCC68K 4.3D/4.4 and an inline-assembly ABS macro reproduce the sign tests but not the surrounding code (CompilerHunter2, HardCases6). Mechanism unresolved: another compiler release, inline assembly or hand editing. Built from src/asm/collision.s."
       ]
     },
     {
       "address": "0x025F42",
       "name": "EntityFindHorizontalCollisionAtX",
-      "class": "compiled_c",
+      "class": "not_reproducible_c",
       "confidence": "high",
       "size": 184,
       "instruction_bytes": 184,
       "evidence": [
-        "[INFERENCE] C-origin candidate based on callee-save MOVEM prologue; 4 stack/frame-displacement data operand instructions and ordinary control flow without special machine operations. A stack/frame data or address operand alone does not identify it specifically as an incoming parameter or local rather than an outgoing slot."
+        "Ruling R011: not reproducible from plain C by the pinned MCC68K 3.3K. Twelve SUB.W/BPL/NEG.W sign tests (N-only branches) occur in these five functions and nowhere in the 51,419 instructions of the matched C or in 438 fresh 3.3K probe functions over six profiles (HardCases6, ClassReview3); MCC68K 4.3D/4.4 and an inline-assembly ABS macro reproduce the sign tests but not the surrounding code (CompilerHunter2, HardCases6). Mechanism unresolved: another compiler release, inline assembly or hand editing. Built from src/asm/collision.s."
       ]
     },
     {
@@ -8294,14 +8294,19 @@
   ],
   "summary": {
     "compiled_c": {
-      "functions": 603,
-      "catalogue_extent_bytes": 175412,
-      "instruction_bytes": 174938
+      "functions": 598,
+      "catalogue_extent_bytes": 174344,
+      "instruction_bytes": 173870
     },
     "handwritten_asm": {
       "functions": 36,
       "catalogue_extent_bytes": 4980,
       "instruction_bytes": 4980
+    },
+    "not_reproducible_c": {
+      "functions": 5,
+      "catalogue_extent_bytes": 1068,
+      "instruction_bytes": 1068
     },
     "runtime_helper": {
       "functions": 6,

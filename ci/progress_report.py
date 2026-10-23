@@ -76,7 +76,7 @@ def data_counts(version: str, catalogue: dict) -> dict[str, int]:
     return counts
 
 
-NON_C = ("handwritten_asm", "runtime_helper", "sega_library")
+NON_C = ("handwritten_asm", "runtime_helper", "sega_library", "not_reproducible_c")   # R007, R011
 
 
 def excluded(version: str) -> set[int]:

@@ -21,8 +21,9 @@
 #include "sprite_calls.h"
 #include "title_calls.h"
 
-/* MATCHING QUALIFICATION: the explicit (int)GetRandomNumber() result
- * views retain the observed wide arithmetic with the shared word return.
+/* MATCHING QUALIFICATION: the explicit (int)GetRandomNumber() and
+ * (int)AllocateEntity() result views retain the observed wide arithmetic and
+ * result widths with the shared narrow returns.
  * Exact historical spelling remains unknown [INFERENCE]. */
 
 /* Run the jam scene until Start has been held for 51 consecutive updates. */

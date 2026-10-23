@@ -1,6 +1,6 @@
 # Resume
 
-Matching/source completion is finalized through checkpoint c033. Both revisions have
+The project is complete; the final checkpoint is c038-final. Both revisions have
 **598 of 598 C functions matched (100%)**: REV 02 is 174,344 of 174,344 C bytes;
 REV 00 is 174,232 of 174,232 C bytes. Every other routine is readable assembly,
 there is zero generated assembly, and data comes from typed assets, except the Z80
@@ -39,14 +39,15 @@ uv run python tools/audit_public.py --history
 ```
 
 Importing both dumps enables the real-ROM tests as well as the synthetic tests.
-The accepted c033 records establish byte-identical builds of both revisions with
-zero generated instructions/function/fragment units and no raw data bytes. The
-[independent review](../accept/c033-collision-assembly/review-C033Review-review.json)
-records all 191 tests passing, with no failures, errors, or skips; it also records
-the denominator and public-history checks. The
-[preparation](../accept/c033-collision-assembly/prepare.json) and
-[finalization](../accept/c033-collision-assembly/finalize.json) bind the accepted
-source inputs and images. See [ACCEPTANCE](ACCEPTANCE.md) for the gates and
+The accepted c038-final records establish byte-identical builds of both revisions with
+zero generated instructions/function/fragment units and no raw data bytes. The two
+independent final reviews
+([FinalReviewA](../accept/c038-final/review-FinalReviewA-delta3-review.json),
+[FinalReviewB](../accept/c038-final/review-FinalReviewB-delta3-review.json)) record all
+191 tests passing, the denominator and public-history checks, and the readability and
+documentation criteria. The [preparation](../accept/c038-final/prepare.json) and
+[finalization](../accept/c038-final/finalize.json) bind the accepted source inputs and
+images. See [ACCEPTANCE](ACCEPTANCE.md) for the gates and
 [QUALIFICATIONS](QUALIFICATIONS.md) for the disclosed source/ABI spellings.
 
 ## Where things are

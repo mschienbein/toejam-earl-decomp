@@ -1,5 +1,31 @@
 # Status (current entry first)
 
+## Final — checkpoint c038-final accepted
+
+**Complete.** The final checkpoint passed both independent final reviews
+([FinalReviewA](../accept/c038-final/review-FinalReviewA-delta3-review.json): functions, bytes,
+REV 00, acceptance; [FinalReviewB](../accept/c038-final/review-FinalReviewB-delta3-review.json):
+readability, qualifications, documentation), each PASS with disclosed qualifications and no
+blocking finding. [Preparation](../accept/c038-final/prepare.json) bound two fresh
+byte-identical builds of each revision and the full suite (191 tests);
+[finalization](../accept/c038-final/finalize.json) rebound every credited function to the final
+sources.
+
+- **Code:** 598 of 598 C functions match in both revisions (REV 02 174,344 bytes, REV 00
+  174,232 bytes); 36 hand-written routines, six runtime helpers, the five R011 collision
+  queries and the Z80 driver are readable assembly source; zero generated assembly.
+- **Data:** every byte comes from a typed, named unit extracted from the owner's ROM, from the
+  Z80 source, or from the matched C's own string literals; six bytes are typed `unreferenced`
+  ([R012](rulings/R012-closure-interpretations.md)).
+- **Readability:** the final review rounds (c034 to c037, recorded as failed or superseded)
+  replaced the remaining record offsets with struct fields, gave every established domain
+  identity a named constant (including the new `include/dialogue_ids.h`), added the missing
+  `MATCHING QUALIFICATION:` markers, and split `src/presents/present_dispatch.c` from
+  `present_effects.c`, which sat at MCC68K's DOS heap limit. The
+  [qualification ledger](QUALIFICATIONS.md) covers all 98 markers.
+- **Revisions:** REV 00 builds from the same source; its eight logic differences are the
+  `#if REVISION` sites listed in [REVISIONS](REVISIONS.md).
+
 ## Completion — checkpoint c033: 598 of 598 C functions matched
 
 **Achieved.** Both retail revisions rebuild byte-identically from the repository's

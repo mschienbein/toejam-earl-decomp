@@ -25,8 +25,9 @@ is up.
   ([`src/lib/platforms.ts`](https://github.com/Veradictus/ByteMatch/blob/main/src/lib/platforms.ts),
   commit `33c2976`, 2026-10-21) lists `3ds dc gba gbc gb gc n64 nds pc ps ps1 ps2 ps3 psp saturn
   snes switch wii wiiu xbox x360`, and the form only offers those. The server stores any id, so
-  the project uses `md` (shown as "md" until upstream names it); adding
-  `md: "Mega Drive / Genesis"` upstream needs the user's approval (pushing to another repository).
+  the project uses `md` (shown as "md" until upstream names it). With the user's approval,
+  [Veradictus/ByteMatch#9](https://github.com/Veradictus/ByteMatch/pull/9) (2026-10-23) adds
+  `md: "Mega Drive / Genesis"`; it is open until the maintainers merge it.
 
 ## Registration record (2026-10-21)
 
